@@ -2,7 +2,7 @@ from unittest.mock import patch
 from uuid import uuid4
 
 from django.contrib.auth.models import User
-from models.models import Address, Order, Profile, UserCard
+from core.models import Address, Order, Profile, UserCard
 from modules.helpers import (
     mock_add_customer,
     mock_get_card,

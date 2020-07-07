@@ -15,15 +15,12 @@ from django.conf.global_settings import STATICFILES_FINDERS
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-sys.path.insert(0, os.path.join(BASE_DIR, "apps"))
-
 # SECURITY WARNING: keep the secret key used in production secret away!
 SECRET_KEY = "^8x5j(d(4h#+rw*g1_@ul8dk-5kdm3+dgsg2!$&k7!no2bj19v"
 
 SITE_ID = 1
 
 DJANGO_APPS = [
-    "app",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -37,10 +34,8 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     "compressor",
     "clear_cache",
-    "typogrify",
     "markdown_deux",
     "robots",
-    # 'sorl.thumbnail',
 ]
 
 # Django Cleanup should be the very last app in the tuple.

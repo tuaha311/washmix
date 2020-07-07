@@ -1,4 +1,4 @@
-from models.models import Coupons
+from core.models import Coupons
 from modules.constant import CouponType, EnumField
 from rest_framework import serializers
 

@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 
 import dramatiq
-from models.models import Order
+from core.models import Order
 # from celery import shared_task
 from twilio.rest import Client
 

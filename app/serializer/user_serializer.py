@@ -1,7 +1,7 @@
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
-from models.models import PackageType, Profile, UserCard
+from core.models import PackageType, Profile, UserCard
 from modules.constant import AppUsers, Crease, Detergents, EnumField, SignUp, Starch
 from modules.helpers import commit_transaction, random_string
 from rest_framework import serializers

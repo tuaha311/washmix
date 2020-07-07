@@ -5,7 +5,7 @@ import os
 from django.core.exceptions import MiddlewareNotUsed
 from twilio.rest import Client
 
-from app.models.models import UserMessage
+from core.models import UserMessage
 
 
 def load_twilio_config():

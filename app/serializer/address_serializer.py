@@ -1,4 +1,4 @@
-from models.models import DropoffAddress, PickupAddress
+from core.models import DropoffAddress, PickupAddress
 from rest_framework import serializers
 
 

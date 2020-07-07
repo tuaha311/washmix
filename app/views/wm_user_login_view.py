@@ -1,4 +1,4 @@
-from models.models import CustomToken
+from core.models import CustomToken
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST

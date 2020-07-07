@@ -6,7 +6,7 @@ from custom_permission.custom_token_authentication import (
     IsAuthenticatedOrAdmin,
     RefreshTokenAuthentication,
 )
-from models.models import PackageType, UserCard
+from core.models import PackageType, UserCard
 from modules.constant import PACKAGES
 from modules.helpers import BalanceOperation, StripeHelper, update_user_balance, wm_exception
 from rest_framework import status

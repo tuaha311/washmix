@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from models.models import Profile
+from core.models import Profile
 
 
 def add_additional_social_userinfo(*args, **kwargs):
