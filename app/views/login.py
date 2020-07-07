@@ -5,7 +5,7 @@ from rest_framework_expiring_authtoken.models import ExpiringToken
 from rest_framework_expiring_authtoken.views import ObtainExpiringAuthToken
 
 from core.models import CustomToken
-from serializers.user_serializer import UserDataSerializer
+from serializers.users import UserDataSerializer
 from utilities.token import expired
 
 

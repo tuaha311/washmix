@@ -16,7 +16,7 @@ from custom_permission.custom_token_authentication import (
 )
 from modules.constant import PACKAGES
 from modules.helpers import BalanceOperation, StripeHelper, update_user_balance, wm_exception
-from serializers.package_serializer import PackageSerializer
+from serializers.packages import PackageSerializer
 from utilities.wm_email_config import WMEmailControllerSendGrid, wm_package_purchase_email
 
 logging.basicConfig(level=logging.ERROR, format="%(name)s - %(levelname)s - %(message)s")

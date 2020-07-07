@@ -13,7 +13,7 @@ from custom_permission.custom_token_authentication import (
     CustomSocialAuthentication,
     RefreshTokenAuthentication,
 )
-from serializers.order_serializer import OrderHistorySerializer, OrderSerializer
+from serializers.orders import OrderHistorySerializer, OrderSerializer
 
 logging.basicConfig(level=logging.ERROR, format="%(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)

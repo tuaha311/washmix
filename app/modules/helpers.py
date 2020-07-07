@@ -19,7 +19,7 @@ import stripe
 from stripe.error import InvalidRequestError
 
 from error_handling.wm_errors import InternalServerError
-from views.wm_custom_views import PasswordResetViewCustom
+from views.custom import PasswordResetViewCustom
 
 logging.basicConfig(level=logging.ERROR, format="%(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
