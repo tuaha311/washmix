@@ -11,7 +11,7 @@ from custom_permission.custom_token_authentication import (
     IsAuthenticatedOrPost,
     RefreshTokenAuthentication,
 )
-from serializers.products import ProductSerializer
+from api.serializers import ProductSerializer
 
 
 class ProductView(APIView):

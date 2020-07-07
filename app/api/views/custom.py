@@ -1,6 +1,6 @@
 from django.contrib.auth.views import PasswordResetView
 
-from forms.custom_forms import PasswordResetFormCustom
+from api.forms import PasswordResetFormCustom
 
 
 class PasswordResetViewCustom(PasswordResetView):

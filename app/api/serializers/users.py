@@ -7,13 +7,13 @@ from rest_framework.exceptions import PermissionDenied, ValidationError
 from core.models import PackageType, Profile, UserCard
 from modules.constant import AppUsers, Crease, Detergents, EnumField, SignUp, Starch
 from modules.helpers import commit_transaction, random_string
-from serializers.addresses import (
+from api.serializers.addresses import (
     AddressGetSerializer,
     DropoffAddressGetSerializer,
     DropoffAddressSerializer,
     PickupAddressSerializer,
 )
-from serializers.orders import OrderHistorySerializer, OrderSerializer
+from api.serializers.orders import OrderHistorySerializer, OrderSerializer
 
 
 def email_validator(value):

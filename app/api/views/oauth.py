@@ -14,7 +14,7 @@ from custom_permission.custom_token_authentication import (
     RefreshTokenAuthentication,
 )
 from modules.oauth import convert_to_auth_token, get_user_from_token
-from serializers.users import UserDataSerializer
+from api.serializers import UserDataSerializer
 
 logging.basicConfig(level=logging.ERROR, format="%(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)

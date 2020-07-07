@@ -7,8 +7,8 @@ from django.urls import path
 from rest_framework import routers
 
 from modules.helpers import admin_site
-from views import coupons, login, oauth, orders, products, refresh_token, stripe, users
-from views.users import UserActivationView
+from api.views import coupons, login, oauth, orders, products, refresh_token, stripe, users
+from api.views import UserActivationView
 
 admin.autodiscover()
 urlpatterns = []
@@ -30,9 +30,9 @@ urlpatterns += [
     url(r"^admin/", admin_site.urls),
     # url(r'^', include(router.urls)),
     url(r"^users/login/", refresh_token.SocialAppLoginRefreshTokenView.as_view()),
-    url(r"^users/(?P<id>\d+)?/?(?P<app_users>[A-Z_]+)?/?$", users.Users.as_view(),),
+    url(r"^users/(?P<id>\d+)?/?(?P<app_users>[A-Z_]+)?/?$", users.Users.as_view(), ),
     url(r"^orders/(?P<id>\d+)?/?$", orders.Orders.as_view()),
-    url(r"^user_purchase/(?P<type>[a-z_]+)?/?(?P<id>\d+)?/?$", stripe.Cards.as_view(),),
+    url(r"^user_purchase/(?P<type>[a-z_]+)?/?(?P<id>\d+)?/?$", stripe.Cards.as_view(), ),
     url(r"^coupon/", coupons.CouponView.as_view()),
     url(r"^product/(?P<id>\d+)?/?$", products.ProductView.as_view()),
     # Sample api view which is protected by tokenAuthentication

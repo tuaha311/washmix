@@ -15,8 +15,8 @@ from custom_permission.custom_token_authentication import (
 )
 from modules.constant import AppUsers
 from modules.helpers import StripeHelper, wm_exception
-from serializers.users import UserDataSerializer, UserSerializer
-from views.stripe import Cards
+from api.serializers import UserDataSerializer, UserSerializer
+from api.views import Cards
 
 logging.basicConfig(level=logging.ERROR, format="%(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
