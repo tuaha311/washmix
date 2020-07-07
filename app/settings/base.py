@@ -32,6 +32,7 @@ DJANGO_APPS = [
 ]
 
 THIRD_PARTY_APPS = [
+    "django_cleanup",
     "compressor",
     "clear_cache",
     "markdown_deux",
@@ -40,7 +41,7 @@ THIRD_PARTY_APPS = [
 
 # Django Cleanup should be the very last app in the tuple.
 LOCAL_APPS = [
-    "django_cleanup",
+    "core",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -54,7 +55,6 @@ MIDDLEWARE = [
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
-    # 'debug_toolbar.middleware.DebugToolbarMiddleware',
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 

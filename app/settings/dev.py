@@ -40,7 +40,7 @@ THUMBNAIL_DEBUG = True
 
 TEMPLATES[0]["OPTIONS"]["debug"] = True
 
-WSGI_APPLICATION = "wsgi.dev.application"
+WSGI_APPLICATION = "wsgi.application"
 
 # Database for development.
 DATABASES = {
@@ -82,6 +82,7 @@ DRAMATIQ_BROKER = {
 }
 
 MIDDLEWARE += [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
 ]
@@ -89,17 +90,16 @@ MIDDLEWARE += [
 # # Email backend for development.
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-INSTALLED_APPS += (
+INSTALLED_APPS += [
     "django_dramatiq",
     "rest_framework",
     "djoser",
     "rest_framework.authtoken",
     "rest_framework_expiring_authtoken",
-    "models",
     "oauth2_provider",
     "social_django",
     "rest_framework_social_oauth2",
-)
+]
 
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
