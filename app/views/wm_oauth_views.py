@@ -1,18 +1,19 @@
 from datetime import datetime, timedelta
 import logging
 
-from custom_permission.custom_token_authentication import (
-    CustomIsAdminUser,
-    IsAuthenticatedOrPost,
-    RefreshTokenAuthentication,
-)
 from django.conf import settings
-from modules.oauth import convert_to_auth_token, get_user_from_token
 import pytz
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_social_oauth2.authentication import SocialAuthentication
+
+from custom_permission.custom_token_authentication import (
+    CustomIsAdminUser,
+    IsAuthenticatedOrPost,
+    RefreshTokenAuthentication,
+)
+from modules.oauth import convert_to_auth_token, get_user_from_token
 from serializer.user_serializer import UserDataSerializer
 
 logging.basicConfig(level=logging.ERROR, format="%(name)s - %(levelname)s - %(message)s")

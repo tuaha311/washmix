@@ -2,9 +2,10 @@ from __future__ import unicode_literals
 
 import os
 
-from core.models import UserMessage
 from django.core.exceptions import MiddlewareNotUsed
 from twilio.rest import Client
+
+from core.models import UserMessage
 
 
 def load_twilio_config():

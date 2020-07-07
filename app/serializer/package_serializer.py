@@ -1,7 +1,8 @@
-from core.models import Coupons
-from modules.constant import PACKAGES, CouponType
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
+
+from core.models import Coupons
+from modules.constant import PACKAGES, CouponType
 
 
 class PackageSerializer(serializers.Serializer):

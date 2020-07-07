@@ -1,8 +1,9 @@
-from custom_permission.custom_token_authentication import CustomSocialAuthentication
 from rest_framework import status
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from custom_permission.custom_token_authentication import CustomSocialAuthentication
 from serializer.coupon_serializer import CouponsSerializer
 
 

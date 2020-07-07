@@ -6,6 +6,7 @@ from django.db import migrations, models
 import django.db.models.deletion
 import django.utils.timezone
 from django.utils.timezone import utc
+
 import modules.constant
 
 

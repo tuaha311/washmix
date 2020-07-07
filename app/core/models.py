@@ -3,9 +3,10 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
-from modules.constant import AppUsers, CouponType, Crease, Detergents, SignUp, Starch
 import redis
 from rest_framework_expiring_authtoken.models import ExpiringToken
+
+from modules.constant import AppUsers, CouponType, Crease, Detergents, SignUp, Starch
 from utilities.wm_message_config import order_dropoff, order_pickup
 
 

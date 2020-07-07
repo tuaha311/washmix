@@ -1,6 +1,7 @@
 from django.contrib.auth.hashers import identify_hasher
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
+
 from utilities.wm_email_config import WMEmailControllerSendGrid, wm_user_confirmation_email
 
 

@@ -1,10 +1,5 @@
 import logging
 
-from core.models import Order
-from custom_permission.custom_token_authentication import (
-    CustomSocialAuthentication,
-    RefreshTokenAuthentication,
-)
 from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
@@ -12,6 +7,12 @@ from rest_framework.response import Response
 from rest_framework.settings import api_settings
 from rest_framework.views import APIView
 from rest_framework_social_oauth2.authentication import SocialAuthentication
+
+from core.models import Order
+from custom_permission.custom_token_authentication import (
+    CustomSocialAuthentication,
+    RefreshTokenAuthentication,
+)
 from serializer.order_serializer import OrderHistorySerializer, OrderSerializer
 
 logging.basicConfig(level=logging.ERROR, format="%(name)s - %(levelname)s - %(message)s")

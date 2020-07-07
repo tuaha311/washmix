@@ -3,13 +3,14 @@ import http
 import logging
 import os
 
-from custom_permission.custom_token_authentication import account_activation_token
 from django.conf import settings
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from djoser.email import PasswordResetEmail
 from rest_framework.utils import json
 from templated_mail.mail import BaseEmailMessage
+
+from custom_permission.custom_token_authentication import account_activation_token
 
 logging.basicConfig(level=logging.ERROR, format="%(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)

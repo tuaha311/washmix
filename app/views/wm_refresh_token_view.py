@@ -1,8 +1,4 @@
-from core.models import CustomToken
 from django.conf import settings
-from modules.constant import SignUp
-from modules.helpers import StripeHelper
-from modules.oauth import get_user_by_email, get_user_from_token
 from oauth2_provider.admin import AccessToken, Application
 from oauth2_provider.contrib.rest_framework import OAuth2Authentication, permissions
 from rest_framework import status
@@ -12,6 +8,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_expiring_authtoken.models import ExpiringToken
 from rest_framework_social_oauth2.views import TokenView
+
+from core.models import CustomToken
+from modules.constant import SignUp
+from modules.helpers import StripeHelper
+from modules.oauth import get_user_by_email, get_user_from_token
 from serializer.refresh_token_serializer import RefreshTokenSerializer
 from serializer.user_serializer import UserDataSerializer
 from utilities.token import expired

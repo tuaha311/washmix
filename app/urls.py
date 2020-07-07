@@ -4,8 +4,9 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import path
-from modules.helpers import admin_site
 from rest_framework import routers
+
+from modules.helpers import admin_site
 from views import (
     wm_coupon_view,
     wm_oauth_views,

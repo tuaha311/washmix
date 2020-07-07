@@ -1,5 +1,11 @@
 import logging
 
+from django.contrib.auth.models import User
+from djoser.views import ActivationView
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework_social_oauth2.authentication import SocialAuthentication
+
 from custom_permission.custom_token_authentication import (
     CustomIsAdminUser,
     CustomSocialAuthentication,
@@ -7,13 +13,8 @@ from custom_permission.custom_token_authentication import (
     RefreshTokenAuthentication,
     account_activation_token,
 )
-from django.contrib.auth.models import User
-from djoser.views import ActivationView
 from modules.constant import AppUsers
 from modules.helpers import StripeHelper, wm_exception
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework_social_oauth2.authentication import SocialAuthentication
 from serializer.user_serializer import UserDataSerializer, UserSerializer
 from views.wm_stripe_views import Cards
 

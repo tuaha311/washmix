@@ -9,7 +9,6 @@ import string
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import Group, User
 from django.contrib.sites.models import Site
-from error_handling.wm_errors import InternalServerError
 from oauth2_provider.oauth2_validators import AccessToken, Application, Grant, RefreshToken
 from rest_framework import status
 from rest_framework.exceptions import APIException, ValidationError
@@ -18,6 +17,8 @@ from robots.models import Rule, Url
 from social_django.models import Association, Nonce, UserSocialAuth
 import stripe
 from stripe.error import InvalidRequestError
+
+from error_handling.wm_errors import InternalServerError
 from views.wm_custom_views import PasswordResetViewCustom
 
 logging.basicConfig(level=logging.ERROR, format="%(name)s - %(levelname)s - %(message)s")

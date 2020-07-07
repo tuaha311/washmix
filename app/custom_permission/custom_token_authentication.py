@@ -1,13 +1,14 @@
-from core.models import CustomToken
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils import six
-from modules.constant import AppUsers
 from oauth2_provider.backends import OAuth2Backend
 from rest_framework import HTTP_HEADER_ENCODING, exceptions
 from rest_framework.authentication import get_authorization_header
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework_expiring_authtoken.authentication import ExpiringTokenAuthentication
 from rest_framework_expiring_authtoken.models import ExpiringToken
+
+from core.models import CustomToken
+from modules.constant import AppUsers
 from utilities.token import expired
 
 
