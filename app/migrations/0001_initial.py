@@ -185,8 +185,8 @@ class Migration(migrations.Migration):
                     "detergents",
                     models.CharField(
                         choices=[
-                            (app.modules.constant.Detergents("Scented"), "Scented"),
-                            (app.modules.constant.Detergents("Hypo-Allergenic"), "Hypo-Allergenic"),
+                            (modules.constant.Detergents("Scented"), "Scented"),
+                            (modules.constant.Detergents("Hypo-Allergenic"), "Hypo-Allergenic"),
                         ],
                         max_length=50,
                         null=True,
@@ -196,10 +196,10 @@ class Migration(migrations.Migration):
                     "starch",
                     models.CharField(
                         choices=[
-                            (app.modules.constant.Starch("NONE"), "NONE"),
-                            (app.modules.constant.Starch("LIGHT"), "LIGHT"),
-                            (app.modules.constant.Starch("MEDIUM"), "MEDIUM"),
-                            (app.modules.constant.Starch("HEAVY"), "HEAVY"),
+                            (modules.constant.Starch("NONE"), "NONE"),
+                            (modules.constant.Starch("LIGHT"), "LIGHT"),
+                            (modules.constant.Starch("MEDIUM"), "MEDIUM"),
+                            (modules.constant.Starch("HEAVY"), "HEAVY"),
                         ],
                         max_length=50,
                         null=True,
@@ -209,8 +209,8 @@ class Migration(migrations.Migration):
                     "no_crease",
                     models.CharField(
                         choices=[
-                            (app.modules.constant.Crease("ALL_PANTS"), "ALL_PANTS"),
-                            (app.modules.constant.Crease("JEANS_ONLY"), "JEANS_ONLY"),
+                            (modules.constant.Crease("ALL_PANTS"), "ALL_PANTS"),
+                            (modules.constant.Crease("JEANS_ONLY"), "JEANS_ONLY"),
                         ],
                         max_length=50,
                         null=True,
