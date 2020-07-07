@@ -1,0 +1,23 @@
+Django<1.11
+# django-admin-sortable2
+# django-any-imagefield
+# django-autoslug
+# django-axes
+# django-ckeditor
+django-cleanup==1.0.1
+django-clear-cache==0.3
+django-compressor==2.1.1
+# django-embed-video
+# django-haystack
+# django-import-export
+django-libsass==0.7
+# django-markdown-deux
+django-meta==1.4
+# django-pagination-fork
+django-robots==3.0
+# django-solo
+Jinja2==2.9.6
+# Pillow
+# sorl-thumbnail
+# typogrify
+# Whoosh

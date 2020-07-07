@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres-1
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: rootroot
+      POSTGRES_USER: axess_user
+      POSTGRES_DB: axess_local
+    volumes:
+      - ./docker/db:/var/lib/postgresql
+    ports:
+      - "5432"
+    expose:
+      - "5432"
+  app:
+    container_name: app-1
+    restart: always
+    command: bash -c "sleep 10 && python manage.py makemigrations --setting=app.settings.dev && python3 manage.py migrate && python manage.py loaddata app/fixtures/add_dev_user.json && python manage.py createsu && python manage.py addauthapp && python manage.py runserver --settings=app.settings.dev 0.0.0.0:8000"
+    stdin_open: true
+    volumes:
+      - ./app:/app
+    environment:
+      RDS_DB_NAME: axess_local
+      RDS_PASSWORD: rootroot
+      RDS_USERNAME: axess_user
+      RDS_HOSTNAME: postgres
+      RDS_PORT: 5432
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    links:
+      - postgres:postgres
+    depends_on:
+      - postgres
+    ports:
+      - "8000:8000"
