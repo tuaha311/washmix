@@ -1,5 +1,5 @@
-from drf_writable_nested.serializers import WritableNestedModelSerializer
 from core.models import Product
+from drf_writable_nested.serializers import WritableNestedModelSerializer
 from rest_framework import serializers
 
 

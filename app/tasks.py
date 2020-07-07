@@ -1,11 +1,11 @@
 from __future__ import absolute_import
 
-import dramatiq
 from core.models import Order
+import dramatiq
+from middleware import TwilioNotificationsMiddleware
+
 # from celery import shared_task
 from twilio.rest import Client
-
-from middleware import TwilioNotificationsMiddleware
 
 # Uses credentials from the TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN
 # environment variables

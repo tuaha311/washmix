@@ -1,6 +1,6 @@
+from core.models import CustomToken
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils import six
-from core.models import CustomToken
 from modules.constant import AppUsers
 from oauth2_provider.backends import OAuth2Backend
 from rest_framework import HTTP_HEADER_ENCODING, exceptions

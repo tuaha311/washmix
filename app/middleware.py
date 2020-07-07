@@ -2,16 +2,15 @@ from __future__ import unicode_literals
 
 import os
 
+from core.models import UserMessage
 from django.core.exceptions import MiddlewareNotUsed
 from twilio.rest import Client
 
-from core.models import UserMessage
-
 
 def load_twilio_config():
-    twilio_account_sid = os.environ.get('TWILIO_ACCOUNT_SID')
-    twilio_auth_token = os.environ.get('TWILIO_AUTH_TOKEN')
-    twilio_number = os.environ.get('TWILIO_NUMBER')
+    twilio_account_sid = os.environ.get("TWILIO_ACCOUNT_SID")
+    twilio_auth_token = os.environ.get("TWILIO_AUTH_TOKEN")
+    twilio_number = os.environ.get("TWILIO_NUMBER")
 
     if not all([twilio_account_sid, twilio_auth_token, twilio_number]):
         raise MiddlewareNotUsed
@@ -21,17 +20,15 @@ def load_twilio_config():
 
 class MessageClient(object):
     def __init__(self):
-        (twilio_number, twilio_account_sid,
-         twilio_auth_token) = load_twilio_config()
+        (twilio_number, twilio_account_sid, twilio_auth_token) = load_twilio_config()
 
         self.twilio_number = twilio_number
-        self.twilio_client = Client(twilio_account_sid,
-                                              twilio_auth_token)
+        self.twilio_client = Client(twilio_account_sid, twilio_auth_token)
 
     def send_message(self, body, to):
-        self.twilio_client.messages.create(body=body, to=to,
-                                           from_=self.twilio_number,
-                                           )
+        self.twilio_client.messages.create(
+            body=body, to=to, from_=self.twilio_number,
+        )
 
 
 class TwilioNotificationsMiddleware(object):

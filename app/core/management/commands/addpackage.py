@@ -1,5 +1,5 @@
-from django.core.management.base import BaseCommand
 from core.models import PackageType
+from django.core.management.base import BaseCommand
 from modules.constant import PACKAGE_NAMES
 
 

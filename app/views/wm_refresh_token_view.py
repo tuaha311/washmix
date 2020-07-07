@@ -1,5 +1,5 @@
-from django.conf import settings
 from core.models import CustomToken
+from django.conf import settings
 from modules.constant import SignUp
 from modules.helpers import StripeHelper
 from modules.oauth import get_user_by_email, get_user_from_token

@@ -1,11 +1,11 @@
 import logging
 
+from core.models import Order
 from custom_permission.custom_token_authentication import (
     CustomSocialAuthentication,
     RefreshTokenAuthentication,
 )
 from django.contrib.auth.models import User
-from core.models import Order
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
