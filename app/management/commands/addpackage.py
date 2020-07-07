@@ -1,6 +1,6 @@
-from ..commands import *
-from ...models.models import PackageType
-from ...modules.constant import PACKAGE_NAMES
+from django.core.management.base import BaseCommand
+from models.models import PackageType
+from modules.constant import PACKAGE_NAMES
 
 
 class Command(BaseCommand):
@@ -11,5 +11,5 @@ class Command(BaseCommand):
                 package.package_price = price
                 package.save()
             except PackageType.DoesNotExist:
-                kwargs = {'package_name': name, 'package_price': price}
+                kwargs = {"package_name": name, "package_price": price}
                 PackageType.objects.create(**kwargs)

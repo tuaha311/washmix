@@ -1,10 +1,6 @@
+from models.models import Coupons
+from modules.constant import CouponType, EnumField
 from rest_framework import serializers
-
-from ..models.models import Coupons
-from ..modules.constant import (
-    EnumField,
-    CouponType
-)
 
 
 class CouponsSerializer(serializers.ModelSerializer):
@@ -19,20 +15,23 @@ class CouponsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Coupons
         fields = (
-            'id', 'name', 'percentage_off', 'amount_off', 'valid', 'coupon_type',
+            "id",
+            "name",
+            "percentage_off",
+            "amount_off",
+            "valid",
+            "coupon_type",
         )
 
     def create(self, validate_data):
 
-        if validate_data.get('id'):
-            coupon = Coupons.objects.get(id=validate_data.get('id'))
+        if validate_data.get("id"):
+            coupon = Coupons.objects.get(id=validate_data.get("id"))
         else:
-            coupon = Coupons.objects.create(name=validate_data.get('name'))
+            coupon = Coupons.objects.create(name=validate_data.get("name"))
         for name, val in validate_data.items():
             setattr(coupon, name, val)
         coupon.save()
 
-        response = {'coupon_id': coupon.id}
+        response = {"coupon_id": coupon.id}
         return response
-
-

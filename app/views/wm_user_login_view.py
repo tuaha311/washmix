@@ -1,17 +1,14 @@
-from django.contrib.auth.models import User
+from models.models import CustomToken
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST
 from rest_framework_expiring_authtoken.models import ExpiringToken
 from rest_framework_expiring_authtoken.views import ObtainExpiringAuthToken
-
-from ..models.models import CustomToken
-from ..serializer.user_serializer import UserDataSerializer
-from ..utilities.token import expired
+from serializer.user_serializer import UserDataSerializer
+from utilities.token import expired
 
 
 class LoginUser(ObtainExpiringAuthToken):
-
     def post(self, request, *args, **kwargs):
         return self.process_request(request)
         # if response.status_code == HTTP_400_BAD_REQUEST:
@@ -27,10 +24,8 @@ class LoginUser(ObtainExpiringAuthToken):
 
         token = None
         if serializer.is_valid():
-            token, _ = ExpiringToken.objects.get_or_create(
-                user=serializer.validated_data['user']
-            )
-            print('_----------------------', _, token.user)
+            token, _ = ExpiringToken.objects.get_or_create(user=serializer.validated_data["user"])
+            print("_----------------------", _, token.user)
 
         if token:
             is_long_lived = True
@@ -39,17 +34,17 @@ class LoginUser(ObtainExpiringAuthToken):
             except CustomToken.DoesNotExist:
                 is_long_lived = False
 
-            if (not is_long_lived and token.expired()) or (is_long_lived and expired(token.created)):
+            if (not is_long_lived and token.expired()) or (
+                is_long_lived and expired(token.created)
+            ):
                 # If the token is expired, generate a new one.
                 token.delete()
-                token = ExpiringToken.objects.create(
-                    user=serializer.validated_data['user']
-                )
+                token = ExpiringToken.objects.create(user=serializer.validated_data["user"])
 
-            if request.data.get('longLived'):
+            if request.data.get("longLived"):
                 CustomToken.objects.get_or_create(expiring_token=token)
 
-            data = {'token': token.key, 'user': UserDataSerializer(token.user).data}
+            data = {"token": token.key, "user": UserDataSerializer(token.user).data}
             return Response(data)
 
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)

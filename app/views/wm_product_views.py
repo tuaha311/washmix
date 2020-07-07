@@ -1,21 +1,24 @@
+from custom_permission.custom_token_authentication import (
+    CustomIsAdminUser,
+    CustomSocialAuthentication,
+    IsAuthenticatedOrPost,
+    RefreshTokenAuthentication,
+)
+from models.models import Product
 from rest_framework import status
 from rest_framework.exceptions import APIException
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_social_oauth2.authentication import SocialAuthentication
-
-from app.custom_permission.custom_token_authentication import (
-    RefreshTokenAuthentication,
-    CustomSocialAuthentication,
-    IsAuthenticatedOrPost,
-    CustomIsAdminUser
-)
-from app.models.models import Product
-from app.serializer.products_serializer import ProductSerializer
+from serializer.products_serializer import ProductSerializer
 
 
 class ProductView(APIView):
-    authentication_classes = (RefreshTokenAuthentication, CustomSocialAuthentication, SocialAuthentication)
+    authentication_classes = (
+        RefreshTokenAuthentication,
+        CustomSocialAuthentication,
+        SocialAuthentication,
+    )
     permission_classes = (IsAuthenticatedOrPost, CustomIsAdminUser)
 
     def post(self, request, **kwargs):
@@ -32,9 +35,11 @@ class ProductView(APIView):
             pass
 
         return Response(
-            data=(product and ProductSerializer(product).data) or {'message': 'Unexpected error occurred'} ,
-            status=(product_ser and status.HTTP_201_CREATED) or status.HTTP_500_INTERNAL_SERVER_ERROR,
-            content_type='json'
+            data=(product and ProductSerializer(product).data)
+            or {"message": "Unexpected error occurred"},
+            status=(product_ser and status.HTTP_201_CREATED)
+            or status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content_type="json",
         )
 
     def patch(self, request, **kwargs):
@@ -42,7 +47,7 @@ class ProductView(APIView):
         product = None
         message = None
         try:
-            _instance = Product.objects.get(id=request.data.get('id'))
+            _instance = Product.objects.get(id=request.data.get("id"))
             product_ser = ProductSerializer(data=request.data, instance=_instance, partial=True)
             product_ser.is_valid(raise_exception=True)
             product = product_ser.save()
@@ -54,11 +59,11 @@ class ProductView(APIView):
             pass
 
         return Response(
-            data=(product and ProductSerializer(product).data) or {'message': message or 'Unexpected error occurred'},
+            data=(product and ProductSerializer(product).data)
+            or {"message": message or "Unexpected error occurred"},
             status=status.HTTP_201_CREATED,
-            content_type='json'
+            content_type="json",
         )
-
 
     def get(self, request, **kwargs):
         products = None
@@ -68,7 +73,7 @@ class ProductView(APIView):
             pass
 
         return Response(
-            data=products or {'message': 'No product found'},
+            data=products or {"message": "No product found"},
             status=(products and status.HTTP_200_OK) or status.HTTP_404_NOT_FOUND,
-            content_type='json'
+            content_type="json",
         )

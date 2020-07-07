@@ -1,9 +1,5 @@
+from models.models import DropoffAddress, PickupAddress
 from rest_framework import serializers
-
-from app.models.models import (
-    DropoffAddress,
-    PickupAddress
-)
 
 
 class PickupAddressSerializer(serializers.ModelSerializer):
@@ -13,6 +9,7 @@ class PickupAddressSerializer(serializers.ModelSerializer):
     2- Updating address data
     3- Creating address
     """
+
     def __init__(self, instance=None, user=None, data=None, **kwgs):
         self.user = user
         super(PickupAddressSerializer, self).__init__(instance=instance, data=data, **kwgs)
@@ -28,19 +25,27 @@ class PickupAddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = PickupAddress
         fields = (
-            'id', 'address_line_1', 'city', 'state', 'zip_code',
-            'address_line_2', 'title'
+            "id",
+            "address_line_1",
+            "city",
+            "state",
+            "zip_code",
+            "address_line_2",
+            "title",
         )
 
     def create(self, validate_data):
-        if validate_data.get('id'):
-            address, created = PickupAddress.objects.get_or_create(user=self.user, id=validate_data.get('id'))
+        if validate_data.get("id"):
+            address, created = PickupAddress.objects.get_or_create(
+                user=self.user, id=validate_data.get("id")
+            )
         else:
             address = PickupAddress.objects.create(user=self.user)
         for key, value in validate_data.items():
             setattr(address, key, value)
         address.save()
         return address
+
 
 class DropoffAddressSerializer(serializers.ModelSerializer):
     """
@@ -49,6 +54,7 @@ class DropoffAddressSerializer(serializers.ModelSerializer):
     2- Updating address data
     3- Creating address
     """
+
     def __init__(self, instance=None, user=None, data=None, **kwgs):
         self.user = user
         super(DropoffAddressSerializer, self).__init__(instance=instance, data=data, **kwgs)
@@ -64,18 +70,20 @@ class DropoffAddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = DropoffAddress
         fields = (
-           'id',
-           'address_line_1',
-           'city',
-           'state',
-           'zip_code',
-           'address_line_2',
-            'title'
+            "id",
+            "address_line_1",
+            "city",
+            "state",
+            "zip_code",
+            "address_line_2",
+            "title",
         )
 
     def create(self, validate_data):
-        if validate_data.get('id'):
-            address, created = DropoffAddress.objects.get_or_create(user=self.user, id=validate_data.get('id'))
+        if validate_data.get("id"):
+            address, created = DropoffAddress.objects.get_or_create(
+                user=self.user, id=validate_data.get("id")
+            )
         else:
             address = DropoffAddress.objects.create(user=self.user)
         for key, value in validate_data.items():
@@ -83,21 +91,42 @@ class DropoffAddressSerializer(serializers.ModelSerializer):
         address.save()
         return address
 
+
 class AddressGetSerializer(serializers.ModelSerializer):
     """
     Serializer declares format for json in case of getting user's address 
     """
+
     class Meta:
         model = PickupAddress
-        fields = ('id', 'address_line_1', 'address_line_2', 'city', 'zip_code', 'state', 'added_datetime', 'updated_datetime',
-                  'title')
+        fields = (
+            "id",
+            "address_line_1",
+            "address_line_2",
+            "city",
+            "zip_code",
+            "state",
+            "added_datetime",
+            "updated_datetime",
+            "title",
+        )
 
 
 class DropoffAddressGetSerializer(serializers.ModelSerializer):
     """
     Serializer declares format for json in case of getting user's address 
     """
+
     class Meta:
         model = DropoffAddress
-        fields = ('id', 'address_line_1', 'address_line_2', 'city', 'zip_code', 'state', 'added_datetime', 'updated_datetime',
-                  'title')
+        fields = (
+            "id",
+            "address_line_1",
+            "address_line_2",
+            "city",
+            "zip_code",
+            "state",
+            "added_datetime",
+            "updated_datetime",
+            "title",
+        )

@@ -1,15 +1,16 @@
 from __future__ import absolute_import
 
 import dramatiq
+from models.models import Order
 # from celery import shared_task
 from twilio.rest import Client
 
 from middleware import TwilioNotificationsMiddleware
-from .models.models import Order
 
 # Uses credentials from the TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN
 # environment variables
 client = Client()
+
 
 @dramatiq.actor
 def send_sms_reminder(order_id, message, phone):
@@ -22,4 +23,4 @@ def send_sms_reminder(order_id, message, phone):
         return
 
     notification = TwilioNotificationsMiddleware(order.user)
-    notification.process_message(message, '+'+phone)
+    notification.process_message(message, "+" + phone)

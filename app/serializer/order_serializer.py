@@ -1,21 +1,8 @@
 from django.core.exceptions import MultipleObjectsReturned
-from rest_framework import serializers
-from rest_framework import status
+from models.models import Coupons, DropoffAddress, Order, OrderItems, PickupAddress, UserCard
+from modules.constant import MESSAGE_ERROR_MISSING_ADDRESS, PACKAGES, CouponType
+from rest_framework import serializers, status
 from rest_framework.exceptions import ValidationError
-
-from ..models.models import (
-    Order,
-    PickupAddress,
-    DropoffAddress,
-    OrderItems,
-    UserCard,
-    Coupons
-)
-from ..modules.constant import (
-    MESSAGE_ERROR_MISSING_ADDRESS,
-    PACKAGES,
-    CouponType
-)
 
 
 class OrderItemsSerializer(serializers.ModelSerializer):
@@ -27,14 +14,15 @@ class OrderItemsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = OrderItems
-        fields = ('item', 'cost', 'id')
+        fields = ("item", "cost", "id")
 
     def create(self, validate_data):
         try:
-            order_item, _ = OrderItems.objects.get_or_create(order=self.order, id=validate_data.get('id')
-            if validate_data.get('id') else None)
+            order_item, _ = OrderItems.objects.get_or_create(
+                order=self.order, id=validate_data.get("id") if validate_data.get("id") else None,
+            )
         except OrderItems.DoesNotExist:
-            raise ValidationError(detail='Not a valid id for an order item')
+            raise ValidationError(detail="Not a valid id for an order item")
 
         for key, value in validate_data.items():
             setattr(order_item, key, value)
@@ -49,6 +37,7 @@ class OrderSerializer(serializers.ModelSerializer):
     2- Update Orders
     3- Validate order data, receiving from client 
     """
+
     def __init__(self, instance=None, user=None, data=None, **kwgs):
         self.user = user
         super(OrderSerializer, self).__init__(instance=instance, data=data, **kwgs)
@@ -73,19 +62,34 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ('user', 'pick_up_from_datetime', 'pick_up_to_datetime', 'drop_off_from_datetime',
-                  'drop_off_to_datetime', 'instructions', 'additional_notes', 'next_day_delivery',
-                  'same_day_delivery', 'count', 'total_cost', 'id', 'order_items', 'user_card', 'currency', 'coupon_code')
+        fields = (
+            "user",
+            "pick_up_from_datetime",
+            "pick_up_to_datetime",
+            "drop_off_from_datetime",
+            "drop_off_to_datetime",
+            "instructions",
+            "additional_notes",
+            "next_day_delivery",
+            "same_day_delivery",
+            "count",
+            "total_cost",
+            "id",
+            "order_items",
+            "user_card",
+            "currency",
+            "coupon_code",
+        )
 
     def create(self, validated_data):
 
-        order_items = validated_data.pop('order_items', None)
-        currency = validated_data.pop('currency', None)
-        wm_card_id = validated_data.pop('user_card', None)
+        order_items = validated_data.pop("order_items", None)
+        currency = validated_data.pop("currency", None)
+        wm_card_id = validated_data.pop("user_card", None)
         stripe_status_api = status.HTTP_200_OK
         card = None
 
-        coupon_code = validated_data.pop('coupon_code', None)
+        coupon_code = validated_data.pop("coupon_code", None)
 
         try:
             pickup_addresses = PickupAddress.objects.get(user=self.user)
@@ -93,41 +97,44 @@ class OrderSerializer(serializers.ModelSerializer):
 
             # This checks if user has a prepay package
             if not self.user.profile.package_id:
-                raise ValidationError(detail='User has not bought package yet')
+                raise ValidationError(detail="User has not bought package yet")
         except UserCard.DoesNotExist:
-            raise ValidationError(detail='Invalid or no user card added')
+            raise ValidationError(detail="Invalid or no user card added")
         except (PickupAddress.DoesNotExist, DropoffAddress.DoesNotExist):
             raise ValidationError(detail=MESSAGE_ERROR_MISSING_ADDRESS)
         except MultipleObjectsReturned:
-            raise ValidationError(detail='Addresses for user Already exist!')
+            raise ValidationError(detail="Addresses for user Already exist!")
 
         if coupon_code:
             profile = self.user.profile
             if not profile.is_coupon:
-                raise ValidationError(detail='Invalid Coupon Code')
+                raise ValidationError(detail="Invalid Coupon Code")
             if PACKAGES.PAYC.value != self.user.profile.package_id.package_name:
-                raise ValidationError(detail='Only PAYC Package is allowed')
-            total_cost = validated_data.get('total_cost', 0)
+                raise ValidationError(detail="Only PAYC Package is allowed")
+            total_cost = validated_data.get("total_cost", 0)
             try:
                 coupon = Coupons.objects.get(name=coupon_code, coupon_type=CouponType.FIRST.value)
                 if not coupon.valid:
-                    raise ValidationError(detail='Not a valid coupon anymore')
+                    raise ValidationError(detail="Not a valid coupon anymore")
             except Coupons.DoesNotExist:
-                raise ValidationError(detail='Invalid coupon code')
+                raise ValidationError(detail="Invalid coupon code")
             discount = coupon.apply_coupon(total_cost)
             profile.is_coupon = False
             profile.save()
 
-            validated_data.update({'discount_amount': discount})
+            validated_data.update({"discount_amount": discount})
 
         try:
-            if validated_data.get('id'):
-                order = Order.objects.get(user=self.user, id=validated_data.get('id'))
+            if validated_data.get("id"):
+                order = Order.objects.get(user=self.user, id=validated_data.get("id"))
             else:
-                order = Order.objects.create(user=self.user, pickup_address=pickup_addresses,
-                                             dropoff_address=dropoff_addresses)
+                order = Order.objects.create(
+                    user=self.user,
+                    pickup_address=pickup_addresses,
+                    dropoff_address=dropoff_addresses,
+                )
         except Order.DoesNotExist:
-            raise ValidationError(detail='Not a valid id for a user order')
+            raise ValidationError(detail="Not a valid id for a user order")
 
         for key, val in validated_data.items():
             setattr(order, key, val)
@@ -181,10 +188,13 @@ class OrderSerializer(serializers.ModelSerializer):
         # twilio_notification.process_message(prepare_message(order.pick_up_from_datetime,
         #                                                     order.pick_up_to_datetime),
         #                                     '+' + self.user.profile.phone)
-        return {'order_id': order.id, 'order_items_ids': order_items_ids}, stripe_status_api
+        return (
+            {"order_id": order.id, "order_items_ids": order_items_ids},
+            stripe_status_api,
+        )
 
     def update(self, instance, validated_data):
-        order_items = validated_data.pop('order_items')
+        order_items = validated_data.pop("order_items")
         for key, value in validated_data.items():
             setattr(instance, key, value)
         instance.save()
@@ -202,9 +212,20 @@ class OrderHistorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = (
-                    'user', 'id', 'total_cost', 'count', 'pick_up_from_datetime', 'pick_up_to_datetime',
-                    'drop_off_from_datetime', 'drop_off_to_datetime', 'pickup_address', 'dropoff_address',
-                    'added_datetime', 'is_paid', 'order_items', 'discount_amount'
-                  )
+            "user",
+            "id",
+            "total_cost",
+            "count",
+            "pick_up_from_datetime",
+            "pick_up_to_datetime",
+            "drop_off_from_datetime",
+            "drop_off_to_datetime",
+            "pickup_address",
+            "dropoff_address",
+            "added_datetime",
+            "is_paid",
+            "order_items",
+            "discount_amount",
+        )
 
     order_items = OrderItemsSerializer(many=True)

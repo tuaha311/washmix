@@ -8,14 +8,14 @@ class RefreshTokenSerializer(serializers.Serializer):
 
     def validate(self, attrs):
 
-        if attrs.get('token'):
+        if attrs.get("token"):
             try:
-                token = ExpiringToken.objects.select_related('user').get(key=attrs.get('token'))
+                token = ExpiringToken.objects.select_related("user").get(key=attrs.get("token"))
             except ExpiringToken.DoesNotExist:
-                raise serializers.ValidationError('Token Doesn\'t exist')
+                raise serializers.ValidationError("Token Doesn't exist")
         else:
-            raise serializers.ValidationError('Token is a must')
+            raise serializers.ValidationError("Token is a must")
 
-        attrs['user'] = token.user
-        attrs['token'] = token
+        attrs["user"] = token.user
+        attrs["token"] = token
         return attrs

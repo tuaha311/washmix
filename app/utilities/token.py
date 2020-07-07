@@ -1,5 +1,6 @@
-from django.utils import timezone
 from django.conf import settings
+from django.utils import timezone
+
 
 def expired(created):
     """Return boolean indicating token expiration."""

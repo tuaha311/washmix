@@ -1,46 +1,35 @@
+from collections import namedtuple
+from enum import Enum
 import functools
 import logging
 import os
 import random
 import string
-from collections import namedtuple
-from enum import Enum
 
-import stripe
 from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import Group, User
 from django.contrib.sites.models import Site
-from oauth2_provider.oauth2_validators import (
-    Application,
-    Grant,
-    AccessToken,
-    RefreshToken
-)
+from error_handling.wm_errors import InternalServerError
+from oauth2_provider.oauth2_validators import AccessToken, Application, Grant, RefreshToken
 from rest_framework import status
-from rest_framework.exceptions import (
-    ValidationError,
-    APIException
-)
+from rest_framework.exceptions import APIException, ValidationError
 from rest_framework.response import Response
-from robots.models import Url, Rule
-from social_django.models import (
-    UserSocialAuth,
-    Nonce,
-    Association
-)
+from robots.models import Rule, Url
+from social_django.models import Association, Nonce, UserSocialAuth
+import stripe
 from stripe.error import InvalidRequestError
+from views.wm_custom_views import PasswordResetViewCustom
 
-from ..error_handling.wm_errors import InternalServerError
-from ..views.wm_custom_views import PasswordResetViewCustom
-
-logging.basicConfig(level=logging.ERROR, format='%(name)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.ERROR, format="%(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
+
 def prepare_message(pickup_from, pickup_to):
-    return 'Date: {0}\n Time Range: {1} - {2}'. \
-        format(pickup_from.date().strftime('%Y-%b-%d'),
-               pickup_from.time().strftime('%H:%M'),
-               pickup_to.time().strftime('%H:%M'))
+    return "Date: {0}\n Time Range: {1} - {2}".format(
+        pickup_from.date().strftime("%Y-%b-%d"),
+        pickup_from.time().strftime("%H:%M"),
+        pickup_to.time().strftime("%H:%M"),
+    )
 
 
 def mocked_twilio_create(*args):
@@ -52,8 +41,8 @@ def mock_add_customer(*args):
     Mock stripe add customer functionality.
     and returns customer id to save in user.profile table.
     """
-    Customer = namedtuple('Customer', 'id')
-    customer = Customer('sample_id')
+    Customer = namedtuple("Customer", "id")
+    customer = Customer("sample_id")
     return customer
 
 
@@ -70,9 +59,10 @@ def mock_get_card(*args):
     Mock adding stripe customer card process and
     returns dummy card object with id.
     """
-    Card = namedtuple('Card', 'id')
-    card = Card('sample_card_id')
+    Card = namedtuple("Card", "id")
+    card = Card("sample_card_id")
     return card
+
 
 def commit_transaction(obj):
     try:
@@ -81,7 +71,7 @@ def commit_transaction(obj):
         raise InternalServerError("Database transaction failure. Error: {}".format(e.message))
 
 
-class StripeHelper():
+class StripeHelper:
     def __init__(self):
         self.stripe = stripe
         self.customer = None
@@ -89,7 +79,7 @@ class StripeHelper():
         self.card = None
 
     def load_strip_api(self):
-        self.stripe.api_key = os.environ.get('STRIPE_API_KEY')
+        self.stripe.api_key = os.environ.get("STRIPE_API_KEY")
 
     def add_customer(self, user):
         """
@@ -98,9 +88,7 @@ class StripeHelper():
         :param user: 
         :return: 
         """
-        self.customer = self.stripe.Customer.create(
-            email=user.email
-        )
+        self.customer = self.stripe.Customer.create(email=user.email)
         return self.customer
 
     def get_customer(self, user):
@@ -124,10 +112,10 @@ class StripeHelper():
         """
         self.token = self.stripe.Token.create(
             card={
-                'number': card_number,
-                'exp_month': expiry_month,
-                'exp_year': expiry_year,
-                'cvc': '123'
+                "number": card_number,
+                "exp_month": expiry_month,
+                "exp_year": expiry_year,
+                "cvc": "123",
             }
         )
 
@@ -151,18 +139,18 @@ class StripeHelper():
         self.load_strip_api()
         try:
             stripe_customer_id = user.profile.stripe_customer_id
-            message = 'User charged successfully with an amount: {amount}'
+            message = "User charged successfully with an amount: {amount}"
             status_api = status.HTTP_200_OK
             charge = None
 
             if not card:
-                message = 'Must provide card id'
+                message = "Must provide card id"
                 status_api = status.HTTP_400_BAD_REQUEST
             elif not stripe_customer_id:
-                message = 'No card added for User!'
+                message = "No card added for User!"
                 status_api = status.HTTP_400_BAD_REQUEST
             elif not charge_amount:
-                message = 'Amount cannot be empty.'
+                message = "Amount cannot be empty."
                 status_api = status.HTTP_400_BAD_REQUEST
             else:
                 # Charging user source e.g card.
@@ -173,7 +161,7 @@ class StripeHelper():
                     currency=currency,
                     source=card.stripe_card_id,
                     receipt_email=user.email,
-                    metadata=metadata if metadata else None
+                    metadata=metadata if metadata else None,
                 )
         except Exception as error:
             try:
@@ -181,19 +169,23 @@ class StripeHelper():
             except AttributeError:
                 detail = error.user_message
             logger.error(
-                'Error while charging user card {0}, Error Message: {1}'.
-                    format(user.email, detail)
+                "Error while charging user card {0}, Error Message: {1}".format(user.email, detail)
             )
             message = detail
             status_api = status.HTTP_400_BAD_REQUEST
             charge = None
 
-        return message.format(amount=charge.amount / 100) if charge else message, status_api, charge
+        return (
+            message.format(amount=charge.amount / 100) if charge else message,
+            status_api,
+            charge,
+        )
+
 
 class BalanceOperation(Enum):
-    ADD = 'add'
-    DEDUCT = 'deduct'
-    MANUAL = 'manual'
+    ADD = "add"
+    DEDUCT = "deduct"
+    MANUAL = "manual"
 
 
 def update_user_balance(profile, amount, bo):
@@ -206,11 +198,11 @@ def update_user_balance(profile, amount, bo):
     :param bo:
     """
     if BalanceOperation.ADD == bo:
-        setattr(profile, 'balance', profile.balance + amount)
+        setattr(profile, "balance", profile.balance + amount)
     elif BalanceOperation.DEDUCT == bo:
         if profile.balance - amount <= 0:
-            raise ValidationError(detail='Insufficient Balance')
-        setattr(profile, 'balance', profile.balance - amount)
+            raise ValidationError(detail="Insufficient Balance")
+        setattr(profile, "balance", profile.balance - amount)
     profile.save()
 
 
@@ -235,7 +227,7 @@ def wm_exception(function):
             if isinstance(error, APIException):
                 if isinstance(error.detail, dict):
                     for k, v in error.detail.items():
-                        all_errors = ','.join(v)
+                        all_errors = ",".join(v)
                         details = all_errors
                 else:
                     details = error.detail[0]
@@ -244,10 +236,7 @@ def wm_exception(function):
             else:
                 raise ValidationError(detail=error)
 
-            logger.error(
-                'Error for {0}, Error Message: {1}'.
-                    format(request.user.email, details)
-            )
+            logger.error("Error for {0}, Error Message: {1}".format(request.user.email, details))
             if isinstance(error, APIException):
                 raise error
             message = details
@@ -255,13 +244,9 @@ def wm_exception(function):
 
         if not data_dict:
             data_dict = {}
-        data_dict.update({'message': message})
+        data_dict.update({"message": message})
 
-        return Response(
-            data=data_dict,
-            content_type='json',
-            status=status_api
-        )
+        return Response(data=data_dict, content_type="json", status=status_api)
 
     return wrapper
 
@@ -273,11 +258,17 @@ from rest_framework.authtoken.models import Token
 class MyAdminSite(AdminSite):
     def get_urls(self):
         from django.conf.urls import url
+
         urls = super(MyAdminSite, self).get_urls()
         urls += [
-            url(r'password_reset/', self.admin_view(PasswordResetViewCustom.as_view()), name='password_reset')
+            url(
+                r"password_reset/",
+                self.admin_view(PasswordResetViewCustom.as_view()),
+                name="password_reset",
+            )
         ]
         return urls
+
 
 admin_site = MyAdminSite()
 admin_site.register(User, UserAdmin)
@@ -298,6 +289,4 @@ admin_site.register(Association)
 def random_string():
     """Generate a random string with the combination of lowercase and uppercase letters """
     letters = string.ascii_letters
-    return ''.join(random.choice(letters) for i in range(8))
-
-
+    return "".join(random.choice(letters) for i in range(8))

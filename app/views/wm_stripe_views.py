@@ -1,43 +1,33 @@
 import logging
 import os
 
-import stripe
-from rest_framework import status
-from rest_framework.exceptions import (
-    ValidationError
+from custom_permission.custom_token_authentication import (
+    CustomSocialAuthentication,
+    IsAuthenticatedOrAdmin,
+    RefreshTokenAuthentication,
 )
+from models.models import PackageType, UserCard
+from modules.constant import PACKAGES
+from modules.helpers import BalanceOperation, StripeHelper, update_user_balance, wm_exception
+from rest_framework import status
+from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_social_oauth2.authentication import SocialAuthentication
+from serializer.package_serializer import PackageSerializer
+import stripe
+from utilities.wm_email_config import WMEmailControllerSendGrid, wm_package_purchase_email
 
-from ..custom_permission.custom_token_authentication import (
-    IsAuthenticatedOrAdmin,
-    RefreshTokenAuthentication,
-    CustomSocialAuthentication
-)
-from ..models.models import (
-    UserCard,
-    PackageType
-)
-from ..modules.constant import PACKAGES
-from ..modules.helpers import (
-    StripeHelper,
-    update_user_balance,
-    BalanceOperation,
-    wm_exception
-)
-from ..serializer.package_serializer import PackageSerializer
-from ..utilities.wm_email_config import (
-    WMEmailControllerSendGrid,
-    wm_package_purchase_email
-)
-
-logging.basicConfig(level=logging.ERROR, format='%(name)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.ERROR, format="%(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 
 class Cards(APIView):
-    authentication_classes = (RefreshTokenAuthentication, CustomSocialAuthentication, SocialAuthentication)
+    authentication_classes = (
+        RefreshTokenAuthentication,
+        CustomSocialAuthentication,
+        SocialAuthentication,
+    )
     permission_classes = (IsAuthenticatedOrAdmin,)
 
     @wm_exception
@@ -47,15 +37,15 @@ class Cards(APIView):
         # try:
         message = None
         status_api = status.HTTP_200_OK
-        transaction_type = kwargs.get('type')
+        transaction_type = kwargs.get("type")
         stripe.api_key = self.load_stripe_config()
-        if transaction_type and transaction_type == 'add_card':
+        if transaction_type and transaction_type == "add_card":
             message, status_api, extra_info = self.add_card(request, user)
         # elif transaction_type == 'charge_user':
         #     return self.charge_user(request, kwargs.get('id'))
-        elif transaction_type == 'buy_package':
-            message, status_api, extra_info = self.buy_package(request, kwargs.get('id'), user=user)
-        data_dict.update({'message': message})
+        elif transaction_type == "buy_package":
+            message, status_api, extra_info = self.buy_package(request, kwargs.get("id"), user=user)
+        data_dict.update({"message": message})
         data_dict.update(extra_info)
         # except (ValidationError, ParseError) as error:
         #     message = error.detail.string
@@ -75,7 +65,7 @@ class Cards(APIView):
         # )
 
     def load_stripe_config(self):
-        return os.environ.get('STRIPE_API_KEY')
+        return os.environ.get("STRIPE_API_KEY")
 
     def add_card(self, request, user=None):
         """
@@ -91,14 +81,14 @@ class Cards(APIView):
         :return: 
         """
         user = user or request.user
-        token = request.get('token_id') or request.data.get('token_id', None)
+        token = request.get("token_id") or request.data.get("token_id", None)
         user_card = None
         # try:
-        message = 'User card added!'
+        message = "User card added!"
         status_api = status.HTTP_201_CREATED
 
         if not token:
-            raise ValidationError(detail='Token id cannot be empty')
+            raise ValidationError(detail="Token id cannot be empty")
         else:
             stripe_obj = StripeHelper()
             if not user.profile.stripe_customer_id:
@@ -109,7 +99,7 @@ class Cards(APIView):
                 # retrieving user for future use.
                 profile = user.profile
                 if profile:
-                    setattr(profile, 'stripe_customer_id', customer.id)
+                    setattr(profile, "stripe_customer_id", customer.id)
                     profile.save()
             else:
                 stripe_obj.get_customer(user)
@@ -134,12 +124,9 @@ class Cards(APIView):
         #     message = error.detail.string
         #     status_api = status.HTTP_400_BAD_REQUEST
 
-        response_dict = {
-            'card_id': user_card.id if user_card else None
-        }
+        response_dict = {"card_id": user_card.id if user_card else None}
 
         return message, status_api, response_dict
-
 
     def charge_user(self, request, card_id):
         """
@@ -149,15 +136,11 @@ class Cards(APIView):
         :return:
         """
         stripe_helper = StripeHelper()
-        message, status_api, charge = stripe_helper.charge_user(request.get('currency'),
-                                                        request.data.get('amount'),
-                                                        card_id, request.user)
-
-        return Response(
-            data={'message': message},
-            content_type='json',
-            status=status_api
+        message, status_api, charge = stripe_helper.charge_user(
+            request.get("currency"), request.data.get("amount"), card_id, request.user
         )
+
+        return Response(data={"message": message}, content_type="json", status=status_api)
 
     def buy_package(self, request, card_id, user=None):
         """This function retrieves source(card token) from customer object and create charge
@@ -178,37 +161,43 @@ class Cards(APIView):
         except AttributeError:
             request_body = request
 
-        package_ser = PackageSerializer(data=request_body.get('buy_package'),  context={'request': self.request})
+        package_ser = PackageSerializer(
+            data=request_body.get("buy_package"), context={"request": self.request}
+        )
         package_ser.is_valid(raise_exception=True)
 
-        request_body = request_body.get('buy_package')
-        package_name = PACKAGES[request_body.get('package_name')]
+        request_body = request_body.get("buy_package")
+        package_name = PACKAGES[request_body.get("package_name")]
         try:
             user_package = PackageType.objects.get(package_name=package_name.value)
         except PackageType.DoesNotExist:
-            raise ValidationError(detail='Please populate package by executing addPackage commnand')
+            raise ValidationError(detail="Please populate package by executing addPackage commnand")
 
         response_dict = {}
 
         try:
             card = UserCard.objects.get(user=user, id=card_id)
         except UserCard.DoesNotExist:
-            raise ValidationError(detail='Wrong user card id')
+            raise ValidationError(detail="Wrong user card id")
 
         charge = None
         status_api = status.HTTP_200_OK
-        message = 'Package added successfully'
+        message = "Package added successfully"
 
-        coupon = package_ser.validated_data.get('coupon')
+        coupon = package_ser.validated_data.get("coupon")
         if PACKAGES.PAYC != package_name:
             stripe_helper = StripeHelper()
             message, status_api, charge = stripe_helper.charge_user(
                 user_package.package_price,
-                request_body.get('currency'),
-                card, user or request.user, metadata={
-                    'coupon_code': coupon and coupon.name,
-                    'percentage_off': coupon.percentage_off
-                } if coupon else None
+                request_body.get("currency"),
+                card,
+                user or request.user,
+                metadata={
+                    "coupon_code": coupon and coupon.name,
+                    "percentage_off": coupon.percentage_off,
+                }
+                if coupon
+                else None,
             )
 
         if status_api == status.HTTP_200_OK:
@@ -228,16 +217,18 @@ class Cards(APIView):
             profile.save()
 
             if charge:
-                WMEmailControllerSendGrid(email_formatter=wm_package_purchase_email(
-                    users=[user or request.user],
-                    charge=charge,
-                    package_name=user_package.package_name)
+                WMEmailControllerSendGrid(
+                    email_formatter=wm_package_purchase_email(
+                        users=[user or request.user],
+                        charge=charge,
+                        package_name=user_package.package_name,
+                    )
                 ).send_sendgrid_email()
 
             response_dict = {
-                'card_id': card.id if card else None,
-                'package_name': user_package.package_name if user_package else None,
-                'package_id': user_package.id if user_package else None
+                "card_id": card.id if card else None,
+                "package_name": user_package.package_name if user_package else None,
+                "package_id": user_package.id if user_package else None,
             }
 
         return message, status_api, response_dict
@@ -246,25 +237,25 @@ class Cards(APIView):
     def patch(self, request, **kwargs):
         """Update user card"""
         if not request.user.is_authenticated:
-            message = 'Anonymous user'
+            message = "Anonymous user"
             status_api = status.HTTP_400_BAD_REQUEST
-        elif not kwargs.get('id'):
-            message = 'Card id is required.'
+        elif not kwargs.get("id"):
+            message = "Card id is required."
             status_api = status.HTTP_400_BAD_REQUEST
         else:
             # try:
-            message = 'User card updated!'
+            message = "User card updated!"
             status_api = status.HTTP_200_OK
             user = request.user
 
-            card_id = kwargs.get('id')
-            request_body = request.data.get('card', {})
+            card_id = kwargs.get("id")
+            request_body = request.data.get("card", {})
 
             strip_user_id = user.profile.stripe_customer_id
 
             UserCard.objects.filter(user=user).update(is_active=False)
             user_card = UserCard.objects.get(user=user, id=card_id)
-            user_card.is_active = request_body.pop('is_active', False)
+            user_card.is_active = request_body.pop("is_active", False)
             user_card.save()
 
             if request_body:
@@ -272,8 +263,8 @@ class Cards(APIView):
                 customer = stripe.Customer.retrieve(strip_user_id)
                 strip_user_card = customer.sources.retrieve(user_card.stripe_card_id)
 
-            # Could expect any info update on user card, but
-            # it should be, which stripes supports.
+                # Could expect any info update on user card, but
+                # it should be, which stripes supports.
                 for key, val in request_body.items():
                     setattr(strip_user_card, key, val)
                 strip_user_card.save()
@@ -291,9 +282,3 @@ class Cards(APIView):
         #     content_type='json',
         #     status=status_api
         # )
-
-
-
-
-
-

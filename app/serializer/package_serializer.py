@@ -1,11 +1,7 @@
+from models.models import Coupons
+from modules.constant import PACKAGES, CouponType
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-
-from ..models.models import Coupons
-from ..modules.constant import (
-    PACKAGES,
-    CouponType
-)
 
 
 class PackageSerializer(serializers.Serializer):
@@ -15,21 +11,20 @@ class PackageSerializer(serializers.Serializer):
 
     def validate(self, attrs):
 
-        coupon_code = attrs.get('coupon_code')
+        coupon_code = attrs.get("coupon_code")
         if coupon_code:
-            profile = self.context['request'].user.profile
+            profile = self.context["request"].user.profile
             if not profile.is_coupon:
-                raise ValidationError(detail='Invalid Coupon code')
+                raise ValidationError(detail="Invalid Coupon code")
 
             try:
                 coupon = Coupons.objects.get(name=coupon_code)
                 if not coupon.valid:
-                    raise ValidationError(detail='Not a valid coupon anymore')
+                    raise ValidationError(detail="Not a valid coupon anymore")
                 if CouponType.PACKAGE.value != coupon.coupon_type:
-                    raise ValidationError(detail='Invalid Coupon')
+                    raise ValidationError(detail="Invalid Coupon")
             except Coupons.DoesNotExist:
-                raise ValidationError(detail='Invalid Coupon code')
+                raise ValidationError(detail="Invalid Coupon code")
 
-            attrs['coupon'] = coupon
+            attrs["coupon"] = coupon
         return attrs
-

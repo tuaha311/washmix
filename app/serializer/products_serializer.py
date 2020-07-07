@@ -1,7 +1,6 @@
-from rest_framework import serializers
 from drf_writable_nested.serializers import WritableNestedModelSerializer
-
-from app.models.models import Product
+from models.models import Product
+from rest_framework import serializers
 
 
 class ProductItemSerializer(WritableNestedModelSerializer):
@@ -12,7 +11,8 @@ class ProductItemSerializer(WritableNestedModelSerializer):
 
     class Meta:
         model = Product
-        fields = ('id', 'name', 'price')
+        fields = ("id", "name", "price")
+
 
 class ProductSerializer(WritableNestedModelSerializer):
     id = serializers.IntegerField(required=False)
@@ -22,4 +22,4 @@ class ProductSerializer(WritableNestedModelSerializer):
 
     class Meta:
         model = Product
-        fields = ('id', 'name', 'price', 'children')
+        fields = ("id", "name", "price", "children")

@@ -12,13 +12,13 @@
         {% compress css %}
             {% block compressed_css %}
                 <link rel="stylesheet" media="all" type="text/css" href="{% static "css/normalize.css" %}">
-                <link rel="stylesheet" media="all" type="text/x-scss" href="{% static "scss/app.scss" %}">
+                <link rel="stylesheet" media="all" type="text/x-scss" href="{% static "scss/scss" %}">
             {% endblock %}
         {% endcompress %}
 
         {% compress js %}
             {% block compressed_js %}
-                <script type="text/javascript" src="{% static "js/app.js" %}"></script>
+                <script type="text/javascript" src="{% static "js/js" %}"></script>
             {% endblock %}
         {% endcompress %}
 

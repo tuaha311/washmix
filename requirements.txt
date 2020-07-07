@@ -23,7 +23,7 @@ django-templated-mail==1.1.1
 djangorestframework==3.9.0
 djangorestframework-expiring-authtoken==0.1.4
 django-debug-toolbar==1.10.1
-djoser
+djoser==1.7.0
 Faker==1.0.0
 idna==2.7
 Jinja2==2.10

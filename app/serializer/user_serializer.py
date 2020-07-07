@@ -1,54 +1,38 @@
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
+from models.models import PackageType, Profile, UserCard
+from modules.constant import AppUsers, Crease, Detergents, EnumField, SignUp, Starch
+from modules.helpers import commit_transaction, random_string
 from rest_framework import serializers
-from rest_framework.exceptions import (
-    ValidationError,
-    PermissionDenied
-)
-
-from ..models.models import (
-    Profile,
-    PackageType,
-    UserCard
-)
-from ..modules.constant import (
-    EnumField,
-    Detergents,
-    Starch,
-    Crease,
-    AppUsers,
-    SignUp
-)
-from ..modules.helpers import (
-    commit_transaction,
-    random_string
-)
-from ..serializer.address_serializer import (
-    PickupAddressSerializer,
-    DropoffAddressSerializer,
+from rest_framework.exceptions import PermissionDenied, ValidationError
+from serializer.address_serializer import (
     AddressGetSerializer,
-    DropoffAddressGetSerializer
+    DropoffAddressGetSerializer,
+    DropoffAddressSerializer,
+    PickupAddressSerializer,
 )
-from ..serializer.order_serializer import (
-    OrderSerializer,
-    OrderHistorySerializer
-)
+from serializer.order_serializer import OrderHistorySerializer, OrderSerializer
 
 
 def email_validator(value):
     try:
         user = User.objects.get(email=value)
         if user and user.profile.authentication_provider == SignUp.washmix.value:
-            raise ValidationError({'email': 'User already exist!'})
-        raise ValidationError({'email': 'User already signed up with {0}'.format(user.profile.authentication_provider)})
+            raise ValidationError({"email": "User already exist!"})
+        raise ValidationError(
+            {
+                "email": "User already signed up with {0}".format(
+                    user.profile.authentication_provider
+                )
+            }
+        )
     except User.DoesNotExist:
         pass
 
 
 def phone_validator():
-    return RegexValidator(regex=r'^\d{7,15}$',
-                          message='7 to 10 digits allowed.')
+    return RegexValidator(regex=r"^\d{7,15}$", message="7 to 10 digits allowed.")
 
 
 class UserListSerializer(serializers.ListSerializer):
@@ -56,6 +40,7 @@ class UserListSerializer(serializers.ListSerializer):
     Serializer responsible for following tasks:
     1- Updating user records in bulk.
     """
+
     def update(self, user_instance, validated_data):
         """
         :param user_instance: User instance which needs to be updated 
@@ -64,16 +49,16 @@ class UserListSerializer(serializers.ListSerializer):
         :return: Dict: containing user id and list of address ids.
         """
         validated_data = validated_data[0]
-        pickup_addresses = validated_data.pop('pickup_addresses', None)
-        dropoff_addresses = validated_data.pop('dropoff_addresses', None)
-        orders = validated_data.pop('orders', None)
-        profile = validated_data.pop('profile', None)
+        pickup_addresses = validated_data.pop("pickup_addresses", None)
+        dropoff_addresses = validated_data.pop("dropoff_addresses", None)
+        orders = validated_data.pop("orders", None)
+        profile = validated_data.pop("profile", None)
 
         # User profile update
         user = None
-        if validated_data.get('user_id'):
+        if validated_data.get("user_id"):
             try:
-                user = User.objects.get(id=validated_data.pop('user_id'))
+                user = User.objects.get(id=validated_data.pop("user_id"))
             except User.DoesNotExist:
                 user = user_instance
             if not user_instance.is_staff:
@@ -82,12 +67,12 @@ class UserListSerializer(serializers.ListSerializer):
             user_instance = user
 
         if profile:
-            if profile.get('app_users') == AppUsers.POTENTIAL_USERS.value:
-                validated_data.update({'password': make_password(random_string())})
-                validated_data.update({'is_active': False})
+            if profile.get("app_users") == AppUsers.POTENTIAL_USERS.value:
+                validated_data.update({"password": make_password(random_string())})
+                validated_data.update({"is_active": False})
 
-            package_id = profile.pop('package_id', None)
-            package_name = profile.pop('package_name', None)
+            package_id = profile.pop("package_id", None)
+            package_name = profile.pop("package_name", None)
 
             profile_db, _ = Profile.objects.get_or_create(user=user_instance)
 
@@ -96,44 +81,55 @@ class UserListSerializer(serializers.ListSerializer):
 
             if package_id or package_name:
                 kwargs = {}
-                kwargs.update({'id': package_id} if package_id else {'package_name': package_name})
+                kwargs.update({"id": package_id} if package_id else {"package_name": package_name})
                 try:
-                    setattr(profile_db, 'package_id', PackageType.objects.get(**kwargs))
+                    setattr(profile_db, "package_id", PackageType.objects.get(**kwargs))
                 except PackageType.DoesNotExist:
-                    raise ValidationError(detail='Wrong Package name or id')
+                    raise ValidationError(detail="Wrong Package name or id")
             profile_db.save()
 
         # User update
         for key, value in validated_data.items():
-            if key == 'password':
-                value = make_password(validated_data['password'])
-            elif key == 'email':
-                setattr(user_instance, 'username', value)
+            if key == "password":
+                value = make_password(validated_data["password"])
+            elif key == "email":
+                setattr(user_instance, "username", value)
             setattr(user_instance, key, value)
         user_instance.save()
 
         # Address update
         order_status = {}
         if pickup_addresses:
-            address_ser = PickupAddressSerializer(many=True, user=user_instance, data=pickup_addresses, partial=True)
+            address_ser = PickupAddressSerializer(
+                many=True, user=user_instance, data=pickup_addresses, partial=True
+            )
             address_ser.is_valid()
-            order_status.update({'pickup_address': AddressGetSerializer(address_ser.save(), many=True).data})
+            order_status.update(
+                {"pickup_address": AddressGetSerializer(address_ser.save(), many=True).data}
+            )
 
         if dropoff_addresses:
-            address_ser = DropoffAddressSerializer(many=True, user=user_instance, data=dropoff_addresses, partial=True)
+            address_ser = DropoffAddressSerializer(
+                many=True, user=user_instance, data=dropoff_addresses, partial=True
+            )
             address_ser.is_valid()
-            order_status.update({'dropoff_address': DropoffAddressGetSerializer(address_ser.save(), many=True).data})
+            order_status.update(
+                {"dropoff_address": DropoffAddressGetSerializer(address_ser.save(), many=True).data}
+            )
 
         if orders:
-            order_ser = OrderSerializer(user=user_instance, data=orders, partial=True, context={'request': self.context['request']})
+            order_ser = OrderSerializer(
+                user=user_instance,
+                data=orders,
+                partial=True,
+                context={"request": self.context["request"]},
+            )
             order_ser.is_valid()
             order_status, stripe_status = order_ser.save()
             order_status.update(order_status)
-            order_status.update({
-                        'message': stripe_status
-                        })
+            order_status.update({"message": stripe_status})
 
-        response = {'user': user_instance.id}
+        response = {"user": user_instance.id}
         response.update(order_status)
         return response
 
@@ -144,30 +140,37 @@ class UserSerializer(serializers.ModelSerializer):
     1- Creating User Record
     2- Validating user Record
     """
+
     email = serializers.EmailField(validators=[email_validator])
     first_name = serializers.CharField(allow_blank=True, required=False)
     last_name = serializers.CharField(allow_blank=True, required=False)
-    phone = serializers.CharField(validators=[phone_validator()], source='profile.phone', allow_blank=True)
-    package_id = serializers.IntegerField(source='profile.package_id', required=False, allow_null=True)
-    package_name = serializers.CharField(source='profile.package_name', required=False, allow_blank=True)
+    phone = serializers.CharField(
+        validators=[phone_validator()], source="profile.phone", allow_blank=True
+    )
+    package_id = serializers.IntegerField(
+        source="profile.package_id", required=False, allow_null=True
+    )
+    package_name = serializers.CharField(
+        source="profile.package_name", required=False, allow_blank=True
+    )
     password = serializers.CharField(required=False)
 
     # Preferences
-    detergents = EnumField(enum=Detergents, source='profile.detergents', required=False)
-    starch = EnumField(enum=Starch, source='profile.starch', required=False)
-    no_crease = EnumField(enum=Crease, source='profile.no_crease', required=False)
-    fabric_softener = serializers.BooleanField(source='profile.fabric_softener', required=False)
-    fix_tears = serializers.BooleanField(source='profile.fix_tears', required=False)
+    detergents = EnumField(enum=Detergents, source="profile.detergents", required=False)
+    starch = EnumField(enum=Starch, source="profile.starch", required=False)
+    no_crease = EnumField(enum=Crease, source="profile.no_crease", required=False)
+    fabric_softener = serializers.BooleanField(source="profile.fabric_softener", required=False)
+    fix_tears = serializers.BooleanField(source="profile.fix_tears", required=False)
 
-    app_users = EnumField(enum=AppUsers, source='profile.app_users', required=False)
+    app_users = EnumField(enum=AppUsers, source="profile.app_users", required=False)
 
     # Employee
-    DOB = serializers.DateField(source='profile.DOB', required=False)
-    joining_date = serializers.DateField(source='profile.joining_date', required=False)
-    SSN = serializers.CharField(source='profile.SSN', required=False)
+    DOB = serializers.DateField(source="profile.DOB", required=False)
+    joining_date = serializers.DateField(source="profile.joining_date", required=False)
+    SSN = serializers.CharField(source="profile.SSN", required=False)
 
     # Customer
-    is_doormen = serializers.BooleanField(source='profile.is_doormen', required=False)
+    is_doormen = serializers.BooleanField(source="profile.is_doormen", required=False)
 
     pickup_addresses = PickupAddressSerializer(many=True, required=False)
     dropoff_addresses = DropoffAddressSerializer(many=True, required=False)
@@ -179,14 +182,38 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         list_serializer_class = UserListSerializer
-        fields = ('url', 'email', 'first_name', 'last_name', 'password', 'phone', 'pickup_addresses',
-                  'dropoff_addresses', 'orders', 'package_id', 'package_name', 'is_staff', 'user_id', 'detergents',
-                  'starch', 'no_crease', 'fabric_softener', 'fix_tears', 'app_users', 'DOB', 'joining_date', 'SSN', 'is_doormen',)
-
+        fields = (
+            "url",
+            "email",
+            "first_name",
+            "last_name",
+            "password",
+            "phone",
+            "pickup_addresses",
+            "dropoff_addresses",
+            "orders",
+            "package_id",
+            "package_name",
+            "is_staff",
+            "user_id",
+            "detergents",
+            "starch",
+            "no_crease",
+            "fabric_softener",
+            "fix_tears",
+            "app_users",
+            "DOB",
+            "joining_date",
+            "SSN",
+            "is_doormen",
+        )
 
     def validate(self, attrs):
-        if attrs.get('is_staff') and attrs.get('profile').get('app_users') == AppUsers.EMPLOYEE.value:
-            raise ValidationError(detail='User cannot be admin and employee at the same time')
+        if (
+            attrs.get("is_staff")
+            and attrs.get("profile").get("app_users") == AppUsers.EMPLOYEE.value
+        ):
+            raise ValidationError(detail="User cannot be admin and employee at the same time")
         return attrs
 
     def create(self, validated_data):
@@ -196,18 +223,23 @@ class UserSerializer(serializers.ModelSerializer):
         """
         pickup_address = None
         dropoff_address = None
-        if validated_data.get('pickup_addresses'):
-            pickup_address = validated_data.pop('pickup_addresses')
-        if validated_data.get('dropoff_addresses'):
-            dropoff_address = validated_data.pop('dropoff_addresses')
+        if validated_data.get("pickup_addresses"):
+            pickup_address = validated_data.pop("pickup_addresses")
+        if validated_data.get("dropoff_addresses"):
+            dropoff_address = validated_data.pop("dropoff_addresses")
 
-        profile = validated_data.pop('profile', None)
-        validated_data.update({'password': make_password(random_string()) if profile.get(
-            'app_users') else make_password(validated_data.get('password', '')),
-                               'username': validated_data['email']})
+        profile = validated_data.pop("profile", None)
+        validated_data.update(
+            {
+                "password": make_password(random_string())
+                if profile.get("app_users")
+                else make_password(validated_data.get("password", "")),
+                "username": validated_data["email"],
+            }
+        )
 
-        if profile.get('app_users', AppUsers.REGULAR_USERS.value) == AppUsers.POTENTIAL_USERS.value:
-            validated_data.update({'is_active': False})
+        if profile.get("app_users", AppUsers.REGULAR_USERS.value) == AppUsers.POTENTIAL_USERS.value:
+            validated_data.update({"is_active": False})
 
         user = User(**validated_data)
         commit_transaction(user)
@@ -219,13 +251,17 @@ class UserSerializer(serializers.ModelSerializer):
         if pickup_address:
             address_ser = PickupAddressSerializer(many=True, user=user, data=pickup_address)
             address_ser.is_valid()
-            resultant.update({'pickup_address': AddressGetSerializer(address_ser.save(), many=True).data})
+            resultant.update(
+                {"pickup_address": AddressGetSerializer(address_ser.save(), many=True).data}
+            )
         if dropoff_address:
             address_ser = DropoffAddressSerializer(many=True, user=user, data=dropoff_address)
             address_ser.is_valid()
-            resultant.update({'dropoff_address': DropoffAddressGetSerializer(address_ser.save(), many=True).data})
+            resultant.update(
+                {"dropoff_address": DropoffAddressGetSerializer(address_ser.save(), many=True).data}
+            )
 
-        response = {'user': user.id}
+        response = {"user": user.id}
         response.update(resultant)
         return response
 
@@ -234,26 +270,49 @@ class PackageTypeSerializer(serializers.ModelSerializer):
     """
     Serializer which maps user package to user.    
     """
+
     class Meta:
         model = PackageType
-        fields = ('package_name',)
+        fields = ("package_name",)
 
 
 class ProfileSerializer(serializers.ModelSerializer):
     """
     Serializer which adds in more info to user object.
     """
+
     class Meta:
         model = Profile
-        fields = ('phone', 'package_id', 'user_package', 'balance', 'detergents', 'starch',
-                  'no_crease', 'fabric_softener', 'fix_tears', 'stripe_customer_id', 'authentication_provider', 'DOB', 'joining_date', 'SSN', 'is_doormen', 'app_users',)
-    user_package = PackageTypeSerializer(source='package_id', read_only=True)
+        fields = (
+            "phone",
+            "package_id",
+            "user_package",
+            "balance",
+            "detergents",
+            "starch",
+            "no_crease",
+            "fabric_softener",
+            "fix_tears",
+            "stripe_customer_id",
+            "authentication_provider",
+            "DOB",
+            "joining_date",
+            "SSN",
+            "is_doormen",
+            "app_users",
+        )
+
+    user_package = PackageTypeSerializer(source="package_id", read_only=True)
 
 
 class UserCardSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserCard
-        fields = ('id', 'stripe_card_id', 'is_active',)
+        fields = (
+            "id",
+            "stripe_card_id",
+            "is_active",
+        )
 
 
 class UserDataSerializer(serializers.ModelSerializer):
@@ -267,10 +326,20 @@ class UserDataSerializer(serializers.ModelSerializer):
             self.stripe_helper.load_strip_api()
         super(UserDataSerializer, self).__init__(instance=instance, **kwargs)
 
-
     class Meta:
         model = User
-        fields = ('id', 'first_name', 'last_name', 'email', 'pickupaddress', 'dropoffaddress', 'profile', 'order', 'user_card', 'is_staff',)
+        fields = (
+            "id",
+            "first_name",
+            "last_name",
+            "email",
+            "pickupaddress",
+            "dropoffaddress",
+            "profile",
+            "order",
+            "user_card",
+            "is_staff",
+        )
 
     def to_representation(self, obj):
         """This function helps us renaming default name defined in serializer field list.
@@ -280,51 +349,65 @@ class UserDataSerializer(serializers.ModelSerializer):
 
         primitive_repr = super(UserDataSerializer, self).to_representation(obj)
 
-        primitive_profile_repr = primitive_repr['profile']
+        primitive_profile_repr = primitive_repr["profile"]
 
-        primitive_repr['pickup_addresses'] = primitive_repr['pickupaddress'] if primitive_repr['pickupaddress'] else None
-        primitive_repr['dropoff_addresses'] = primitive_repr['dropoffaddress'] if primitive_repr['dropoffaddress'] else None
+        primitive_repr["pickup_addresses"] = (
+            primitive_repr["pickupaddress"] if primitive_repr["pickupaddress"] else None
+        )
+        primitive_repr["dropoff_addresses"] = (
+            primitive_repr["dropoffaddress"] if primitive_repr["dropoffaddress"] else None
+        )
 
         if primitive_profile_repr:
-            primitive_repr['authentication_provider'] = primitive_profile_repr['authentication_provider']
-            primitive_repr['phone'] = primitive_profile_repr['phone']
-            primitive_repr['balance'] = primitive_profile_repr['balance']
-            primitive_repr['detergents'] = primitive_profile_repr['detergents']
-            primitive_repr['starch'] = primitive_profile_repr['starch']
-            primitive_repr['fix_tears'] = primitive_profile_repr['fix_tears']
-            primitive_repr['no_crease'] = primitive_profile_repr['no_crease']
-            primitive_repr['fabric_softener'] = primitive_profile_repr['fabric_softener']
-            primitive_repr['package_id'] = primitive_profile_repr['package_id']
+            primitive_repr["authentication_provider"] = primitive_profile_repr[
+                "authentication_provider"
+            ]
+            primitive_repr["phone"] = primitive_profile_repr["phone"]
+            primitive_repr["balance"] = primitive_profile_repr["balance"]
+            primitive_repr["detergents"] = primitive_profile_repr["detergents"]
+            primitive_repr["starch"] = primitive_profile_repr["starch"]
+            primitive_repr["fix_tears"] = primitive_profile_repr["fix_tears"]
+            primitive_repr["no_crease"] = primitive_profile_repr["no_crease"]
+            primitive_repr["fabric_softener"] = primitive_profile_repr["fabric_softener"]
+            primitive_repr["package_id"] = primitive_profile_repr["package_id"]
 
             # Employee
-            primitive_repr['DOB'] = primitive_profile_repr['DOB']
-            primitive_repr['joining_date'] = primitive_profile_repr['joining_date']
-            primitive_repr['SSN'] = primitive_profile_repr['SSN']
+            primitive_repr["DOB"] = primitive_profile_repr["DOB"]
+            primitive_repr["joining_date"] = primitive_profile_repr["joining_date"]
+            primitive_repr["SSN"] = primitive_profile_repr["SSN"]
 
             # Customer
-            primitive_repr['is_doormen'] = primitive_profile_repr['is_doormen']
+            primitive_repr["is_doormen"] = primitive_profile_repr["is_doormen"]
 
-            primitive_repr['app_users'] = primitive_profile_repr['app_users']
+            primitive_repr["app_users"] = primitive_profile_repr["app_users"]
 
-            primitive_repr['package_name'] = primitive_profile_repr['user_package']['package_name'] if primitive_profile_repr['user_package'] else ''
+            primitive_repr["package_name"] = (
+                primitive_profile_repr["user_package"]["package_name"]
+                if primitive_profile_repr["user_package"]
+                else ""
+            )
 
-            if primitive_repr.get('user_card'):
+            if primitive_repr.get("user_card"):
                 try:
                     if not self.stripe_helper.customer:
                         self.stripe_helper.get_customer(obj)
 
-                    for card in primitive_repr.get('user_card'):
-                        card_prop = self.stripe_helper.get_card_info(card['stripe_card_id'])
-                        card.update({'cvc': card_prop.cvc_check,
-                                     'exp_year': card_prop.exp_year,
-                                     'exp_month': card_prop.exp_month,
-                                     'last4': card_prop.last4})
+                    for card in primitive_repr.get("user_card"):
+                        card_prop = self.stripe_helper.get_card_info(card["stripe_card_id"])
+                        card.update(
+                            {
+                                "cvc": card_prop.cvc_check,
+                                "exp_year": card_prop.exp_year,
+                                "exp_month": card_prop.exp_month,
+                                "last4": card_prop.last4,
+                            }
+                        )
                 except AttributeError:
                     pass
 
-        primitive_repr.pop('pickupaddress', None)
-        primitive_repr.pop('dropoffaddress', None)
-        primitive_repr.pop('profile')
+        primitive_repr.pop("pickupaddress", None)
+        primitive_repr.pop("dropoffaddress", None)
+        primitive_repr.pop("profile")
         return primitive_repr
 
     pickupaddress = AddressGetSerializer(many=True, read_only=True)
@@ -332,5 +415,3 @@ class UserDataSerializer(serializers.ModelSerializer):
     order = OrderHistorySerializer(many=True, read_only=True)
     profile = ProfileSerializer(read_only=True)
     user_card = UserCardSerializer(many=True)
-
-

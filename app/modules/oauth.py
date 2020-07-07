@@ -1,11 +1,11 @@
-import re 
-import requests
 import json
+import re
 
 from django.contrib.auth.models import User
 from oauth2_provider.models import AccessToken
+import requests
 
-API_URL = 'https://api.washmix.com'
+API_URL = "https://api.washmix.com"
 
 
 def convert_to_auth_token(client_id, client_secret, backend, token):
@@ -19,13 +19,13 @@ def convert_to_auth_token(client_id, client_secret, backend, token):
     :return: django auth token
     """
     params = {
-      'grant_type': 'convert_token',
-      'client_id': client_id,
-      'client_secret': client_secret,
-      'backend': backend,
-      'token': token,
+        "grant_type": "convert_token",
+        "client_id": client_id,
+        "client_secret": client_secret,
+        "backend": backend,
+        "token": token,
     }
-    response = requests.post('{}/auth/convert-token/'.format(API_URL), params=params)
+    response = requests.post("{}/auth/convert-token/".format(API_URL), params=params)
     return response.json()
 
 
@@ -36,7 +36,8 @@ def get_user_from_token(django_auth_token):
     :return: user object
     """
     return User.objects.get(
-    id=AccessToken.objects.get(token=django_auth_token['access_token']).user_id)
+        id=AccessToken.objects.get(token=django_auth_token["access_token"]).user_id
+    )
 
 
 def get_user_by_email(email):

@@ -47,7 +47,7 @@ In order to have stripe configured you must have provide stripe api key in the E
 
     - Install Postgres on docker container: 
     
-            $ docker run -d -p 5432:5432 --name wm_local -e POSTGRES_PASSWORD=rootroot -e POSTGRES_USER=wm_user postgres
+            $ docker run -d -p 5432:5432 --name wm_local -e POSTGRES_PASSWORD=rootroot -e POSTGRES_USER=wm_user -e POSTGRES_DB=wm_local --rm postgres 
        
     - Go into PSQL System and Create new Database
     
@@ -58,8 +58,9 @@ In order to have stripe configured you must have provide stripe api key in the E
             > exit
             
     - Run migrations
-    
-            python manage.py makemigrations --setting=app.settings.dev
+            export DJANGO_SETTINGS_MODULE=app.settings.dev
+            uncomment DATABASES inside `settings.dev`
+            python manage.py makemigrations
             python manage.py migrate
             python manage.py loaddata app/fixtures/add_dev_user.json
             python manage.py createsu

@@ -1,33 +1,26 @@
 import logging
 
+from custom_permission.custom_token_authentication import (
+    CustomIsAdminUser,
+    CustomSocialAuthentication,
+    IsAuthenticatedOrPost,
+    RefreshTokenAuthentication,
+    account_activation_token,
+)
 from django.contrib.auth.models import User
 from djoser.views import ActivationView
+from models.models import Profile
+from modules.constant import AppUsers
+from modules.helpers import StripeHelper, wm_exception
 from rest_framework import status
 from rest_framework.exceptions import APIException
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_social_oauth2.authentication import SocialAuthentication
+from serializer.user_serializer import UserDataSerializer, UserSerializer
+from views.wm_stripe_views import Cards
 
-from app.models.models import Profile
-from app.modules.constant import AppUsers
-from app.views.wm_stripe_views import Cards
-from ..custom_permission.custom_token_authentication import (
-    CustomIsAdminUser,
-    IsAuthenticatedOrPost,
-    RefreshTokenAuthentication,
-    CustomSocialAuthentication,
-    account_activation_token
-)
-from ..modules.helpers import (
-    StripeHelper,
-    wm_exception
-)
-from ..serializer.user_serializer import (
-    UserSerializer,
-    UserDataSerializer
-)
-
-logging.basicConfig(level=logging.ERROR, format='%(name)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.ERROR, format="%(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 # from rest_framework.authentication import TokenAuthentication
@@ -35,7 +28,11 @@ logger = logging.getLogger(__name__)
 
 
 class Users(Cards):
-    authentication_classes = (RefreshTokenAuthentication, CustomSocialAuthentication, SocialAuthentication)
+    authentication_classes = (
+        RefreshTokenAuthentication,
+        CustomSocialAuthentication,
+        SocialAuthentication,
+    )
     permission_classes = (IsAuthenticatedOrPost, CustomIsAdminUser)
 
     def patch(self, request, *args, **kwargs):
@@ -87,12 +84,11 @@ class Users(Cards):
         :return: User id for which user_info or address has been updated.
         """
         if request.user:
-            return self.process_update(request, is_partial=True, user_id=kwargs.get('id'))
+            return self.process_update(request, is_partial=True, user_id=kwargs.get("id"))
 
     def put(self, request, *args, **kwargs):
         if request.user:
             return self.process_update(request)
-
 
     def post(self, request, *args, **kwargs):
         """
@@ -114,31 +110,28 @@ class Users(Cards):
         :param format: 
         :return: List of user ids successfully created.
         """
-        request_body = request.data.get('users')
+        request_body = request.data.get("users")
         # Data must be provided and validated
         validation = UserSerializer(data=request_body, many=True)
         validation.is_valid(raise_exception=True)
         created_user_ids = validation.save()
 
-        response_dict = {'users': created_user_ids}
-        user = User.objects.get(id=created_user_ids[-1]['user'])
-        if request.data.get('users', [{}])[-1].get('app_users') == AppUsers.REGULAR_USERS.value \
-                and (request.user.is_staff or request.user.is_superuser):
+        response_dict = {"users": created_user_ids}
+        user = User.objects.get(id=created_user_ids[-1]["user"])
+        if request.data.get("users", [{}])[-1].get(
+            "app_users"
+        ) == AppUsers.REGULAR_USERS.value and (request.user.is_staff or request.user.is_superuser):
             kwargs = dict()
-            kwargs['type'] = 'add_card'
+            kwargs["type"] = "add_card"
             response = super(Users, self).post(request_body[-1], user=user, **kwargs)
-            response_dict.update({'add_card': response.data.get('message')})
+            response_dict.update({"add_card": response.data.get("message")})
 
-            kwargs['type'] = 'buy_package'
-            kwargs['id'] = response.data.get('card_id') or -1
+            kwargs["type"] = "buy_package"
+            kwargs["id"] = response.data.get("card_id") or -1
             response = super(Users, self).post(request_body[-1], user=user, **kwargs)
-            response_dict.update({'buy_package': response.data.get('message')})
+            response_dict.update({"buy_package": response.data.get("message")})
 
-        return Response(
-            data=response_dict,
-            status=status.HTTP_201_CREATED,
-            content_type='json'
-        )
+        return Response(data=response_dict, status=status.HTTP_201_CREATED, content_type="json")
 
     def get(self, request, *args, **kwargs):
         """
@@ -152,28 +145,31 @@ class Users(Cards):
         kwargs = dict(filter(lambda val: val[1], self.kwargs.items()))
         try:
 
-            if kwargs.get('id') and kwargs.get('app_users'):
-                user = User.objects.filter(id=kwargs.get('id'), profile__app_users=kwargs.get('app_users'))
+            if kwargs.get("id") and kwargs.get("app_users"):
+                user = User.objects.filter(
+                    id=kwargs.get("id"), profile__app_users=kwargs.get("app_users")
+                )
                 user = UserDataSerializer(user, many=True)
-            if kwargs.get('id'):
-                user = User.objects.get(id=kwargs.get('id'))
+            if kwargs.get("id"):
+                user = User.objects.get(id=kwargs.get("id"))
                 user = UserDataSerializer(instance=user, stripes_helper=StripeHelper())
-            elif kwargs.get('app_users'):
-                user = User.objects.filter(profile__app_users=kwargs.get('app_users'))
+            elif kwargs.get("app_users"):
+                user = User.objects.filter(profile__app_users=kwargs.get("app_users"))
                 user = UserDataSerializer(user, many=True)
             else:
                 user = User.objects.all()
                 user = UserDataSerializer(user, many=True)
 
             if user:
-                return Response(data={'users': user.data},
-                                status=status.HTTP_200_OK,
-                                content_type='json')
+                return Response(
+                    data={"users": user.data}, status=status.HTTP_200_OK, content_type="json",
+                )
         except User.DoesNotExist:
-            return Response(data={'users': 'User Doesn\'t exist'},
-                            status=status.HTTP_404_NOT_FOUND,
-                            content_type='json')
-
+            return Response(
+                data={"users": "User Doesn't exist"},
+                status=status.HTTP_404_NOT_FOUND,
+                content_type="json",
+            )
 
     def delete(self, request, *args, **kwargs):
         """
@@ -183,21 +179,25 @@ class Users(Cards):
         :param kwargs: holds query param mapping
         :return: response json
         """
-        if kwargs.get('id'):
+        if kwargs.get("id"):
             try:
                 user = User.objects.get(**kwargs)
             except User.DoesNotExist:
-                return Response(data={'users': 'User Doesn\'t exist'},
-                                status=status.HTTP_404_NOT_FOUND,
-                                content_type='json')
+                return Response(
+                    data={"users": "User Doesn't exist"},
+                    status=status.HTTP_404_NOT_FOUND,
+                    content_type="json",
+                )
             user.delete()
-            return Response(data={'users': 'User Deleted'},
-                            status=status.HTTP_200_OK,
-                            content_type='json')
+            return Response(
+                data={"users": "User Deleted"}, status=status.HTTP_200_OK, content_type="json",
+            )
 
-        return Response(data={'users': 'User ID is must'},
-                        status=status.HTTP_404_NOT_FOUND,
-                        content_type='json')
+        return Response(
+            data={"users": "User ID is must"},
+            status=status.HTTP_404_NOT_FOUND,
+            content_type="json",
+        )
 
     @wm_exception
     def process_update(self, request, is_partial=False, user_id=None):
@@ -210,11 +210,11 @@ class Users(Cards):
         updated
         """
         try:
-            user_info = request.data['users']
+            user_info = request.data["users"]
             if user_id:
-                user_info[0].update({'user_id': user_id})
+                user_info[0].update({"user_id": user_id})
         except Exception as error:
-            return '', status.HTTP_400_BAD_REQUEST, {'detail': 'Must be a "users" key'}
+            return "", status.HTTP_400_BAD_REQUEST, {"detail": 'Must be a "users" key'}
             # return Response(
             #     data={'detail': 'Must be a "users" key'},
             #     status=status.HTTP_400_BAD_REQUEST,
@@ -229,7 +229,7 @@ class Users(Cards):
                 data=user_info,
                 partial=is_partial,
                 many=True,
-                context={'request': self.request}
+                context={"request": self.request},
             )
             user.is_valid(raise_exception=True)
             user_id.append(user.save())
@@ -252,7 +252,7 @@ class Users(Cards):
         #     status=status.HTTP_200_OK,
         #     content_type='json'
         # )
-        return '' ,status.HTTP_200_OK, {'user': user_id}
+        return "", status.HTTP_200_OK, {"user": user_id}
 
 
 class UserActivationView(ActivationView):

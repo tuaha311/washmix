@@ -21,14 +21,14 @@ class WMError(Exception):
         Method will create a dict object containing all provided error details
         :rtype: dict
         """
-        error_dict = {'error': {}}
+        error_dict = {"error": {}}
         if self.status_code:
-            error_dict['error']['status_code'] = self.status_code
+            error_dict["error"]["status_code"] = self.status_code
         if self.message:
-            error_dict['error']['message'] = self.message
+            error_dict["error"]["message"] = self.message
         if self.additional_info:
             for k, v in self.additional_info.items():
-                error_dict['error'][k] = v
+                error_dict["error"][k] = v
         return error_dict
 
     @classmethod
@@ -67,25 +67,25 @@ class InternalServerError(WMError):
 
 
 def register_errors(app):
-    @app.errorhandler(InvalidUsage)
+    @errorhandler(InvalidUsage)
     def handle_invalid_usage(error):
-        return handle_error(error, 'Invalid usage')
+        return handle_error(error, "Invalid usage")
 
-    @app.errorhandler(UnauthorizedError)
+    @errorhandler(UnauthorizedError)
     def handle_unauthorized_error(error):
-        return handle_error(error, 'Unauthorized access')
+        return handle_error(error, "Unauthorized access")
 
-    @app.errorhandler(ForbiddenError)
+    @errorhandler(ForbiddenError)
     def handle_forbidden_error(error):
-        return handle_error(error, 'Forbidden access')
+        return handle_error(error, "Forbidden access")
 
-    @app.errorhandler(NotFoundError)
+    @errorhandler(NotFoundError)
     def handle_unauthorized_error(error):
-        return handle_error(error, 'Resource not found')
+        return handle_error(error, "Resource not found")
 
-    @app.errorhandler(InternalServerError)
+    @errorhandler(InternalServerError)
     def handle_server_error(error):
-        return handle_error(error, 'Server error')
+        return handle_error(error, "Server error")
 
     def handle_error(error, message):
         """
