@@ -13,6 +13,7 @@ Initially we have to create virtual environment, here are the steps to create vi
 * Once env is activated, now turn comes to install dependencies.
 * Install dependencies from requirement.txt file which exist at root level of the project.
 * Run "**pip install -r requirement.txt**"
+* djangorestframework-expiring-authtoken==0.1.4
 * This will install all of the dependencies into the environment.
 
 It is necessary to have postgresql server running and you must have valid DB and a user created over it.
