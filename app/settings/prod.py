@@ -6,7 +6,7 @@ from settings.staging import *
 # Never leave it as False!
 DEBUG = False
 
-WSGI_APPLICATION = "wsgi.prod.application"
+WSGI_APPLICATION = "wsgi.application"
 
 # Comment that for WWW not to be prepended.
 PREPEND_WWW = True

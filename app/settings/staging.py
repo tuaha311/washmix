@@ -7,7 +7,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
-WSGI_APPLICATION = "wsgi.staging.application"
+WSGI_APPLICATION = "wsgi.application"
 
 DATABASES = {
     "default": {
