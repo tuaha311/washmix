@@ -6,8 +6,7 @@ from django.utils import timezone
 import redis
 from rest_framework_expiring_authtoken.models import ExpiringToken
 
-from modules.constant import AppUsers, CouponType, Crease, Detergents, SignUp, Starch
-from utilities.wm_message_config import order_dropoff, order_pickup
+from modules.enums import AppUsers, CouponType, Crease, Detergents, SignUp, Starch
 
 
 class PickupAddress(models.Model):
@@ -93,13 +92,13 @@ class Order(models.Model):
         """Overiding models save method to avoid sending duplication sms notification for same order.
            It checks if sms notification is already schedule for the order using 'task_ids'."""
 
+        from utilities.email_formatters import format_order_dropoff, format_order_pickup
+
         # Check if we have scheduled a notification for this order before
         if self.task_id_pickup and self.task_id_dropoff:
             # Revoke that task in case its time has changed
             self.cancel_task(self.task_id_pickup)
             self.cancel_task(self.task_id_dropoff)
-            # celery_app.control.revoke(self.task_id_pickup)
-            # celery_app.control.revoke(self.task_id_dropoff)
 
         # Save order, which populates self.pk,
         # which is used in schedule_notification
@@ -107,10 +106,10 @@ class Order(models.Model):
 
         # Schedule a new notification task for this order
         self.task_id_pickup = self.schedule_notification(
-            order_pickup(user=self.user, order=self), self.pick_up_from_datetime
+            format_order_pickup(user=self.user, order=self), self.pick_up_from_datetime
         )
         self.task_id_dropoff = self.schedule_notification(
-            order_dropoff(user=self.user, order=self), self.drop_off_from_datetime
+            format_order_dropoff(user=self.user, order=self), self.drop_off_from_datetime
         )
 
         # Save order again, with the new task_ids

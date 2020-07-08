@@ -1,15 +1,7 @@
-from __future__ import absolute_import
-
 import dramatiq
-# from celery import shared_task
-from twilio.rest import Client
 
+from core.middleware import TwilioNotificationsMiddleware
 from core.models import Order
-from middleware import TwilioNotificationsMiddleware
-
-# Uses credentials from the TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN
-# environment variables
-client = Client()
 
 
 @dramatiq.actor

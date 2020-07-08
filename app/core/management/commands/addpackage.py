@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 
 from core.models import PackageType
-from modules.constant import PACKAGE_NAMES
+from modules.enums import PACKAGE_NAMES
 
 
 class Command(BaseCommand):

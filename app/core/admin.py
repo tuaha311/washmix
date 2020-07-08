@@ -7,25 +7,7 @@ from rest_framework.authtoken.models import Token
 from robots.models import Rule, Url
 from social_django.models import Association, Nonce, UserSocialAuth
 
-from api.views.custom import PasswordResetViewCustom
-
-
-class MyAdminSite(AdminSite):
-    def get_urls(self):
-        from django.conf.urls import url
-
-        urls = super(MyAdminSite, self).get_urls()
-        urls += [
-            url(
-                r"password_reset/",
-                self.admin_view(PasswordResetViewCustom.as_view()),
-                name="password_reset",
-            )
-        ]
-        return urls
-
-
-admin_site = MyAdminSite()
+admin_site = AdminSite()
 
 
 admin_site.register(User, UserAdmin)

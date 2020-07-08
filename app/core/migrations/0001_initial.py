@@ -8,6 +8,7 @@ import django.utils.timezone
 from django.utils.timezone import utc
 
 import modules.constant
+import modules.enums
 
 
 class Migration(migrations.Migration):
@@ -55,8 +56,8 @@ class Migration(migrations.Migration):
                     "coupon_type",
                     models.CharField(
                         choices=[
-                            (modules.constant.CouponType("FIRST"), "FIRST"),
-                            (modules.constant.CouponType("PACKAGE"), "PACKAGE"),
+                            (modules.enums.CouponType("FIRST"), "FIRST"),
+                            (modules.enums.CouponType("PACKAGE"), "PACKAGE"),
                         ],
                         default="FIRST",
                         max_length=30,
@@ -252,8 +253,8 @@ class Migration(migrations.Migration):
                     "detergents",
                     models.CharField(
                         choices=[
-                            (modules.constant.Detergents("Scented"), "Scented"),
-                            (modules.constant.Detergents("Hypo-Allergenic"), "Hypo-Allergenic"),
+                            (modules.enums.Detergents("Scented"), "Scented"),
+                            (modules.enums.Detergents("Hypo-Allergenic"), "Hypo-Allergenic"),
                         ],
                         max_length=50,
                         null=True,
@@ -263,10 +264,10 @@ class Migration(migrations.Migration):
                     "starch",
                     models.CharField(
                         choices=[
-                            (modules.constant.Starch("NONE"), "NONE"),
-                            (modules.constant.Starch("LIGHT"), "LIGHT"),
-                            (modules.constant.Starch("MEDIUM"), "MEDIUM"),
-                            (modules.constant.Starch("HEAVY"), "HEAVY"),
+                            (modules.enums.Starch("NONE"), "NONE"),
+                            (modules.enums.Starch("LIGHT"), "LIGHT"),
+                            (modules.enums.Starch("MEDIUM"), "MEDIUM"),
+                            (modules.enums.Starch("HEAVY"), "HEAVY"),
                         ],
                         max_length=50,
                         null=True,
@@ -276,8 +277,8 @@ class Migration(migrations.Migration):
                     "no_crease",
                     models.CharField(
                         choices=[
-                            (modules.constant.Crease("ALL_PANTS"), "ALL_PANTS"),
-                            (modules.constant.Crease("JEANS_ONLY"), "JEANS_ONLY"),
+                            (modules.enums.Crease("ALL_PANTS"), "ALL_PANTS"),
+                            (modules.enums.Crease("JEANS_ONLY"), "JEANS_ONLY"),
                         ],
                         max_length=50,
                         null=True,
@@ -287,9 +288,9 @@ class Migration(migrations.Migration):
                     "app_users",
                     models.CharField(
                         choices=[
-                            (modules.constant.AppUsers("POTENTIAL_USERS"), "POTENTIAL_USERS"),
-                            (modules.constant.AppUsers("REGULAR_USERS"), "REGULAR_USERS"),
-                            (modules.constant.AppUsers("EMPLOYEE"), "EMPLOYEE"),
+                            (modules.enums.AppUsers("POTENTIAL_USERS"), "POTENTIAL_USERS"),
+                            (modules.enums.AppUsers("REGULAR_USERS"), "REGULAR_USERS"),
+                            (modules.enums.AppUsers("EMPLOYEE"), "EMPLOYEE"),
                         ],
                         default="REGULAR_USERS",
                         max_length=30,
@@ -300,9 +301,9 @@ class Migration(migrations.Migration):
                     "authentication_provider",
                     models.CharField(
                         choices=[
-                            (modules.constant.SignUp("facebook"), "facebook"),
-                            (modules.constant.SignUp("google-oauth2"), "google-oauth2"),
-                            (modules.constant.SignUp("washmix"), "washmix"),
+                            (modules.enums.SignUp("facebook"), "facebook"),
+                            (modules.enums.SignUp("google-oauth2"), "google-oauth2"),
+                            (modules.enums.SignUp("washmix"), "washmix"),
                         ],
                         default="washmix",
                         max_length=30,
