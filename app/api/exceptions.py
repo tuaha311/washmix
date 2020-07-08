@@ -1,6 +1,3 @@
-import json
-
-
 class WMError(Exception):
     def __init__(self, error_message=None, error_code=None, additional_info=None):
         """
@@ -64,33 +61,3 @@ class InternalServerError(WMError):
     @classmethod
     def http_status_code(cls):
         return 500
-
-
-def register_errors(app):
-    @errorhandler(InvalidUsage)
-    def handle_invalid_usage(error):
-        return handle_error(error, "Invalid usage")
-
-    @errorhandler(UnauthorizedError)
-    def handle_unauthorized_error(error):
-        return handle_error(error, "Unauthorized access")
-
-    @errorhandler(ForbiddenError)
-    def handle_forbidden_error(error):
-        return handle_error(error, "Forbidden access")
-
-    @errorhandler(NotFoundError)
-    def handle_unauthorized_error(error):
-        return handle_error(error, "Resource not found")
-
-    @errorhandler(InternalServerError)
-    def handle_server_error(error):
-        return handle_error(error, "Server error")
-
-    def handle_error(error, message):
-        """
-        :type error: WMError
-        :param message:
-        :return:
-        """
-        return json.dumps(error.to_dict()), error.http_status_code()

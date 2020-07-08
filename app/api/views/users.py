@@ -6,16 +6,16 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework_social_oauth2.authentication import SocialAuthentication
 
-from api.serializers.users import UserDataSerializer, UserSerializer
-from api.views.stripe import Cards
-from custom_permission.custom_token_authentication import (
+from api.permissions import (
     CustomIsAdminUser,
     CustomSocialAuthentication,
     IsAuthenticatedOrPost,
     RefreshTokenAuthentication,
     account_activation_token,
 )
-from modules.constant import AppUsers
+from api.serializers.users import UserDataSerializer, UserSerializer
+from api.views.stripe import Cards
+from modules.enums import AppUsers
 from modules.helpers import StripeHelper, wm_exception
 
 logging.basicConfig(level=logging.ERROR, format="%(name)s - %(levelname)s - %(message)s")

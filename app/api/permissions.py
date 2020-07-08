@@ -8,7 +8,7 @@ from rest_framework_expiring_authtoken.authentication import ExpiringTokenAuthen
 from rest_framework_expiring_authtoken.models import ExpiringToken
 
 from core.models import CustomToken
-from modules.constant import AppUsers
+from modules.enums import AppUsers
 from utilities.token import expired
 
 

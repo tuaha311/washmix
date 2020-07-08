@@ -3,8 +3,8 @@ from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from api.permissions import CustomSocialAuthentication
 from api.serializers.coupons import CouponsSerializer
-from custom_permission.custom_token_authentication import CustomSocialAuthentication
 
 
 class CouponView(APIView):

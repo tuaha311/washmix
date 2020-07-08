@@ -8,16 +8,17 @@ from rest_framework.views import APIView
 from rest_framework_social_oauth2.authentication import SocialAuthentication
 import stripe
 
-from api.serializers.packages import PackageSerializer
-from core.models import PackageType, UserCard
-from custom_permission.custom_token_authentication import (
+from api.permissions import (
     CustomSocialAuthentication,
     IsAuthenticatedOrAdmin,
     RefreshTokenAuthentication,
 )
-from modules.constant import PACKAGES
+from api.serializers.packages import PackageSerializer
+from core.models import PackageType, UserCard
+from modules.enums import PACKAGES
 from modules.helpers import BalanceOperation, StripeHelper, update_user_balance, wm_exception
-from utilities.wm_email_config import WMEmailControllerSendGrid, wm_package_purchase_email
+from utilities.email_formatters import format_purchase
+from utilities.emails import WMEmailControllerSendGrid
 
 logging.basicConfig(level=logging.ERROR, format="%(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -219,7 +220,7 @@ class Cards(APIView):
 
             if charge:
                 WMEmailControllerSendGrid(
-                    email_formatter=wm_package_purchase_email(
+                    email_formatter=format_purchase(
                         users=[user or request.user],
                         charge=charge,
                         package_name=user_package.package_name,

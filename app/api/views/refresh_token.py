@@ -12,7 +12,7 @@ from rest_framework_social_oauth2.views import TokenView
 from api.serializers.refresh_token import RefreshTokenSerializer
 from api.serializers.users import UserDataSerializer
 from core.models import CustomToken
-from modules.constant import SignUp
+from modules.enums import SignUp
 from modules.helpers import StripeHelper
 from modules.oauth import get_user_by_email, get_user_from_token
 from utilities.token import expired
