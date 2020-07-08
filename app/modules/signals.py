@@ -2,7 +2,8 @@ from django.contrib.auth.hashers import identify_hasher
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 
-from utilities.wm_email_config import WMEmailControllerSendGrid, wm_user_confirmation_email
+from utilities.email_formatters import format_user
+from utilities.emails import WMEmailControllerSendGrid
 
 
 def user_register_email(sender, instance, created=None, *args, **kwargs):
@@ -15,7 +16,7 @@ def user_register_email(sender, instance, created=None, *args, **kwargs):
 
         try:
             WMEmailControllerSendGrid(
-                email_formatter=wm_user_confirmation_email(user=instance)
+                email_formatter=format_user(user=instance)
             ).send_sendgrid_email()
         except:
             pass

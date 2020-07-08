@@ -12,7 +12,7 @@ from rest_framework.response import Response
 import stripe
 from stripe.error import InvalidRequestError
 
-from error_handling.wm_errors import InternalServerError
+from api.exceptions import InternalServerError
 
 logging.basicConfig(level=logging.ERROR, format="%(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)

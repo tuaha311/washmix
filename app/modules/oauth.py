@@ -1,11 +1,7 @@
-import json
-import re
-
+from django.conf import settings
 from django.contrib.auth.models import User
 from oauth2_provider.models import AccessToken
 import requests
-
-API_URL = "https://api.washmix.com"
 
 
 def convert_to_auth_token(client_id, client_secret, backend, token):
@@ -25,7 +21,7 @@ def convert_to_auth_token(client_id, client_secret, backend, token):
         "backend": backend,
         "token": token,
     }
-    response = requests.post("{}/auth/convert-token/".format(API_URL), params=params)
+    response = requests.post("{}/auth/convert-token/".format(settings.API_URL), params=params)
     return response.json()
 
 

@@ -3,7 +3,8 @@ from rest_framework import serializers, status
 from rest_framework.exceptions import ValidationError
 
 from core.models import Coupons, DropoffAddress, Order, OrderItems, PickupAddress, UserCard
-from modules.constant import MESSAGE_ERROR_MISSING_ADDRESS, PACKAGES, CouponType
+from modules.constant import MESSAGE_ERROR_MISSING_ADDRESS
+from modules.enums import PACKAGES, CouponType
 
 
 class OrderItemsSerializer(serializers.ModelSerializer):
@@ -167,7 +168,7 @@ class OrderSerializer(serializers.ModelSerializer):
             #         setattr(order, 'is_paid', True)
             #         try:
             #             # Send an email for a order
-            #             WMEmailControllerSendGrid(email_formatter=wm_order_placement_email(user=self.user,
+            #             WMEmailControllerSendGrid(email_formatter=format_order(user=self.user,
             #                                                                                pick_from=order.pick_up_from_datetime,
             #                                                                                pick_to=order.pick_up_to_datetime,
             #                                                                                pickup_address=pickup_addresses)).send_sendgrid_email()

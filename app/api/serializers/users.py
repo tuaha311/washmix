@@ -4,6 +4,7 @@ from django.core.validators import RegexValidator
 from rest_framework import serializers
 from rest_framework.exceptions import PermissionDenied, ValidationError
 
+from api.fields import EnumField
 from api.serializers.addresses import (
     AddressGetSerializer,
     DropoffAddressGetSerializer,
@@ -12,7 +13,7 @@ from api.serializers.addresses import (
 )
 from api.serializers.orders import OrderHistorySerializer, OrderSerializer
 from core.models import PackageType, Profile, UserCard
-from modules.constant import AppUsers, Crease, Detergents, EnumField, SignUp, Starch
+from modules.enums import AppUsers, Crease, Detergents, SignUp, Starch
 from modules.helpers import commit_transaction, random_string
 
 

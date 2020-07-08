@@ -1,7 +1,8 @@
 from rest_framework import serializers
 
+from api.fields import EnumField
 from core.models import Coupons
-from modules.constant import CouponType, EnumField
+from modules.enums import CouponType
 
 
 class CouponsSerializer(serializers.ModelSerializer):
