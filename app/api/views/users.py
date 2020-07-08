@@ -6,6 +6,8 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework_social_oauth2.authentication import SocialAuthentication
 
+from api.serializers.users import UserDataSerializer, UserSerializer
+from api.views.stripe import Cards
 from custom_permission.custom_token_authentication import (
     CustomIsAdminUser,
     CustomSocialAuthentication,
@@ -15,8 +17,6 @@ from custom_permission.custom_token_authentication import (
 )
 from modules.constant import AppUsers
 from modules.helpers import StripeHelper, wm_exception
-from api.serializers import UserDataSerializer, UserSerializer
-from api.views import Cards
 
 logging.basicConfig(level=logging.ERROR, format="%(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)

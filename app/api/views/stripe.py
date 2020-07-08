@@ -8,6 +8,7 @@ from rest_framework.views import APIView
 from rest_framework_social_oauth2.authentication import SocialAuthentication
 import stripe
 
+from api.serializers.packages import PackageSerializer
 from core.models import PackageType, UserCard
 from custom_permission.custom_token_authentication import (
     CustomSocialAuthentication,
@@ -16,7 +17,6 @@ from custom_permission.custom_token_authentication import (
 )
 from modules.constant import PACKAGES
 from modules.helpers import BalanceOperation, StripeHelper, update_user_balance, wm_exception
-from api.serializers import PackageSerializer
 from utilities.wm_email_config import WMEmailControllerSendGrid, wm_package_purchase_email
 
 logging.basicConfig(level=logging.ERROR, format="%(name)s - %(levelname)s - %(message)s")

@@ -8,12 +8,12 @@ from rest_framework.settings import api_settings
 from rest_framework.views import APIView
 from rest_framework_social_oauth2.authentication import SocialAuthentication
 
+from api.serializers.orders import OrderHistorySerializer, OrderSerializer
 from core.models import Order
 from custom_permission.custom_token_authentication import (
     CustomSocialAuthentication,
     RefreshTokenAuthentication,
 )
-from api.serializers.orders import OrderHistorySerializer, OrderSerializer
 
 logging.basicConfig(level=logging.ERROR, format="%(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)

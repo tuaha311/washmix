@@ -4,9 +4,6 @@ from django.core.validators import RegexValidator
 from rest_framework import serializers
 from rest_framework.exceptions import PermissionDenied, ValidationError
 
-from core.models import PackageType, Profile, UserCard
-from modules.constant import AppUsers, Crease, Detergents, EnumField, SignUp, Starch
-from modules.helpers import commit_transaction, random_string
 from api.serializers.addresses import (
     AddressGetSerializer,
     DropoffAddressGetSerializer,
@@ -14,6 +11,9 @@ from api.serializers.addresses import (
     PickupAddressSerializer,
 )
 from api.serializers.orders import OrderHistorySerializer, OrderSerializer
+from core.models import PackageType, Profile, UserCard
+from modules.constant import AppUsers, Crease, Detergents, EnumField, SignUp, Starch
+from modules.helpers import commit_transaction, random_string
 
 
 def email_validator(value):

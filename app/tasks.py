@@ -1,7 +1,6 @@
 from __future__ import absolute_import
 
 import dramatiq
-
 # from celery import shared_task
 from twilio.rest import Client
 

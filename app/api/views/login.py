@@ -4,8 +4,8 @@ from rest_framework.status import HTTP_400_BAD_REQUEST
 from rest_framework_expiring_authtoken.models import ExpiringToken
 from rest_framework_expiring_authtoken.views import ObtainExpiringAuthToken
 
+from api.serializers.users import UserDataSerializer
 from core.models import CustomToken
-from api.serializers import UserDataSerializer
 from utilities.token import expired
 
 

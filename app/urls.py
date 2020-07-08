@@ -6,9 +6,8 @@ from django.contrib.auth import views as auth_views
 from django.urls import path
 from rest_framework import routers
 
-from modules.helpers import admin_site
 from api.views import coupons, login, oauth, orders, products, refresh_token, stripe, users
-from api.views import UserActivationView
+from core.admin import admin_site
 
 admin.autodiscover()
 urlpatterns = []
@@ -30,9 +29,9 @@ urlpatterns += [
     url(r"^admin/", admin_site.urls),
     # url(r'^', include(router.urls)),
     url(r"^users/login/", refresh_token.SocialAppLoginRefreshTokenView.as_view()),
-    url(r"^users/(?P<id>\d+)?/?(?P<app_users>[A-Z_]+)?/?$", users.Users.as_view(), ),
+    url(r"^users/(?P<id>\d+)?/?(?P<app_users>[A-Z_]+)?/?$", users.Users.as_view(),),
     url(r"^orders/(?P<id>\d+)?/?$", orders.Orders.as_view()),
-    url(r"^user_purchase/(?P<type>[a-z_]+)?/?(?P<id>\d+)?/?$", stripe.Cards.as_view(), ),
+    url(r"^user_purchase/(?P<type>[a-z_]+)?/?(?P<id>\d+)?/?$", stripe.Cards.as_view(),),
     url(r"^coupon/", coupons.CouponView.as_view()),
     url(r"^product/(?P<id>\d+)?/?$", products.ProductView.as_view()),
     # Sample api view which is protected by tokenAuthentication
@@ -43,7 +42,7 @@ urlpatterns += [
     url(r"^login/", login.LoginUser.as_view()),
     # url(r'^users/', include('djoser.urls')),
     url(r"^users/logout/", refresh_token.logout_user),
-    url(r"^users/activate/?$", UserActivationView.as_view(), name="user-activate"),
+    url(r"^users/activate/?$", users.UserActivationView.as_view(), name="user-activate"),
     url(r"^auth/", include("rest_framework_social_oauth2.urls")),
     url(r"^o/", include("oauth2_provider.urls", namespace="oauth2_provider")),
     url(r"^social-login/", oauth.OAuth.as_view()),

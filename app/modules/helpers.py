@@ -6,20 +6,13 @@ import os
 import random
 import string
 
-from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.models import Group, User
-from django.contrib.sites.models import Site
-from oauth2_provider.oauth2_validators import AccessToken, Application, Grant, RefreshToken
 from rest_framework import status
 from rest_framework.exceptions import APIException, ValidationError
 from rest_framework.response import Response
-from robots.models import Rule, Url
-from social_django.models import Association, Nonce, UserSocialAuth
 import stripe
 from stripe.error import InvalidRequestError
 
 from error_handling.wm_errors import InternalServerError
-from api.views import PasswordResetViewCustom
 
 logging.basicConfig(level=logging.ERROR, format="%(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -250,41 +243,6 @@ def wm_exception(function):
         return Response(data=data_dict, content_type="json", status=status_api)
 
     return wrapper
-
-
-from django.contrib.admin import AdminSite
-from rest_framework.authtoken.models import Token
-
-
-class MyAdminSite(AdminSite):
-    def get_urls(self):
-        from django.conf.urls import url
-
-        urls = super(MyAdminSite, self).get_urls()
-        urls += [
-            url(
-                r"password_reset/",
-                self.admin_view(PasswordResetViewCustom.as_view()),
-                name="password_reset",
-            )
-        ]
-        return urls
-
-
-admin_site = MyAdminSite()
-admin_site.register(User, UserAdmin)
-admin_site.register(Site)
-admin_site.register(Application)
-admin_site.register(Grant)
-admin_site.register(AccessToken)
-admin_site.register(RefreshToken)
-admin_site.register(Group)
-admin_site.register(Url)
-admin_site.register(Rule)
-admin_site.register(Token)
-admin_site.register(UserSocialAuth)
-admin_site.register(Nonce)
-admin_site.register(Association)
 
 
 def random_string():

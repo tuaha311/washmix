@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_social_oauth2.authentication import SocialAuthentication
 
+from api.serializers.products import ProductSerializer
 from core.models import Product
 from custom_permission.custom_token_authentication import (
     CustomIsAdminUser,
@@ -11,7 +12,6 @@ from custom_permission.custom_token_authentication import (
     IsAuthenticatedOrPost,
     RefreshTokenAuthentication,
 )
-from api.serializers import ProductSerializer
 
 
 class ProductView(APIView):
