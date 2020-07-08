@@ -6,6 +6,11 @@ import os
 
 from settings.base import *
 
+DEBUG = True
+
+INSTALLED_APPS += []
+
+
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_USE_TLS = True
 EMAIL_HOST = "smtp.sendgrid.net"
@@ -34,15 +39,12 @@ OAUTH2_PROVIDER = {
     "ACCESS_TOKEN_EXPIRE_SECONDS": 3600
 }
 
-DEBUG = True
-
 THUMBNAIL_DEBUG = True
 
 TEMPLATES[0]["OPTIONS"]["debug"] = True
 
-WSGI_APPLICATION = "wsgi.application"
+WSGI_APPLICATION = "settings.wsgi.application"
 
-# Database for development.
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
@@ -54,7 +56,6 @@ DATABASES = {
     }
 }
 
-# Production DB settings
 if "RDS_HOSTNAME" in os.environ:
     DATABASES = {
         "default": {
@@ -85,20 +86,6 @@ MIDDLEWARE += [
     "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
-]
-#
-# # Email backend for development.
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-INSTALLED_APPS += [
-    "django_dramatiq",
-    "rest_framework",
-    "djoser",
-    "rest_framework.authtoken",
-    "rest_framework_expiring_authtoken",
-    "oauth2_provider",
-    "social_django",
-    "rest_framework_social_oauth2",
 ]
 
 REST_FRAMEWORK = {

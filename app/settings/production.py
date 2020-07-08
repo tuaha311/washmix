@@ -1,17 +1,11 @@
-"""
-Production settings.
-"""
-from settings.staging import *
+from settings.base import *
 
-# Never leave it as False!
 DEBUG = False
 
-WSGI_APPLICATION = "wsgi.application"
+WSGI_APPLICATION = "settings.wsgi.application"
 
-# Comment that for WWW not to be prepended.
 PREPEND_WWW = True
 
-# This should be set to a list of domains used in production.
 ALLOWED_HOSTS = ["..."]
 
 CACHES = {

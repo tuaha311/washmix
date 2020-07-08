@@ -1,24 +1,20 @@
-"""
-Django settings for wm_django project.
-
-For more information on this file, see
-https://docs.djangoproject.com/en/1.10/topics/settings/
-
-For the full list of settings and their values, see
-https://docs.djangoproject.com/en/1.10/ref/settings/
-"""
 import os
-import sys
 
-# from debug_toolbar.middleware import DebugToolbarMiddleware
 from django.conf.global_settings import STATICFILES_FINDERS
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-# SECURITY WARNING: keep the secret key used in production secret away!
+
+##########
+# DJANGO #
+##########
+
+ALLOWED_HOSTS = ["*"]
+
 SECRET_KEY = "^8x5j(d(4h#+rw*g1_@ul8dk-5kdm3+dgsg2!$&k7!no2bj19v"
 
 SITE_ID = 1
+
 
 DJANGO_APPS = [
     "django.contrib.admin",
@@ -32,14 +28,21 @@ DJANGO_APPS = [
 ]
 
 THIRD_PARTY_APPS = [
-    "django_cleanup",
+    "rest_framework",
+    "rest_framework.authtoken",
+    "rest_framework_expiring_authtoken",
+    "rest_framework_social_oauth2",
+    "django_dramatiq",
     "compressor",
     "clear_cache",
     "markdown_deux",
     "robots",
+    "djoser",
+    "oauth2_provider",
+    "social_django",
+    "django_cleanup",
 ]
 
-# Django Cleanup should be the very last app in the tuple.
 LOCAL_APPS = [
     "core",
 ]
@@ -58,28 +61,28 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "urls"
+ROOT_URLCONF = "settings.urls"
 
 TEAM_WASHMIX = "+14159939274"
 
 REMINDER_TIME = 15
 
-# Internationalization
-# https://docs.djangoproject.com/en/1.10/topics/i18n/
+
 LANGUAGE_CODE = "en-AU"
 TIME_ZONE = "US/Pacific"
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images) and Media files
-# https://docs.djangoproject.com/en/1.10/howto/static-files/
+
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "../static")
 STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 STATICFILES_FINDERS += ("compressor.finders.CompressorFinder",)
-MEDIA_URL = "/m/"
-MEDIA_ROOT = os.path.join(BASE_DIR, "../media_root")
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "../media")
+
 
 TEMPLATES = [
     {
@@ -100,19 +103,28 @@ TEMPLATES = [
     },
 ]
 
+
+###############
+# APPLICATION #
+###############
+
+API_URL = "https://api.washmix.com"
+
+##########
+# OAUTH2 #
+##########
+
 OAUTH2_PROVIDER = {
     "SCOPES": {"read": "Read scope", "write": "Write scope",},
     "CLIENT_ID_GENERATOR_CLASS": "oauth2_provider.generators.ClientIdGenerator",
     "CLIENT_SECRET_GENERATOR_CLASS": "oauth2_provider.generators.ClientSecretGenerator",
 }
 
-# Django compressor settings
-# http://django-compressor.readthedocs.org/en/latest/settings/
+##############
+# COMPRESSOR #
+##############
+
 COMPRESS_PRECOMPILERS = (("text/x-scss", "django_libsass.SassCompiler"),)
 
-# Sorl Thumbnail.
 THUMBNAIL_ALTERNATIVE_RESOLUTIONS = [1.5, 2]
 THUMBNAIL_ORIENTATION = False
-
-# TODO: once development is complete we should remove this from base settings and secure it -Amir
-ALLOWED_HOSTS = ["*"]

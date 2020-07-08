@@ -1,13 +1,10 @@
-"""
-Staging settings.
-"""
 from settings.base import *
 
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
-WSGI_APPLICATION = "wsgi.application"
+WSGI_APPLICATION = "settings.wsgi.application"
 
 DATABASES = {
     "default": {
