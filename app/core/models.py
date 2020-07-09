@@ -6,9 +6,10 @@ from rest_framework_expiring_authtoken.models import ExpiringToken
 
 from modules.enums import CouponType
 from orders.models import Order
+from core.common_models import Common
 
 
-class PickupAddress(models.Model):
+class PickupAddress(Common):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="pickupaddress")
     address_line_1 = models.TextField()
     address_line_2 = models.TextField(default="")
@@ -21,7 +22,7 @@ class PickupAddress(models.Model):
     updated_datetime = models.DateTimeField(auto_now=True)
 
 
-class DropoffAddress(models.Model):
+class DropoffAddress(Common):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="dropoffaddress")
     address_line_1 = models.TextField()
     address_line_2 = models.TextField(default="")
@@ -34,12 +35,12 @@ class DropoffAddress(models.Model):
     updated_datetime = models.DateTimeField(auto_now=True)
 
 
-class PackageType(models.Model):
+class PackageType(Common):
     package_name = models.TextField(default="")
     package_price = models.FloatField(default=0)
 
 
-class Coupons(models.Model):
+class Coupons(Common):
     name = models.CharField(max_length=30)
     amount_off = models.FloatField(default=0)
     percentage_off = models.FloatField(default=0)
@@ -60,7 +61,7 @@ class Coupons(models.Model):
         return (self.percentage_off * total_amount) / 100
 
 
-class Product(models.Model):
+class Product(Common):
     name = models.CharField(max_length=50)
     product = models.ForeignKey(
         "self", null=True, related_name="children", on_delete=models.CASCADE
