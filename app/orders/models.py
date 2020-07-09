@@ -96,8 +96,3 @@ class OrderItems(Common):
     order = models.ForeignKey("orders.Order", on_delete=models.CASCADE, related_name="order_items")
     item = models.TextField(default="")
     cost = models.FloatField(default=0)
-
-
-class AddressOrder(Common):
-    address = models.ForeignKey("core.PickupAddress", on_delete=models.CASCADE)
-    order = models.ForeignKey("orders.Order", on_delete=models.CASCADE)

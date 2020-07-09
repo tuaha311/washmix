@@ -16,7 +16,8 @@ from api.serializers.orders import OrderHistorySerializer, OrderSerializer
 from core.models import PackageType
 from modules.enums import AppUsers, Crease, Detergents, SignUp, Starch
 from modules.helpers import commit_transaction, random_string
-from users.models import Profile, UserCard
+from users.models import Profile
+from billing.models import Card
 
 
 def email_validator(value):
@@ -311,7 +312,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 class UserCardSerializer(serializers.ModelSerializer):
     class Meta:
-        model = UserCard
+        model = Card
         fields = (
             "id",
             "stripe_card_id",
@@ -341,7 +342,7 @@ class UserDataSerializer(serializers.ModelSerializer):
             "dropoffaddress",
             "profile",
             "order",
-            "user_card",
+            "card_list",
             "is_staff",
         )
 
@@ -391,12 +392,12 @@ class UserDataSerializer(serializers.ModelSerializer):
                 else ""
             )
 
-            if primitive_repr.get("user_card"):
+            if primitive_repr.get("card_list"):
                 try:
                     if not self.stripe_helper.customer:
                         self.stripe_helper.get_customer(obj)
 
-                    for card in primitive_repr.get("user_card"):
+                    for card in primitive_repr.get("card_list"):
                         card_prop = self.stripe_helper.get_card_info(card["stripe_card_id"])
                         card.update(
                             {
@@ -418,4 +419,4 @@ class UserDataSerializer(serializers.ModelSerializer):
     dropoffaddress = DropoffAddressGetSerializer(many=True, read_only=True)
     order = OrderHistorySerializer(many=True, read_only=True)
     profile = ProfileSerializer(read_only=True)
-    user_card = UserCardSerializer(many=True)
+    card_list = UserCardSerializer(many=True)

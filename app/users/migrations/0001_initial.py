@@ -59,7 +59,7 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='UserCard',
+            name='Card',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('created', models.DateTimeField(auto_now_add=True, verbose_name='creation date and time')),
@@ -67,7 +67,7 @@ class Migration(migrations.Migration):
                 ('stripe_card_id', models.TextField()),
                 ('is_active', models.BooleanField(default=False)),
                 ('added_datetime', models.DateTimeField(auto_now_add=True)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='user_card', to=settings.AUTH_USER_MODEL)),
+                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='card_list', to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'abstract': False,

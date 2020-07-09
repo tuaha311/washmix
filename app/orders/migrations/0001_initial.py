@@ -17,18 +17,6 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='AddressOrder',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', models.DateTimeField(auto_now_add=True, verbose_name='creation date and time')),
-                ('changed', models.DateTimeField(auto_now=True, verbose_name='last changed date and time')),
-                ('address', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='core.PickupAddress')),
-            ],
-            options={
-                'abstract': False,
-            },
-        ),
-        migrations.CreateModel(
             name='Order',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),

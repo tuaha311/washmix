@@ -7,7 +7,7 @@ from core.models import Coupons, DropoffAddress, PickupAddress
 from modules.constant import MESSAGE_ERROR_MISSING_ADDRESS
 from modules.enums import PACKAGES, CouponType
 from orders.models import Order, OrderItems
-from users.models import UserCard
+from billing.models import Card
 
 
 class OrderItemsSerializer(serializers.ModelSerializer):
@@ -60,7 +60,7 @@ class OrderSerializer(serializers.ModelSerializer):
     same_day_delivery = serializers.BooleanField(required=False)
 
     order_items = OrderItemsSerializer(many=True)
-    user_card = serializers.IntegerField()
+    card_list = serializers.IntegerField()
     currency = serializers.CharField()
 
     coupon_code = serializers.CharField(required=False)
@@ -81,7 +81,7 @@ class OrderSerializer(serializers.ModelSerializer):
             "total_cost",
             "id",
             "order_items",
-            "user_card",
+            "card_list",
             "currency",
             "coupon_code",
         )
@@ -90,7 +90,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
         order_items = validated_data.pop("order_items", None)
         currency = validated_data.pop("currency", None)
-        wm_card_id = validated_data.pop("user_card", None)
+        wm_card_id = validated_data.pop("card_list", None)
         stripe_status_api = status.HTTP_200_OK
         card = None
 
@@ -103,7 +103,7 @@ class OrderSerializer(serializers.ModelSerializer):
             # This checks if user has a prepay package
             if not self.user.profile.package_id:
                 raise ValidationError(detail="User has not bought package yet")
-        except UserCard.DoesNotExist:
+        except Card.DoesNotExist:
             raise ValidationError(detail="Invalid or no user card added")
         except (PickupAddress.DoesNotExist, DropoffAddress.DoesNotExist):
             raise ValidationError(detail=MESSAGE_ERROR_MISSING_ADDRESS)

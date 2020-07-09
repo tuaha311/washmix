@@ -17,7 +17,7 @@ from api.serializers.packages import PackageSerializer
 from core.models import PackageType
 from modules.enums import PACKAGES
 from modules.helpers import BalanceOperation, StripeHelper, update_user_balance, wm_exception
-from users.models import UserCard
+from billing.models import Card
 from utilities.email_formatters import format_purchase
 from utilities.emails import WMEmailControllerSendGrid
 
@@ -85,7 +85,7 @@ class Cards(APIView):
         """
         user = user or request.user
         token = request.get("token_id") or request.data.get("token_id", None)
-        user_card = None
+        card_list = None
         # try:
         message = "User card added!"
         status_api = status.HTTP_201_CREATED
@@ -114,7 +114,7 @@ class Cards(APIView):
             # Sources on customer against which charge is created e.g Card.
             card = stripe_obj.get_card()
             # Saving Card Id to track multiple added cards against any user.
-            user_card = UserCard.objects.create(user=user, stripe_card_id=card.id)
+            card_list = Card.objects.create(user=user, stripe_card_id=card.id)
 
         # except ValidationError as error:
         #     message = error.detail.string
@@ -127,7 +127,7 @@ class Cards(APIView):
         #     message = error.detail.string
         #     status_api = status.HTTP_400_BAD_REQUEST
 
-        response_dict = {"card_id": user_card.id if user_card else None}
+        response_dict = {"card_id": card_list.id if card_list else None}
 
         return message, status_api, response_dict
 
@@ -179,8 +179,8 @@ class Cards(APIView):
         response_dict = {}
 
         try:
-            card = UserCard.objects.get(user=user, id=card_id)
-        except UserCard.DoesNotExist:
+            card = Card.objects.get(user=user, id=card_id)
+        except Card.DoesNotExist:
             raise ValidationError(detail="Wrong user card id")
 
         charge = None
@@ -256,15 +256,15 @@ class Cards(APIView):
 
             strip_user_id = user.profile.stripe_customer_id
 
-            UserCard.objects.filter(user=user).update(is_active=False)
-            user_card = UserCard.objects.get(user=user, id=card_id)
-            user_card.is_active = request_body.pop("is_active", False)
-            user_card.save()
+            Card.objects.filter(user=user).update(is_active=False)
+            card_list = Card.objects.get(user=user, id=card_id)
+            card_list.is_active = request_body.pop("is_active", False)
+            card_list.save()
 
             if request_body:
                 stripe.api_key = self.load_stripe_config()
                 customer = stripe.Customer.retrieve(strip_user_id)
-                strip_user_card = customer.sources.retrieve(user_card.stripe_card_id)
+                strip_user_card = customer.sources.retrieve(card_list.stripe_card_id)
 
                 # Could expect any info update on user card, but
                 # it should be, which stripes supports.

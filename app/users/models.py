@@ -60,15 +60,6 @@ class CustomToken(Common):
     is_long_lived = models.BooleanField(default=True)
 
 
-class UserCard(Common):
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="user_card"
-    )
-    stripe_card_id = models.TextField()
-    is_active = models.BooleanField(default=False)
-    added_datetime = models.DateTimeField(auto_now_add=True)
-
-
 class UserMessage(Common):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     message = models.TextField(default="")

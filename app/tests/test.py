@@ -16,7 +16,8 @@ from modules.helpers import (
 )
 from orders.models import Order
 from tests.conftest import fake
-from users.models import Profile, UserCard
+from users.models import Profile
+from billing.models import Card
 
 
 class UsersTest(APITestCase):
@@ -328,5 +329,5 @@ class UsersTest(APITestCase):
         self.assertEqual(user.profile.stripe_customer_id, "sample_id")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        user_card = UserCard.objects.get(user=user)
-        self.assertEqual(user_card.stripe_card_id, "sample_card_id")
+        card_list = Card.objects.get(user=user)
+        self.assertEqual(card_list.stripe_card_id, "sample_card_id")
