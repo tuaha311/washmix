@@ -1,7 +1,8 @@
 from django.conf import settings
 from django.contrib.auth.models import User
-from oauth2_provider.models import AccessToken
+
 import requests
+from oauth2_provider.models import AccessToken
 
 
 def convert_to_auth_token(client_id, client_secret, backend, token):

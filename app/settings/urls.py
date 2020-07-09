@@ -1,9 +1,10 @@
-import debug_toolbar
 from django.conf import settings
 from django.conf.urls import include
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 from django.urls import path, re_path
+
+import debug_toolbar
 
 from api.views import auth, coupons, login, oauth, orders, products, refresh_token, stripe, users
 from core.admin import admin_site

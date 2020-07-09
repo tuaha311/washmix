@@ -1,4 +1,5 @@
 from django.conf import settings
+
 from oauth2_provider.admin import AccessToken, Application
 from oauth2_provider.contrib.rest_framework import OAuth2Authentication, permissions
 from rest_framework import status
@@ -11,10 +12,10 @@ from rest_framework_social_oauth2.views import TokenView
 
 from api.serializers.refresh_token import RefreshTokenSerializer
 from api.serializers.users import UserDataSerializer
-from core.models import CustomToken
 from modules.enums import SignUp
 from modules.helpers import StripeHelper
 from modules.oauth import get_user_by_email, get_user_from_token
+from users.models import CustomToken
 from utilities.token import expired
 
 # OAUTH TOOLKIT ID AND SECRET

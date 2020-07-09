@@ -1,7 +1,7 @@
 import dramatiq
 
 from core.middleware import TwilioNotificationsMiddleware
-from core.models import Order
+from orders.models import Order
 
 
 @dramatiq.actor

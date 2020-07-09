@@ -1,10 +1,13 @@
 from django.core.exceptions import MultipleObjectsReturned
+
 from rest_framework import serializers, status
 from rest_framework.exceptions import ValidationError
 
-from core.models import Coupons, DropoffAddress, Order, OrderItems, PickupAddress, UserCard
+from core.models import Coupons, DropoffAddress, PickupAddress
 from modules.constant import MESSAGE_ERROR_MISSING_ADDRESS
 from modules.enums import PACKAGES, CouponType
+from orders.models import Order, OrderItems
+from users.models import UserCard
 
 
 class OrderItemsSerializer(serializers.ModelSerializer):

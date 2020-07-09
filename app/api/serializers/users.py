@@ -1,6 +1,7 @@
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
+
 from rest_framework import serializers
 from rest_framework.exceptions import PermissionDenied, ValidationError
 
@@ -12,9 +13,10 @@ from api.serializers.addresses import (
     PickupAddressSerializer,
 )
 from api.serializers.orders import OrderHistorySerializer, OrderSerializer
-from core.models import PackageType, Profile, UserCard
+from core.models import PackageType
 from modules.enums import AppUsers, Crease, Detergents, SignUp, Starch
 from modules.helpers import commit_transaction, random_string
+from users.models import Profile, UserCard
 
 
 def email_validator(value):

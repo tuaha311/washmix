@@ -1,12 +1,12 @@
 import logging
 import os
 
+import stripe
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_social_oauth2.authentication import SocialAuthentication
-import stripe
 
 from api.permissions import (
     CustomSocialAuthentication,
@@ -14,9 +14,10 @@ from api.permissions import (
     RefreshTokenAuthentication,
 )
 from api.serializers.packages import PackageSerializer
-from core.models import PackageType, UserCard
+from core.models import PackageType
 from modules.enums import PACKAGES
 from modules.helpers import BalanceOperation, StripeHelper, update_user_balance, wm_exception
+from users.models import UserCard
 from utilities.email_formatters import format_purchase
 from utilities.emails import WMEmailControllerSendGrid
 

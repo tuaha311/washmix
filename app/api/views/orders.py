@@ -1,6 +1,7 @@
 import logging
 
 from django.contrib.auth.models import User
+
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
@@ -10,7 +11,7 @@ from rest_framework_social_oauth2.authentication import SocialAuthentication
 
 from api.permissions import CustomSocialAuthentication, RefreshTokenAuthentication
 from api.serializers.orders import OrderHistorySerializer, OrderSerializer
-from core.models import Order
+from orders.models import Order
 
 logging.basicConfig(level=logging.ERROR, format="%(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)

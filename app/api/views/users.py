@@ -1,6 +1,7 @@
 import logging
 
 from django.contrib.auth.models import User
+
 from djoser.views import ActivationView
 from rest_framework import status
 from rest_framework.response import Response
