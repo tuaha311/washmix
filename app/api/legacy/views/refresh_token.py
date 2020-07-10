@@ -8,7 +8,7 @@ from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.response import Response
 from rest_framework_social_oauth2.views import TokenView
 
-from api.serializers.users import UserDataSerializer
+from api.legacy.serializers.users import UserDataSerializer
 from modules.enums import SignUp
 from modules.helpers import StripeHelper
 from modules.oauth import get_user_by_email, get_user_from_token

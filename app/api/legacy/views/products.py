@@ -4,13 +4,13 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_social_oauth2.authentication import SocialAuthentication
 
+from api.legacy.serializers.products import ProductSerializer
 from api.permissions import (
     CustomIsAdminUser,
     CustomSocialAuthentication,
     IsAuthenticatedOrPost,
     RefreshTokenAuthentication,
 )
-from api.serializers.products import ProductSerializer
 from core.models import Product
 
 

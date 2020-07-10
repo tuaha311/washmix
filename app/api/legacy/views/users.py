@@ -7,6 +7,8 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework_social_oauth2.authentication import SocialAuthentication
 
+from api.legacy.serializers.users import UserDataSerializer, UserSerializer
+from api.legacy.views.stripe import Cards
 from api.permissions import (
     CustomIsAdminUser,
     CustomSocialAuthentication,
@@ -14,8 +16,6 @@ from api.permissions import (
     RefreshTokenAuthentication,
     account_activation_token,
 )
-from api.serializers.users import UserDataSerializer, UserSerializer
-from api.views.stripe import Cards
 from modules.enums import AppUsers
 from modules.helpers import StripeHelper, wm_exception
 

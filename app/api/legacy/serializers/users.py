@@ -6,13 +6,13 @@ from rest_framework import serializers
 from rest_framework.exceptions import PermissionDenied, ValidationError
 
 from api.fields import EnumField
-from api.serializers.addresses import (
+from api.legacy.serializers.addresses import (
     AddressGetSerializer,
     DropoffAddressGetSerializer,
     DropoffAddressSerializer,
     PickupAddressSerializer,
 )
-from api.serializers.orders import OrderHistorySerializer, OrderSerializer
+from api.legacy.serializers.orders import OrderHistorySerializer, OrderSerializer
 from billing.models import Card
 from core.models import Package
 from modules.enums import AppUsers, Crease, Detergents, SignUp, Starch

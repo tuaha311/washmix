@@ -8,12 +8,12 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_social_oauth2.authentication import SocialAuthentication
 
+from api.legacy.serializers.packages import PackageSerializer
 from api.permissions import (
     CustomSocialAuthentication,
     IsAuthenticatedOrAdmin,
     RefreshTokenAuthentication,
 )
-from api.serializers.packages import PackageSerializer
 from billing.models import Card
 from core.models import Package
 from modules.enums import PACKAGES
