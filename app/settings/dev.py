@@ -97,18 +97,15 @@ PASSWORD_HASHERS = (
     "django.contrib.auth.hashers.CryptPasswordHasher",
 )
 
-AUTHENTICATION_BACKENDS = (
-    # Others auth providers (e.g. Google, OpenId, etc)
+AUTHENTICATION_BACKENDS = [
     # Facebook OAuth2
     "social_core.backends.facebook.FacebookAppOAuth2",
     "social_core.backends.facebook.FacebookOAuth2",
     # Google OAuth2
     "social_core.backends.google.GoogleOAuth2",
-    # django-rest-framework-social-oauth2
-    "rest_framework_social_oauth2.backends.DjangoOAuth2",
     # Django
     "django.contrib.auth.backends.ModelBackend",
-)
+]
 
 
 SOCIAL_AUTH_PIPELINE = (

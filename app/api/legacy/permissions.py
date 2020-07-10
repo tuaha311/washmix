@@ -1,9 +1,7 @@
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils import six
 
-from oauth2_provider.backends import OAuth2Backend
-from rest_framework import HTTP_HEADER_ENCODING, exceptions
-from rest_framework.authentication import get_authorization_header
+from rest_framework import exceptions
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework_expiring_authtoken.authentication import ExpiringTokenAuthentication
 from rest_framework_expiring_authtoken.models import ExpiringToken
@@ -74,30 +72,6 @@ class RefreshTokenAuthentication(ExpiringTokenAuthentication):
             raise exceptions.AuthenticationFailed("Token has expired")
 
         return (token.user, token)
-
-
-class CustomSocialAuthentication(OAuth2Backend):
-    def authenticate(self, request):
-
-        auth_header = get_authorization_header(request).decode(HTTP_HEADER_ENCODING)
-        auth = auth_header.split()
-
-        if not auth or auth[0].lower() != "bearer":
-            return None
-
-        if len(auth) == 1:
-            msg = "Invalid token header"
-            raise exceptions.AuthenticationFailed(msg)
-        elif len(auth) > 3:
-            msg = "Invalid token header. Token string should not contain spaces."
-            raise exceptions.AuthenticationFailed(msg)
-
-        response = super(CustomSocialAuthentication, self).authenticate(request=request)
-        if not response:
-            return response
-
-        token = auth[1]
-        return response, token
 
 
 class TokenGenerator(PasswordResetTokenGenerator):

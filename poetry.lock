@@ -183,18 +183,6 @@ django = "*"
 
 [[package]]
 category = "main"
-description = "Reusable, generic mixins for Django"
-name = "django-braces"
-optional = false
-python-versions = "*"
-version = "1.14.0"
-
-[package.dependencies]
-Django = ">=1.11.0"
-six = "*"
-
-[[package]]
-category = "main"
 description = "Deletes old files."
 name = "django-cleanup"
 optional = false
@@ -282,33 +270,6 @@ version = "1.0.5"
 
 [package.dependencies]
 markdown2 = "*"
-
-[[package]]
-category = "main"
-description = "OAuth2 Provider for Django"
-name = "django-oauth-toolkit"
-optional = false
-python-versions = "*"
-version = "1.2.0"
-
-[package.dependencies]
-django = ">=2.0"
-oauthlib = ">=2.0.3"
-requests = ">=2.13.0"
-
-[[package]]
-category = "main"
-description = "python-social-auth and oauth2 support for django-rest-framework"
-name = "django-rest-framework-social-oauth2"
-optional = false
-python-versions = "*"
-version = "1.1.0"
-
-[package.dependencies]
-django-braces = ">=1.11.0"
-django-oauth-toolkit = ">=1.0.0"
-djangorestframework = ">=3.0.1"
-social-auth-app-django = ">=0.1.0"
 
 [[package]]
 category = "main"
@@ -999,7 +960,7 @@ test = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 
 [metadata]
-content-hash = "b082d3dadf772ef779607f724fac254dbeba9eb2e9069a85aa34cd3e5ceaec9f"
+content-hash = "00009492fdeae6789c449abd132ce4b9196b064a0c1c8fa5d9531dcb4a12ceb7"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -1125,10 +1086,6 @@ django-appconf = [
     {file = "django-appconf-1.0.4.tar.gz", hash = "sha256:be58deb54a43d77d2e1621fe59f787681376d3cd0b8bd8e4758ef6c3a6453380"},
     {file = "django_appconf-1.0.4-py2.py3-none-any.whl", hash = "sha256:1b1d0e1069c843ebe8ae5aa48ec52403b1440402b320c3e3a206a0907e97bb06"},
 ]
-django-braces = [
-    {file = "django-braces-1.14.0.tar.gz", hash = "sha256:83705b78948de00804bfacf40c315d001bb39630f35bbdd8588211c2d5b4d43f"},
-    {file = "django_braces-1.14.0-py2.py3-none-any.whl", hash = "sha256:a6d9b34cf3e4949635e54884097c30410d7964fc7bec7231445ea7079b8c5722"},
-]
 django-cleanup = [
     {file = "django-cleanup-2.1.0.tar.gz", hash = "sha256:0e91783200d75f21a64cb5f9d9dbc1bedd377a7d8de97a55ec8a0e2e28abaf5d"},
     {file = "django_cleanup-2.1.0-py2.py3-none-any.whl", hash = "sha256:36f04ec3901e6d9fd996b99b383c2367c0b880c77e6699142b51ca64cb659e54"},
@@ -1157,12 +1114,6 @@ django-libsass = [
 ]
 django-markdown-deux = [
     {file = "django-markdown-deux-1.0.5.zip", hash = "sha256:5b4a3cd9454af5b4cec0e19151b41d98d09400ddae0688afb81dbf62a4edafff"},
-]
-django-oauth-toolkit = [
-    {file = "django_oauth_toolkit-1.2.0-py2.py3-none-any.whl", hash = "sha256:ad1b76275950ebbff708222cec57bbdb879f89bac7df6b9dee0f4b9db485c264"},
-]
-django-rest-framework-social-oauth2 = [
-    {file = "django-rest-framework-social-oauth2-1.1.0.tar.gz", hash = "sha256:c9a297b636ffd37957c6146280e99ead41e6aca37bcb995e3d52d65eefbca0b7"},
 ]
 django-robots = [
     {file = "django-robots-3.1.0.tar.gz", hash = "sha256:59baa054fc38751f1d6a38e873e0a7e431b646b5ee757534544da05c3873a213"},

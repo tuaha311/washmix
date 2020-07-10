@@ -6,10 +6,8 @@ from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework_social_oauth2.authentication import SocialAuthentication
 
 from api.legacy.permissions import (
-    CustomSocialAuthentication,
     IsAuthenticatedOrAdmin,
     RefreshTokenAuthentication,
 )
@@ -28,8 +26,6 @@ logger = logging.getLogger(__name__)
 class Cards(APIView):
     authentication_classes = (
         RefreshTokenAuthentication,
-        CustomSocialAuthentication,
-        SocialAuthentication,
     )
     permission_classes = (IsAuthenticatedOrAdmin,)
 

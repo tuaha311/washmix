@@ -5,11 +5,9 @@ from django.contrib.auth.models import User
 from djoser.views import ActivationView
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework_social_oauth2.authentication import SocialAuthentication
 
 from api.legacy.permissions import (
     CustomIsAdminUser,
-    CustomSocialAuthentication,
     IsAuthenticatedOrPost,
     RefreshTokenAuthentication,
     account_activation_token,
@@ -29,8 +27,6 @@ logger = logging.getLogger(__name__)
 class Users(Cards):
     authentication_classes = (
         RefreshTokenAuthentication,
-        CustomSocialAuthentication,
-        SocialAuthentication,
     )
     permission_classes = (IsAuthenticatedOrPost, CustomIsAdminUser)
 

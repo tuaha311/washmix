@@ -31,14 +31,12 @@ THIRD_PARTY_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "rest_framework_expiring_authtoken",
-    "rest_framework_social_oauth2",
     "django_dramatiq",
     "compressor",
     "clear_cache",
     "markdown_deux",
     "robots",
     "djoser",
-    "oauth2_provider",
     "social_django",
     "django_cleanup",
 ]
@@ -116,8 +114,6 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 10,
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.TokenAuthentication",
-        # "oauth2_provider.contrib.rest_framework.OAuth2Authentication",
-        # "rest_framework_social_oauth2.authentication.SocialAuthentication",
     ],
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
 }
@@ -128,16 +124,6 @@ REST_FRAMEWORK = {
 ###############
 
 API_URL = "https://api.washmix.com"
-
-##########
-# OAUTH2 #
-##########
-
-OAUTH2_PROVIDER = {
-    "SCOPES": {"read": "Read scope", "write": "Write scope",},
-    "CLIENT_ID_GENERATOR_CLASS": "oauth2_provider.generators.ClientIdGenerator",
-    "CLIENT_SECRET_GENERATOR_CLASS": "oauth2_provider.generators.ClientSecretGenerator",
-}
 
 ##############
 # COMPRESSOR #
