@@ -3,11 +3,11 @@ from django.core.exceptions import MultipleObjectsReturned
 from rest_framework import serializers, status
 from rest_framework.exceptions import ValidationError
 
-from core.models import Coupons, DropoffAddress, PickupAddress
+from billing.models import Card
+from core.models import Coupon, DropoffAddress, PickupAddress
 from modules.constant import MESSAGE_ERROR_MISSING_ADDRESS
 from modules.enums import PACKAGES, CouponType
-from orders.models import Order, OrderItems
-from billing.models import Card
+from orders.models import Item, Order
 
 
 class OrderItemsSerializer(serializers.ModelSerializer):
@@ -18,15 +18,15 @@ class OrderItemsSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False)
 
     class Meta:
-        model = OrderItems
+        model = Item
         fields = ("item", "cost", "id")
 
     def create(self, validate_data):
         try:
-            order_item, _ = OrderItems.objects.get_or_create(
+            order_item, _ = Item.objects.get_or_create(
                 order=self.order, id=validate_data.get("id") if validate_data.get("id") else None,
             )
-        except OrderItems.DoesNotExist:
+        except Item.DoesNotExist:
             raise ValidationError(detail="Not a valid id for an order item")
 
         for key, value in validate_data.items():
@@ -118,10 +118,10 @@ class OrderSerializer(serializers.ModelSerializer):
                 raise ValidationError(detail="Only PAYC Package is allowed")
             total_cost = validated_data.get("total_cost", 0)
             try:
-                coupon = Coupons.objects.get(name=coupon_code, coupon_type=CouponType.FIRST.value)
+                coupon = Coupon.objects.get(name=coupon_code, coupon_type=CouponType.FIRST.value)
                 if not coupon.valid:
                     raise ValidationError(detail="Not a valid coupon anymore")
-            except Coupons.DoesNotExist:
+            except Coupon.DoesNotExist:
                 raise ValidationError(detail="Invalid coupon code")
             discount = coupon.apply_coupon(total_cost)
             profile.is_coupon = False
@@ -227,7 +227,8 @@ class OrderHistorySerializer(serializers.ModelSerializer):
             "drop_off_to_datetime",
             "pickup_address",
             "dropoff_address",
-            "added_datetime",
+            "created",
+            "changed",
             "is_paid",
             "order_items",
             "discount_amount",

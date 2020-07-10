@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
+from billing.models import Card
 from core.models import Address
 from modules.helpers import (
     mock_add_customer,
@@ -17,7 +18,6 @@ from modules.helpers import (
 from orders.models import Order
 from tests.conftest import fake
 from users.models import Profile
-from billing.models import Card
 
 
 class UsersTest(APITestCase):

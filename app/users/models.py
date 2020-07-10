@@ -1,18 +1,17 @@
-from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 
 from rest_framework_expiring_authtoken.models import ExpiringToken
 
-from modules.enums import AppUsers, Crease, Detergents, SignUp, Starch
 from core.common_models import Common
+from modules.enums import AppUsers, Crease, Detergents, SignUp, Starch
 
 
 class Profile(Common):
     """User profile to save extra info other than related to authentication."""
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    package_id = models.ForeignKey("core.PackageType", null=True, on_delete=models.CASCADE)
+    package_id = models.ForeignKey("core.Package", null=True, on_delete=models.CASCADE)
     phone = models.CharField(max_length=15, default="")
 
     # Additional employee information
@@ -58,9 +57,3 @@ class CustomToken(Common):
 
     expiring_token = models.OneToOneField(ExpiringToken, on_delete=models.CASCADE)
     is_long_lived = models.BooleanField(default=True)
-
-
-class UserMessage(Common):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    message = models.TextField(default="")
-    added_datetime = models.DateTimeField(auto_now_add=True)

@@ -14,10 +14,10 @@ from api.permissions import (
     RefreshTokenAuthentication,
 )
 from api.serializers.packages import PackageSerializer
-from core.models import PackageType
+from billing.models import Card
+from core.models import Package
 from modules.enums import PACKAGES
 from modules.helpers import BalanceOperation, StripeHelper, update_user_balance, wm_exception
-from billing.models import Card
 from utilities.email_formatters import format_purchase
 from utilities.emails import WMEmailControllerSendGrid
 
@@ -172,8 +172,8 @@ class Cards(APIView):
         request_body = request_body.get("buy_package")
         package_name = PACKAGES[request_body.get("package_name")]
         try:
-            user_package = PackageType.objects.get(package_name=package_name.value)
-        except PackageType.DoesNotExist:
+            user_package = Package.objects.get(package_name=package_name.value)
+        except Package.DoesNotExist:
             raise ValidationError(detail="Please populate package by executing addPackage commnand")
 
         response_dict = {}

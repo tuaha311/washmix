@@ -13,11 +13,11 @@ from api.serializers.addresses import (
     PickupAddressSerializer,
 )
 from api.serializers.orders import OrderHistorySerializer, OrderSerializer
-from core.models import PackageType
+from billing.models import Card
+from core.models import Package
 from modules.enums import AppUsers, Crease, Detergents, SignUp, Starch
 from modules.helpers import commit_transaction, random_string
 from users.models import Profile
-from billing.models import Card
 
 
 def email_validator(value):
@@ -88,8 +88,8 @@ class UserListSerializer(serializers.ListSerializer):
                 kwargs = {}
                 kwargs.update({"id": package_id} if package_id else {"package_name": package_name})
                 try:
-                    setattr(profile_db, "package_id", PackageType.objects.get(**kwargs))
-                except PackageType.DoesNotExist:
+                    setattr(profile_db, "package_id", Package.objects.get(**kwargs))
+                except Package.DoesNotExist:
                     raise ValidationError(detail="Wrong Package name or id")
             profile_db.save()
 
@@ -277,7 +277,7 @@ class PackageTypeSerializer(serializers.ModelSerializer):
     """
 
     class Meta:
-        model = PackageType
+        model = Package
         fields = ("package_name",)
 
 

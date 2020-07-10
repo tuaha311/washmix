@@ -6,51 +6,22 @@ from rest_framework import status
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework_expiring_authtoken.models import ExpiringToken
 from rest_framework_social_oauth2.views import TokenView
 
-from api.serializers.refresh_token import RefreshTokenSerializer
 from api.serializers.users import UserDataSerializer
 from modules.enums import SignUp
 from modules.helpers import StripeHelper
 from modules.oauth import get_user_by_email, get_user_from_token
-from users.models import CustomToken
-from utilities.token import expired
 
 # OAUTH TOOLKIT ID AND SECRET
 CLIENT_ID = settings.CLIENT_ID
 CLIENT_SECRET = settings.CLIENT_SECRET
 
 
-class AppRefreshTokenView(APIView):
-    def post(self, request, **kwargs):
-
-        serializer = RefreshTokenSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        token = serializer.validated_data["token"]
-        user = serializer.validated_data["user"]
-
-        is_long_lived = True
-        try:
-            CustomToken.objects.get(expiring_token=token)
-        except CustomToken.DoesNotExist:
-            is_long_lived = False
-
-        if (not is_long_lived and token.expired()) or (is_long_lived and expired(token.created)):
-            token.delete()
-            token = ExpiringToken.objects.create(user=serializer.validated_data["user"])
-        if request.data.get("longLived"):
-            CustomToken.objects.get_or_create(expiring_token=token)
-
-        return Response(data={"token": token.key, "user_id": user.id})
-
-
-class SocialAppLoginRefreshTokenView(TokenView):
+class RefreshTokenView(TokenView):
     def post(self, request, *args, **kwargs):
         request.data.update({"client_id": CLIENT_ID, "client_secret": CLIENT_SECRET})
-        response = super(SocialAppLoginRefreshTokenView, self).post(request, *args, **kwargs).data
+        response = super(RefreshTokenView, self).post(request, *args, **kwargs).data
         social_user = None
         if "error" in response:
             social_user = get_user_by_email(request.data.get("username"))

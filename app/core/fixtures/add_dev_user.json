@@ -8,8 +8,8 @@
 			"city": "city",
 			"state": "state",
 			"zip_code": "00000",
-            "added_datetime": "2017-12-08 06:36:54",
-            "updated_datetime": "2017-12-09 06:36:54"
+            "created": "2017-12-08 06:36:54",
+            "changed": "2017-12-09 06:36:54"
 		}
 
 	},
@@ -23,8 +23,8 @@
 			"city": "city",
 			"state": "state",
 			"zip_code": "00000",
-            "added_datetime": "2017-12-08 06:36:54",
-            "updated_datetime": "2017-12-09 06:36:54"
+            "created": "2017-12-08 06:36:54",
+            "changed": "2017-12-09 06:36:54"
 		}
 
 	},

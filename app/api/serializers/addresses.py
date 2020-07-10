@@ -107,8 +107,8 @@ class AddressGetSerializer(serializers.ModelSerializer):
             "city",
             "zip_code",
             "state",
-            "added_datetime",
-            "updated_datetime",
+            "created",
+            "changed",
             "title",
         )
 
@@ -127,7 +127,7 @@ class DropoffAddressGetSerializer(serializers.ModelSerializer):
             "city",
             "zip_code",
             "state",
-            "added_datetime",
-            "updated_datetime",
+            "created",
+            "changed",
             "title",
         )

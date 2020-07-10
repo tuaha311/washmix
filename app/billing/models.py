@@ -10,4 +10,3 @@ class Card(Common):
     )
     stripe_card_id = models.TextField()
     is_active = models.BooleanField(default=False)
-    added_datetime = models.DateTimeField(auto_now_add=True)

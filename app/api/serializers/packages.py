@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from core.models import Coupons
+from core.models import Coupon
 from modules.enums import PACKAGES, CouponType
 
 
@@ -19,12 +19,12 @@ class PackageSerializer(serializers.Serializer):
                 raise ValidationError(detail="Invalid Coupon code")
 
             try:
-                coupon = Coupons.objects.get(name=coupon_code)
+                coupon = Coupon.objects.get(name=coupon_code)
                 if not coupon.valid:
                     raise ValidationError(detail="Not a valid coupon anymore")
                 if CouponType.PACKAGE.value != coupon.coupon_type:
                     raise ValidationError(detail="Invalid Coupon")
-            except Coupons.DoesNotExist:
+            except Coupon.DoesNotExist:
                 raise ValidationError(detail="Invalid Coupon code")
 
             attrs["coupon"] = coupon

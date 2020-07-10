@@ -6,7 +6,7 @@ from django.core.exceptions import MiddlewareNotUsed
 
 from twilio.rest import Client
 
-from users.models import UserMessage
+from core.models import Notification
 
 
 def load_twilio_config():
@@ -43,4 +43,4 @@ class TwilioNotificationsMiddleware(object):
             self.client.send_message(message_to_send, to)
         except Exception:
             return
-        UserMessage.objects.create(user=self.user, message=message_to_send)
+        Notification.objects.create(user=self.user, message=message_to_send)

@@ -16,23 +16,27 @@ class Order(Common):
     dropoff_address = models.ForeignKey(
         "core.DropoffAddress", default=None, on_delete=models.CASCADE
     )
+
+    # TODO rename to delivery_day
     next_day_delivery = models.BooleanField(default=False)
     same_day_delivery = models.BooleanField(default=False)
 
+    # TODO move to intermediate model
     pick_up_from_datetime = models.DateTimeField(default=timezone.now)
     pick_up_to_datetime = models.DateTimeField(default=timezone.now)
 
+    # TODO move to intermediate model
     drop_off_from_datetime = models.DateTimeField(default=timezone.now)
     drop_off_to_datetime = models.DateTimeField(default=timezone.now)
 
+    # TODO what a diff
     instructions = models.TextField(blank=True)
     additional_notes = models.TextField(blank=True)
 
-    added_datetime = models.DateTimeField(auto_now_add=True)
-    updated_datetime = models.DateTimeField(auto_now=True)
-
+    # TODO move logic to products
     total_cost = models.FloatField(default=0.0)
 
+    # TODO move logic to coupons
     discount_description = models.TextField(blank=True)
     discount_amount = models.FloatField(default=0)
 
@@ -92,7 +96,7 @@ class Order(Common):
         super(Order, self).save()
 
 
-class OrderItems(Common):
+class Item(Common):
     order = models.ForeignKey("orders.Order", on_delete=models.CASCADE, related_name="order_items")
     item = models.TextField(default="")
     cost = models.FloatField(default=0)
