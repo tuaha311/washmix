@@ -11,10 +11,11 @@ from core.common_models import Common
 
 class Order(Common):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="order")
-
-    pickup_address = models.ForeignKey("core.PickupAddress", default=None, on_delete=models.CASCADE)
+    pickup_address = models.ForeignKey(
+        "core.Address", on_delete=models.CASCADE, related_name="pickup_address_list",
+    )
     dropoff_address = models.ForeignKey(
-        "core.DropoffAddress", default=None, on_delete=models.CASCADE
+        "core.Address", on_delete=models.CASCADE, related_name="dropoff_address_list",
     )
 
     # TODO rename to delivery_day

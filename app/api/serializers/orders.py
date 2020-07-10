@@ -4,7 +4,7 @@ from rest_framework import serializers, status
 from rest_framework.exceptions import ValidationError
 
 from billing.models import Card
-from core.models import Coupon, DropoffAddress, PickupAddress
+from core.models import Address, Coupon
 from modules.constant import MESSAGE_ERROR_MISSING_ADDRESS
 from modules.enums import PACKAGES, CouponType
 from orders.models import Item, Order
@@ -97,15 +97,15 @@ class OrderSerializer(serializers.ModelSerializer):
         coupon_code = validated_data.pop("coupon_code", None)
 
         try:
-            pickup_addresses = PickupAddress.objects.get(user=self.user)
-            dropoff_addresses = DropoffAddress.objects.get(user=self.user)
+            pickup_addresses = Address.objects.get(user=self.user)
+            dropoff_addresses = Address.objects.get(user=self.user)
 
             # This checks if user has a prepay package
             if not self.user.profile.package_id:
                 raise ValidationError(detail="User has not bought package yet")
         except Card.DoesNotExist:
             raise ValidationError(detail="Invalid or no user card added")
-        except (PickupAddress.DoesNotExist, DropoffAddress.DoesNotExist):
+        except Address.DoesNotExist:
             raise ValidationError(detail=MESSAGE_ERROR_MISSING_ADDRESS)
         except MultipleObjectsReturned:
             raise ValidationError(detail="Addresses for user Already exist!")

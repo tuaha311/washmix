@@ -10,18 +10,9 @@ from modules.enums import CouponType
 from orders.models import Order
 
 
-class PickupAddress(Common):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="pickupaddress")
-    address_line_1 = models.TextField()
-    address_line_2 = models.TextField(default="")
-    state = models.CharField(max_length=30, default="")
-    city = models.CharField(max_length=30)
-    zip_code = models.CharField(max_length=30)
-    title = models.CharField(max_length=80, default="")
+class Address(Common):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="address_list")
 
-
-class DropoffAddress(Common):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="dropoffaddress")
     address_line_1 = models.TextField()
     address_line_2 = models.TextField(default="")
     state = models.CharField(max_length=30, default="")
@@ -54,13 +45,15 @@ class Coupon(Common):
 
 
 class Product(Common):
-    name = models.CharField(max_length=50)
     product = models.ForeignKey(
         "self", null=True, related_name="children", on_delete=models.CASCADE
     )
+
+    name = models.CharField(max_length=50)
     price = models.FloatField(default=0)
 
 
 class Notification(Common):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
     message = models.TextField(default="")
