@@ -4,7 +4,7 @@ from django.conf import settings
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 
-from api.permissions import account_activation_token
+from api.legacy.permissions import account_activation_token
 from modules.constant import WASHMIX_TEAM_ORDER_DROPOFF, WASHMIX_TEAM_ORDER_PICK
 
 
