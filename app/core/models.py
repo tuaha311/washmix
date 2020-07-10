@@ -54,6 +54,8 @@ class Product(Common):
 
 
 class Notification(Common):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="notification_list"
+    )
 
     message = models.TextField(default="")

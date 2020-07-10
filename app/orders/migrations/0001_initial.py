@@ -89,7 +89,7 @@ class Migration(migrations.Migration):
                     "user",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="order",
+                        related_name="order_list",
                         to=settings.AUTH_USER_MODEL,
                     ),
                 ),
@@ -101,7 +101,7 @@ class Migration(migrations.Migration):
             name="order",
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
-                related_name="order_items",
+                related_name="item_list",
                 to="orders.Order",
             ),
         ),

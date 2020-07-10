@@ -10,8 +10,10 @@ from modules.enums import AppUsers, Crease, Detergents, SignUp, Starch
 class Profile(Common):
     """User profile to save extra info other than related to authentication."""
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    package_id = models.ForeignKey("core.Package", null=True, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
+    package_id = models.ForeignKey(
+        "core.Package", null=True, on_delete=models.CASCADE, related_name="profile_list"
+    )
     phone = models.CharField(max_length=15, default="")
 
     # Additional employee information

@@ -10,7 +10,7 @@ from core.common_models import Common
 
 
 class Order(Common):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="order")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="order_list")
     pickup_address = models.ForeignKey(
         "core.Address", on_delete=models.CASCADE, related_name="pickup_address_list",
     )
@@ -98,6 +98,6 @@ class Order(Common):
 
 
 class Item(Common):
-    order = models.ForeignKey("orders.Order", on_delete=models.CASCADE, related_name="order_items")
+    order = models.ForeignKey("orders.Order", on_delete=models.CASCADE, related_name="item_list")
     item = models.TextField(default="")
     cost = models.FloatField(default=0)
