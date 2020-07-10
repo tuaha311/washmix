@@ -9,8 +9,12 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_social_oauth2.authentication import SocialAuthentication
 
+from api.legacy.permissions import (
+    CustomIsAdminUser,
+    IsAuthenticatedOrPost,
+    RefreshTokenAuthentication,
+)
 from api.legacy.serializers.users import UserDataSerializer
-from api.legacy.permissions import CustomIsAdminUser, IsAuthenticatedOrPost, RefreshTokenAuthentication
 from modules.oauth import convert_to_auth_token, get_user_from_token
 
 logging.basicConfig(level=logging.ERROR, format="%(name)s - %(levelname)s - %(message)s")

@@ -15,9 +15,6 @@ from api.legacy.views import (
 )
 from core.admin import admin_site
 
-urlpatterns = []
-
-
 users_patterns = [
     re_path(r"^(?P<id>\d+)?/?(?P<app_users>[A-Z_]+)?/?$", users.Users.as_view()),
 ]
@@ -32,7 +29,7 @@ auth_patterns = [
 ]
 
 
-urlpatterns += [
+urlpatterns = [
     #
     # Include block
     #
