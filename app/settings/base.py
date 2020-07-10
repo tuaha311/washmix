@@ -13,9 +13,6 @@ ALLOWED_HOSTS = ["*"]
 
 SECRET_KEY = "^8x5j(d(4h#+rw*g1_@ul8dk-5kdm3+dgsg2!$&k7!no2bj19v"
 
-SITE_ID = 1
-
-
 DJANGO_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -49,6 +46,19 @@ LOCAL_APPS = [
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
+
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": "wm_local",
+        "USER": "wm_user",
+        "PASSWORD": "rootroot",
+        "HOST": "localhost",
+        "PORT": "5432",
+    }
+}
+
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -84,6 +94,8 @@ STATICFILES_FINDERS += ("compressor.finders.CompressorFinder",)
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "../media")
 
+WSGI_APPLICATION = "settings.wsgi.application"
+
 
 TEMPLATES = [
     {
@@ -104,6 +116,24 @@ TEMPLATES = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = [
+    # Facebook OAuth2
+    "social_core.backends.facebook.FacebookAppOAuth2",
+    "social_core.backends.facebook.FacebookOAuth2",
+    # Google OAuth2
+    "social_core.backends.google.GoogleOAuth2",
+    # Django
+    "django.contrib.auth.backends.ModelBackend",
+]
+
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_USE_TLS = True
+EMAIL_HOST = "smtp.sendgrid.net"
+EMAIL_HOST_USER = "khurram.farooq"
+EMAIL_HOST_PASSWORD = os.environ.get("SENDGRID_API_KEY")
+EMAIL_PORT = 587
+
 
 #########################
 # DJANGO REST FRAMEWORK #
@@ -120,16 +150,50 @@ REST_FRAMEWORK = {
 
 
 ###############
-# APPLICATION #
+# SOCIAL AUTH #
 ###############
 
-API_URL = "https://api.washmix.com"
+SOCIAL_AUTH_POSTGRES_JSONFIELD = True
 
-##############
-# COMPRESSOR #
-##############
+SOCIAL_AUTH_PIPELINE = [
+    "social_core.pipeline.social_auth.social_details",
+    "social_core.pipeline.social_auth.social_uid",
+    "social_core.pipeline.user.get_username",
+    "social_core.pipeline.social_auth.social_user",
+    "social.pipeline.check_email_exists",
+    "social_core.pipeline.user.create_user",
+    "social.pipeline.add_additional_social_userinfo",
+    "social_core.pipeline.social_auth.associate_user",
+    "social_core.pipeline.social_auth.load_extra_data",
+    "social_core.pipeline.user.user_details",
+    "social_core.pipeline.social_auth.associate_by_email",
+]
 
-COMPRESS_PRECOMPILERS = (("text/x-scss", "django_libsass.SassCompiler"),)
 
-THUMBNAIL_ALTERNATIVE_RESOLUTIONS = [1.5, 2]
-THUMBNAIL_ORIENTATION = False
+SOCIAL_AUTH_FACEBOOK_KEY = "848182878700209"
+SOCIAL_AUTH_FACEBOOK_SECRET = "5fead6fc5cc06427203ef67694c19ae3"
+SOCIAL_AUTH_FACEBOOK_SCOPE = ["email"]
+SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {"fields": "id, name, email"}
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = "214515422450-3fqjh7egs8mek414ppcq1ri76fvci7sm.apps.googleusercontent.com"
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = "0S9ZLeT-5FBXh9magVyiDlBG"
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ["profile", "email", "openid"]
+
+
+############
+# DRAMATIQ #
+############
+
+DRAMATIQ_BROKER = {
+    "BROKER": "dramatiq.brokers.redis.RedisBroker",
+    "OPTIONS": {"url": "redis://localhost:6379/0"},
+    "MIDDLEWARE": [
+        "dramatiq.middleware.Prometheus",
+        "dramatiq.middleware.AgeLimit",
+        "dramatiq.middleware.TimeLimit",
+        "dramatiq.middleware.Callbacks",
+        "dramatiq.middleware.Retries",
+        "django_dramatiq.middleware.AdminMiddleware",
+        "django_dramatiq.middleware.DbConnectionsMiddleware",
+    ],
+}
