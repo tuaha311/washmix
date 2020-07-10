@@ -9,7 +9,7 @@ from rest_framework_social_oauth2.authentication import SocialAuthentication
 
 from api.legacy.serializers.users import UserDataSerializer, UserSerializer
 from api.legacy.views.stripe import Cards
-from api.permissions import (
+from api.legacy.permissions import (
     CustomIsAdminUser,
     CustomSocialAuthentication,
     IsAuthenticatedOrPost,

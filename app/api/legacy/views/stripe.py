@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 from rest_framework_social_oauth2.authentication import SocialAuthentication
 
 from api.legacy.serializers.packages import PackageSerializer
-from api.permissions import (
+from api.legacy.permissions import (
     CustomSocialAuthentication,
     IsAuthenticatedOrAdmin,
     RefreshTokenAuthentication,

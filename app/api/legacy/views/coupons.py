@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from api.legacy.serializers.coupons import CouponsSerializer
-from api.permissions import CustomSocialAuthentication
+from api.legacy.permissions import CustomSocialAuthentication
 
 
 class CouponView(APIView):

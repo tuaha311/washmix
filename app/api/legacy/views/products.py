@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework_social_oauth2.authentication import SocialAuthentication
 
 from api.legacy.serializers.products import ProductSerializer
-from api.permissions import (
+from api.legacy.permissions import (
     CustomIsAdminUser,
     CustomSocialAuthentication,
     IsAuthenticatedOrPost,

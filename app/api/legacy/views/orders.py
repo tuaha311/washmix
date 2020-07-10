@@ -10,7 +10,7 @@ from rest_framework.views import APIView
 from rest_framework_social_oauth2.authentication import SocialAuthentication
 
 from api.legacy.serializers.orders import OrderHistorySerializer, OrderSerializer
-from api.permissions import CustomSocialAuthentication, RefreshTokenAuthentication
+from api.legacy.permissions import CustomSocialAuthentication, RefreshTokenAuthentication
 from orders.models import Order
 
 logging.basicConfig(level=logging.ERROR, format="%(name)s - %(levelname)s - %(message)s")
