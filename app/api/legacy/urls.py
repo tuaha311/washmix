@@ -5,7 +5,6 @@ from django.urls import path, re_path
 from api.legacy.views import (
     auth,
     coupons,
-    login,
     orders,
     products,
     stripe,
@@ -19,7 +18,6 @@ users_patterns = [
 
 
 auth_patterns = [
-    re_path(r"^login/$", login.LoginUser.as_view()),
     re_path(r"^activate/$", users.UserActivationView.as_view()),
 ]
 

@@ -8,7 +8,6 @@ from rest_framework.response import Response
 from rest_framework.settings import api_settings
 from rest_framework.views import APIView
 
-from api.legacy.permissions import RefreshTokenAuthentication
 from api.legacy.serializers.orders import OrderHistorySerializer, OrderSerializer
 from orders.models import Order
 
@@ -34,7 +33,6 @@ class Orders(APIView):
     """
 
     authentication_classes = (
-        RefreshTokenAuthentication,
     )
     pagination_class = api_settings.DEFAULT_PAGINATION_CLASS
 

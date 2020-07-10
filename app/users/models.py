@@ -1,8 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
 
-from rest_framework_expiring_authtoken.models import ExpiringToken
-
 from core.common_models import Common
 from modules.enums import AppUsers, Crease, Detergents, SignUp, Starch
 
@@ -52,10 +50,3 @@ class Profile(Common):
     fabric_softener = models.BooleanField(default=False)
     fix_tears = models.BooleanField(default=False)
     is_coupon = models.BooleanField(default=False)
-
-
-class CustomToken(Common):
-    """Custom model token, for adding up extended life token info"""
-
-    expiring_token = models.OneToOneField(ExpiringToken, on_delete=models.CASCADE)
-    is_long_lived = models.BooleanField(default=True)

@@ -9,7 +9,6 @@ from rest_framework.response import Response
 from api.legacy.permissions import (
     CustomIsAdminUser,
     IsAuthenticatedOrPost,
-    RefreshTokenAuthentication,
     account_activation_token,
 )
 from api.legacy.serializers.users import UserDataSerializer, UserSerializer
@@ -20,13 +19,9 @@ from modules.helpers import StripeHelper, wm_exception
 logging.basicConfig(level=logging.ERROR, format="%(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
-# from rest_framework.authentication import TokenAuthentication
-# from rest_framework_expiring_authtoken.authentication import ExpiringTokenAuthentication
-
 
 class Users(Cards):
     authentication_classes = (
-        RefreshTokenAuthentication,
     )
     permission_classes = (IsAuthenticatedOrPost, CustomIsAdminUser)
 

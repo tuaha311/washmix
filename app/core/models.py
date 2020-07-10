@@ -3,8 +3,6 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.utils.timezone import localtime
 
-from rest_framework_expiring_authtoken.models import ExpiringToken
-
 from core.common_models import Common
 from modules.enums import CouponType
 from orders.models import Order

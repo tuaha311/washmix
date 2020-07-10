@@ -6,7 +6,6 @@ from rest_framework.views import APIView
 from api.legacy.permissions import (
     CustomIsAdminUser,
     IsAuthenticatedOrPost,
-    RefreshTokenAuthentication,
 )
 from api.legacy.serializers.products import ProductSerializer
 from core.models import Product
@@ -14,7 +13,6 @@ from core.models import Product
 
 class ProductView(APIView):
     authentication_classes = (
-        RefreshTokenAuthentication,
     )
     permission_classes = (IsAuthenticatedOrPost, CustomIsAdminUser)
 

@@ -13,38 +13,9 @@ class Migration(migrations.Migration):
     dependencies = [
         ("core", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ("rest_framework_expiring_authtoken", "0001_initial"),
     ]
 
     operations = [
-        migrations.CreateModel(
-            name="CustomToken",
-            fields=[
-                (
-                    "id",
-                    models.AutoField(
-                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
-                    ),
-                ),
-                (
-                    "created",
-                    models.DateTimeField(auto_now_add=True, verbose_name="creation date and time"),
-                ),
-                (
-                    "changed",
-                    models.DateTimeField(auto_now=True, verbose_name="last changed date and time"),
-                ),
-                ("is_long_lived", models.BooleanField(default=True)),
-                (
-                    "expiring_token",
-                    models.OneToOneField(
-                        on_delete=django.db.models.deletion.CASCADE,
-                        to="rest_framework_expiring_authtoken.ExpiringToken",
-                    ),
-                ),
-            ],
-            options={"abstract": False,},
-        ),
         migrations.CreateModel(
             name="Profile",
             fields=[

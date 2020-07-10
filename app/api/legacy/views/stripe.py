@@ -9,7 +9,6 @@ from rest_framework.views import APIView
 
 from api.legacy.permissions import (
     IsAuthenticatedOrAdmin,
-    RefreshTokenAuthentication,
 )
 from api.legacy.serializers.packages import PackageSerializer
 from billing.models import Card
@@ -25,7 +24,6 @@ logger = logging.getLogger(__name__)
 
 class Cards(APIView):
     authentication_classes = (
-        RefreshTokenAuthentication,
     )
     permission_classes = (IsAuthenticatedOrAdmin,)
 

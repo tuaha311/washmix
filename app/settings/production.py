@@ -4,7 +4,7 @@ DEBUG = False
 
 PREPEND_WWW = True
 
-ALLOWED_HOSTS = ["..."]
+ALLOWED_HOSTS = ["*"]
 
 CACHES = {
     "default": {
@@ -21,7 +21,3 @@ DATABASES = {
         "PASSWORD": "",
     }
 }
-
-SERVER_EMAIL = "..."
-
-META_SITE_DOMAIN = "..."

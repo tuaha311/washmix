@@ -1,14 +1,9 @@
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils import six
 
-from rest_framework import exceptions
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
-from rest_framework_expiring_authtoken.authentication import ExpiringTokenAuthentication
-from rest_framework_expiring_authtoken.models import ExpiringToken
 
 from modules.enums import AppUsers
-from users.models import CustomToken
-from utilities.token import expired
 
 
 class IsAuthenticatedOrPost(IsAuthenticated):
@@ -47,31 +42,6 @@ class CustomIsAdminUser(IsAdminUser):
 
     def has_object_permission(self, request, view, obj):
         pass
-
-
-class RefreshTokenAuthentication(ExpiringTokenAuthentication):
-    model = ExpiringToken
-
-    def authenticate_credentials(self, key):
-        try:
-            is_custom = False
-            token = self.model.objects.get(key=key)
-            try:
-                CustomToken.objects.get(expiring_token=token)
-                is_custom = True
-            except CustomToken.DoesNotExist:
-                pass
-
-        except self.model.DoesNotExist:
-            raise exceptions.AuthenticationFailed("Invalid token")
-
-        if not token.user.is_active:
-            raise exceptions.AuthenticationFailed("User inactive or deleted")
-
-        if (not is_custom and token.expired()) or (is_custom and expired(token.created)):
-            raise exceptions.AuthenticationFailed("Token has expired")
-
-        return (token.user, token)
 
 
 class TokenGenerator(PasswordResetTokenGenerator):
