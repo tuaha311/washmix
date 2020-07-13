@@ -15,6 +15,7 @@ services:
       - "5432"
     expose:
       - "5432"
+
   app:
     container_name: app-1
     restart: always
