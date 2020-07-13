@@ -3,7 +3,7 @@ from django.urls import include, path
 from rest_framework.routers import SimpleRouter
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 
-from api.v1_0.views import addresses, orders
+from api.v1_0.views import addresses, orders, packages
 
 router = SimpleRouter(trailing_slash=False)
 router.register("addresses", addresses.AddressViewSet, basename="address")
@@ -17,4 +17,7 @@ auth_urls = [
 ]
 
 
-urlpatterns = [path("auth/", include(auth_urls, namespace="auth")),] + router.urls
+urlpatterns = [
+    path("auth/", include(auth_urls, namespace="auth")),
+    path("packages/", packages.ListAPIView.as_view(), name="package-list"),
+] + router.urls

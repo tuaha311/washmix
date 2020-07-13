@@ -186,9 +186,7 @@ class Cards(APIView):
             if charge:
                 WMEmailControllerSendGrid(
                     email_formatter=format_purchase(
-                        users=[user or request.user],
-                        charge=charge,
-                        name=user_package.name,
+                        users=[user or request.user], charge=charge, name=user_package.name,
                     )
                 ).send_sendgrid_email()
 

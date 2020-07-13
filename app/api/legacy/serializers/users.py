@@ -155,9 +155,7 @@ class UserSerializer(serializers.ModelSerializer):
     package_id = serializers.IntegerField(
         source="profile.package_id", required=False, allow_null=True
     )
-    name = serializers.CharField(
-        source="profile.name", required=False, allow_blank=True
-    )
+    name = serializers.CharField(source="profile.name", required=False, allow_blank=True)
     password = serializers.CharField(required=False)
 
     # Preferences
