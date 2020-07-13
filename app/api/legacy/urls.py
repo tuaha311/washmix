@@ -5,14 +5,15 @@ from django.urls import path, re_path
 from api.legacy.views import auth, coupons, orders, products, stripe, users
 from core.admin import admin_site
 
-users_patterns = [
-    re_path(r"^(?P<id>\d+)?/?(?P<app_users>[A-Z_]+)?/?$", users.Users.as_view()),
-]
+app_name = "legacy"
+
+users_patterns = (
+    [re_path(r"^(?P<id>\d+)?/?(?P<app_users>[A-Z_]+)?/?$", users.Users.as_view()),],
+    "users",
+)
 
 
-auth_patterns = [
-    re_path(r"^activate/$", users.UserActivationView.as_view()),
-]
+auth_patterns = ([re_path(r"^activate/$", users.UserActivationView.as_view()),], "auth")
 
 
 urlpatterns = [
