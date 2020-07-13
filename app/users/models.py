@@ -21,9 +21,9 @@ class Profile(Common):
 
     # Customer information
     is_doormen = models.BooleanField(default=False)
-
     stripe_customer_id = models.TextField(null=True)
     balance = models.FloatField(default=0)
+
     # Preferences
     detergents = models.CharField(
         max_length=50, choices=[(item, item.value) for item in Detergents], null=True

@@ -152,9 +152,7 @@ class UserSerializer(serializers.ModelSerializer):
     phone = serializers.CharField(
         validators=[phone_validator()], source="profile.phone", allow_blank=True
     )
-    package = serializers.IntegerField(
-        source="profile.package", required=False, allow_null=True
-    )
+    package = serializers.IntegerField(source="profile.package", required=False, allow_null=True)
     name = serializers.CharField(source="profile.name", required=False, allow_blank=True)
     password = serializers.CharField(required=False)
 
