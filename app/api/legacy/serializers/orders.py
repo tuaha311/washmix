@@ -101,7 +101,7 @@ class OrderSerializer(serializers.ModelSerializer):
             dropoff_addresses = Address.objects.get(user=self.user)
 
             # This checks if user has a prepay package
-            if not self.user.profile.package_id:
+            if not self.user.profile.package:
                 raise ValidationError(detail="User has not bought package yet")
         except Card.DoesNotExist:
             raise ValidationError(detail="Invalid or no user card added")
@@ -114,7 +114,7 @@ class OrderSerializer(serializers.ModelSerializer):
             profile = self.user.profile
             if not profile.is_coupon:
                 raise ValidationError(detail="Invalid Coupon Code")
-            if PACKAGES.PAYC.value != self.user.profile.package_id.name:
+            if PACKAGES.PAYC.value != self.user.profile.package.name:
                 raise ValidationError(detail="Only PAYC Package is allowed")
             total_cost = validated_data.get("total_cost", 0)
             try:

@@ -105,7 +105,7 @@ class Migration(migrations.Migration):
                 ("fix_tears", models.BooleanField(default=False)),
                 ("is_coupon", models.BooleanField(default=False)),
                 (
-                    "package_id",
+                    "package",
                     models.ForeignKey(
                         null=True, on_delete=django.db.models.deletion.CASCADE, to="core.Package"
                     ),

@@ -76,7 +76,7 @@ class UserListSerializer(serializers.ListSerializer):
                 validated_data.update({"password": make_password(random_string())})
                 validated_data.update({"is_active": False})
 
-            package_id = profile.pop("package_id", None)
+            package = profile.pop("package", None)
             name = profile.pop("name", None)
 
             profile_db, _ = Profile.objects.get_or_create(user=user_instance)
@@ -84,11 +84,11 @@ class UserListSerializer(serializers.ListSerializer):
             for pref, val in profile.items():
                 setattr(profile_db, pref, val)
 
-            if package_id or name:
+            if package or name:
                 kwargs = {}
-                kwargs.update({"id": package_id} if package_id else {"name": name})
+                kwargs.update({"id": package} if package else {"name": name})
                 try:
-                    setattr(profile_db, "package_id", Package.objects.get(**kwargs))
+                    setattr(profile_db, "package", Package.objects.get(**kwargs))
                 except Package.DoesNotExist:
                     raise ValidationError(detail="Wrong Package name or id")
             profile_db.save()
@@ -152,8 +152,8 @@ class UserSerializer(serializers.ModelSerializer):
     phone = serializers.CharField(
         validators=[phone_validator()], source="profile.phone", allow_blank=True
     )
-    package_id = serializers.IntegerField(
-        source="profile.package_id", required=False, allow_null=True
+    package = serializers.IntegerField(
+        source="profile.package", required=False, allow_null=True
     )
     name = serializers.CharField(source="profile.name", required=False, allow_blank=True)
     password = serializers.CharField(required=False)
@@ -195,7 +195,7 @@ class UserSerializer(serializers.ModelSerializer):
             "pickup_addresses",
             "dropoff_addresses",
             "orders",
-            "package_id",
+            "package",
             "name",
             "is_staff",
             "user_id",
@@ -288,7 +288,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = Profile
         fields = (
             "phone",
-            "package_id",
+            "package",
             "user_package",
             "balance",
             "detergents",
@@ -305,7 +305,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             "app_users",
         )
 
-    user_package = PackageTypeSerializer(source="package_id", read_only=True)
+    user_package = PackageTypeSerializer(source="package", read_only=True)
 
 
 class UserCardSerializer(serializers.ModelSerializer):
@@ -372,7 +372,7 @@ class UserDataSerializer(serializers.ModelSerializer):
             primitive_repr["fix_tears"] = primitive_profile_repr["fix_tears"]
             primitive_repr["no_crease"] = primitive_profile_repr["no_crease"]
             primitive_repr["fabric_softener"] = primitive_profile_repr["fabric_softener"]
-            primitive_repr["package_id"] = primitive_profile_repr["package_id"]
+            primitive_repr["package"] = primitive_profile_repr["package"]
 
             # Employee
             primitive_repr["DOB"] = primitive_profile_repr["DOB"]

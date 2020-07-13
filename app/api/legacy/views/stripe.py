@@ -193,7 +193,7 @@ class Cards(APIView):
             response_dict = {
                 "card_id": card.id if card else None,
                 "name": user_package.name if user_package else None,
-                "package_id": user_package.id if user_package else None,
+                "package": user_package.id if user_package else None,
             }
 
         return message, status_api, response_dict
