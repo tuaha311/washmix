@@ -8,9 +8,9 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         for name, price in PACKAGE_NAMES.items():
             try:
-                package = Package.objects.get(package_name=name)
-                package.package_price = price
+                package = Package.objects.get(name=name)
+                package.price = price
                 package.save()
             except Package.DoesNotExist:
-                kwargs = {"package_name": name, "package_price": price}
+                kwargs = {"name": name, "price": price}
                 Package.objects.create(**kwargs)

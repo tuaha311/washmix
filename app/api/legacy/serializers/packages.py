@@ -6,7 +6,7 @@ from modules.enums import PACKAGES, CouponType
 
 
 class PackageSerializer(serializers.Serializer):
-    package_name = serializers.ChoiceField(choices=[(tag.name, tag.name) for tag in PACKAGES])
+    name = serializers.ChoiceField(choices=[(tag.name, tag.name) for tag in PACKAGES])
     currency = serializers.CharField()
     coupon_code = serializers.CharField(required=False)
 

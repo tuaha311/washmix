@@ -77,16 +77,16 @@ class UserListSerializer(serializers.ListSerializer):
                 validated_data.update({"is_active": False})
 
             package_id = profile.pop("package_id", None)
-            package_name = profile.pop("package_name", None)
+            name = profile.pop("name", None)
 
             profile_db, _ = Profile.objects.get_or_create(user=user_instance)
 
             for pref, val in profile.items():
                 setattr(profile_db, pref, val)
 
-            if package_id or package_name:
+            if package_id or name:
                 kwargs = {}
-                kwargs.update({"id": package_id} if package_id else {"package_name": package_name})
+                kwargs.update({"id": package_id} if package_id else {"name": name})
                 try:
                     setattr(profile_db, "package_id", Package.objects.get(**kwargs))
                 except Package.DoesNotExist:
@@ -155,8 +155,8 @@ class UserSerializer(serializers.ModelSerializer):
     package_id = serializers.IntegerField(
         source="profile.package_id", required=False, allow_null=True
     )
-    package_name = serializers.CharField(
-        source="profile.package_name", required=False, allow_blank=True
+    name = serializers.CharField(
+        source="profile.name", required=False, allow_blank=True
     )
     password = serializers.CharField(required=False)
 
@@ -198,7 +198,7 @@ class UserSerializer(serializers.ModelSerializer):
             "dropoff_addresses",
             "orders",
             "package_id",
-            "package_name",
+            "name",
             "is_staff",
             "user_id",
             "detergents",
@@ -278,7 +278,7 @@ class PackageTypeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Package
-        fields = ("package_name",)
+        fields = ("name",)
 
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -386,8 +386,8 @@ class UserDataSerializer(serializers.ModelSerializer):
 
             primitive_repr["app_users"] = primitive_profile_repr["app_users"]
 
-            primitive_repr["package_name"] = (
-                primitive_profile_repr["user_package"]["package_name"]
+            primitive_repr["name"] = (
+                primitive_profile_repr["user_package"]["name"]
                 if primitive_profile_repr["user_package"]
                 else ""
             )

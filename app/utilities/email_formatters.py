@@ -62,13 +62,13 @@ def format_order(**kwargs):
 def format_purchase(**kwargs):
     """
     Email formatter to be used when user purchase a package.
-    Expects a card, user and a package_name.
+    Expects a card, user and a name.
     :param kwargs:
     :return:
     """
     users = kwargs.get("users")
     charge = kwargs.get("charge")
-    package_name = kwargs.get("package_name")
+    name = kwargs.get("name")
 
     source = charge.source
     purchase_date = datetime.now().strftime("%d/%m/%y")
@@ -84,7 +84,7 @@ def format_purchase(**kwargs):
             "email_data": {
                 "amount_paid": float(charge.amount / 100),
                 "date": purchase_date,
-                "package_name": package_name,
+                "name": name,
                 "receipt_number": charge.receipt_number,
                 "payment_method": "%s - %s" % (source.brand, source.last4),
                 "email": user.email,

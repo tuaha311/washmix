@@ -205,11 +205,6 @@ class Users(Cards):
                 user_info[0].update({"user_id": user_id})
         except Exception as error:
             return "", status.HTTP_400_BAD_REQUEST, {"detail": 'Must be a "users" key'}
-            # return Response(
-            #     data={'detail': 'Must be a "users" key'},
-            #     status=status.HTTP_400_BAD_REQUEST,
-            #     content_type='json'
-            # )
 
         user_id = []
         # try:
@@ -224,24 +219,6 @@ class Users(Cards):
             user.is_valid(raise_exception=True)
             user_id.append(user.save())
 
-        # except APIException as error:
-        #     return Response(
-        #         data={'detail': error.detail[0]},
-        #         status=error.status_code,
-        #         content_type='json'
-        #     )
-        # except Exception as error:
-        #     return Response(
-        #         data={'detail': error.detail[0]},
-        #         status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        #         content_type='json'
-        #     )
-
-        # return Response(
-        #     data={'user': user_id},
-        #     status=status.HTTP_200_OK,
-        #     content_type='json'
-        # )
         return "", status.HTTP_200_OK, {"user": user_id}
 
 

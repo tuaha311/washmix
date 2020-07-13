@@ -20,8 +20,8 @@ class Address(Common):
 
 
 class Package(Common):
-    package_name = models.TextField(default="")
-    package_price = models.FloatField(default=0)
+    name = models.TextField(default="")
+    price = models.FloatField(default=0)
 
 
 class Coupon(Common):

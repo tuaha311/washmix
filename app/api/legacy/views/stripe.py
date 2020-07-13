@@ -115,7 +115,7 @@ class Cards(APIView):
 
         Sample Json Format.
         {"buy_package": {
-            "package_name": "GOLD",
+            "name": "GOLD",
             "currency": "usd"
             }
         }
@@ -134,9 +134,9 @@ class Cards(APIView):
         package_ser.is_valid(raise_exception=True)
 
         request_body = request_body.get("buy_package")
-        package_name = PACKAGES[request_body.get("package_name")]
+        name = PACKAGES[request_body.get("name")]
         try:
-            user_package = Package.objects.get(package_name=package_name.value)
+            user_package = Package.objects.get(name=name.value)
         except Package.DoesNotExist:
             raise ValidationError(detail="Please populate package by executing addPackage commnand")
 
@@ -152,10 +152,10 @@ class Cards(APIView):
         message = "Package added successfully"
 
         coupon = package_ser.validated_data.get("coupon")
-        if PACKAGES.PAYC != package_name:
+        if PACKAGES.PAYC != name:
             stripe_helper = StripeHelper()
             message, status_api, charge = stripe_helper.charge_user(
-                user_package.package_price,
+                user_package.price,
                 request_body.get("currency"),
                 card,
                 user or request.user,
@@ -188,13 +188,13 @@ class Cards(APIView):
                     email_formatter=format_purchase(
                         users=[user or request.user],
                         charge=charge,
-                        package_name=user_package.package_name,
+                        name=user_package.name,
                     )
                 ).send_sendgrid_email()
 
             response_dict = {
                 "card_id": card.id if card else None,
-                "package_name": user_package.package_name if user_package else None,
+                "name": user_package.name if user_package else None,
                 "package_id": user_package.id if user_package else None,
             }
 

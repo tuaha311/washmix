@@ -114,7 +114,7 @@ class OrderSerializer(serializers.ModelSerializer):
             profile = self.user.profile
             if not profile.is_coupon:
                 raise ValidationError(detail="Invalid Coupon Code")
-            if PACKAGES.PAYC.value != self.user.profile.package_id.package_name:
+            if PACKAGES.PAYC.value != self.user.profile.package_id.name:
                 raise ValidationError(detail="Only PAYC Package is allowed")
             total_cost = validated_data.get("total_cost", 0)
             try:
@@ -152,47 +152,6 @@ class OrderSerializer(serializers.ModelSerializer):
             order_items_ids = items_ser.save()
             order.save()
 
-            # if not validated_data.get('id'):
-            #
-            #     if PACKAGES.PAYC.value == self.user.profile.package_id.package_name:
-            #         stripe_helper = StripeHelper()
-            #         message, stripe_status_api, _ = stripe_helper.charge_user(
-            #             validated_data.get('total_cost'),
-            #             currency,
-            #             card,
-            #             self.user
-            #         )
-            #     else:
-            #         # All packages other than PAYC are prepay, therefore it requires us to deduct from user's
-            #         # available balance. If user balance is insufficient simply raise an insufficient error balance.
-            #             update_user_balance(self.user.profile, validated_data.get('total_cost'), BalanceOperation.DEDUCT)
-            #     # Should not be the case for an order update.
-            #     if stripe_status_api == status.HTTP_200_OK:
-            #         setattr(order, 'is_paid', True)
-            #         try:
-            #             # Send an email for a order
-            #             WMEmailControllerSendGrid(email_formatter=format_order(user=self.user,
-            #                                                                                pick_from=order.pick_up_from_datetime,
-            #                                                                                pick_to=order.pick_up_to_datetime,
-            #                                                                                pickup_address=pickup_addresses)).send_sendgrid_email()
-            #
-            #             #
-            #             # twilio_notification = TwilioNotificationsMiddleware(self.user)
-            #             # twilio_notification.process_message(prepare_message(order.pick_up_from_datetime,
-            #             #                                                     order.pick_up_to_datetime),
-            #             #                                     '+' + self.user.profile.phone)Ω
-            #         except:
-            #             # This has to be removed when email are configured to be sent.
-            #             pass
-            # order.save()
-        # if len(addresses) == 1:
-        #     AddressOrder.objects.create(order=order, address=addresses[0])
-        # for address in addresses:
-        #     AddressOrder.objects.create(order=order, address=address)
-        # twilio_notification = TwilioNotificationsMiddleware(self.user)
-        # twilio_notification.process_message(prepare_message(order.pick_up_from_datetime,
-        #                                                     order.pick_up_to_datetime),
-        #                                     '+' + self.user.profile.phone)
         return (
             {"order_id": order.id, "order_items_ids": order_items_ids},
             stripe_status_api,
