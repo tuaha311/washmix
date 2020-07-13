@@ -19,7 +19,7 @@ authors = ["Evrone <api@evrone.com>"]
 
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "~3.7"
 
 # core + api
 Django = "2.1.1"
@@ -60,6 +60,7 @@ arrow = "0.12.1"
 djoser = "1.7.0"
 drf-writable-nested = "0.5.4"
 environs = "^8.0.0"
+djangorestframework-simplejwt = "^4.4.0"
 
 
 [tool.poetry.dev-dependencies]

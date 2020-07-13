@@ -297,6 +297,26 @@ version = "3.9.0"
 
 [[package]]
 category = "main"
+description = "A minimal JSON Web Token authentication plugin for Django REST Framework"
+name = "djangorestframework-simplejwt"
+optional = false
+python-versions = ">=3.6,<3.9"
+version = "4.4.0"
+
+[package.dependencies]
+django = "*"
+djangorestframework = "*"
+pyjwt = "*"
+
+[package.extras]
+dev = ["bumpversion (>=0.5.3,<1)", "pytest-watch", "wheel", "twine", "ipython", "cryptography", "pytest-cov", "pytest-django", "pytest-xdist", "pytest", "tox", "flake8", "pep8", "isort", "Sphinx (>=1.6.5,<2)", "sphinx-rtd-theme (>=0.1.9)", "python-jose (3.0.0)"]
+doc = ["Sphinx (>=1.6.5,<2)", "sphinx-rtd-theme (>=0.1.9)"]
+lint = ["flake8", "pep8", "isort"]
+python-jose = ["python-jose (3.0.0)"]
+test = ["cryptography", "pytest-cov", "pytest-django", "pytest-xdist", "pytest", "tox"]
+
+[[package]]
+category = "main"
 description = "REST version of Django authentication system."
 name = "djoser"
 optional = false
@@ -1006,8 +1026,8 @@ test = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 
 [metadata]
-content-hash = "4c424da99b17d0bfbf6202cb5dee851ca79efb2fdbf2288375bd0051e0ffbe59"
-python-versions = "^3.7"
+content-hash = "a62a367e11d215e516562275d95fa4782eb3ca70a3d159c68e2d8abfff828dfd"
+python-versions = "~3.7"
 
 [metadata.files]
 appdirs = [
@@ -1172,6 +1192,10 @@ django-templated-mail = [
 djangorestframework = [
     {file = "djangorestframework-3.9.0-py2.py3-none-any.whl", hash = "sha256:63f76cbe1e7d12b94c357d7e54401103b2e52aef0f7c1650d6c820ad708776e5"},
     {file = "djangorestframework-3.9.0.tar.gz", hash = "sha256:607865b0bb1598b153793892101d881466bd5a991de12bd6229abb18b1c86136"},
+]
+djangorestframework-simplejwt = [
+    {file = "djangorestframework_simplejwt-4.4.0-py3-none-any.whl", hash = "sha256:288ee78618d906f26abf6282b639b8f1806ce1d9a7578897a125cf79c609f259"},
+    {file = "djangorestframework_simplejwt-4.4.0.tar.gz", hash = "sha256:c315be70aa12a5f5790c0ab9acd426c3a58eebea65a77d0893248c5144a5080c"},
 ]
 djoser = [
     {file = "djoser-1.7.0-py3-none-any.whl", hash = "sha256:1e310801b225ea668a035d3da90c1c9ca5b80a294235b9a25a5999fbc9ac5a96"},
