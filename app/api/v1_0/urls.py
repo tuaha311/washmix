@@ -10,7 +10,7 @@ router.register("addresses", addresses.AddressViewSet, basename="address")
 router.register("orders", orders.OrderViewSet, basename="order")
 
 app_name = "v1_0"
-auth_urls = (
+token_urls = (
     [
         path("obtain/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
         path("refresh/", TokenRefreshView.as_view(), name="token_refresh"),
@@ -21,6 +21,6 @@ auth_urls = (
 
 
 urlpatterns = [
-    path("auth/", include(auth_urls)),
+    path("token/", include(token_urls)),
     path("packages/", packages.ListAPIView.as_view(), name="package-list"),
 ] + router.urls
