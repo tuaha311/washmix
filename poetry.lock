@@ -346,6 +346,24 @@ python-versions = "*"
 version = "0.5.4"
 
 [[package]]
+category = "main"
+description = "simplified environment variable parsing"
+name = "environs"
+optional = false
+python-versions = ">=3.5.3"
+version = "8.0.0"
+
+[package.dependencies]
+marshmallow = ">=2.7.0"
+python-dotenv = "*"
+
+[package.extras]
+dev = ["pytest", "dj-database-url", "dj-email-url", "django-cache-url", "flake8 (3.8.2)", "flake8-bugbear (20.1.4)", "mypy (0.770)", "pre-commit (>=2.4,<3.0)", "tox"]
+django = ["dj-database-url", "dj-email-url", "django-cache-url"]
+lint = ["flake8 (3.8.2)", "flake8-bugbear (20.1.4)", "mypy (0.770)", "pre-commit (>=2.4,<3.0)"]
+tests = ["pytest", "dj-database-url", "dj-email-url", "django-cache-url"]
+
+[[package]]
 category = "dev"
 description = "Fabric is a simple, Pythonic tool for remote execution and deployment (py2.7/py3.4+ compatible fork)."
 name = "fabric3"
@@ -455,6 +473,20 @@ name = "markdown2"
 optional = false
 python-versions = "*"
 version = "2.3.9"
+
+[[package]]
+category = "main"
+description = "A lightweight library for converting complex datatypes to and from native Python datatypes."
+name = "marshmallow"
+optional = false
+python-versions = ">=3.5"
+version = "3.7.0"
+
+[package.extras]
+dev = ["pytest", "pytz", "simplejson", "mypy (0.782)", "flake8 (3.8.3)", "flake8-bugbear (20.1.4)", "pre-commit (>=2.4,<3.0)", "tox"]
+docs = ["sphinx (3.1.2)", "sphinx-issues (1.2.0)", "alabaster (0.7.12)", "sphinx-version-warning (1.1.2)", "autodocsumm (0.1.13)"]
+lint = ["mypy (0.782)", "flake8 (3.8.3)", "flake8-bugbear (20.1.4)", "pre-commit (>=2.4,<3.0)"]
+tests = ["pytest", "pytz", "simplejson"]
 
 [[package]]
 category = "dev"
@@ -657,6 +689,17 @@ version = "2.8.1"
 
 [package.dependencies]
 six = ">=1.5"
+
+[[package]]
+category = "main"
+description = "Add .env support to your django/flask apps in development and deployments"
+name = "python-dotenv"
+optional = false
+python-versions = "*"
+version = "0.14.0"
+
+[package.extras]
+cli = ["click (>=5.0)"]
 
 [[package]]
 category = "main"
@@ -963,7 +1006,7 @@ test = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 
 [metadata]
-content-hash = "64d04f8ee95984945886af6ff55653897092e0112aab32d63b36af2091cfd6ca"
+content-hash = "4c424da99b17d0bfbf6202cb5dee851ca79efb2fdbf2288375bd0051e0ffbe59"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -1140,6 +1183,10 @@ dramatiq = [
 drf-writable-nested = [
     {file = "drf-writable-nested-0.5.4.tar.gz", hash = "sha256:79839ac42a7bf393dcc03fbe4a8c51966c28f423aee8e2de1b27124fd2c4f94a"},
 ]
+environs = [
+    {file = "environs-8.0.0-py2.py3-none-any.whl", hash = "sha256:a98005aab7613b6fe7a1af7192a5163f72a52d3348d3918e6c7a2a32e4012779"},
+    {file = "environs-8.0.0.tar.gz", hash = "sha256:bf3fd6bc54fcfd7f512ddcb80a7781f0ced2b0c83dd123d619e9468ecdaaf537"},
+]
 fabric3 = [
     {file = "Fabric3-1.14.post1-py3-none-any.whl", hash = "sha256:7c5a5f2eb3079eb6bd2a69931f1ca298844c730ce3fdc68111db16e8857a0408"},
     {file = "Fabric3-1.14.post1.tar.gz", hash = "sha256:647e485ec83f30b587862f92374d6affc217f3d79819d1d7f512e42e7ae51e81"},
@@ -1227,6 +1274,10 @@ libsass = [
 markdown2 = [
     {file = "markdown2-2.3.9-py2.py3-none-any.whl", hash = "sha256:e6b401ec80b75e76a6b3dbb2c8ade513156fa55fa6c30b9640a1abf6184a07c8"},
     {file = "markdown2-2.3.9.tar.gz", hash = "sha256:89526090907ae5ece66d783c434b35c29ee500c1986309e306ce2346273ada6a"},
+]
+marshmallow = [
+    {file = "marshmallow-3.7.0-py2.py3-none-any.whl", hash = "sha256:0f3a630f6a2fd124929f1bdcb5df65bd14cc8f49f52a18d0bdcfa0c42414e4a7"},
+    {file = "marshmallow-3.7.0.tar.gz", hash = "sha256:ba949379cb6ef73655f72075e82b31cf57012a5557ede642fc8614ab0354f869"},
 ]
 more-itertools = [
     {file = "more-itertools-8.4.0.tar.gz", hash = "sha256:68c70cc7167bdf5c7c9d8f6954a7837089c6a36bf565383919bb595efb8a17e5"},
@@ -1336,6 +1387,10 @@ pytest = [
 python-dateutil = [
     {file = "python-dateutil-2.8.1.tar.gz", hash = "sha256:73ebfe9dbf22e832286dafa60473e4cd239f8592f699aa5adaf10050e6e1823c"},
     {file = "python_dateutil-2.8.1-py2.py3-none-any.whl", hash = "sha256:75bb3f31ea686f1197762692a9ee6a7550b59fc6ca3a1f4b5d7e32fb98e2da2a"},
+]
+python-dotenv = [
+    {file = "python-dotenv-0.14.0.tar.gz", hash = "sha256:8c10c99a1b25d9a68058a1ad6f90381a62ba68230ca93966882a4dbc3bc9c33d"},
+    {file = "python_dotenv-0.14.0-py2.py3-none-any.whl", hash = "sha256:c10863aee750ad720f4f43436565e4c1698798d763b63234fb5021b6c616e423"},
 ]
 python3-openid = [
     {file = "python3-openid-3.2.0.tar.gz", hash = "sha256:33fbf6928f401e0b790151ed2b5290b02545e8775f982485205a066f874aaeaf"},

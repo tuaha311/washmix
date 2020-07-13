@@ -48,7 +48,7 @@ In order to have stripe configured you must have provide stripe api key in the E
 
     - Install Postgres on docker container: 
     
-            $ docker run -d -p 5432:5432 --name wm_local -e POSTGRES_PASSWORD=rootroot -e POSTGRES_USER=wm_user -e POSTGRES_DB=wm_local --rm postgres 
+            $ docker run -d -p 5432:5432 --name wm_local -e POSTGRES_PASSWORD=wm_pass -e POSTGRES_USER=wm_user -e POSTGRES_DB=wm_local --rm postgres 
        
     - Go into PSQL System and Create new Database
     

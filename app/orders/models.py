@@ -60,7 +60,7 @@ class Order(Common):
         now = arrow.now(timezone.get_current_timezone_name())
         reminder_time = int((reminder_time - now).total_seconds()) * 1000
         result = send_sms_reminder.send_with_options(
-            args=(self.pk, message_formatter(), settings.TEAM_WASHMIX,), delay=reminder_time,
+            args=(self.pk, message_formatter(), settings.TWILIO_NUMBER,), delay=reminder_time,
         )
 
         return result.options["redis_message_id"]

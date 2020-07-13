@@ -21,8 +21,7 @@ logger = logging.getLogger(__name__)
 
 
 class Users(Cards):
-    authentication_classes = (
-    )
+    authentication_classes = ()
     permission_classes = (IsAuthenticatedOrPost, CustomIsAdminUser)
 
     def patch(self, request, *args, **kwargs):

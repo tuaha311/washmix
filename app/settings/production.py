@@ -12,12 +12,3 @@ CACHES = {
         "LOCATION": "127.0.0.1:11211",
     }
 }
-
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.",
-        "NAME": "wm_django_prod",
-        "USER": "wm_django_prod",
-        "PASSWORD": "",
-    }
-}

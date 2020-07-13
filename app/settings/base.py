@@ -2,6 +2,12 @@ import os
 
 from django.conf.global_settings import STATICFILES_FINDERS
 
+from environs import Env
+
+env = Env()
+
+env.read_env()
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
@@ -11,7 +17,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 ALLOWED_HOSTS = ["*"]
 
-SECRET_KEY = "^8x5j(d(4h#+rw*g1_@ul8dk-5kdm3+dgsg2!$&k7!no2bj19v"
+SECRET_KEY = env.str("SECRET_KEY")
 
 DJANGO_APPS = [
     "django.contrib.admin",
@@ -50,11 +56,11 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": "wm_local",
-        "USER": "wm_user",
-        "PASSWORD": "rootroot",
-        "HOST": "localhost",
-        "PORT": "5432",
+        "NAME": env.str("DB_NAME", "wm_local"),
+        "USER": env.str("DB_USER", "wm_user"),
+        "PASSWORD": env.str("PASSWORD", "wm_pass"),
+        "HOST": env.str("DB_HOST", "localhost"),
+        "PORT": env.str("DB_PORT", "5432"),
     }
 }
 
@@ -72,8 +78,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "settings.urls"
-
-TEAM_WASHMIX = "+14159939274"
 
 REMINDER_TIME = 15
 
@@ -130,7 +134,7 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_USE_TLS = True
 EMAIL_HOST = "smtp.sendgrid.net"
 EMAIL_HOST_USER = "khurram.farooq"
-EMAIL_HOST_PASSWORD = os.environ.get("SENDGRID_API_KEY")
+EMAIL_HOST_PASSWORD = env.str("SENDGRID_API_KEY")
 EMAIL_PORT = 587
 
 
@@ -141,9 +145,7 @@ EMAIL_PORT = 587
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10,
-    "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework.authentication.TokenAuthentication",
-    ],
+    "DEFAULT_AUTHENTICATION_CLASSES": ["rest_framework.authentication.TokenAuthentication",],
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
 }
 
@@ -174,7 +176,9 @@ SOCIAL_AUTH_FACEBOOK_SECRET = "5fead6fc5cc06427203ef67694c19ae3"
 SOCIAL_AUTH_FACEBOOK_SCOPE = ["email"]
 SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {"fields": "id, name, email"}
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = "214515422450-3fqjh7egs8mek414ppcq1ri76fvci7sm.apps.googleusercontent.com"
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = (
+    "214515422450-3fqjh7egs8mek414ppcq1ri76fvci7sm.apps.googleusercontent.com"
+)
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = "0S9ZLeT-5FBXh9magVyiDlBG"
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ["profile", "email", "openid"]
 
@@ -196,3 +200,12 @@ DRAMATIQ_BROKER = {
         "django_dramatiq.middleware.DbConnectionsMiddleware",
     ],
 }
+
+
+##########
+# TWILIO #
+##########
+
+TWILIO_NUMBER = env.str("TWILIO_NUMBER")
+TWILIO_ACCOUNT_SID = env.str("TWILIO_ACCOUNT_SID")
+TWILIO_AUTH_TOKEN = env.str("TWILIO_AUTH_TOKEN")

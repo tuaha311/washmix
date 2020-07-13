@@ -59,6 +59,7 @@ requests-oauthlib = "1.0.0"
 arrow = "0.12.1"
 djoser = "1.7.0"
 drf-writable-nested = "0.5.4"
+environs = "^8.0.0"
 
 
 [tool.poetry.dev-dependencies]

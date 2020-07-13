@@ -3,17 +3,13 @@ from rest_framework.exceptions import APIException
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from api.legacy.permissions import (
-    CustomIsAdminUser,
-    IsAuthenticatedOrPost,
-)
+from api.legacy.permissions import CustomIsAdminUser, IsAuthenticatedOrPost
 from api.legacy.serializers.products import ProductSerializer
 from core.models import Product
 
 
 class ProductView(APIView):
-    authentication_classes = (
-    )
+    authentication_classes = ()
     permission_classes = (IsAuthenticatedOrPost, CustomIsAdminUser)
 
     def post(self, request, **kwargs):

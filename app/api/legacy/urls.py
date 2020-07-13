@@ -2,14 +2,7 @@ from django.conf.urls import include
 from django.contrib.auth import views as auth_views
 from django.urls import path, re_path
 
-from api.legacy.views import (
-    auth,
-    coupons,
-    orders,
-    products,
-    stripe,
-    users,
-)
+from api.legacy.views import auth, coupons, orders, products, stripe, users
 from core.admin import admin_site
 
 users_patterns = [

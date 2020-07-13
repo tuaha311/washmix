@@ -29,3 +29,6 @@ django_cache
 !.elasticbeanstalk/*.global.yml
 .ebextensions/
 .elasticbeanstalk/
+
+# environment
+.env

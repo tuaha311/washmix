@@ -32,8 +32,7 @@ class Orders(APIView):
         }
     """
 
-    authentication_classes = (
-    )
+    authentication_classes = ()
     pagination_class = api_settings.DEFAULT_PAGINATION_CLASS
 
     def post(self, request):

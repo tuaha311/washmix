@@ -7,9 +7,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from api.legacy.permissions import (
-    IsAuthenticatedOrAdmin,
-)
+from api.legacy.permissions import IsAuthenticatedOrAdmin
 from api.legacy.serializers.packages import PackageSerializer
 from billing.models import Card
 from core.models import Package
@@ -23,8 +21,7 @@ logger = logging.getLogger(__name__)
 
 
 class Cards(APIView):
-    authentication_classes = (
-    )
+    authentication_classes = ()
     permission_classes = (IsAuthenticatedOrAdmin,)
 
     @wm_exception
