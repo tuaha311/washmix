@@ -5,7 +5,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from api.v1_0.views import addresses, orders, packages
 
-router = SimpleRouter(trailing_slash=False)
+router = SimpleRouter(trailing_slash=True)
 router.register("addresses", addresses.AddressViewSet, basename="address")
 router.register("orders", orders.OrderViewSet, basename="order")
 
@@ -22,5 +22,5 @@ token_urls = (
 
 urlpatterns = [
     path("token/", include(token_urls)),
-    path("packages/", packages.ListAPIView.as_view(), name="package-list"),
+    path("packages/", packages.PackageListView.as_view(), name="package-list"),
 ] + router.urls
