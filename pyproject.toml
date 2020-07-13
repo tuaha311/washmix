@@ -31,7 +31,6 @@ psycopg2-binary = "2.8.5"
 
 # social auth
 social-auth-app-django = "3.1.0"
-social-auth-core = "2.0.0"
 
 # queue
 django-dramatiq = "0.1.5"
@@ -59,7 +58,6 @@ requests = "2.20.1"
 requests-oauthlib = "1.0.0"
 arrow = "0.12.1"
 djoser = "1.7.0"
-PyJWT = "1.6.4"
 drf-writable-nested = "0.5.4"
 
 
