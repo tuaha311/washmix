@@ -14,7 +14,8 @@ from api.legacy.permissions import (
 from api.legacy.serializers.users import UserDataSerializer, UserSerializer
 from api.legacy.views.stripe import Cards
 from modules.enums import AppUsers
-from modules.helpers import StripeHelper, wm_exception
+from modules.helpers import wm_exception
+from modules.stripe import StripeHelper
 
 logging.basicConfig(level=logging.ERROR, format="%(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)

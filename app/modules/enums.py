@@ -41,3 +41,9 @@ class SignUp(Enum):
 class CouponType(Enum):
     FIRST = "FIRST"
     PACKAGE = "PACKAGE"
+
+
+class BalanceOperation(Enum):
+    ADD = "add"
+    DEDUCT = "deduct"
+    MANUAL = "manual"
