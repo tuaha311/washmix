@@ -13,14 +13,10 @@ users_patterns = (
 )
 
 
-auth_patterns = ([re_path(r"^activate/$", users.UserActivationView.as_view()),], "auth")
-
-
 urlpatterns = [
     #
     # Include block
     #
-    path("auth/", include(auth_patterns)),
     path("users/", include(users_patterns)),
     # path("users/", include("djoser.urls")),
     re_path(r"^admin/", admin_site.urls),

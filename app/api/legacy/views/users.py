@@ -2,15 +2,10 @@ import logging
 
 from django.contrib.auth.models import User
 
-from djoser.views import ActivationView
 from rest_framework import status
 from rest_framework.response import Response
 
-from api.legacy.permissions import (
-    CustomIsAdminUser,
-    IsAuthenticatedOrPost,
-    account_activation_token,
-)
+from api.legacy.permissions import CustomIsAdminUser, IsAuthenticatedOrPost
 from api.legacy.serializers.users import UserDataSerializer, UserSerializer
 from api.legacy.views.stripe import Cards
 from modules.enums import AppUsers
@@ -220,7 +215,3 @@ class Users(Cards):
             user_id.append(user.save())
 
         return "", status.HTTP_200_OK, {"user": user_id}
-
-
-class UserActivationView(ActivationView):
-    token_generator = account_activation_token

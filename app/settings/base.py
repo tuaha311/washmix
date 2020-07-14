@@ -25,20 +25,16 @@ DJANGO_APPS = [
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
-    "django.contrib.sites",
-    "django.contrib.sitemaps",
     "django.contrib.messages",
     "django.contrib.staticfiles",
 ]
 
 THIRD_PARTY_APPS = [
     "rest_framework",
-    "rest_framework.authtoken",
     "django_dramatiq",
     "compressor",
     "clear_cache",
     "markdown_deux",
-    "robots",
     "djoser",
     "social_django",
     "django_cleanup",
@@ -145,7 +141,6 @@ EMAIL_PORT = 587
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework.authentication.TokenAuthentication",
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ],
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
@@ -162,6 +157,29 @@ SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("Bearer",),
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
 }
+
+
+##########
+# DJOSER #
+##########
+
+DJOSER = {
+    "PASSWORD_RESET_CONFIRM_URL": "#/password/reset/confirm/{uid}/{token}",
+    "USERNAME_RESET_CONFIRM_URL": "#/username/reset/confirm/{uid}/{token}",
+    "ACTIVATION_URL": "#/activate/{uid}/{token}",
+    "SEND_ACTIVATION_EMAIL": True,
+    "SEND_CONFIRMATION_EMAIL": True,
+    "USER_CREATE_PASSWORD_RETYPE": True,
+    "TOKEN_MODEL": None,
+}
+
+
+####################################
+# TEMPLATED EMAIL (USED BY DJOSER) #
+####################################
+
+DOMAIN = "washmix.com"
+SITE_NAME = "WashMix"
 
 
 ###############
