@@ -26,15 +26,23 @@ Django = "2.1.1"
 djangorestframework = "3.9.0"
 django-filter = "2.0.0"
 
+# authentication
+djoser = "^2.0.3"
+djangorestframework-simplejwt = "^4.4.0"
+
+# social authentication
+social-auth-app-django = "^3.1.0"
+
 # database
 psycopg2-binary = "2.8.5"
-
-# social auth
-social-auth-app-django = "3.1.0"
 
 # queue
 django-dramatiq = "0.1.5"
 dramatiq = {version = "1.4", extras = ["redis", "watch"]}
+
+# money
+stripe = "2.12.0"
+twilio = "6.19.2"
 
 # cache
 django-cleanup = "2.1.0"
@@ -49,18 +57,12 @@ django-markdown-deux = "1.0.5"
 django-robots = "3.1.0"
 django-templated-mail = "1.1.1"
 
-# money
-stripe = "2.12.0"
-twilio = "6.19.2"
-
 # other
 requests = "2.20.1"
 requests-oauthlib = "1.0.0"
 arrow = "0.12.1"
-djoser = "1.7.0"
 drf-writable-nested = "0.5.4"
 environs = "^8.0.0"
-djangorestframework-simplejwt = "^4.4.0"
 gunicorn = "^20.0.4"
 
 
