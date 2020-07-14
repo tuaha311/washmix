@@ -4,6 +4,7 @@ from django.conf.urls.static import static
 from django.urls import path
 
 import debug_toolbar
+from rest_framework.schemas import get_schema_view
 
 urlpatterns = []
 
@@ -16,8 +17,20 @@ if settings.DEBUG:
 
 
 urlpatterns += [
-    # NEW API
+    # new REST API
     path("api/v1.0/", include("api.v1_0.urls")),
-    # LEGACY API
+    # OpenAPI docs
+    path(
+        "openapi/",
+        get_schema_view(
+            title="WashMix",
+            description="WashMix REST API",
+            version="1.0",
+            authentication_classes=[],
+            permission_classes=[],
+        ),
+        name="openapi-schema",
+    ),
+    # legacy REST API
     path("", include("api.legacy.urls")),
 ]

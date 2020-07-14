@@ -11,8 +11,6 @@ INSTALLED_APPS += [
 ]
 
 
-TEMPLATES[0]["OPTIONS"]["debug"] = True
-
 MIDDLEWARE += [
     "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
