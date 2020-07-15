@@ -22,8 +22,8 @@ authors = ["Evrone <api@evrone.com>"]
 python = "^3.7"
 
 # core + api
-Django = "2.1.1"
-djangorestframework = "3.9.0"
+Django = "~2.1"
+djangorestframework = "~3.9"
 django-filter = "2.0.0"
 
 # database
