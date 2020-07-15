@@ -63,13 +63,14 @@ arrow = "0.12.1"
 djoser = "1.7.0"
 PyJWT = "1.6.4"
 drf-writable-nested = "0.5.4"
+django-debug-toolbar = "1.10.1"
 
 
 [tool.poetry.dev-dependencies]
 black = "^19.10b0"
 isort = "^5.0.4"
 Faker = "1.0.0"
-django-debug-toolbar = "1.10.1"
+
 fabric3 = "^1.14.post1"
 pytest = "^5.4.3"
 

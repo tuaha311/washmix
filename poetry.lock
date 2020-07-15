@@ -226,7 +226,7 @@ rcssmin = "1.0.6"
 rjsmin = "1.0.12"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "A configurable set of panels that display various debug information about the current request/response."
 name = "django-debug-toolbar"
 optional = false
@@ -845,7 +845,7 @@ openidconnect = ["python-jose (>=3.0.0)"]
 saml = ["python-saml (>=2.2.0)", "python3-saml (>=1.2.1)"]
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Non-validating SQL parser"
 name = "sqlparse"
 optional = false
@@ -1000,7 +1000,7 @@ test = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 
 [metadata]
-content-hash = "977c4729ee45f5fcf32b0551532c628046638b620433bf040cb9f81301416d86"
+content-hash = "1812f18ce675e66a618e7bd223d42d75eca5aff96b5237c72dbaa4d4bc6f993e"
 python-versions = "^3.7"
 
 [metadata.files]
