@@ -4,8 +4,6 @@ from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 from django.urls import path, re_path
 
-import debug_toolbar
-
 from api.views import auth, coupons, login, oauth, orders, products, refresh_token, stripe, users
 from core.admin import admin_site
 
@@ -14,7 +12,6 @@ urlpatterns = []
 
 if settings.DEBUG:
     urlpatterns += [
-        re_path(r"^__debug__/", include(debug_toolbar.urls)),
         *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
         *static(settings.STATIC_URL, document_root=settings.STATIC_ROOT),
     ]
