@@ -52,7 +52,7 @@ DATABASES = {
         "USER": os.environ.get("DB_NAME", "wm_user"),
         "PASSWORD": os.environ.get("DB_NAME", "wm_pass"),
         "HOST": os.environ.get("DB_HOST", "localhost"),
-        "PORT": "5432",
+        "PORT": os.environ.get("DB_PORT", 5432),
     }
 }
 
