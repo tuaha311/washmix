@@ -6,9 +6,7 @@ from settings.base import *
 DEBUG = True
 
 
-INSTALLED_APPS += [
-]
+INSTALLED_APPS += []
 
 
-MIDDLEWARE += [
-]
+MIDDLEWARE += []
