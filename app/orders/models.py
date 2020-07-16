@@ -98,6 +98,8 @@ class Order(Common):
 
 
 class Item(Common):
+    # TODO изменить на Many To Many
+    # TODO добавить количество quantity
     order = models.ForeignKey("orders.Order", on_delete=models.CASCADE, related_name="item_list")
     item = models.TextField(default="")
     cost = models.FloatField(default=0)
