@@ -74,7 +74,7 @@ class Migration(migrations.Migration):
                 ("valid", models.BooleanField(default=True)),
                 ("max_redemptions", models.IntegerField(default=1)),
                 (
-                    "coupon_type",
+                    "kind",
                     models.CharField(
                         choices=[
                             (modules.enums.CouponType("FIRST"), "FIRST"),
