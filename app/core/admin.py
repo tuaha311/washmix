@@ -1,14 +1,7 @@
-from django.contrib.admin import AdminSite
-from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.models import Group, User
+from django.contrib import admin
 
-from social_django.models import Association, Nonce, UserSocialAuth
+from core.models import Address, Notification, Package, Product
 
-admin_site = AdminSite()
-
-
-admin_site.register(User, UserAdmin)
-admin_site.register(Group)
-admin_site.register(UserSocialAuth)
-admin_site.register(Nonce)
-admin_site.register(Association)
+models = [Package, Product, Address, Notification]
+for item in models:
+    admin.site.register(item)
