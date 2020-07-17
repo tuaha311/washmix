@@ -3,8 +3,8 @@ from django.core.exceptions import MultipleObjectsReturned
 from rest_framework import serializers, status
 from rest_framework.exceptions import ValidationError
 
-from billing.models import Card
-from core.models import Address, Coupon
+from billing.models import Card, Coupon
+from core.models import Address
 from modules.constant import MESSAGE_ERROR_MISSING_ADDRESS
 from modules.enums import PACKAGES, CouponType
 from orders.models import Item, Order
@@ -118,7 +118,7 @@ class OrderSerializer(serializers.ModelSerializer):
                 raise ValidationError(detail="Only PAYC Package is allowed")
             total_cost = validated_data.get("total_cost", 0)
             try:
-                coupon = Coupon.objects.get(name=coupon_code, coupon_type=CouponType.FIRST.value)
+                coupon = Coupon.objects.get(name=coupon_code, kind=CouponType.FIRST.value)
                 if not coupon.valid:
                     raise ValidationError(detail="Not a valid coupon anymore")
             except Coupon.DoesNotExist:

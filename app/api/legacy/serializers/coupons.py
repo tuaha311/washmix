@@ -1,8 +1,6 @@
 from rest_framework import serializers
 
-from api.fields import EnumField
-from core.models import Coupon
-from modules.enums import CouponType
+from billing.models import Coupon
 
 
 class CouponsSerializer(serializers.ModelSerializer):
@@ -12,7 +10,6 @@ class CouponsSerializer(serializers.ModelSerializer):
     percentage_off = serializers.FloatField(required=True)
     amount_off = serializers.FloatField(required=False)
     valid = serializers.BooleanField(required=False)
-    coupon_type = EnumField(enum=CouponType, required=True)
 
     class Meta:
         model = Coupon
@@ -22,7 +19,7 @@ class CouponsSerializer(serializers.ModelSerializer):
             "percentage_off",
             "amount_off",
             "valid",
-            "coupon_type",
+            "kind",
         )
 
     def create(self, validate_data):
