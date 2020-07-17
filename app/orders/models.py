@@ -44,6 +44,7 @@ class Order(Common):
 
 
 class Item(Common):
+    # TODO переименовать на Service
     # TODO изменить на Many To Many
     # TODO добавить количество quantity
     # TODO добавить поле image
