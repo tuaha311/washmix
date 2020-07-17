@@ -1,10 +1,8 @@
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
-from django.utils.timezone import localtime
 
 from core.common_models import Common
-from modules.enums import CouponType
 from orders.models import Order
 
 
@@ -22,24 +20,6 @@ class Address(Common):
 class Package(Common):
     name = models.TextField(default="")
     price = models.FloatField(default=0)
-
-
-class Coupon(Common):
-    name = models.CharField(max_length=30)
-    amount_off = models.FloatField(default=0)
-    percentage_off = models.FloatField(default=0)
-    start_date = models.DateTimeField(default=localtime)
-    valid = models.BooleanField(default=True)
-    max_redemptions = models.IntegerField(default=1)
-    coupon_type = models.CharField(
-        max_length=30,
-        choices=[(item, item.value) for item in CouponType],
-        null=True,
-        default=CouponType.FIRST.value,
-    )
-
-    def apply_coupon(self, total_amount):
-        return (self.percentage_off * total_amount) / 100
 
 
 class Product(Common):

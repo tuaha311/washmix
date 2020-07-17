@@ -14,13 +14,8 @@ class Card(Common):
         related_name="card_list",
     )
 
-    stripe_card_id = models.TextField(
-        verbose_name="Stripe card ID"
-    )
-    is_active = models.BooleanField(
-        verbose_name="card is active",
-        default=False,
-    )
+    stripe_card_id = models.TextField(verbose_name="Stripe card ID")
+    is_active = models.BooleanField(verbose_name="card is active", default=False,)
 
 
 class Transaction(Common):

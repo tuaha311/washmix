@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.conf.urls import include
 from django.conf.urls.static import static
+from django.contrib import admin
 from django.urls import path
 
 from rest_framework.schemas import get_schema_view
@@ -17,6 +18,7 @@ if settings.DEBUG:
 urlpatterns += [
     # new REST API
     path("api/v1.0/", include("api.v1_0.urls")),
+    path("admin/", admin.site.urls),
     # OpenAPI docs
     path(
         "openapi/",

@@ -51,5 +51,6 @@ class Item(Common):
     item = models.TextField(default="")
     cost = models.FloatField(default=0)
 
+
 # TODO новые модели OrderItem (quantity), Cart
 # TODO новые модели DeliveryInterval, Transaction
