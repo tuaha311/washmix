@@ -5,6 +5,16 @@ from core.common_models import Common
 from modules.enums import AppUsers, Crease, Detergents, SignUp, Starch
 
 
+# TODO наследовать от User
+class Employee(Common):
+    pass
+
+
+# TODO наследовать от User
+class Customer(Common):
+    pass
+
+
 class Profile(Common):
     """User profile to save extra info other than related to authentication."""
 
