@@ -1,5 +1,5 @@
-from django.contrib.auth.models import User
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
 
@@ -22,7 +22,9 @@ class Order(Common):
     related to the order.
     """
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="order_list")
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="order_list"
+    )
     pickup_address = models.ForeignKey(
         "core.Address", on_delete=models.CASCADE, related_name="pickup_address_list",
     )

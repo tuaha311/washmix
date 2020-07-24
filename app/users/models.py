@@ -1,43 +1,45 @@
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
-from django.conf import settings
 
 from swap_user.models.email import EmailUser
 
 from core.common_models import Common
 from modules.enums import AppUsers, Crease, Detergents, SignUp, Starch
+from users.base_models import AbstractEmployee
 
 
-class Employee(Common):
+class Employee(AbstractEmployee):
     """
-    Employee of laundry who processing orders
+    Employees of laundry who processing orders or
+    who delivers orders to clients.
     """
+
+    LAUNDRESS = "laundress"
+    DRIVER = "driver"
+    MANAGER = "manager"
+    POSITION_MAP = {
+        DRIVER: "Driver",
+        LAUNDRESS: "Laundress",
+        MANAGER: "Manager",
+    }
+    POSITION_CHOICES = list(POSITION_MAP.items())
 
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="employee",
     )
+    position = models.CharField(
+        verbose_name="position of employee",
+        max_length=20,
+        default=LAUNDRESS,
+        choices=POSITION_CHOICES,
+    )
 
     class Meta:
         verbose_name = "employee"
         verbose_name_plural = "employees"
-
-
-class Driver(Common):
-    """
-    Person who delivers orders to clients
-    """
-
-    user = models.OneToOneField(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="driver",
-    )
-
-    class Meta:
-        verbose_name = "driver"
-        verbose_name_plural = "drivers"
 
 
 class Client(Common):
@@ -49,28 +51,27 @@ class Client(Common):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name="profile",
+        related_name="client",
     )
     package = models.ForeignKey(
         "core.Package",
-        null=True,
+        verbose_name="package of service",
+        related_name="client_list",
         on_delete=models.CASCADE,
-        related_name="profile_list",
-    )
-    phone = models.CharField(
-        max_length=15,
-        default="",
-    )
-
-    # Additional employee information
-    DOB = models.DateField(
         null=True,
     )
-    joining_date = models.DateField(
+    main_phone = models.OneToOneField(
+        "core.Phone",
+        verbose_name="phone number",
+        related_name="+",
+        on_delete=models.SET_NULL,
         null=True,
     )
-    SSN = models.CharField(
-        max_length=15,
+    main_address = models.OneToOneField(
+        "core.Address",
+        verbose_name="user",
+        related_name="+",
+        on_delete=models.SET_NULL,
         null=True,
     )
 

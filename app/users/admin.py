@@ -1,10 +1,11 @@
 from django.contrib import admin
 from django.contrib.auth.models import Permission
 
-from users.models import Profile
+from users.models import Client, Employee
 
 models = [
-    Profile,
+    Client,
+    Employee,
     Permission,
 ]
 for item in models:

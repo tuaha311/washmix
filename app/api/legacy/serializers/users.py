@@ -17,18 +17,18 @@ from billing.models import Card
 from core.models import Package
 from modules.enums import AppUsers, Crease, Detergents, SignUp, Starch
 from modules.helpers import commit_transaction, random_string
-from users.models import Profile
+from users.models import Client
 
 
 def email_validator(value):
     try:
         user = User.objects.get(email=value)
-        if user and user.profile.authentication_provider == SignUp.washmix.value:
+        if user and user.client.authentication_provider == SignUp.washmix.value:
             raise ValidationError({"email": "User already exist!"})
         raise ValidationError(
             {
                 "email": "User already signed up with {0}".format(
-                    user.profile.authentication_provider
+                    user.client.authentication_provider
                 )
             }
         )
@@ -57,9 +57,9 @@ class UserListSerializer(serializers.ListSerializer):
         pickup_addresses = validated_data.pop("pickup_addresses", None)
         dropoff_addresses = validated_data.pop("dropoff_addresses", None)
         orders = validated_data.pop("orders", None)
-        profile = validated_data.pop("profile", None)
+        client = validated_data.pop("client", None)
 
-        # User profile update
+        # User client update
         user = None
         if validated_data.get("user_id"):
             try:
@@ -71,17 +71,17 @@ class UserListSerializer(serializers.ListSerializer):
                     raise PermissionDenied()
             user_instance = user
 
-        if profile:
-            if profile.get("app_users") == AppUsers.POTENTIAL_USERS.value:
+        if client:
+            if client.get("app_users") == AppUsers.POTENTIAL_USERS.value:
                 validated_data.update({"password": make_password(random_string())})
                 validated_data.update({"is_active": False})
 
-            package = profile.pop("package", None)
-            name = profile.pop("name", None)
+            package = client.pop("package", None)
+            name = client.pop("name", None)
 
-            profile_db, _ = Profile.objects.get_or_create(user=user_instance)
+            profile_db, _ = Client.objects.get_or_create(user=user_instance)
 
-            for pref, val in profile.items():
+            for pref, val in client.items():
                 setattr(profile_db, pref, val)
 
             if package or name:
@@ -150,28 +150,28 @@ class UserSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField(allow_blank=True, required=False)
     last_name = serializers.CharField(allow_blank=True, required=False)
     phone = serializers.CharField(
-        validators=[phone_validator()], source="profile.phone", allow_blank=True
+        validators=[phone_validator()], source="client.phone", allow_blank=True
     )
-    package = serializers.IntegerField(source="profile.package", required=False, allow_null=True)
-    name = serializers.CharField(source="profile.name", required=False, allow_blank=True)
+    package = serializers.IntegerField(source="client.package", required=False, allow_null=True)
+    name = serializers.CharField(source="client.name", required=False, allow_blank=True)
     password = serializers.CharField(required=False)
 
     # Preferences
-    detergents = EnumField(enum=Detergents, source="profile.detergents", required=False)
-    starch = EnumField(enum=Starch, source="profile.starch", required=False)
-    no_crease = EnumField(enum=Crease, source="profile.no_crease", required=False)
-    fabric_softener = serializers.BooleanField(source="profile.fabric_softener", required=False)
-    fix_tears = serializers.BooleanField(source="profile.fix_tears", required=False)
+    detergents = EnumField(enum=Detergents, source="client.detergents", required=False)
+    starch = EnumField(enum=Starch, source="client.starch", required=False)
+    no_crease = EnumField(enum=Crease, source="client.no_crease", required=False)
+    fabric_softener = serializers.BooleanField(source="client.fabric_softener", required=False)
+    fix_tears = serializers.BooleanField(source="client.fix_tears", required=False)
 
-    app_users = EnumField(enum=AppUsers, source="profile.app_users", required=False)
+    app_users = EnumField(enum=AppUsers, source="client.app_users", required=False)
 
     # Employee
-    DOB = serializers.DateField(source="profile.DOB", required=False)
-    joining_date = serializers.DateField(source="profile.joining_date", required=False)
-    SSN = serializers.CharField(source="profile.SSN", required=False)
+    DOB = serializers.DateField(source="client.DOB", required=False)
+    joining_date = serializers.DateField(source="client.joining_date", required=False)
+    SSN = serializers.CharField(source="client.SSN", required=False)
 
     # Customer
-    is_doormen = serializers.BooleanField(source="profile.is_doormen", required=False)
+    is_doormen = serializers.BooleanField(source="client.is_doormen", required=False)
 
     pickup_addresses = PickupAddressSerializer(many=True, required=False)
     dropoff_addresses = DropoffAddressSerializer(many=True, required=False)
@@ -212,7 +212,7 @@ class UserSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         if (
             attrs.get("is_staff")
-            and attrs.get("profile").get("app_users") == AppUsers.EMPLOYEE.value
+            and attrs.get("client").get("app_users") == AppUsers.EMPLOYEE.value
         ):
             raise ValidationError(detail="User cannot be admin and employee at the same time")
         return attrs
@@ -229,24 +229,24 @@ class UserSerializer(serializers.ModelSerializer):
         if validated_data.get("dropoff_addresses"):
             dropoff_address = validated_data.pop("dropoff_addresses")
 
-        profile = validated_data.pop("profile", None)
+        client = validated_data.pop("client", None)
         validated_data.update(
             {
                 "password": make_password(random_string())
-                if profile.get("app_users")
+                if client.get("app_users")
                 else make_password(validated_data.get("password", "")),
                 "username": validated_data["email"],
             }
         )
 
-        if profile.get("app_users", AppUsers.REGULAR_USERS.value) == AppUsers.POTENTIAL_USERS.value:
+        if client.get("app_users", AppUsers.REGULAR_USERS.value) == AppUsers.POTENTIAL_USERS.value:
             validated_data.update({"is_active": False})
 
         user = User(**validated_data)
         commit_transaction(user)
         # Since 'phone' field is not available in auth_user table
-        # therefore handled it separately in profile model
-        Profile.objects.create(user=user, **profile)
+        # therefore handled it separately in client model
+        Client.objects.create(user=user, **client)
 
         resultant = {}
         if pickup_address:
@@ -283,7 +283,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     """
 
     class Meta:
-        model = Profile
+        model = Client
         fields = (
             "phone",
             "package",
@@ -336,7 +336,7 @@ class UserDataSerializer(serializers.ModelSerializer):
             "email",
             "pickupaddress",
             "dropoffaddress",
-            "profile",
+            "client",
             "order",
             "card_list",
             "is_staff",
@@ -345,12 +345,12 @@ class UserDataSerializer(serializers.ModelSerializer):
     def to_representation(self, obj):
         """This function helps us renaming default name defined in serializer field list.
             
-        Since address and profile is a valid name for models therefore we renamed them
+        Since address and client is a valid name for models therefore we renamed them
         while serializing json"""
 
         primitive_repr = super(UserDataSerializer, self).to_representation(obj)
 
-        primitive_profile_repr = primitive_repr["profile"]
+        primitive_profile_repr = primitive_repr["client"]
 
         primitive_repr["pickup_addresses"] = (
             primitive_repr["pickupaddress"] if primitive_repr["pickupaddress"] else None
@@ -408,11 +408,11 @@ class UserDataSerializer(serializers.ModelSerializer):
 
         primitive_repr.pop("pickupaddress", None)
         primitive_repr.pop("dropoffaddress", None)
-        primitive_repr.pop("profile")
+        primitive_repr.pop("client")
         return primitive_repr
 
     pickupaddress = AddressGetSerializer(many=True, read_only=True)
     dropoffaddress = DropoffAddressGetSerializer(many=True, read_only=True)
     order = OrderHistorySerializer(many=True, read_only=True)
-    profile = ProfileSerializer(read_only=True)
+    client = ProfileSerializer(read_only=True)
     card_list = UserCardSerializer(many=True)
