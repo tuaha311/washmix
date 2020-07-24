@@ -1,5 +1,8 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.conf import settings
+
+from swap_user.models.email import EmailUser
 
 from core.common_models import Common
 from modules.enums import AppUsers, Crease, Detergents, SignUp, Starch
@@ -18,7 +21,7 @@ class Customer(Common):
 class Profile(Common):
     """User profile to save extra info other than related to authentication."""
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="profile")
     package = models.ForeignKey(
         "core.Package", null=True, on_delete=models.CASCADE, related_name="profile_list"
     )

@@ -65,6 +65,7 @@ drf-writable-nested = "0.5.4"
 environs = "^8.0.0"
 gunicorn = "^20.0.4"
 pyyaml = "^5.3.1"
+django-swap-user = "^0.1.4"
 
 
 [tool.poetry.dev-dependencies]

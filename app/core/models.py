@@ -1,5 +1,4 @@
 from django.conf import settings
-from django.contrib.auth.models import User
 from django.db import models
 
 from core.common_models import Common
@@ -7,7 +6,7 @@ from orders.models import Order
 
 
 class Address(Common):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="address_list")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="address_list")
 
     address_line_1 = models.TextField()
     address_line_2 = models.TextField(default="")

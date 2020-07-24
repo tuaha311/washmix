@@ -38,6 +38,7 @@ THIRD_PARTY_APPS = [
     "djoser",
     "social_django",
     "django_cleanup",
+    "swap_user",
 ]
 
 LOCAL_APPS = [
@@ -133,6 +134,9 @@ EMAIL_HOST = "smtp.sendgrid.net"
 EMAIL_HOST_USER = "khurram.farooq"
 EMAIL_HOST_PASSWORD = env.str("SENDGRID_API_KEY")
 EMAIL_PORT = 587
+
+
+AUTH_USER_MODEL = "swap_user.EmailUser"
 
 
 #########################
