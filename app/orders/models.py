@@ -6,7 +6,22 @@ from django.utils import timezone
 from core.common_models import Common
 
 
+class Request(Common):
+    """
+    Request to pickup order or drop off a order to the client.
+    """
+
+    class Meta:
+        verbose_name = "pickup request"
+        verbose_name_plural = "pickup requests"
+
+
 class Order(Common):
+    """
+    Central point of system - where we processing orders and storing all info
+    related to the order.
+    """
+
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="order_list")
     pickup_address = models.ForeignKey(
         "core.Address", on_delete=models.CASCADE, related_name="pickup_address_list",
@@ -44,6 +59,12 @@ class Order(Common):
     is_paid = models.BooleanField(default=False)
 
 
+class Service(Common):
+    class Meta:
+        verbose_name = "service"
+        verbose_name_plural = "services"
+
+
 class Item(Common):
     # TODO переименовать на Service
     # TODO изменить на Many To Many
@@ -52,6 +73,10 @@ class Item(Common):
     order = models.ForeignKey("orders.Order", on_delete=models.CASCADE, related_name="item_list")
     item = models.TextField(default="")
     cost = models.FloatField(default=0)
+
+    class Meta:
+        verbose_name = "item"
+        verbose_name_plural = "items"
 
 
 # TODO новые модели OrderItem (quantity), Cart

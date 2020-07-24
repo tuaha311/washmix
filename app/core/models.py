@@ -5,6 +5,24 @@ from core.common_models import Common
 from orders.models import Order
 
 
+class Phone(Common):
+    number = models.CharField(
+        verbose_name="number",
+        max_length=20,
+    )
+
+    class Meta:
+        verbose_name = "phone"
+        verbose_name_plural = "phones"
+
+
+class ZipCode(Common):
+    value = models.CharField(
+        verbose_name="value",
+        max_length=20,
+    )
+
+
 class Address(Common):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="address_list")
 
