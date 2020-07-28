@@ -26,11 +26,7 @@ def email_validator(value):
         if user and user.client.authentication_provider == SignUp.washmix.value:
             raise ValidationError({"email": "User already exist!"})
         raise ValidationError(
-            {
-                "email": "User already signed up with {0}".format(
-                    user.client.authentication_provider
-                )
-            }
+            {"email": "User already signed up with {0}".format(user.client.authentication_provider)}
         )
     except User.DoesNotExist:
         pass

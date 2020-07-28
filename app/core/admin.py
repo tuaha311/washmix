@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from core.models import Address, Notification, Package, Product, Phone, ZipCode
+from core.models import Address, Notification, Package, Phone, Product, ZipCode
 
 admin.site.site_header = "Washmix"
 admin.site.site_title = "washmix.com"

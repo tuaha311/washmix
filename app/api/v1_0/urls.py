@@ -3,11 +3,12 @@ from django.urls import include, path
 from rest_framework.routers import SimpleRouter
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 
-from api.v1_0.views import addresses, orders, packages
+from api.v1_0.views import addresses, orders, packages, zip_codes
 
 router = SimpleRouter(trailing_slash=True)
 router.register("addresses", addresses.AddressViewSet, basename="address")
 router.register("orders", orders.OrderViewSet, basename="order")
+router.register("zip_codes", orders.OrderViewSet, basename="zip-codes")
 
 app_name = "v1_0"
 token_urls = (
