@@ -82,6 +82,7 @@ environs = "^8.0.0"
 gunicorn = "^20.0.4"
 pyyaml = "^5.3.1"
 django-swap-user = "^0.1.4"
+uritemplate = "^3.0.1"
 
 
 [tool.poetry.dev-dependencies]
