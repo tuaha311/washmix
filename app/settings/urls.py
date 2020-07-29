@@ -31,6 +31,4 @@ urlpatterns += [
         ),
         name="openapi-schema",
     ),
-    # legacy REST API
-    path("", include("api.legacy.urls")),
 ]
