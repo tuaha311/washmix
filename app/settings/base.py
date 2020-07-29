@@ -176,7 +176,8 @@ DJOSER = {
     "ACTIVATION_URL": "#/activate/{uid}/{token}",
     "SEND_ACTIVATION_EMAIL": True,
     "SEND_CONFIRMATION_EMAIL": True,
-    "USER_CREATE_PASSWORD_RETYPE": True,
+    "USER_CREATE_PASSWORD_RETYPE": False,
+    "PASSWORD_RESET_CONFIRM_RETYPE": False,
     "TOKEN_MODEL": None,
 }
 

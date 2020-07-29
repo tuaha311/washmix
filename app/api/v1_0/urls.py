@@ -18,13 +18,13 @@ token_urls = (
         path("refresh/", TokenRefreshSlidingView.as_view(), name="refresh"),
         path("verify/", TokenVerifyView.as_view(), name="verify"),
     ],
-    "token",
+    "jwt",
 )
 
 
 urlpatterns = [
     *router.urls,
-    path("token/", include(token_urls)),
+    path("jwt/", include(token_urls)),
     path("auth/", include("djoser.urls")),
     path("packages/", packages.PackageListView.as_view(), name="package-list"),
 ]
