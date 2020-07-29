@@ -26,8 +26,6 @@ urlpatterns += [
             title="WashMix",
             description="WashMix REST API",
             version="1.0",
-            authentication_classes=[],
-            permission_classes=[],
         ),
         name="openapi-schema",
     ),
