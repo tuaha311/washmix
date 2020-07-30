@@ -26,17 +26,9 @@ token_urls = (
 auth_urls = (
     [
         path("login/", TokenObtainSlidingView.as_view(), name="obtain"),
-        path("signup/", auth.SignupView.as_view({"post": "create"}), name="signup"),
-        path(
-            "forgot_password/",
-            auth.ForgotPasswordView.as_view({"post": "reset_password"}),
-            name="forgot-password",
-        ),
-        path(
-            "reset_new_password/",
-            auth.SetNewPasswordView.as_view({"post": "reset_password_confirm"}),
-            name="set-new-password",
-        ),
+        path("signup/", auth.SignupView.as_view(), name="signup"),
+        path("forgot_password/", auth.ForgotPasswordView.as_view(), name="forgot-password",),
+        path("reset_new_password/", auth.SetNewPasswordView.as_view(), name="reset-new-password",),
     ],
     "auth",
 )
