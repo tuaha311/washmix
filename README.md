@@ -19,7 +19,7 @@
   ```bash
   poetry install
   ```
-*  Setup infrastructure:
+* Setup infrastructure:
   ```bash
   docker-compose up -d
   ```
