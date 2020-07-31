@@ -35,11 +35,11 @@
   ```
 * Run migrations:
   ```
-  python manage.py migrate --settings settings.local
+  python manage.py migrate --settings settings.dev
   ```
 * Run the development server:
   ```bash
-  python manage.py runserver --settings settings.local
+  python manage.py runserver --settings settings.dev
   ```
 * Enjoy!
 
