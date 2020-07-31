@@ -58,6 +58,8 @@
 
 ## Docs
 Most of models are documented with docstrings. 
+If you want to see database architecture - please open `models.drawio` at [draw.io](https://draw.io).
+
 REST API documentation can be found at `/openapi/` address.
 REST API documentation created in [OpenAPI](https://www.openapis.org) specification. 
 
