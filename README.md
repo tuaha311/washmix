@@ -45,21 +45,22 @@
 
 
 ## Applications
-`billing` - here we store all models related to the balance and cards of user
+`billing` - here we store all models related to the balance and cards of user.
 
-`core` - core models of washmix project
+`core` - core models of washmix project.
 
-`notifications` - this application responsible for sending SMS and email messages to users
+`notifications` - this application responsible for sending SMS and email messages to users.
 
-`orders` - here we store all logic related to the order creation, cart and item management
+`orders` - here we store all logic related to the order creation, cart and item management.
 
-`users` - one of the main applications, whole logic of clients, employees management stored here
+`users` - one of the main applications, whole logic of clients, employees management stored here.
 
 
 ## Docs
 Most of models are documented with docstrings. 
 REST API documentation can be found at `/openapi/` address.
 REST API documentation created in [OpenAPI](https://www.openapis.org) specification. 
+
 OpenAPI can be exported and opened in many editors:
 - Insomnia Designer
 - Postman 
