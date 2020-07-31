@@ -5,18 +5,33 @@ from django.utils.timezone import localdate
 from core.common_models import Common
 
 
-class AbstractEmployee(Common):
+class Employee(Common):
     """
-    Abstract class that implements most of field
-    required by employees.
+    Employee of laundry who processing orders or who delivers
+    orders to clients.
     """
+
+    LAUNDRESS = "laundress"
+    DRIVER = "driver"
+    MANAGER = "manager"
+    POSITION_MAP = {
+        DRIVER: "Driver",
+        LAUNDRESS: "Laundress",
+        MANAGER: "Manager",
+    }
+    POSITION_CHOICES = list(POSITION_MAP.items())
 
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="employee",
     )
-
+    position = models.CharField(
+        verbose_name="position of employee",
+        max_length=20,
+        default=LAUNDRESS,
+        choices=POSITION_CHOICES,
+    )
     SSN = models.CharField(
         verbose_name="social security number",
         max_length=15,
@@ -33,4 +48,5 @@ class AbstractEmployee(Common):
     )
 
     class Meta:
-        abstract = True
+        verbose_name = "employee"
+        verbose_name_plural = "employees"

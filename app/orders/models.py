@@ -82,4 +82,4 @@ class Item(Common):
 
 
 # TODO новые модели OrderItem (quantity), Cart
-# TODO новые модели DeliveryInterval, Transaction
+# TODO новые модели DeliveryInterval

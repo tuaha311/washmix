@@ -26,18 +26,6 @@ class Crease(Enum):
     JEANS_ONLY = "JEANS_ONLY"
 
 
-class AppUsers(Enum):
-    POTENTIAL_USERS = "POTENTIAL_USERS"
-    REGULAR_USERS = "REGULAR_USERS"
-    EMPLOYEE = "EMPLOYEE"
-
-
-class SignUp(Enum):
-    facebook = "facebook"
-    google = "google-oauth2"
-    washmix = "washmix"
-
-
 class CouponType(Enum):
     FIRST = "FIRST"
     PACKAGE = "PACKAGE"
