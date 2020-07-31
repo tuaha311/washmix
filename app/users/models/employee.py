@@ -9,6 +9,15 @@ class Employee(Common):
     """
     Employee of laundry who processing orders or who delivers
     orders to clients.
+
+    At the moment of 31/07/2020 we can divide them into 3 main categories:
+    - Laundress (who cares about clean, wash, fold etc.)
+    - Driver (who responsible of delivery and pickup)
+    - Manager (who manages laundress and drivers)
+
+    Laundress and Manager can login into WashMix Admin and use it for
+    order management.
+    Driver mostly uses a WashMix Driver's App to deliver and pickup orders.
     """
 
     LAUNDRESS = "laundress"
@@ -26,6 +35,7 @@ class Employee(Common):
         on_delete=models.CASCADE,
         related_name="employee",
     )
+
     position = models.CharField(
         verbose_name="position of employee",
         max_length=20,

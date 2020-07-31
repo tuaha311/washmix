@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from core.models import Address
+from locations.models import Address
 
 
 class AddressSerializer(serializers.ModelSerializer):

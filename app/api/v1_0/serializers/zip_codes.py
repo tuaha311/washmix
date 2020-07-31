@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from core.models import ZipCode
+from locations.models import ZipCode
 
 
 class ZipCodeSerializer(serializers.ModelSerializer):

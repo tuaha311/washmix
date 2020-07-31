@@ -26,10 +26,10 @@ class Order(Common):
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="order_list"
     )
     pickup_address = models.ForeignKey(
-        "core.Address", on_delete=models.CASCADE, related_name="pickup_address_list",
+        "locations.Address", on_delete=models.CASCADE, related_name="pickup_address_list",
     )
     dropoff_address = models.ForeignKey(
-        "core.Address", on_delete=models.CASCADE, related_name="dropoff_address_list",
+        "locations.Address", on_delete=models.CASCADE, related_name="dropoff_address_list",
     )
 
     # TODO rename to delivery_day

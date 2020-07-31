@@ -7,8 +7,12 @@ from modules.enums import Crease, Detergents, Starch
 
 class Client(Common):
     """
-    Online-only clients of application. They used our web-application to
-    make orders and request pickups.
+    ONLINE-ONLY clients of application. They used our web-application to
+    make orders and request pickups. Our main targeted audience.
+
+    To this client we can offer a full-featured web-application without any
+    restrictions. This kind of client can login into application, because they
+    have an relation with authentication data (AUTH_USER_MODEL).
     """
 
     user = models.OneToOneField(
@@ -38,7 +42,7 @@ class Client(Common):
         null=True,
     )
     main_address = models.OneToOneField(
-        "core.Address",
+        "locations.Address",
         verbose_name="main address",
         related_name="+",
         on_delete=models.SET_NULL,

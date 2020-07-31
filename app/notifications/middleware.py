@@ -6,7 +6,7 @@ from django.core.exceptions import MiddlewareNotUsed
 
 from twilio.rest import Client
 
-from core.models import Notification
+from notifications.models import Notification
 
 
 def load_twilio_config():

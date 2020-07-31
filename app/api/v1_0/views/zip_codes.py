@@ -1,7 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 
 from api.v1_0.serializers.zip_codes import ZipCodeSerializer
-from core.models import ZipCode
+from locations.models import ZipCode
 
 
 class ZipCodeViewSet(ModelViewSet):
