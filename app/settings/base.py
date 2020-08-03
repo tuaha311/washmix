@@ -141,6 +141,11 @@ EMAIL_PORT = 587
 AUTH_USER_MODEL = "swap_user.EmailUser"
 
 
+#####################################
+# APPLICATION_DATA (BUSINESS RULES) #
+#####################################
+
+
 #########################
 # DJANGO REST FRAMEWORK #
 #########################

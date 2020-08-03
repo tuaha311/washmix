@@ -10,25 +10,28 @@ from api.generators import WashMixSchemaGenerator
 
 urlpatterns = []
 
-if settings.DEBUG:
-    urlpatterns += [
-        # Static files serving
-        *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
-        *static(settings.STATIC_URL, document_root=settings.STATIC_ROOT),
-        # OpenAPI docs
-        path(
-            "openapi/",
-            get_schema_view(
-                title="WashMix",
-                description="WashMix REST API",
-                version="1.0",
-                generator_class=WashMixSchemaGenerator,
-                permission_classes=[],
-                authentication_classes=[],
-            ),
-            name="openapi-schema",
+
+local_patterns = [
+    # OpenAPI docs
+    path(
+        "openapi/",
+        get_schema_view(
+            title="WashMix",
+            description="WashMix REST API",
+            version="1.0",
+            generator_class=WashMixSchemaGenerator,
+            permission_classes=[],
+            authentication_classes=[],
         ),
-    ]
+        name="openapi-schema",
+    ),
+    # Static files serving
+    *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
+    *static(settings.STATIC_URL, document_root=settings.STATIC_ROOT),
+]
+
+if settings.DEBUG:
+    urlpatterns += local_patterns
 
 
 urlpatterns += [
