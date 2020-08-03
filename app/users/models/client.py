@@ -3,6 +3,7 @@ from django.db import models
 
 from core.common_models import Common
 from modules.enums import Crease, Detergents, Starch
+from users.managers import ClientManager
 
 
 class Client(Common):
@@ -79,3 +80,9 @@ class Client(Common):
     fix_tears = models.BooleanField(
         default=False,
     )
+
+    objects = ClientManager()
+
+    class Meta:
+        verbose_name = "client"
+        verbose_name_plural = "clients"

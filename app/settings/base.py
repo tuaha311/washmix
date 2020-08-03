@@ -4,6 +4,7 @@ from datetime import timedelta
 from django.conf.global_settings import STATICFILES_FINDERS
 
 from environs import Env
+from phonenumbers import PhoneNumberFormat
 
 env = Env()
 
@@ -144,6 +145,9 @@ AUTH_USER_MODEL = "swap_user.EmailUser"
 #####################################
 # APPLICATION_DATA (BUSINESS RULES) #
 #####################################
+
+DEFAULT_PHONE_REGION = "USA"
+DEFAULT_PHONE_FORMAT = PhoneNumberFormat.E164
 
 
 #########################
