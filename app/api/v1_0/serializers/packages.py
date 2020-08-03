@@ -6,4 +6,7 @@ from core.models import Package
 class PackageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Package
-        fields = "__all__"
+        exclude = [
+            "created",
+            "changed",
+        ]

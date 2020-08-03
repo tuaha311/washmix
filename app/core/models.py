@@ -59,6 +59,9 @@ class Package(Common):
         verbose_name = "package"
         verbose_name_plural = "packages"
 
+    def __str__(self):
+        return self.name
+
 
 class Phone(Common):
     """
