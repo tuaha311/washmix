@@ -12,11 +12,15 @@ class City(Common):
     name = models.CharField(
         verbose_name="name",
         max_length=50,
+        unique=True,
     )
 
     class Meta:
         verbose_name = "city"
         verbose_name_plural = "cities"
+
+    def __str__(self):
+        return self.name
 
 
 class ZipCode(Common):
@@ -34,11 +38,15 @@ class ZipCode(Common):
     value = models.CharField(
         verbose_name="value",
         max_length=20,
+        unique=True,
     )
 
     class Meta:
         verbose_name = "zip code"
         verbose_name_plural = "zip codes"
+
+    def __str__(self):
+        return self.value
 
 
 class Address(Common):
