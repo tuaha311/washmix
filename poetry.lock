@@ -598,6 +598,14 @@ python-versions = "*"
 version = "0.1.2"
 
 [[package]]
+category = "main"
+description = "Python version of Google's common library for parsing, formatting, storing and validating international phone numbers."
+name = "phonenumbers"
+optional = false
+python-versions = "*"
+version = "8.12.7"
+
+[[package]]
 category = "dev"
 description = "plugin and hook calling mechanisms for python"
 name = "pluggy"
@@ -1055,7 +1063,7 @@ test = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 
 [metadata]
-content-hash = "c6dbd675effa3204d13f775d99792fd3a5202457bc19b22f2a9c1ad0d27d9cb7"
+content-hash = "3810f516f77ff34aa7d7539bd03ac780e6d1c3ba5ff1d286a41577b5b1ea6b3a"
 python-versions = "~3.7"
 
 [metadata.files]
@@ -1358,6 +1366,10 @@ pathspec = [
 ]
 pathtools = [
     {file = "pathtools-0.1.2.tar.gz", hash = "sha256:7c35c5421a39bb82e58018febd90e3b6e5db34c5443aaaf742b3f33d4655f1c0"},
+]
+phonenumbers = [
+    {file = "phonenumbers-8.12.7-py2.py3-none-any.whl", hash = "sha256:772d69e620f85bb089d27c4e2bbf718c49ad327459accf9463ac65dbab67695c"},
+    {file = "phonenumbers-8.12.7.tar.gz", hash = "sha256:652c418f8e97c8438f227a524ddf8d7d325c4a47e4924ce865b827c24ec3194d"},
 ]
 pluggy = [
     {file = "pluggy-0.13.1-py2.py3-none-any.whl", hash = "sha256:966c145cd83c96502c3c3868f50408687b38434af77734af1e9ca461a4081d2d"},
