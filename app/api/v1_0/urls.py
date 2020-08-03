@@ -7,12 +7,11 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView,
 )
 
-from api.v1_0.views import addresses, auth, orders, packages, zip_codes
+from api.v1_0.views import addresses, auth, locations, orders, packages
 
 router = SimpleRouter(trailing_slash=True)
 router.register("addresses", addresses.AddressViewSet, basename="address")
 router.register("orders", orders.OrderViewSet, basename="order")
-router.register("zip_codes", zip_codes.ZipCodeViewSet, basename="zip-codes")
 
 app_name = "v1_0"
 token_urls = (
@@ -38,5 +37,7 @@ urlpatterns = [
     *router.urls,
     path("jwt/", include(token_urls)),
     path("auth/", include(auth_urls)),
+    # open methods without authorization (landing page)
     path("packages/", packages.PackageListView.as_view(), name="package-list"),
+    path("locations/", locations.LocationViewList.as_view(), name="location-list"),
 ]

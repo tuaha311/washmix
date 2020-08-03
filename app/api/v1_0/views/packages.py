@@ -7,6 +7,8 @@ from core.models import Package
 
 class PackageListView(ListAPIView):
     """
+    PUBLIC METHOD.
+
     Shows a list of available packages.
     Mostly called from landing without authentication.
     """
