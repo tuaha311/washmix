@@ -30,6 +30,9 @@ class Service(Common):
         verbose_name = "service"
         verbose_name_plural = "services"
 
+    def __str__(self):
+        return self.title
+
 
 class Price(Common):
     """
@@ -62,6 +65,10 @@ class Price(Common):
     class Meta:
         verbose_name = "price"
         verbose_name_plural = "prices"
+        unique_together = ("service", "item",)
+
+    def __str__(self):
+        return f"{self.service.title} on {self.item.title} = {self.price} $"
 
 
 class Item(Common):
@@ -79,11 +86,15 @@ class Item(Common):
     )
     image = models.ImageField(
         verbose_name="image",
+        blank=True,
     )
 
     class Meta:
         verbose_name = "item"
         verbose_name_plural = "items"
+
+    def __str__(self):
+        return self.title
 
 
 class Request(Common):
