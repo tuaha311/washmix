@@ -6,6 +6,86 @@ from django.utils import timezone
 from core.common_models import Common
 
 
+class Service(Common):
+    """
+    Service that our laundry provide.
+
+    For example:
+    - Dry clean
+    - Press clean
+    """
+
+    title = models.CharField(
+        verbose_name="title of service",
+        max_length=50,
+    )
+    item_list = models.ManyToManyField(
+        "orders.Item",
+        verbose_name="items",
+        related_name="service_list",
+        through="orders.Price",
+    )
+
+    class Meta:
+        verbose_name = "service"
+        verbose_name_plural = "services"
+
+
+class Price(Common):
+    """
+    Intermediate model that holds a logic of pricing
+    between item and service.
+
+    For example:
+    - Dry clean on Pants price is 10$
+    - Dry clean on T-shirts price is 5$
+    """
+
+    service = models.ForeignKey(
+        "orders.Service",
+        verbose_name="service",
+        related_name="price_list",
+        on_delete=models.CASCADE,
+    )
+    item = models.ForeignKey(
+        "orders.Item",
+        verbose_name="item",
+        related_name="price_list",
+        on_delete=models.CASCADE,
+    )
+    price = models.DecimalField(
+        verbose_name="price on this service with this item",
+        max_digits=9,
+        decimal_places=2,
+    )
+
+    class Meta:
+        verbose_name = "price"
+        verbose_name_plural = "prices"
+
+
+class Item(Common):
+    """
+    Items of our client that we can handle.
+
+    For example:
+    - T-shirt
+    - Pants
+    """
+
+    title = models.CharField(
+        verbose_name="title of item",
+        max_length=50,
+    )
+    image = models.ImageField(
+        verbose_name="image",
+    )
+
+    class Meta:
+        verbose_name = "item"
+        verbose_name_plural = "items"
+
+
 class Request(Common):
     """
     Request to pickup order or drop off a order to the client.
@@ -59,26 +139,6 @@ class Order(Common):
 
     count = models.IntegerField(default=0)
     is_paid = models.BooleanField(default=False)
-
-
-class Service(Common):
-    class Meta:
-        verbose_name = "service"
-        verbose_name_plural = "services"
-
-
-class Item(Common):
-    # TODO переименовать на Service
-    # TODO изменить на Many To Many
-    # TODO добавить количество quantity
-    # TODO добавить поле image
-    order = models.ForeignKey("orders.Order", on_delete=models.CASCADE, related_name="item_list")
-    item = models.TextField(default="")
-    cost = models.FloatField(default=0)
-
-    class Meta:
-        verbose_name = "item"
-        verbose_name_plural = "items"
 
 
 # TODO новые модели OrderItem (quantity), Cart
