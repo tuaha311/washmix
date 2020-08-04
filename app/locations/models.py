@@ -14,6 +14,10 @@ class City(Common):
         max_length=50,
         unique=True,
     )
+    zip_code_list = models.ManyToManyField(
+        "locations.ZipCode",
+        related_name="city_list",
+    )
 
     class Meta:
         verbose_name = "city"
@@ -28,12 +32,6 @@ class ZipCode(Common):
     Zip codes of supported addresses where our laundry works.
     Only at this zip codes we can pickup or deliver.
     """
-
-    city = models.ForeignKey(
-        "locations.City",
-        related_name="zipcode_list",
-        on_delete=models.CASCADE,
-    )
 
     value = models.CharField(
         verbose_name="value",
