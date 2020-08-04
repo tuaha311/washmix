@@ -11,6 +11,7 @@ django_cache
 .idea/wm_django.iml
 .idea/modules.xml
 .idea/codeStyleSettings.xml
+.idea
 
 # Sensitive or high-churn files:
 .idea/dataSources.ids
