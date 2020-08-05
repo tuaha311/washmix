@@ -6,12 +6,9 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('orders', '0002_allow_blank_on_item'),
+        ("orders", "0002_allow_blank_on_item"),
     ]
 
     operations = [
-        migrations.AlterUniqueTogether(
-            name='price',
-            unique_together={('service', 'item')},
-        ),
+        migrations.AlterUniqueTogether(name="price", unique_together={("service", "item")},),
     ]
