@@ -1,6 +1,6 @@
 import dramatiq
 
-from core.middleware import TwilioNotificationsMiddleware
+from notifications.middleware import TwilioNotificationsMiddleware
 from orders.models import Order
 
 

@@ -1,3 +1,7 @@
 from django.contrib import admin
 
-# Register your models here.
+from billing.models import Card, Coupon, Transaction
+
+models = [Card, Transaction, Coupon]
+for item in models:
+    admin.site.register(item)

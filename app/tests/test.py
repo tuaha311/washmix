@@ -7,7 +7,7 @@ from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
 from billing.models import Card
-from core.models import Address
+from locations.models import Address
 from modules.helpers import (
     mock_add_customer,
     mock_get_card,

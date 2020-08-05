@@ -1,26 +1,11 @@
-from django.contrib.admin import AdminSite
-from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.models import Group, User
-from django.contrib.sites.models import Site
+from django.contrib import admin
 
-from oauth2_provider.oauth2_validators import AccessToken, Application, Grant, RefreshToken
-from rest_framework.authtoken.models import Token
-from robots.models import Rule, Url
-from social_django.models import Association, Nonce, UserSocialAuth
+from core.models import Package, Phone, Product
 
-admin_site = AdminSite()
+admin.site.site_header = "Washmix"
+admin.site.site_title = "washmix.com"
+admin.site.index_title = "Washmix Admin Panel"
 
-
-admin_site.register(User, UserAdmin)
-admin_site.register(Site)
-admin_site.register(Application)
-admin_site.register(Grant)
-admin_site.register(AccessToken)
-admin_site.register(RefreshToken)
-admin_site.register(Group)
-admin_site.register(Url)
-admin_site.register(Rule)
-admin_site.register(Token)
-admin_site.register(UserSocialAuth)
-admin_site.register(Nonce)
-admin_site.register(Association)
+models = [Package, Product, Phone]
+for item in models:
+    admin.site.register(item)

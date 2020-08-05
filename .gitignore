@@ -11,6 +11,7 @@ django_cache
 .idea/wm_django.iml
 .idea/modules.xml
 .idea/codeStyleSettings.xml
+.idea
 
 # Sensitive or high-churn files:
 .idea/dataSources.ids
@@ -29,3 +30,6 @@ django_cache
 !.elasticbeanstalk/*.global.yml
 .ebextensions/
 .elasticbeanstalk/
+
+# environment
+.env

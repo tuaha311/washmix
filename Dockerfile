@@ -6,14 +6,9 @@ EXPOSE 8000
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 
 COPY poetry.lock pyproject.toml /
-
-# temporary solution (legacy package)
-RUN pip install djangorestframework-expiring-authtoken==0.1.4
-
 RUN pip install poetry \
   && poetry config virtualenvs.create false \
   && poetry install --no-dev --no-root
-
 
 COPY app /app
 WORKDIR /app
