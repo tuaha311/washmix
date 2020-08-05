@@ -18,3 +18,16 @@
 - name: REDIS_URL
   value: "redis://{{ .Values.app.redis.host }}:6379/1"
 {{ end }}
+# Application
+- name: SECRET_KEY
+  value: "hello"
+- name: SIMPLE_JWT_SIGNING_KEY
+  value: "world"
+- name: SENDGRID_API_KEY
+  value: "test1"
+- name: TWILIO_ACCOUNT_SID
+  value: "test2"
+- name: TWILIO_AUTH_TOKEN
+  value: "test3"
+- name: TWILIO_NUMBER
+  value: "test4"
