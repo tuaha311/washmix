@@ -5,6 +5,7 @@ from django.conf.global_settings import STATICFILES_FINDERS
 
 from environs import Env
 from phonenumbers import PhoneNumberFormat
+from sendgrid.helpers.mail import Email
 
 env = Env()
 
@@ -258,3 +259,13 @@ DRAMATIQ_BROKER = {
 TWILIO_NUMBER = env.str("TWILIO_NUMBER")
 TWILIO_ACCOUNT_SID = env.str("TWILIO_ACCOUNT_SID")
 TWILIO_AUTH_TOKEN = env.str("TWILIO_AUTH_TOKEN")
+
+
+############
+# SENDGRID #
+############
+
+SENDGRID_FROM_EMAIL = Email("info@washmix.com")
+SENDGRID_API_KEY = env.str("SENDGRID_API_KEY")
+
+EMAIL_EVENT_INFO = {"signup": {"template_name": "signup.html", "subject": "Welcome to Washmix!",}}
