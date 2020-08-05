@@ -24,11 +24,10 @@ ingress:
   annotations:
     kubernetes.io/ingress.class: traefik
     kubernetes.io/tls-acme: "true"
-    traefik.ingress.kubernetes.io/request-modifier: "ReplacePathRegex: ^/api/v2/(.*) /$1"
   hosts:
     - host: washmix.evrone.app
       paths: 
-        - /api/v2
+        - /
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
