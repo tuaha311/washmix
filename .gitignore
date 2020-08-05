@@ -34,3 +34,5 @@ django_cache
 # environment
 .env
 venv
+.vscode
+*.code-workspace
