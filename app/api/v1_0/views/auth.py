@@ -9,6 +9,7 @@ from rest_framework.response import Response
 
 from api.v1_0.serializers.auth import SignupSerializer
 from core.models import Phone
+from notifications.senders.sendgrid import SendGridSender
 from users.models import Client
 
 User = get_user_model()
@@ -26,9 +27,17 @@ class SignupView(GenericAPIView):
         password = serializer.validated_data["password"]
         phone = Phone.format_number(serializer.validated_data["phone"])
 
-        Client.objects.create_client(email, password, phone)
+        client = Client.objects.create_client(email, password, phone)
+        self._notify_client(client)
 
         return Response({})
+
+    # TODO move to dramatiq
+    def _notify_client(self, client: Client):
+        sender = SendGridSender()
+        sender.send(
+            recipient_list=[client.email], event="signup", context={"user": client.email},
+        )
 
 
 class ForgotPasswordView(UserViewSet):
