@@ -7,5 +7,5 @@ class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address
         exclude = [
-            "user",
+            "client",
         ]

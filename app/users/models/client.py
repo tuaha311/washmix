@@ -86,3 +86,7 @@ class Client(Common):
     class Meta:
         verbose_name = "client"
         verbose_name_plural = "clients"
+
+    @property
+    def email(self):
+        return self.user.email
