@@ -21,6 +21,7 @@ aliases:
         command: |
           mkdir -p $(dirname $KUBECONFIG) && \
           echo $KUBECONFIG_TOKEN | base64 -d > $KUBECONFIG
+    - deploy_helm_chart
 
 # Commands
 commands:
@@ -47,7 +48,8 @@ commands:
       - helm/install-helm-client:
           version: "v3.2.4"
       - run:
-          command: helm version
+          command: |
+            helm version && .charts/update.sh
 
 jobs:
   "Build docker image":
