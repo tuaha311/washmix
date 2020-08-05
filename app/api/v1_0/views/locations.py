@@ -5,7 +5,7 @@ from api.v1_0.serializers.locations import LocationSerializer
 from locations.models import City
 
 
-class LocationViewList(ListAPIView):
+class LocationListView(ListAPIView):
     """
     PUBLIC METHOD.
 

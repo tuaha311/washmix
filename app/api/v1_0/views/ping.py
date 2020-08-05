@@ -9,6 +9,7 @@ class PingView(GenericAPIView):
 
     Health of service.
     """
+
     permission_classes = [AllowAny]
 
     def get(self, request, *args, **kwargs):
