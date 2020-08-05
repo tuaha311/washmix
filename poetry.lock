@@ -660,7 +660,6 @@ version = "1.9.0"
 [[package]]
 category = "main"
 description = "C parser in Python"
-marker = "platform_python_implementation == \"CPython\" and sys_platform == \"win32\""
 name = "pycparser"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
@@ -762,6 +761,14 @@ cli = ["click (>=5.0)"]
 
 [[package]]
 category = "main"
+description = "HTTP REST client, simplified for Python"
+name = "python-http-client"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+version = "3.2.7"
+
+[[package]]
+category = "main"
 description = "OpenID support for modern servers and consumers."
 marker = "python_version >= \"3.0\""
 name = "python3-openid"
@@ -859,6 +866,18 @@ version = "1.0.12"
 
 [[package]]
 category = "main"
+description = "Twilio SendGrid library for Python"
+name = "sendgrid"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+version = "6.4.4"
+
+[package.dependencies]
+python-http-client = ">=3.2.1"
+starkbank-ecdsa = ">=1.0.0"
+
+[[package]]
+category = "main"
 description = "Python 2 and 3 compatibility utilities"
 name = "six"
 optional = false
@@ -916,6 +935,14 @@ name = "sqlparse"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "0.3.1"
+
+[[package]]
+category = "main"
+description = "A lightweight and fast pure python ECDSA library"
+name = "starkbank-ecdsa"
+optional = false
+python-versions = "*"
+version = "1.0.0"
 
 [[package]]
 category = "main"
@@ -1073,7 +1100,7 @@ test = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 
 [metadata]
-content-hash = "eefedd04ccc977eefd8355655c6510c226739ff7f266a37cd0782b28bb67160f"
+content-hash = "1dfd1a24c51db3a868d4ddcc44167d4ac8600cb89e513a79409beed4956acc68"
 python-versions = "~3.7"
 
 [metadata.files]
@@ -1499,6 +1526,9 @@ python-dotenv = [
     {file = "python-dotenv-0.14.0.tar.gz", hash = "sha256:8c10c99a1b25d9a68058a1ad6f90381a62ba68230ca93966882a4dbc3bc9c33d"},
     {file = "python_dotenv-0.14.0-py2.py3-none-any.whl", hash = "sha256:c10863aee750ad720f4f43436565e4c1698798d763b63234fb5021b6c616e423"},
 ]
+python-http-client = [
+    {file = "python_http_client-3.2.7.tar.gz", hash = "sha256:93d6a26b426e48b04e589c1f103e7c040193e4ccc379ea50cd6e12f94cca7c69"},
+]
 python3-openid = [
     {file = "python3-openid-3.2.0.tar.gz", hash = "sha256:33fbf6928f401e0b790151ed2b5290b02545e8775f982485205a066f874aaeaf"},
     {file = "python3_openid-3.2.0-py3-none-any.whl", hash = "sha256:6626f771e0417486701e0b4daff762e7212e820ca5b29fcc0d05f6f8736dfa6b"},
@@ -1561,6 +1591,10 @@ requests-oauthlib = [
 rjsmin = [
     {file = "rjsmin-1.0.12.tar.gz", hash = "sha256:dd9591aa73500b08b7db24367f8d32c6470021f39d5ab4e50c7c02e4401386f1"},
 ]
+sendgrid = [
+    {file = "sendgrid-6.4.4-py3-none-any.whl", hash = "sha256:9d218bba09c811d8791b7b8116402b2869d7b065c96313e7bb8362fcb880cdae"},
+    {file = "sendgrid-6.4.4.tar.gz", hash = "sha256:c265d97825a3fd67852d6a8cf1e622691c798edaa50fdd4afa97af00a15615ef"},
+]
 six = [
     {file = "six-1.15.0-py2.py3-none-any.whl", hash = "sha256:8b74bedcbbbaca38ff6d7491d76f2b06b3592611af620f8426e82dddb04a5ced"},
     {file = "six-1.15.0.tar.gz", hash = "sha256:30639c035cdb23534cd4aa2dd52c3bf48f06e5f4a941509c8bafd8ce11080259"},
@@ -1578,6 +1612,9 @@ social-auth-core = [
 sqlparse = [
     {file = "sqlparse-0.3.1-py2.py3-none-any.whl", hash = "sha256:022fb9c87b524d1f7862b3037e541f68597a730a8843245c349fc93e1643dc4e"},
     {file = "sqlparse-0.3.1.tar.gz", hash = "sha256:e162203737712307dfe78860cc56c8da8a852ab2ee33750e33aeadf38d12c548"},
+]
+starkbank-ecdsa = [
+    {file = "starkbank-ecdsa-1.0.0.tar.gz", hash = "sha256:cd17ec9fa7ad8ae3fc81a63ddb7e0d7fb798a048e40c1a9c55afd1a207d1eff9"},
 ]
 stripe = [
     {file = "stripe-2.12.0-py2.py3-none-any.whl", hash = "sha256:8aac44663f527ea1759e5b1cf40562a7ea5abf14b1e9dc53b6f359e72d93562c"},
