@@ -28,8 +28,6 @@ commands:
     description: "Build docker image for ultra marketing"
     steps:
       - docker/check
-      - docker/pull:
-          images: "evrone/washmix-back:latest"
       - docker/build:
           image: "evrone/washmix-back"
           tag: "${CIRCLE_SHA1}"
