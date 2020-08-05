@@ -33,3 +33,4 @@ django_cache
 
 # environment
 .env
+venv
