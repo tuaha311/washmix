@@ -27,7 +27,9 @@ ingress:
   hosts:
     - host: washmix.evrone.app
       paths: 
-        - /
+        - /openapi
+        - /api
+        - /admin
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
