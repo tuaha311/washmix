@@ -54,6 +54,7 @@ tolerations: []
 affinity: {}
 
 app:
+  secret: washmix-env
   redis:
     host: redis-master
   db:

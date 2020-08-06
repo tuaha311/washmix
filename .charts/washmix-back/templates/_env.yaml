@@ -17,17 +17,26 @@
 # Redis
 - name: REDIS_URL
   value: "redis://{{ .Values.app.redis.host }}:6379/1"
-# Application
+# Secrets
 - name: SECRET_KEY
-  value: "hello"
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.app.secret }}
+      key: secret_key
 - name: SIMPLE_JWT_SIGNING_KEY
-  value: "world"
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.app.secret }}
+      key: simple_jwt_signing_key
 - name: SENDGRID_API_KEY
-  value: "test1"
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.app.secret }}
+      key: sendgrid_api_key
 - name: TWILIO_ACCOUNT_SID
   value: "test2"
 - name: TWILIO_AUTH_TOKEN
   value: "test3"
 - name: TWILIO_NUMBER
   value: "test4"
-  {{ end }}
+{{ end }}
