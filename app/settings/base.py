@@ -161,6 +161,7 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
     "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer",],
+    "DEFAULT_PARSER_CLASSES": ["rest_framework.parsers.JSONParser",],
 }
 
 ####################################
@@ -256,9 +257,9 @@ DRAMATIQ_BROKER = {
 # TWILIO #
 ##########
 
-TWILIO_NUMBER = env.str("TWILIO_NUMBER")
-TWILIO_ACCOUNT_SID = env.str("TWILIO_ACCOUNT_SID")
-TWILIO_AUTH_TOKEN = env.str("TWILIO_AUTH_TOKEN")
+TWILIO_NUMBER = env.str("TWILIO_NUMBER", "")
+TWILIO_ACCOUNT_SID = env.str("TWILIO_ACCOUNT_SID", "")
+TWILIO_AUTH_TOKEN = env.str("TWILIO_AUTH_TOKEN", "")
 
 
 ############
@@ -266,6 +267,6 @@ TWILIO_AUTH_TOKEN = env.str("TWILIO_AUTH_TOKEN")
 ############
 
 SENDGRID_FROM_EMAIL = Email("info@washmix.com")
-SENDGRID_API_KEY = env.str("SENDGRID_API_KEY")
+SENDGRID_API_KEY = env.str("SENDGRID_API_KEY", "")
 
 EMAIL_EVENT_INFO = {"signup": {"template_name": "signup.html", "subject": "Welcome to Washmix!",}}
