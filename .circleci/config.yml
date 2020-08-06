@@ -65,7 +65,7 @@ jobs:
 _release-filters: &release-filters
   branches:
     only:
-      - staging
+      - master
 
 workflows:
   build-n-push-images:
