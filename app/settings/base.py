@@ -136,7 +136,7 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_USE_TLS = True
 EMAIL_HOST = "smtp.sendgrid.net"
 EMAIL_HOST_USER = "khurram.farooq"
-EMAIL_HOST_PASSWORD = env.str("SENDGRID_API_KEY")
+EMAIL_HOST_PASSWORD = env.str("SENDGRID_API_KEY", "")
 EMAIL_PORT = 587
 
 
