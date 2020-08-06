@@ -5,7 +5,6 @@ set -e
 sleep 5
 
 python manage.py migrate --settings settings.dev
-python manage.py collectstatic --settings settings.dev --noinput
 python manage.py fill_packages --settings settings.dev
 python manage.py fill_cities --settings settings.dev
 
