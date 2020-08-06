@@ -69,7 +69,7 @@ class WMEmailControllerSendGrid(object):
     def __init__(self, **kwargs):
         self.email_formatter = kwargs.get("email_formatter")
         self.header = {
-            "authorization": "%s %s" % ("Bearer", os.environ.get("SENDGRID_API_KEY_2")),
+            "authorization": "%s %s" % ("Bearer", os.environ.get("SENDGRID_API_KEY", "")),
             "content-type": "application/json",
         }
         self.payload = self.get_context_data()
