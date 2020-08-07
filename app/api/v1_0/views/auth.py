@@ -30,7 +30,7 @@ class SignupView(GenericAPIView):
         client = Client.objects.create_client(email, password, phone)
         self._notify_client(client)
 
-        return Response({})
+        return Response({"email": client.email})
 
     # TODO move to dramatiq
     def _notify_client(self, client: Client):
