@@ -7,7 +7,7 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView,
 )
 
-from api.v1_0.views import addresses, auth, locations, orders, packages, ping, services
+from api.v1_0.views import addresses, auth, customers, locations, orders, packages, ping, services
 
 router = SimpleRouter(trailing_slash=True)
 router.register("addresses", addresses.AddressViewSet, basename="address")
@@ -41,5 +41,6 @@ urlpatterns = [
     path("packages/", packages.PackageListView.as_view(), name="package-list"),
     path("locations/", locations.LocationListView.as_view(), name="location-list"),
     path("services/", services.ServiceListView.as_view(), name="service-list"),
+    path("customers/", customers.CustomerCreateView.as_view(), name="customer-create"),
     path("ping/", ping.PingView.as_view(), name="ping"),
 ]

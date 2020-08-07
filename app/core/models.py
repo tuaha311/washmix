@@ -4,6 +4,7 @@ from django.db import models
 import phonenumbers
 
 from core.common_models import Common
+from core.validators import validate_phone
 from orders.models import Order
 
 
@@ -82,6 +83,7 @@ class Phone(Common):
         verbose_name="number",
         max_length=20,
         unique=True,
+        validators=[validate_phone],
     )
 
     class Meta:

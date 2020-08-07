@@ -1,6 +1,7 @@
 from django.db import models
 
 from core.common_models import Common
+from core.validators import validate_phone
 
 
 class Customer(Common):
@@ -33,6 +34,7 @@ class Customer(Common):
         max_length=20,
         unique=True,
         null=True,
+        validators=[validate_phone],
     )
     kind = models.CharField(
         verbose_name="kind",

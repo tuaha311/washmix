@@ -1,7 +1,5 @@
-from django.conf import settings
 from django.contrib.auth import get_user_model
 
-import phonenumbers
 from rest_framework import serializers
 
 from core.models import Phone
@@ -25,12 +23,10 @@ class SignupSerializer(serializers.Serializer):
     def validate_phone(self, value):
         number = value.strip()
 
+        if number.startswith("+"):
+            raise serializers.ValidationError({"auth": "dont_provide_plus"})
+
         if Phone.objects.filter(number=number).exists():
             raise serializers.ValidationError({"auth": "invalid_auth_credentials"})
-
-        try:
-            phonenumbers.parse(value, settings.DEFAULT_PHONE_REGION)
-        except phonenumbers.NumberParseException:
-            raise serializers.ValidationError({"value": "invalid_region"})
 
         return value

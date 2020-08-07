@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.db import models, transaction, IntegrityError
+from django.db import IntegrityError, models, transaction
 
 from core.models import Phone
 
