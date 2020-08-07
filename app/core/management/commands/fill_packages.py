@@ -7,6 +7,7 @@ from core.models import Package
 DEFAULT_PACKAGES = [
     {
         "name": "payc",
+        "description": "Pay as You Clean",
         "price": 0,
         "dry_clean": 0,
         "laundry": 0,
@@ -15,9 +16,11 @@ DEFAULT_PACKAGES = [
         "has_welcome_box": False,
         "has_seasonal_garment": False,
         "has_credit_back": False,
+        "is_most_popular": False,
     },
     {
         "name": "gold",
+        "description": "Pre Pay Credit",
         "price": 99,
         "dry_clean": 10,
         "laundry": 5,
@@ -26,6 +29,7 @@ DEFAULT_PACKAGES = [
         "has_welcome_box": True,
         "has_seasonal_garment": False,
         "has_credit_back": False,
+        "is_most_popular": False,
     },
     {
         "name": "platinum",
@@ -37,6 +41,7 @@ DEFAULT_PACKAGES = [
         "has_welcome_box": True,
         "has_seasonal_garment": True,
         "has_credit_back": True,
+        "is_most_popular": True,
     },
 ]
 

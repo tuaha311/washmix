@@ -34,6 +34,11 @@ class Package(Common):
         choices=NAME_CHOICES,
         unique=True,
     )
+    description = models.CharField(
+        verbose_name="description of package",
+        max_length=100,
+        blank=True,
+    )
     price = models.FloatField(
         verbose_name="price",
     )
@@ -57,6 +62,10 @@ class Package(Common):
     )
     has_credit_back = models.BooleanField(
         verbose_name="has a credit back",
+    )
+    is_most_popular = models.BooleanField(
+        verbose_name="most popular badge",
+        default=False,
     )
 
     class Meta:
