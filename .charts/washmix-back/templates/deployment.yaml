@@ -24,7 +24,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          command: ["bash", "-c", "python manage.py migrate --settings=settings.dev"]
+          command: ["bash", "-c", "python manage.py migrate --settings=settings.staging"]
           env:
           {{- include "common.container.env" . | nindent 12 }}
       containers:
