@@ -135,7 +135,7 @@ AUTHENTICATION_BACKENDS = [
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_USE_TLS = True
 EMAIL_HOST = "smtp.sendgrid.net"
-EMAIL_HOST_USER = "khurram.farooq"
+EMAIL_HOST_USER = "api_evrone"
 EMAIL_HOST_PASSWORD = env.str("SENDGRID_API_KEY", "")
 EMAIL_PORT = 587
 
@@ -147,7 +147,7 @@ AUTH_USER_MODEL = "swap_user.EmailUser"
 # APPLICATION_DATA (BUSINESS RULES) #
 #####################################
 
-DEFAULT_PHONE_REGION = "USA"
+DEFAULT_PHONE_REGION = "US"
 DEFAULT_PHONE_FORMAT = PhoneNumberFormat.E164
 
 
@@ -191,6 +191,7 @@ DJOSER = {
     "USER_CREATE_PASSWORD_RETYPE": False,
     "PASSWORD_RESET_CONFIRM_RETYPE": False,
     "TOKEN_MODEL": None,
+    "EMAIL": {"password_reset": "core.emails.PasswordResetEmail",},
 }
 
 
@@ -270,4 +271,13 @@ TWILIO_AUTH_TOKEN = env.str("TWILIO_AUTH_TOKEN", "")
 SENDGRID_FROM_EMAIL = Email("info@washmix.com")
 SENDGRID_API_KEY = env.str("SENDGRID_API_KEY", "")
 
-EMAIL_EVENT_INFO = {"signup": {"template_name": "signup.html", "subject": "Welcome to Washmix!",}}
+SIGNUP = "signup"
+FORGOT_PASSWORD = "forgot_password"
+EMAIL_EVENT_INFO = {
+    SIGNUP: {
+        "template_name": "signup.html",
+        "subject": "Welcome to Washmix!",
+        "from_email": "hello@washmix.com",
+    },
+    FORGOT_PASSWORD: {"subject": "Password Reset", "from_email": "security@washmix.com",},
+}

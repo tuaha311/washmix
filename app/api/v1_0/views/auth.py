@@ -1,5 +1,6 @@
 from functools import partial
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 
 from djoser.views import UserViewSet
@@ -38,7 +39,7 @@ class SignupView(EmailSendView):
         phone = Phone.format_number(serializer.validated_data["phone"])
 
         client = Client.objects.create_client(email, password, phone)
-        self._send_email(client.email, "signup")
+        self._send_email(client.email, settings.SIGNUP)
 
         return Response({"email": client.email})
 
