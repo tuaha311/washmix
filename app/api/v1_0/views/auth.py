@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from djoser.views import UserViewSet
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny
+from rest_framework.request import Request
 from rest_framework.response import Response
 
 from api.v1_0.serializers.auth import SignupSerializer
@@ -15,11 +16,20 @@ from users.models import Client
 User = get_user_model()
 
 
-class SignupView(GenericAPIView):
+class EmailSendView(GenericAPIView):
+    # TODO move to dramatiq
+    def _send_email(self, email: str, event):
+        sender = SendGridSender()
+        sender.send(
+            recipient_list=[email], event=event, context={"user": email},
+        )
+
+
+class SignupView(EmailSendView):
     serializer_class = SignupSerializer
     permission_classes = [AllowAny]
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request: Request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data, context={"request": request})
         serializer.is_valid(raise_exception=True)
 
@@ -28,16 +38,9 @@ class SignupView(GenericAPIView):
         phone = Phone.format_number(serializer.validated_data["phone"])
 
         client = Client.objects.create_client(email, password, phone)
-        self._notify_client(client)
+        self._send_email(client.email, "signup")
 
         return Response({"email": client.email})
-
-    # TODO move to dramatiq
-    def _notify_client(self, client: Client):
-        sender = SendGridSender()
-        sender.send(
-            recipient_list=[client.email], event="signup", context={"user": client.email},
-        )
 
 
 class ForgotPasswordView(UserViewSet):
