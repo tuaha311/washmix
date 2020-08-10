@@ -183,9 +183,9 @@ SIMPLE_JWT = {
 ##########
 
 DJOSER = {
-    "PASSWORD_RESET_CONFIRM_URL": "#/password/reset/confirm/{uid}/{token}",
-    "USERNAME_RESET_CONFIRM_URL": "#/username/reset/confirm/{uid}/{token}",
-    "ACTIVATION_URL": "#/activate/{uid}/{token}",
+    "PASSWORD_RESET_CONFIRM_URL": "/password/reset/confirm/{uid}/{token}",
+    "USERNAME_RESET_CONFIRM_URL": "/username/reset/confirm/{uid}/{token}",
+    "ACTIVATION_URL": "/activate/{uid}/{token}",
     "SEND_ACTIVATION_EMAIL": True,
     "SEND_CONFIRMATION_EMAIL": True,
     "USER_CREATE_PASSWORD_RETYPE": False,
@@ -199,7 +199,7 @@ DJOSER = {
 # TEMPLATED EMAIL (USED BY DJOSER) #
 ####################################
 
-DOMAIN = "washmix.com"
+DOMAIN = "washmix.evrone.app"
 SITE_NAME = "WashMix"
 
 

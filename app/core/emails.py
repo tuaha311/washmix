@@ -8,7 +8,9 @@ from notifications.senders.sendgrid import SendGridSender
 
 class SendGridEmail(BaseEmailMessage):
     event = "-"
+    protocol = "https"
 
+    # TODO move logic to dramatiq
     def send(self, to, *args, **kwargs):
         self.render()
 
@@ -20,6 +22,16 @@ class SendGridEmail(BaseEmailMessage):
         )
 
         return len(to)
+
+    def get_context_data(self, **kwargs):
+        # force HTTPS protocol in email template
+        context = super().get_context_data(**kwargs)
+
+        context.update(
+            {"protocol": self.protocol,}
+        )
+
+        return context
 
     def _get_email_info(self):
         event_info = settings.EMAIL_EVENT_INFO[self.event]
