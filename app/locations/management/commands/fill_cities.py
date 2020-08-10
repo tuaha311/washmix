@@ -75,10 +75,10 @@ DEFAULT_CITIES_WITH_ZIP_CODES = [
 class Command(BaseCommand):
     def handle(self, *args, **options):
         for item in DEFAULT_CITIES_WITH_ZIP_CODES:
-            city, _ = City.objects.get_or_create(name=item["name"])
+            city, _ = City.objects.update_or_create(name=item["name"])
 
             for element in item["zip_codes"]:
-                zip_code, _ = ZipCode.objects.get_or_create(value=element)
+                zip_code, _ = ZipCode.objects.update_or_create(value=element)
                 city.zip_code_list.add(zip_code)
 
             print(f"{zip_code} added for {city}")
