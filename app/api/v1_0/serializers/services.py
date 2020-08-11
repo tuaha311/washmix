@@ -5,13 +5,17 @@ from orders.models import Price, Service
 
 class PriceSerializer(serializers.ModelSerializer):
     title = serializers.CharField(source="item.title", read_only=True)
+    image = serializers.ImageField(source="item.image", read_only=True)
 
     class Meta:
         model = Price
         fields = [
             "id",
-            "price",
+            "value",
             "title",
+            "count",
+            "unit",
+            "image",
         ]
 
 
