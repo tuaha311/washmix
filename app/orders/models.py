@@ -18,6 +18,11 @@ class Service(Common):
     title = models.CharField(
         verbose_name="title of service",
         max_length=50,
+        unique=True,
+    )
+    image = models.ImageField(
+        verbose_name="image",
+        blank=True,
     )
     item_list = models.ManyToManyField(
         "orders.Item",
@@ -44,6 +49,20 @@ class Price(Common):
     - Dry clean on T-shirts price is 5$
     """
 
+    PCS = "pcs"
+    LBS = "lbs"
+    SQ_FT = "sq_ft"
+    BAG = "bag"
+    PLEAT = "pleat"
+    UNIT_MAP = {
+        PCS: "Piece",
+        LBS: "Pound",
+        SQ_FT: "Square Foot",
+        BAG: "Bag",
+        PLEAT: "Pleat",
+    }
+    UNIT_CHOICES = list(UNIT_MAP.items())
+
     service = models.ForeignKey(
         "orders.Service",
         verbose_name="service",
@@ -56,10 +75,21 @@ class Price(Common):
         related_name="price_list",
         on_delete=models.CASCADE,
     )
-    price = models.DecimalField(
+
+    value = models.DecimalField(
         verbose_name="price on this service with this item",
         max_digits=9,
         decimal_places=2,
+    )
+    count = models.PositiveSmallIntegerField(
+        verbose_name="count of items",
+        default=1,
+    )
+    unit = models.CharField(
+        verbose_name="unit of item",
+        max_length=10,
+        choices=UNIT_CHOICES,
+        default=PCS,
     )
 
     class Meta:
@@ -68,7 +98,7 @@ class Price(Common):
         unique_together = ("service", "item",)
 
     def __str__(self):
-        return f"{self.service.title} on {self.item.title} = {self.price} $"
+        return f"{self.service.title} on {self.item.title} = {self.value} $"
 
 
 class Item(Common):
@@ -83,6 +113,7 @@ class Item(Common):
     title = models.CharField(
         verbose_name="title of item",
         max_length=50,
+        unique=True,
     )
     image = models.ImageField(
         verbose_name="image",
