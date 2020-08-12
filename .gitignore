@@ -36,3 +36,4 @@ django_cache
 venv
 .vscode
 *.code-workspace
+static
