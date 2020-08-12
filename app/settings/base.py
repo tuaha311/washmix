@@ -1,7 +1,5 @@
-import os
 from datetime import timedelta
-
-from django.conf.global_settings import STATICFILES_FINDERS
+from pathlib import Path
 
 from environs import Env
 from phonenumbers import PhoneNumberFormat
@@ -11,7 +9,7 @@ env = Env()
 
 env.read_env()
 
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+BASE_DIR = Path(__file__).parents[1]
 
 
 ##########
@@ -92,12 +90,10 @@ USE_TZ = True
 
 
 STATIC_URL = "/static/"
-STATIC_ROOT = os.path.join(BASE_DIR, "../static")
-STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
-STATICFILES_FINDERS += ("compressor.finders.CompressorFinder",)
+STATIC_ROOT = BASE_DIR / "static"
 
 MEDIA_URL = "/media/"
-MEDIA_ROOT = os.path.join(BASE_DIR, "../media")
+MEDIA_ROOT = BASE_DIR / "media"
 
 WSGI_APPLICATION = "settings.wsgi.application"
 
@@ -106,7 +102,7 @@ TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "APP_DIRS": True,
-        "DIRS": [os.path.join(BASE_DIR, "templates")],
+        "DIRS": [],
         "OPTIONS": {
             "context_processors": [
                 "django.contrib.auth.context_processors.auth",
