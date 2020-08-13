@@ -38,4 +38,7 @@ urlpatterns += [
     # new REST API
     path("api/v1.0/", include("api.v1_0.urls")),
     path("admin/", admin.site.urls),
+    # Temporary static files serving
+    *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
+    *static(settings.STATIC_URL, document_root=settings.STATIC_ROOT),
 ]
