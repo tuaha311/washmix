@@ -38,6 +38,10 @@ class Service(Common):
     def __str__(self):
         return self.title
 
+    @property
+    def visible_price_list(self):
+        return self.price_list.filter(item__is_visible=True)
+
 
 class Price(Common):
     """
@@ -118,6 +122,10 @@ class Item(Common):
     image = models.ImageField(
         verbose_name="image",
         blank=True,
+    )
+    is_visible = models.BooleanField(
+        verbose_name="is item visible on landing page",
+        default=False,
     )
 
     class Meta:

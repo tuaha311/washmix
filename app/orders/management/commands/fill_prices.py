@@ -7,18 +7,36 @@ PRICE_LIST = [
     {
         "service": "Dry Cleaning",
         "item_list": [
-            {"item": "Pants", "price": {"value": 10, "count": 1, "unit": Price.PCS},},
-            {"item": "Shirt", "price": {"value": 5, "count": 1, "unit": Price.LBS,},},
+            {
+                "item": "Pants",
+                "is_visible": True,
+                "price": {"value": 10, "count": 1, "unit": Price.PCS},
+            },
+            {
+                "item": "Shirt",
+                "is_visible": False,
+                "price": {"value": 5, "count": 1, "unit": Price.LBS,},
+            },
         ],
     },
     {
         "service": "Laundry",
-        "item_list": [{"item": "Pants", "price": {"value": 19, "count": 2, "unit": Price.PCS},},],
+        "item_list": [
+            {
+                "item": "Coat",
+                "is_visible": True,
+                "price": {"value": 19, "count": 2, "unit": Price.PCS},
+            },
+        ],
     },
     {
         "service": "Alterations & Repair",
         "item_list": [
-            {"item": "Zipper Repair", "price": {"value": 29, "count": 1, "unit": Price.PCS},},
+            {
+                "item": "Zipper Repair",
+                "is_visible": True,
+                "price": {"value": 29, "count": 1, "unit": Price.PCS},
+            },
         ],
     },
 ]
@@ -32,7 +50,9 @@ class Command(BaseCommand):
                 print(f"service {service} added")
 
                 for raw_item in raw_service["item_list"]:
-                    item, _ = Item.objects.update_or_create(title=raw_item["item"],)
+                    item, _ = Item.objects.update_or_create(
+                        title=raw_item["item"], defaults={"is_visible": raw_item["is_visible"],}
+                    )
                     print(f"item {item} added")
 
                     raw_price = raw_item["price"]
