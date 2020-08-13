@@ -30,6 +30,8 @@ ingress:
         - /openapi
         - /api
         - /admin
+        - /media
+        - /static
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
