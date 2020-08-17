@@ -11,4 +11,4 @@ class AddressViewSet(ModelViewSet):
     serializer_class = AddressSerializer
 
     def get_queryset(self):
-        return self.request.user.address_list.all()
+        return self.request.user.client.address_list.all()
