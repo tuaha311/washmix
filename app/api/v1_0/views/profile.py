@@ -1,14 +1,10 @@
-from rest_framework.generics import GenericAPIView
-from rest_framework.response import Response
-from rest_framework.request import Request
+from rest_framework.generics import RetrieveUpdateAPIView
 
 from api.v1_0.serializers.profile import ProfileSerializer
 
 
-class ProfileView(GenericAPIView):
+class ProfileView(RetrieveUpdateAPIView):
     serializer_class = ProfileSerializer
 
-    def get(self, request: Request, *args, **kwargs):
-        serializer = self.serializer_class(instance=request.user.client)
-
-        return Response(serializer.data)
+    def get_object(self):
+        return self.request.user.client
