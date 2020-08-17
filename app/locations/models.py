@@ -74,6 +74,7 @@ class Address(Common):
     )
     address_line_2 = models.TextField(
         verbose_name="address line 2",
+        blank=True,
     )
     state = models.CharField(
         verbose_name="state",

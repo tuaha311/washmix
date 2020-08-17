@@ -11,9 +11,15 @@ class Coupon(Common):
     Coupon can give some discount on our services.
     """
 
-    name = models.CharField(
-        verbose_name="name of coupon",
-        max_length=30,)
+    code = models.CharField(
+        verbose_name="code",
+        max_length=30,
+    )
+    description = models.CharField(
+        verbose_name="description or note for coupon",
+        max_length=200,
+        blank=True,
+    )
     amount_off = models.DecimalField(
         verbose_name="amount off",
         max_digits=9,
@@ -45,3 +51,6 @@ class Coupon(Common):
         null=True,
         default=CouponType.FIRST.value,
     )
+
+    def __str__(self):
+        return self.code
