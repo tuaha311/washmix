@@ -73,7 +73,7 @@ class Package(Common):
         verbose_name_plural = "packages"
 
     def __str__(self):
-        return self.name
+        return f"{self.get_name_display()} - {self.price} $"
 
 
 class Phone(Common):

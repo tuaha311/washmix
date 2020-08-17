@@ -90,3 +90,6 @@ class Client(Common):
     @property
     def email(self):
         return self.user.email
+
+    def __str__(self):
+        return self.email
