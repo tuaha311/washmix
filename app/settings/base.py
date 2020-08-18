@@ -39,6 +39,7 @@ THIRD_PARTY_APPS = [
     "social_django",
     "django_cleanup",
     "swap_user",
+    "drf_yasg",
 ]
 
 LOCAL_APPS = [

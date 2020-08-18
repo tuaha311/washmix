@@ -88,6 +88,7 @@ Pillow = "^7.2.0"
 sendgrid = "^6.4.4"
 sentry-sdk = "^0.16.3"
 pre-commit = "^2.6.0"
+drf-yasg = "^1.17.1"
 
 
 [tool.poetry.dev-dependencies]

@@ -4,27 +4,24 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
 
-from rest_framework.schemas import get_schema_view
+from drf_yasg import openapi
+from drf_yasg.views import get_schema_view
 
 from api.generators import WashMixSchemaGenerator
 
 urlpatterns = []
 
+schema_view = get_schema_view(
+    openapi.Info(title="WashMix", default_version="v1.0", description="WashMix REST API",),
+    public=True,
+    permission_classes=(),
+    generator_class=WashMixSchemaGenerator,
+)
+
 
 local_patterns = [
     # OpenAPI docs
-    path(
-        "openapi/",
-        get_schema_view(
-            title="WashMix",
-            description="WashMix REST API",
-            version="1.0",
-            generator_class=WashMixSchemaGenerator,
-            permission_classes=[],
-            authentication_classes=[],
-        ),
-        name="openapi-schema",
-    ),
+    path("openapi/", schema_view.without_ui(cache_timeout=0), name="openapi-schema",),
     # Static files serving
     *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
     *static(settings.STATIC_URL, document_root=settings.STATIC_ROOT),

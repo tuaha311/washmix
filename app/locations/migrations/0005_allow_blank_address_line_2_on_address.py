@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('locations', '0004_set_many_to_many_on_zip_code'),
+        ("locations", "0004_set_many_to_many_on_zip_code"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='address',
-            name='address_line_2',
-            field=models.TextField(blank=True, verbose_name='address line 2'),
+            model_name="address",
+            name="address_line_2",
+            field=models.TextField(blank=True, verbose_name="address line 2"),
         ),
     ]

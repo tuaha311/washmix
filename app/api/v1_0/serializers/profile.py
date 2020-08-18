@@ -1,4 +1,5 @@
 from rest_framework import serializers
+
 from users.models import Client
 
 
@@ -7,4 +8,4 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Client
-        exclude = ["user", "created", "changed",]
+        exclude = ["user", "created", "changed", "detergents", "starch", "no_crease"]

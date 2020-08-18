@@ -9,13 +9,13 @@ from rest_framework_simplejwt.views import (
 
 from api.v1_0.views import (
     addresses,
-    phones,
     auth,
     customers,
     health,
     locations,
     orders,
     packages,
+    phones,
     profile,
     services,
 )

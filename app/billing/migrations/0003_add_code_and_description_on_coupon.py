@@ -6,23 +6,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('billing', '0002_add_foreign_keys'),
+        ("billing", "0002_add_foreign_keys"),
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='coupon',
-            name='name',
-        ),
+        migrations.RemoveField(model_name="coupon", name="name",),
         migrations.AddField(
-            model_name='coupon',
-            name='code',
-            field=models.CharField(default='', max_length=30, verbose_name='code'),
+            model_name="coupon",
+            name="code",
+            field=models.CharField(default="", max_length=30, verbose_name="code"),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='coupon',
-            name='description',
-            field=models.CharField(blank=True, max_length=200, verbose_name='description or note for coupon'),
+            model_name="coupon",
+            name="description",
+            field=models.CharField(
+                blank=True, max_length=200, verbose_name="description or note for coupon"
+            ),
         ),
     ]
