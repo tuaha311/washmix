@@ -99,6 +99,15 @@ MEDIA_ROOT = BASE_DIR / "media"
 WSGI_APPLICATION = "settings.wsgi.application"
 
 
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {"null": {"class": "logging.NullHandler",},},
+    # disable drf_yasg warning stuff
+    "loggers": {"drf_yasg": {"handlers": ["null"]},},
+}
+
+
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
