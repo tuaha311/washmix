@@ -9,4 +9,5 @@ class CustomerSerializer(serializers.ModelSerializer):
         fields = (
             "email",
             "phone",
+            "zip_code",
         )
