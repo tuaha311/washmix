@@ -18,12 +18,8 @@ from api.v1_0.views import (
     phones,
     profile,
     services,
+    zip_codes,
 )
-
-router = SimpleRouter(trailing_slash=True)
-router.register("addresses", addresses.AddressViewSet, basename="address")
-router.register("phones", phones.PhoneViewSet, basename="phones")
-router.register("orders", orders.OrderViewSet, basename="order")
 
 app_name = "v1_0"
 token_urls = (
@@ -44,10 +40,16 @@ auth_urls = (
     "auth",
 )
 
+router = SimpleRouter(trailing_slash=True)
+router.register("addresses", addresses.AddressViewSet, basename="address")
+router.register("phones", phones.PhoneViewSet, basename="phones")
+router.register("orders", orders.OrderViewSet, basename="order")
 
 urlpatterns = [
+    # closed methods that require authorization
     *router.urls,
     path("profile/", profile.ProfileView.as_view(), name="profile"),
+    path("zip_codes/", zip_codes.ZipCodeListView.as_view(), name="zip-code-list"),
     # open methods without authorization (landing page, authorization, health check)
     path("jwt/", include(token_urls)),
     path("auth/", include(auth_urls)),
