@@ -7,3 +7,4 @@ class Command(BaseCommand):
         management.call_command("fill_packages")
         management.call_command("fill_cities")
         management.call_command("fill_prices")
+        management.call_command("fill_admins")

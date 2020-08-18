@@ -8,7 +8,7 @@ from users.managers import ClientManager
 
 class Client(Common):
     """
-    ONLINE-ONLY clients of application. They used our web-application to
+    ONLINE-ONLY clients of application. They use our web-application to
     make orders and request pickups. Our main targeted audience.
 
     To this client we can offer a full-featured web-application without any
