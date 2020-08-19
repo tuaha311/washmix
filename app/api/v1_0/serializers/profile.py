@@ -5,6 +5,7 @@ from users.models import Client
 
 class ProfileSerializer(serializers.ModelSerializer):
     email = serializers.CharField(read_only=True)
+    package = serializers.SlugRelatedField(slug_field="name", read_only=True)
 
     class Meta:
         model = Client

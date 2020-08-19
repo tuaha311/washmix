@@ -50,6 +50,7 @@ urlpatterns = [
     *router.urls,
     path("profile/", profile.ProfileView.as_view(), name="profile"),
     path("zip_codes/", zip_codes.ZipCodeListView.as_view(), name="zip-code-list"),
+    path("set_package/", packages.SetPackageView.as_view(), name="set-package"),
     # open methods without authorization (landing page, authorization, health check)
     path("jwt/", include(token_urls)),
     path("auth/", include(auth_urls)),

@@ -10,3 +10,7 @@ class PackageSerializer(serializers.ModelSerializer):
             "created",
             "changed",
         ]
+
+
+class SetPackageSerializer(serializers.Serializer):
+    package = serializers.SlugRelatedField(slug_field="name", queryset=Package.objects.all(),)

@@ -287,3 +287,10 @@ EMAIL_EVENT_INFO = {
     },
     FORGOT_PASSWORD: {"subject": "Password Reset", "from_email": "security@washmix.com",},
 }
+
+
+####################
+# DJANGO-SWAP-USER #
+####################
+
+SWAP_USER = {"EMAIL_USER_ABSTRACT_BASE_CLASS": "swap_user.models.email.AbstractNamedEmailUser"}
