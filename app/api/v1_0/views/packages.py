@@ -4,7 +4,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from api.v1_0.serializers.packages import PackageSerializer, SetPackageSerializer
-from core.models import Package
+from billing.models import Package
 from core.package_handler import PackageHandler
 
 

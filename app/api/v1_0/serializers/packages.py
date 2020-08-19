@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from core.models import Package
+from billing.models import Package
 
 
 class PackageSerializer(serializers.ModelSerializer):

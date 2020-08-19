@@ -2,7 +2,7 @@ from copy import deepcopy
 
 from django.core.management.base import BaseCommand
 
-from core.models import Package
+from billing.models import Package
 
 DEFAULT_PACKAGES = [
     {

@@ -316,7 +316,7 @@ description = "(Beta) Simple and flexible way to swap default Django User"
 name = "django-swap-user"
 optional = false
 python-versions = ">=3.6,<4.0"
-version = "0.1.5"
+version = "0.2.0"
 
 [package.dependencies]
 django = ">=2.1"
@@ -1323,7 +1323,7 @@ test = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 
 [metadata]
-content-hash = "c5cb5d3d29dcd20b340443b5e497fdd21ce14bca6eedebf8396516a65429f349"
+content-hash = "eeaa7046e410cd5f2bd94af0ca6488e6ae8e7d6c5b3c21cff010559af3723e69"
 python-versions = "~3.7"
 
 [metadata.files]
@@ -1495,8 +1495,8 @@ django-robots = [
     {file = "django_robots-3.1.0-py2.py3-none-any.whl", hash = "sha256:ec70cf2d60f6c105cfbdbe2686cdea5f13897bb772c76e4002bee26e2ae23eb1"},
 ]
 django-swap-user = [
-    {file = "django-swap-user-0.1.5.tar.gz", hash = "sha256:780c0cbead839f495ecea8f6b6c5344aeb9a257f4b0ddf0c803728db89e9d9f8"},
-    {file = "django_swap_user-0.1.5-py3-none-any.whl", hash = "sha256:070b28985c2425440907f40fcc5b1f3637b5312342eca9633e83e57dcf1707bb"},
+    {file = "django-swap-user-0.2.0.tar.gz", hash = "sha256:eb14e7624a6464db16bbd48c43201f2aa55b0b76550d6a819a1223da0c84f582"},
+    {file = "django_swap_user-0.2.0-py3-none-any.whl", hash = "sha256:4358e231c294aa95bd73d9216155cfdf852c6d95d0f92bbd4ecca39a64a8a7a4"},
 ]
 django-templated-mail = [
     {file = "django-templated-mail-1.1.1.tar.gz", hash = "sha256:8db807effebb42a532622e2d142dfd453dafcd0d7794c4c3332acb90656315f9"},

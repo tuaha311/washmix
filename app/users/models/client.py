@@ -22,7 +22,7 @@ class Client(Common):
         related_name="client",
     )
     package = models.ForeignKey(
-        "core.Package",
+        "billing.Package",
         verbose_name="package of service",
         related_name="client_list",
         on_delete=models.CASCADE,

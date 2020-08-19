@@ -39,6 +39,7 @@ THIRD_PARTY_APPS = [
     "social_django",
     "django_cleanup",
     "swap_user",
+    "swap_user.named_email",
     "drf_yasg",
 ]
 
@@ -146,7 +147,7 @@ EMAIL_HOST_PASSWORD = env.str("SENDGRID_API_KEY", "")
 EMAIL_PORT = 587
 
 
-AUTH_USER_MODEL = "swap_user.EmailUser"
+AUTH_USER_MODEL = "swap_user_named_email.NamedEmailUser"
 
 
 #####################################
