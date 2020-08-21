@@ -1,10 +1,10 @@
 from rest_framework.viewsets import ModelViewSet
 
-from api.v1_0.mixins import MainAttributeMixin
+from api.v1_0.mixins import PreventDeletionOfMainAttributeMixin, SetMainAttributeMixin
 from api.v1_0.serializers.addresses import AddressSerializer
 
 
-class AddressViewSet(MainAttributeMixin, ModelViewSet):
+class AddressViewSet(PreventDeletionOfMainAttributeMixin, SetMainAttributeMixin, ModelViewSet):
     """
     Methods to manipulate with `Address` entity
     """

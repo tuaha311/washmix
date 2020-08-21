@@ -1,9 +1,10 @@
 from django.db.transaction import atomic
 
 from rest_framework.request import Request
+from rest_framework.serializers import ValidationError
 
 
-class MainAttributeMixin:
+class SetMainAttributeMixin:
     """
     Convenient mixin to create linked instance with client
     if client doesn't have `main_attribute`.
@@ -26,3 +27,28 @@ class MainAttributeMixin:
                 client.save()
 
         return instance
+
+
+class PreventDeletionOfMainAttributeMixin:
+    """
+    We can't validate request body of DELETE method and because of it
+    we should validate instance at view level.
+
+    Also, we prevent deletion of main attribute - because it will lead
+    us to the situation where we have't enough data for orders.
+    """
+
+    request: Request
+    main_attribute: str
+
+    def perform_destroy(self, instance):
+        client = self.request.user.client
+        main_attribute_value = getattr(client, self.main_attribute)
+
+        if main_attribute_value == instance:
+            raise ValidationError(
+                detail=f"You can't remove {self.main_attribute}.",
+                code=f"{self.main_attribute}_cant_be_removed",
+            )
+
+        instance.delete()
