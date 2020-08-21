@@ -14,6 +14,7 @@ class Coupon(Common):
     code = models.CharField(
         verbose_name="code",
         max_length=30,
+        unique=True,
     )
     description = models.CharField(
         verbose_name="description or note for coupon",
