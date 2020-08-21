@@ -6,7 +6,7 @@ from api.v1_0.serializers.phones import PhoneSerializer
 
 class PhoneViewSet(PreventDeletionOfMainAttributeMixin, SetMainAttributeMixin, ModelViewSet):
     """
-    Methods to manipulate with `Address` entity
+    Methods to manipulate with `Address` entity.
     """
 
     serializer_class = PhoneSerializer
