@@ -1,9 +1,10 @@
 from django.db import models
 
+from core.behaviors import Stripeable
 from core.common_models import Common
 
 
-class Card(Common):
+class Card(Stripeable, Common):
     """
     Credit or debit card.
     We doesn't store anything related to card credentials - only Stripe ID.
@@ -16,9 +17,6 @@ class Card(Common):
         related_name="card_list",
     )
 
-    stripe_card_id = models.TextField(
-        verbose_name="Stripe card ID",
-    )
     is_active = models.BooleanField(
         verbose_name="card is active",
         default=False,

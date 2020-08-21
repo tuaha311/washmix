@@ -1,12 +1,13 @@
 from django.conf import settings
 from django.db import models
 
+from core.behaviors import Stripeable
 from core.common_models import Common
 from modules.enums import Crease, Detergents, Starch
 from users.managers import ClientManager
 
 
-class Client(Common):
+class Client(Stripeable, Common):
     """
     ONLINE-ONLY clients of application. They use our web-application to
     make orders and request pickups. Our main targeted audience.
@@ -47,11 +48,6 @@ class Client(Common):
         verbose_name="main address",
         related_name="+",
         on_delete=models.SET_NULL,
-        null=True,
-    )
-
-    # Customer information
-    stripe_customer_id = models.TextField(
         null=True,
     )
 
