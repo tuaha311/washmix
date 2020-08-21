@@ -10,6 +10,7 @@ from rest_framework_simplejwt.views import (
 from api.v1_0.views import (
     addresses,
     auth,
+    coupons,
     customers,
     health,
     locations,
@@ -43,8 +44,9 @@ auth_urls = (
 
 billing_urls = (
     [
-        path("create_payments/", payments.CreatePaymentsView.as_view(), name="create-payments"),
+        path("create_payment/", payments.CreatePaymentsView.as_view(), name="create-payments"),
         path("stripe_webhook/", payments.StripeWebhookView.as_view(), name="stripe-webhook"),
+        path("apply_coupon/", coupons.ApplyCouponView.as_view(), name="apply-coupon"),
     ],
     "billing",
 )
