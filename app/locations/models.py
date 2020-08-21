@@ -80,6 +80,10 @@ class Address(Common):
         verbose_name="state",
         max_length=30,
     )
+    has_doormen = models.BooleanField(
+        verbose_name="is doorman at this address",
+        default=False,
+    )
 
     class Meta:
         verbose_name = "address"

@@ -51,9 +51,6 @@ class Client(Common):
     )
 
     # Customer information
-    has_doormen = models.BooleanField(
-        default=False,
-    )
     stripe_customer_id = models.TextField(
         null=True,
     )
