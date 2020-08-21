@@ -15,6 +15,7 @@ from api.v1_0.views import (
     locations,
     orders,
     packages,
+    payments,
     phones,
     profile,
     services,
@@ -40,6 +41,14 @@ auth_urls = (
     "auth",
 )
 
+billing_urls = (
+    [
+        path("create_payments/", payments.CreatePaymentsView.as_view(), name="create-payments"),
+        path("stripe_webhook/", payments.StripeWebhookView.as_view(), name="stripe-webhook"),
+    ],
+    "billing",
+)
+
 router = SimpleRouter(trailing_slash=True)
 router.register("addresses", addresses.AddressViewSet, basename="address")
 router.register("phones", phones.PhoneViewSet, basename="phones")
@@ -51,6 +60,7 @@ urlpatterns = [
     path("profile/", profile.ProfileView.as_view(), name="profile"),
     path("zip_codes/", zip_codes.ZipCodeListView.as_view(), name="zip-code-list"),
     path("set_package/", packages.SetPackageView.as_view(), name="set-package"),
+    path("billing/", include(billing_urls)),
     # open methods without authorization (landing page, authorization, health check)
     path("jwt/", include(token_urls)),
     path("auth/", include(auth_urls)),

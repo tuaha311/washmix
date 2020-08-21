@@ -1,6 +1,7 @@
 from datetime import timedelta
 from pathlib import Path
 
+import stripe
 from environs import Env
 from phonenumbers import PhoneNumberFormat
 from sendgrid.helpers.mail import Email
@@ -183,6 +184,15 @@ SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("Bearer",),
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.SlidingToken",),
 }
+
+
+##########
+# STRIPE #
+##########
+
+STRIPE_PUBLIC_KEY = env.str("STRIPE_PUBLIC_KEY", "")
+STRIPE_SECRET_KEY = env.str("STRIPE_SECRET_KEY", "")
+stripe.api_key = STRIPE_SECRET_KEY
 
 
 ##########
