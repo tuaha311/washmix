@@ -1,5 +1,4 @@
 from drf_yasg.generators import OpenAPISchemaGenerator
-from rest_framework.schemas.openapi import SchemaGenerator
 
 
 class WashMixSchemaGenerator(OpenAPISchemaGenerator):
