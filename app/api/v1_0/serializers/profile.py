@@ -11,4 +11,11 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Client
-        exclude = ["user", "created", "changed", "detergents", "starch", "no_crease",]
+        exclude = [
+            "user",
+            "created",
+            "changed",
+            "detergents",
+            "starch",
+            "no_crease",
+        ]
