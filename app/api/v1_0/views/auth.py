@@ -19,10 +19,10 @@ User = get_user_model()
 
 class EmailSendView(GenericAPIView):
     # TODO move to dramatiq
-    def _send_email(self, email: str, event):
+    def _send_email(self, email: str, name: str, event):
         sender = SendGridSender()
         sender.send(
-            recipient_list=[email], event=event, context={"user": email},
+            recipient_list=[email], event=event, context={"email": email, "name": name},
         )
 
 
@@ -39,7 +39,9 @@ class SignupView(EmailSendView):
         phone = Phone.format_number(serializer.validated_data["phone"])
 
         client = Client.objects.create_client(email, password, phone)
-        self._send_email(client.email, settings.SIGNUP)
+        self._send_email(
+            client.email, (client.first_name + " " + client.last_name).strip(), settings.SIGNUP
+        )
 
         return Response({"email": client.email})
 
