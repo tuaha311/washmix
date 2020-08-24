@@ -6,5 +6,9 @@ class PaymentSerializer(serializers.Serializer):
     currency = serializers.CharField()
 
 
+class ChargePaymentSerializer(serializers.Serializer):
+    pass
+
+
 class StripeWebhookSerializer(serializers.Serializer):
     pass

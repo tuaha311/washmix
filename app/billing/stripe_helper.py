@@ -74,3 +74,6 @@ class StripeHelper:
         )
 
         return payment_intent
+
+    def create_payment_method(self):
+        pass
