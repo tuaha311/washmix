@@ -43,8 +43,7 @@ class ChargePaymentView(GenericAPIView):
         helper = StripeHelper(client)
         payment_method = helper.get_payment_method(card.stripe_id)
         helper.create_payment_intent(
-            payment_method=payment_method,
-            dollar_amount=amount,
+            payment_method=payment_method, dollar_amount=amount,
         )
 
         return Response({})

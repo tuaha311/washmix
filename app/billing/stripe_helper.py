@@ -65,7 +65,12 @@ class StripeHelper:
 
         return setup_intent
 
-    def create_payment_intent(self, payment_method: PaymentMethod, dollar_amount: Decimal, currency: str = DEFAULT_CURRENCY):
+    def create_payment_intent(
+        self,
+        payment_method: PaymentMethod,
+        dollar_amount: Decimal,
+        currency: str = DEFAULT_CURRENCY,
+    ):
         """
         Use this method to immediately charge saved card on customer.
         Usually, this method called at package billing or order charging.
