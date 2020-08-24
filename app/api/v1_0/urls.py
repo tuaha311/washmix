@@ -45,7 +45,7 @@ auth_urls = (
 
 billing_urls = (
     [
-        path("create_payment/", payments.CreatePaymentView.as_view(), name="create-payment"),
+        path("setup_intent/", payments.SetupIntent.as_view(), name="setup-intent"),
         path("charge_payment/", payments.ChargePaymentView.as_view(), name="charge-payment"),
         path("stripe_webhook/", payments.StripeWebhookView.as_view(), name="stripe-webhook"),
         path("apply_coupon/", coupons.ApplyCouponView.as_view(), name="apply-coupon"),
