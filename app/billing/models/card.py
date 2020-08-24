@@ -11,10 +11,26 @@ class Card(Stripeable, Common):
     """
 
     client = models.ForeignKey(
-        "users.Client", verbose_name="client", on_delete=models.CASCADE, related_name="card_list",
+        "users.Client",
+        verbose_name="client",
+        on_delete=models.CASCADE,
+        related_name="card_list",
     )
 
-    is_active = models.BooleanField(verbose_name="card is active", default=True,)
+    last = models.CharField(
+        verbose_name="last 4 digits",
+        max_length=4,
+    )
+    expiration_month = models.PositiveSmallIntegerField(
+        verbose_name="expiration month",
+    )
+    expiration_year = models.PositiveSmallIntegerField(
+        verbose_name="expiration year",
+    )
+    is_active = models.BooleanField(
+        verbose_name="card is active",
+        default=True,
+    )
 
     class Meta:
         verbose_name = "card"

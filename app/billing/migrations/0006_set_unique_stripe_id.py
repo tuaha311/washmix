@@ -19,14 +19,14 @@ class Migration(migrations.Migration):
             model_name="card",
             name="stripe_id",
             field=models.CharField(
-                blank=True, max_length=100, unique=True, verbose_name="Stripe ID"
+                blank=True, max_length=100, unique=True, null=True, verbose_name="Stripe ID"
             ),
         ),
         migrations.AlterField(
             model_name="transaction",
             name="stripe_id",
             field=models.CharField(
-                blank=True, max_length=100, unique=True, verbose_name="Stripe ID"
+                blank=True, max_length=100, unique=True, null=True, verbose_name="Stripe ID"
             ),
         ),
     ]
