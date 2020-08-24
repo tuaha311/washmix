@@ -11,6 +11,13 @@ class Coupon(Common):
     Coupon can give some discount on our services.
     """
 
+    PERCENTAGE = "percentage"
+    AMOUNT = "amount"
+    DISCOUNT_BY_MAP = {
+        PERCENTAGE: "Discount by percentage",
+        AMOUNT: "Discount by amount",
+    }
+    DISCOUNT_BY_CHOICES = list(DISCOUNT_BY_MAP.items())
     code = models.CharField(
         verbose_name="code",
         max_length=30,
@@ -21,14 +28,15 @@ class Coupon(Common):
         max_length=200,
         blank=True,
     )
-    amount_off = models.DecimalField(
-        verbose_name="amount off",
-        max_digits=9,
-        decimal_places=2,
-        default=0,
+    discount_by = models.CharField(
+        max_length=10,
+        choices=DISCOUNT_BY_CHOICES,
+        default=AMOUNT,
     )
-    percentage_off = models.DecimalField(
-        verbose_name="percentage off",
+    value_off = models.DecimalField(
+        verbose_name="value of discount",
+        help_text=("for discount by percentage - it will be percentage in % of discount;"
+                   "for discount by amount - it will be amount in $ of discount"),
         max_digits=9,
         decimal_places=2,
         default=0,
