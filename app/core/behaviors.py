@@ -7,7 +7,7 @@ class Stripeable(models.Model):
     for Stripe integration.
     """
 
-    stripe_id = models.CharField(verbose_name="Stripe ID", max_length=100, blank=True,)
+    stripe_id = models.CharField(verbose_name="Stripe ID", max_length=100, blank=True, unique=True,)
 
     class Meta:
         abstract = True

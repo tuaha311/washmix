@@ -6,26 +6,33 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('billing', '0004_add_unique_code_on_coupon'),
+        ("billing", "0004_add_unique_code_on_coupon"),
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='coupon',
-            name='amount_off',
-        ),
-        migrations.RemoveField(
-            model_name='coupon',
-            name='percentage_off',
+        migrations.RemoveField(model_name="coupon", name="amount_off",),
+        migrations.RemoveField(model_name="coupon", name="percentage_off",),
+        migrations.AddField(
+            model_name="coupon",
+            name="discount_by",
+            field=models.CharField(
+                choices=[
+                    ("percentage", "Discount by percentage"),
+                    ("amount", "Discount by amount"),
+                ],
+                default="amount",
+                max_length=10,
+            ),
         ),
         migrations.AddField(
-            model_name='coupon',
-            name='discount_by',
-            field=models.CharField(choices=[('percentage', 'Discount by percentage'), ('amount', 'Discount by amount')], default='amount', max_length=10),
-        ),
-        migrations.AddField(
-            model_name='coupon',
-            name='value_off',
-            field=models.DecimalField(decimal_places=2, default=0, help_text='for discount by percentage - it will be percentage in % of discount;for discount by amount - it will be amount in $ of discount', max_digits=9, verbose_name='value of discount'),
+            model_name="coupon",
+            name="value_off",
+            field=models.DecimalField(
+                decimal_places=2,
+                default=0,
+                help_text="for discount by percentage - it will be percentage in % of discount;for discount by amount - it will be amount in $ of discount",
+                max_digits=9,
+                verbose_name="value of discount",
+            ),
         ),
     ]
