@@ -10,6 +10,7 @@ from rest_framework_simplejwt.views import (
 from api.v1_0.views import (
     addresses,
     auth,
+    cards,
     coupons,
     customers,
     health,
@@ -44,7 +45,8 @@ auth_urls = (
 
 billing_urls = (
     [
-        path("create_payment/", payments.CreatePaymentsView.as_view(), name="create-payments"),
+        path("setup_intent/", payments.SetupIntent.as_view(), name="setup-intent"),
+        path("charge_payment/", payments.ChargePaymentView.as_view(), name="charge-payment"),
         path("stripe_webhook/", payments.StripeWebhookView.as_view(), name="stripe-webhook"),
         path("apply_coupon/", coupons.ApplyCouponView.as_view(), name="apply-coupon"),
     ],
@@ -52,9 +54,10 @@ billing_urls = (
 )
 
 router = SimpleRouter(trailing_slash=True)
-router.register("addresses", addresses.AddressViewSet, basename="address")
+router.register("addresses", addresses.AddressViewSet, basename="addresses")
 router.register("phones", phones.PhoneViewSet, basename="phones")
-router.register("orders", orders.OrderViewSet, basename="order")
+router.register("orders", orders.OrderViewSet, basename="orders")
+router.register("cards", cards.CardViewSet, basename="cards")
 
 urlpatterns = [
     # closed methods that require authorization

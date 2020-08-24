@@ -1,6 +1,7 @@
 from decimal import Decimal
 
 import stripe
+from stripe.api_resources.payment_method import PaymentMethod
 from stripe.error import InvalidRequestError
 
 from users.models import Client
@@ -43,6 +44,15 @@ class StripeHelper:
 
         return customer
 
+    def get_payment_method(self, stripe_id: str):
+        """
+        Use this method to retrieve a PaymentMethod for Client.
+        """
+
+        payment_method = stripe.PaymentMethod.retrieve(stripe_id)
+
+        return payment_method
+
     def create_setup_intent(self):
         """
         Use this method to create SetupIntent for Stripe.
@@ -55,7 +65,12 @@ class StripeHelper:
 
         return setup_intent
 
-    def create_payment_intent(self, dollar_amount: Decimal, currency: str = DEFAULT_CURRENCY):
+    def create_payment_intent(
+        self,
+        payment_method: PaymentMethod,
+        dollar_amount: Decimal,
+        currency: str = DEFAULT_CURRENCY,
+    ):
         """
         Use this method to immediately charge saved card on customer.
         Usually, this method called at package billing or order charging.
@@ -70,7 +85,11 @@ class StripeHelper:
             currency=currency,
             customer=self.customer["id"],
             receipt_email=self._client.email,
+            payment_method=payment_method["id"],
             **PAYMENT_INTENT_KWARGS,
         )
 
         return payment_intent
+
+    def create_payment_method(self):
+        pass

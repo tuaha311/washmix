@@ -17,9 +17,19 @@ class Card(Stripeable, Common):
         related_name="card_list",
     )
 
+    last = models.CharField(
+        verbose_name="last 4 digits",
+        max_length=4,
+    )
+    expiration_month = models.PositiveSmallIntegerField(
+        verbose_name="expiration month",
+    )
+    expiration_year = models.PositiveSmallIntegerField(
+        verbose_name="expiration year",
+    )
     is_active = models.BooleanField(
         verbose_name="card is active",
-        default=False,
+        default=True,
     )
 
     class Meta:
