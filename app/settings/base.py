@@ -292,7 +292,7 @@ SIGNUP = "signup"
 FORGOT_PASSWORD = "forgot_password"
 EMAIL_EVENT_INFO = {
     SIGNUP: {
-        "template_name": "signup.html",
+        "template_name": "welcome.html",
         "subject": "Welcome to Washmix!",
         "from_email": "hello@washmix.com",
     },
