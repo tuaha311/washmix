@@ -33,6 +33,16 @@
     secretKeyRef:
       name: {{ .Values.app.secret }}
       key: sendgrid_api_key
+- name: STRIPE_PUBLIC_KEY
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.app.secret }}
+      key: stripe_public_key
+- name: STRIPE_SECRET_KEY
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.app.secret }}
+      key: stripe_secret_key
 - name: TWILIO_ACCOUNT_SID
   value: "test2"
 - name: TWILIO_AUTH_TOKEN
