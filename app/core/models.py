@@ -35,20 +35,3 @@ class Phone(Common):
     def format_number(cls, value):
         phone = phonenumbers.parse(value, settings.DEFAULT_PHONE_REGION)
         return phonenumbers.format_number(phone, settings.DEFAULT_PHONE_FORMAT)
-
-
-class Product(Common):
-    product = models.ForeignKey(
-        "self",
-        null=True,
-        related_name="children",
-        on_delete=models.CASCADE,
-    )
-
-    name = models.CharField(
-        verbose_name="name",
-        max_length=50,
-    )
-    price = models.FloatField(
-        verbose_name="price",
-    )

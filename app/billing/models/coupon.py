@@ -61,5 +61,9 @@ class Coupon(Common):
         default=CouponType.FIRST.value,
     )
 
+    class Meta:
+        verbose_name = "coupon"
+        verbose_name_plural = "coupons"
+
     def __str__(self):
         return self.code
