@@ -39,9 +39,7 @@ class SignupView(EmailSendView):
         phone = Phone.format_number(serializer.validated_data["phone"])
 
         client = Client.objects.create_client(email, password, phone)
-        self._send_email(
-            client.email, (client.first_name + " " + client.last_name).strip(), settings.SIGNUP
-        )
+        self._send_email(client.email, client.full_name, settings.SIGNUP)
 
         return Response({"email": client.email})
 

@@ -67,12 +67,8 @@ class Client(Stripeable, Common):
         choices=[(item, item.value) for item in Crease],
         null=True,
     )
-    fabric_softener = models.BooleanField(
-        default=False,
-    )
-    fix_tears = models.BooleanField(
-        default=False,
-    )
+    fabric_softener = models.BooleanField(default=False,)
+    fix_tears = models.BooleanField(default=False,)
 
     objects = ClientManager()
 
@@ -101,6 +97,10 @@ class Client(Stripeable, Common):
     def last_name(self, value: str):
         self.user.last_name = value
         self.user.save()
+
+    @property
+    def full_name(self):
+        return f"{self.first_name} {self.last_name}".strip()
 
     def __str__(self):
         return self.email
