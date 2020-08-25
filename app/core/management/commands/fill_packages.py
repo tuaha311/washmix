@@ -21,7 +21,7 @@ DEFAULT_PACKAGES = [
     {
         "name": "gold",
         "description": "Pre Pay Credit",
-        "price": 99,
+        "price": 199,
         "dry_clean": 10,
         "laundry": 5,
         "wash_fold": 5,
@@ -33,7 +33,7 @@ DEFAULT_PACKAGES = [
     },
     {
         "name": "platinum",
-        "price": 199,
+        "price": 299,
         "dry_clean": 20,
         "laundry": 10,
         "wash_fold": 10,
