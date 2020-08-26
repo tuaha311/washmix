@@ -11,6 +11,7 @@
 * Install [Docker](https://www.docker.com/get-started).
 * Install [docker-compose](https://docs.docker.com/compose/install/).
 * Install [Python >= 3.7.5](https://www.python.org/downloads/).
+* Install [pre-commit](https://pre-commit.com).
 * Checkout to `dev` branch:
   ```bash
   git checkout dev
@@ -18,6 +19,10 @@
 * Install Python dependencies:
   ```bash
   poetry install
+  ```
+* Install pre-commit hooks:
+  ```bash
+  pre-commit install
   ```
 * Setup infrastructure:
   ```bash
