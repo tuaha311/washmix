@@ -6,9 +6,11 @@ repos:
     hooks:
       - id: black
         name: black
-        entry: black app
+        entry: black --verbose app
         language: python
+        exclude: models
         types: [python]
+        verbose: true
 
       - id: isort
         name: isort
