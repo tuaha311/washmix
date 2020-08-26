@@ -65,6 +65,11 @@ class Invoice(Amountable, Common):
         return f"№ {self.pk} {self.amount}"
 
     @property
+    def is_filled(self):
+        required_fields = [self.card, self.amount, self.object]
+        return all(required_fields)
+
+    @property
     def package(self):
         return None
 
