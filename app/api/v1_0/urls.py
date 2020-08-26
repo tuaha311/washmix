@@ -14,6 +14,7 @@ from api.v1_0.views import (
     coupons,
     customers,
     health,
+    invoices,
     locations,
     orders,
     packages,
@@ -58,6 +59,7 @@ router.register("addresses", addresses.AddressViewSet, basename="addresses")
 router.register("phones", phones.PhoneViewSet, basename="phones")
 router.register("orders", orders.OrderViewSet, basename="orders")
 router.register("cards", cards.CardViewSet, basename="cards")
+router.register("invoices", invoices.InvoiceViewSet, basename="invoices")
 
 urlpatterns = [
     # closed methods that require authorization
