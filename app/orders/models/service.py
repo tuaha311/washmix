@@ -14,7 +14,7 @@ class Service(Common):
 
     title = models.CharField(
         verbose_name="title of service",
-        max_length=50,
+        max_length=200,
         unique=True,
     )
     image = models.ImageField(
