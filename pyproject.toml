@@ -94,7 +94,7 @@ drf-yasg = "^1.17.1"
 
 [tool.poetry.dev-dependencies]
 black = "^19.10b0"
-isort = "^5.0.4"
+isort = "^5.4.2"
 Faker = "1.0.0"
 fabric3 = "^1.14.post1"
 pytest = "^5.4.3"

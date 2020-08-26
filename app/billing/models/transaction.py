@@ -1,10 +1,10 @@
 from django.db import models
 
-from core.behaviors import Stripeable
+from core.behaviors import Amountable, Stripeable
 from core.common_models import Common
 
 
-class Transaction(Stripeable, Common):
+class Transaction(Amountable, Stripeable, Common):
     """
     Basic kind of billing operation - we can add money (i.e. "debit"),
     or remove money (i.e. "credit").
@@ -19,6 +19,16 @@ class Transaction(Stripeable, Common):
     }
     KIND_CHOICES = list(KIND_MAP.items())
 
+    STRIPE = "stripe"
+    COUPON = "coupon"
+    CREDIT_BACK = "credit_back"
+    PROVIDER_MAP = {
+        STRIPE: "Stripe",
+        COUPON: "Coupon",
+        CREDIT_BACK: "Credit back",
+    }
+    PROVIDER_CHOICES = list(PROVIDER_MAP.items())
+
     client = models.ForeignKey(
         "users.Client",
         verbose_name="client",
@@ -26,15 +36,15 @@ class Transaction(Stripeable, Common):
         related_name="transaction_list",
     )
 
-    amount = models.DecimalField(
-        verbose_name="amount",
-        max_digits=9,
-        decimal_places=2,
-    )
     kind = models.CharField(
         verbose_name="kind of transaction",
         max_length=10,
         choices=KIND_CHOICES,
+    )
+    provider = models.CharField(
+        verbose_name="provider of transaction",
+        max_length=10,
+        choices=PROVIDER_CHOICES,
     )
 
     class Meta:
