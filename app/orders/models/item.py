@@ -14,7 +14,7 @@ class Item(Common):
 
     title = models.CharField(
         verbose_name="title of item",
-        max_length=50,
+        max_length=200,
         unique=True,
     )
     image = models.ImageField(
