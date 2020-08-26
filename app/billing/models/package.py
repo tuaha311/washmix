@@ -43,6 +43,9 @@ class Package(Common):
     laundry = models.IntegerField(
         verbose_name="discount on laundry + press",
     )
+    alterations = models.IntegerField(
+        verbose_name="alterations discount",
+    )
     wash_fold = models.IntegerField(
         verbose_name="discount on wash & fold",
     )
