@@ -11,18 +11,16 @@ from api.v1_0.views import (
     addresses,
     auth,
     cards,
-    checkout,
-    coupons,
     customers,
     health,
     invoices,
     locations,
     orders,
-    packages,
     payments,
     phones,
     profile,
     services,
+    subscription,
     zip_codes,
 )
 
@@ -49,18 +47,18 @@ subscription_urls = (
     [
         # packages and subscription payment views:
         # 1. please, choose a package - we return Invoice.id
-        path("set_package/", packages.SetPackageView.as_view(), name="set-package"),
+        path("set_package/", subscription.SetPackageView.as_view(), name="set-package"),
         # 2. please, if you have a coupon - apply it to the Invoice.id
-        path("apply_coupon/", coupons.ApplyCouponView.as_view(), name="apply-coupon"),
+        path("apply_coupon/", subscription.ApplyCouponView.as_view(), name="apply-coupon"),
         # 3. submit all your personal and address data
-        path("checkout/", checkout.CheckoutView.as_view(), name="checkout"),
+        path("checkout/", subscription.checkout.CheckoutView.as_view(), name="checkout"),
     ],
     "subscription",
 )
 
 billing_urls = (
     [
-        # billing via Stripe related methods
+        # billing via Stripe related methods:
         # 1. we are creating SetupIntent object to link Card.id with Client.id for later processing
         path("setup_intent/", payments.SetupIntent.as_view(), name="setup-intent"),
         # 2. we charge Card.id at some amount
