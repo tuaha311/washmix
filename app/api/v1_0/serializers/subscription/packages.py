@@ -8,7 +8,7 @@ class SetPackageSerializer(serializers.Serializer):
 
 
 class SetPackageInvoiceSerializer(serializers.ModelSerializer):
-    package = serializers.CharField(read_only=True, source="package.name")
+    package = serializers.SlugRelatedField(read_only=True, slug_field="name")
 
     class Meta:
         model = Invoice

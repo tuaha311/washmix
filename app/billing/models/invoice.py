@@ -57,6 +57,7 @@ class Invoice(Amountable, Common):
     # this fields just a wrapper around
     # `content_type` and `object_id` for convenient
     # querying. field doesn't stored inside db.
+    # TODO переименовать - object очень похоже на objects
     object = GenericForeignKey()
 
     class Meta:
