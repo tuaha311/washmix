@@ -27,4 +27,5 @@ class ApplyCouponInvoiceSerializer(serializers.ModelSerializer):
             "amount",
             "package",
             "coupon",
+            "discount",
         ]

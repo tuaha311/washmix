@@ -83,3 +83,7 @@ class Invoice(Amountable, Common):
     @property
     def order(self):
         return None
+
+    @property
+    def discount(self):
+        return None
