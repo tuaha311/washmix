@@ -16,6 +16,7 @@ from api.v1_0.views import (
     invoices,
     locations,
     orders,
+    packages,
     payments,
     phones,
     profile,

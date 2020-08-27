@@ -41,6 +41,8 @@ class Invoice(Amountable, Common):
         blank=True,
         null=True,
     )
+
+    # TODO сделать content_type и object_id приватными
     content_type = models.ForeignKey(
         "contenttypes.ContentType",
         on_delete=models.CASCADE,
@@ -71,7 +73,11 @@ class Invoice(Amountable, Common):
 
     @property
     def package(self):
-        return None
+        try:
+            if self.content_type.model == "package":
+                return self.object
+        except AttributeError:
+            return None
 
     @property
     def order(self):
