@@ -36,7 +36,7 @@ class Coupon(Common):
     value_off = models.DecimalField(
         verbose_name="value of discount",
         help_text=("for discount by percentage - it will be percentage in % of discount;"
-                   "for discount by amount - it will be amount in $ of discount"),
+                   "for discount by amount - it will be amount in ¢ (cent) of discount"),
         max_digits=9,
         decimal_places=2,
         default=0,
