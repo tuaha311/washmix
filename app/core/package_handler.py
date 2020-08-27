@@ -1,3 +1,4 @@
+from billing.models import Invoice
 from users.models import Client
 
 
@@ -6,7 +7,17 @@ class PackageHandler:
         self._client = client
 
     def change(self, package):
-        self._client.package = package
-        self._client.save()
+        # TODO получать последний инвойс, который был не оплачен
+        # TODO рефактор запроса last, create на get_or_create
+        invoice = self._client.invoice_list.last()
 
-        return self._client.package
+        if not invoice:
+            invoice = Invoice.objects.create(
+                client=self._client, object=package, amount=package.price,
+            )
+        else:
+            invoice.object = package
+            invoice.amount = package.price
+            invoice.save()
+
+        return invoice

@@ -580,7 +580,7 @@ description = "A Python utility / library to sort Python imports."
 name = "isort"
 optional = false
 python-versions = ">=3.6,<4.0"
-version = "5.3.0"
+version = "5.4.2"
 
 [package.extras]
 colors = ["colorama (>=0.4.3,<0.5.0)"]
@@ -1323,7 +1323,7 @@ test = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 
 [metadata]
-content-hash = "60b65d1c9bb83ca910da2ff91da670e318d7413862714ee217465fc52218e5a0"
+content-hash = "10c7fc6361def1193af4c616058808d0cd0fa27f02395c657354e61291068131"
 python-versions = "~3.7"
 
 [metadata.files]
@@ -1611,8 +1611,8 @@ inflection = [
     {file = "inflection-0.5.0.tar.gz", hash = "sha256:f576e85132d34f5bf7df5183c2c6f94cfb32e528f53065345cf71329ba0b8924"},
 ]
 isort = [
-    {file = "isort-5.3.0-py3-none-any.whl", hash = "sha256:723de131d9ae9d2561844f0ee525ce33a396a11bcda57174f036ed5ab3d6a122"},
-    {file = "isort-5.3.0.tar.gz", hash = "sha256:cdca22530d093ed16983ba52c41560fa0219d1b958e44fd2ae2995dcc7b785be"},
+    {file = "isort-5.4.2-py3-none-any.whl", hash = "sha256:60a1b97e33f61243d12647aaaa3e6cc6778f5eb9f42997650f1cc975b6008750"},
+    {file = "isort-5.4.2.tar.gz", hash = "sha256:d488ba1c5a2db721669cc180180d5acf84ebdc5af7827f7aaeaa75f73cf0e2b8"},
 ]
 itypes = [
     {file = "itypes-1.2.0-py2.py3-none-any.whl", hash = "sha256:03da6872ca89d29aef62773672b2d408f490f80db48b23079a4b194c86dd04c6"},
