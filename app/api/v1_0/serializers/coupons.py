@@ -25,7 +25,9 @@ class ApplyCouponInvoiceSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "amount",
+            "dollar_amount",
             "package",
             "coupon",
             "discount",
+            "dollar_discount",
         ]

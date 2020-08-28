@@ -15,10 +15,14 @@ class InvoiceSerializer(serializers.ModelSerializer):
             "order",
             "coupon",
             "amount",
+            "dollar_amount",
             "discount",
+            "dollar_discount",
         ]
         read_only_fields = [
             "coupon",
             "amount",
+            "dollar_amount",
             "discount",
+            "dollar_discount",
         ]

@@ -12,6 +12,7 @@ class PriceSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "value",
+            "dollar_value",
             "title",
             "count",
             "unit",

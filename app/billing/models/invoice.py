@@ -86,3 +86,7 @@ class Invoice(Amountable, Common):
     @property
     def discount(self):
         return None
+
+    @property
+    def dollar_discount(self):
+        return None

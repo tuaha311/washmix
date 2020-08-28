@@ -12,4 +12,11 @@ class SetPackageInvoiceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Invoice
-        fields = ["id", "amount", "package"]
+        fields = [
+            "id",
+            "amount",
+            "dollar_amount",
+            "package",
+            "discount",
+            "dollar_discount",
+        ]
