@@ -20,7 +20,7 @@ class SendGridEmail(BaseEmailMessage):
 
         return len(to)
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs) -> dict:
         # force HTTPS protocol in email template
         context = super().get_context_data(**kwargs)
 

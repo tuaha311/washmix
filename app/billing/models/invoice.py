@@ -42,23 +42,26 @@ class Invoice(Amountable, Common):
         null=True,
     )
 
-    # TODO сделать content_type и object_id приватными
-    content_type = models.ForeignKey(
+    # field `object` just a wrapper around
+    # `content_type` and `object_id` for convenient
+    # querying and transforming polymorphic key into
+    # real object. field `object` doesn't stored inside db.
+    # reference - https://docs.djangoproject.com/en/2.2/ref/contrib/contenttypes/#generic-relations
+    _content_type = models.ForeignKey(
         "contenttypes.ContentType",
         on_delete=models.CASCADE,
         null=True,
         blank=True,
     )
-    object_id = models.PositiveIntegerField(
+    _object_id = models.PositiveIntegerField(
         verbose_name="ID of related object",
         blank=True,
         null=True,
     )
-    # this fields just a wrapper around
-    # `content_type` and `object_id` for convenient
-    # querying. field doesn't stored inside db.
     # TODO переименовать - object очень похоже на objects
-    object = GenericForeignKey()
+    entity = GenericForeignKey(
+        "_content_type", "_object_id",
+    )
 
     class Meta:
         verbose_name = "invoice"
@@ -69,14 +72,14 @@ class Invoice(Amountable, Common):
 
     @property
     def is_filled(self):
-        required_fields = [self.card, self.amount, self.object]
+        required_fields = [self.card, self.amount, self.entity]
         return all(required_fields)
 
     @property
     def package(self):
         try:
-            if self.content_type.model == "package":
-                return self.object
+            if self._content_type.model == "package":
+                return self.entity
         except AttributeError:
             return None
 

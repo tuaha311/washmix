@@ -13,7 +13,7 @@ class PackageHandler:
 
         if not invoice:
             invoice = Invoice.objects.create(
-                client=self._client, object=package, amount=package.price,
+                client=self._client, entity=package, amount=package.price,
             )
         else:
             invoice.object = package
