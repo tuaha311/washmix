@@ -33,12 +33,8 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     "rest_framework",
     "django_dramatiq",
-    "compressor",
-    "clear_cache",
-    "markdown_deux",
     "djoser",
     "social_django",
-    "django_cleanup",
     "swap_user",
     "swap_user.named_email",
     "drf_yasg",

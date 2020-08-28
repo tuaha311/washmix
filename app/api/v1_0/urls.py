@@ -22,6 +22,7 @@ from api.v1_0.views import (
     profile,
     services,
     subscription,
+    trigger,
     zip_codes,
 )
 
@@ -85,6 +86,7 @@ urlpatterns = [
     path("zip_codes/", zip_codes.ZipCodeListView.as_view(), name="zip-code-list"),
     path("billing/", include(billing_urls)),
     path("subscription/", include(subscription_urls)),
+    path("trigger/", trigger.TriggerView.as_view(), name="trigger"),
     # open methods without authorization (landing page, authorization, health check)
     path("jwt/", include(token_urls)),
     path("auth/", include(auth_urls)),
