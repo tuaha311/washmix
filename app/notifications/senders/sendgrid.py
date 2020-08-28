@@ -8,8 +8,6 @@ from notifications.senders.base import Sender
 
 
 class SendGridSender(Sender):
-    # TODO move logic to dramatiq
-
     def __init__(self):
         self._client = SendGridAPIClient(api_key=settings.SENDGRID_API_KEY).client
 
