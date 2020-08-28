@@ -36,27 +36,33 @@ class Invoice(Amountable, Common):
         null=True,
     )
 
-    # Field `object` just a wrapper around
-    # `_content_type` and `_object_id` for convenient
+    # Field `entity` just a wrapper around
+    # `_content_type` and `_entity_id` for convenient
     # querying and transforming polymorphic key into
-    # real object. Field `object` doesn't stored inside db.
-    # Also, we doesn't use `_content_type` and `_object_id` directly -
+    # real object. Field `entity` doesn't stored inside db.
+    #
+    # Also, we don't use `_content_type` and `_entity_id` directly -
     # and because of this reason, they marked as private attributes.
-    # reference - https://docs.djangoproject.com/en/2.2/ref/contrib/contenttypes/#generic-relations
+    #
+    # Word `object` was not used because it is very similar to word `objects` -
+    # which is a Manager. To avoid typing or understanding errors we
+    # called it as `entity`.
+    #
+    # Reference - https://docs.djangoproject.com/en/2.2/ref/contrib/contenttypes/#generic-relations
     _content_type = models.ForeignKey(
         "contenttypes.ContentType",
+        verbose_name="content type of related object",
         on_delete=models.CASCADE,
         null=True,
         blank=True,
     )
-    _object_id = models.PositiveIntegerField(
+    _entity_id = models.PositiveIntegerField(
         verbose_name="ID of related object",
         blank=True,
         null=True,
     )
-    # TODO переименовать - object очень похоже на objects
     entity = GenericForeignKey(
-        "_content_type", "_object_id",
+        "_content_type", "_entity_id",
     )
 
     class Meta:
@@ -89,4 +95,8 @@ class Invoice(Amountable, Common):
 
     @property
     def dollar_discount(self):
+        return None
+
+    @property
+    def total(self):
         return None
