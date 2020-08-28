@@ -20,8 +20,8 @@ class ApplyCouponView(GenericAPIView):
         coupon = coupon_serializer.validated_data["coupon"]
         invoice = coupon_serializer.validated_data["invoice"]
 
-        holder = CouponHolder(client, invoice)
-        invoice = holder.apply_coupon(coupon)
+        holder = CouponHolder(client, invoice, coupon)
+        invoice = holder.apply_coupon()
 
         invoice_serializer = self.invoice_serializer_class(invoice)
 

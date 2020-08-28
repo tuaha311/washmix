@@ -16,33 +16,37 @@ class Stripeable(models.Model):
         abstract = True
 
 
-class Amountable(models.Model):
+def create_price_class(class_name, attribute_name):
     """
-    Behavior that defines amount field in cents.
-    Also, it provides .dollar_amount property
-    """
+    This function helps us to create similar fields with different names.
+    We create one field and one property for this field.
 
-    amount = models.BigIntegerField(verbose_name="amount in cents (¢)",)
+    Also, this class will have an `class Meta` with `abstract = True` - you
+    can easily inherit it in model.
+    """
 
     class Meta:
         abstract = True
 
-    @property
-    def dollar_amount(self):
-        return self.amount / settings.CENTS_IN_DOLLAR
+    def get_amount(self):
+        amount_value = getattr(self, attribute_name)
+        return amount_value / settings.CENTS_IN_DOLLAR
+
+    dollar_propery_name = f"dollar_{attribute_name}"
+    attrs = {
+        "__doc__": "Behavior that defines amount field in cents.\n"
+        "Also, it provides .dollar_amount property\n",
+        "__module__": "core.behaviors",
+        "Meta": Meta,
+        attribute_name: models.BigIntegerField(verbose_name=f"{attribute_name} in cents (¢)"),
+        dollar_propery_name: property(get_amount),
+    }
+    base_classes = (models.Model,)
+
+    return type(class_name, base_classes, attrs)
 
 
-class Priceable(models.Model):
-    """
-    Behavior that defines price field in cents.
-    Also, it provides .dollar_price property
-    """
-
-    price = models.BigIntegerField(verbose_name="price in cents (¢)",)
-
-    class Meta:
-        abstract = True
-
-    @property
-    def dollar_price(self):
-        return self.price / settings.CENTS_IN_DOLLAR
+Amountable = create_price_class("Amountable", "amount")
+Priceable = create_price_class("Priceable", "price")
+Discountable = create_price_class("Discountable", "discount")
+Valuable = create_price_class("Valuable", "value")

@@ -18,6 +18,7 @@ class Coupon(Common):
         AMOUNT: "Discount by amount",
     }
     DISCOUNT_BY_CHOICES = list(DISCOUNT_BY_MAP.items())
+
     code = models.CharField(
         verbose_name="code",
         max_length=30,

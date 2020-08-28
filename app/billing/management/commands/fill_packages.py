@@ -12,6 +12,6 @@ class Command(BaseCommand):
             clone = deepcopy(item)
             name = clone.pop("name")
 
-            package, _ = Package.objects.update_or_create(name=name, defaults=item)
+            package, _ = Package.objects.update_or_create(name=name, defaults=clone)
 
             print(f"{package} added")

@@ -1,11 +1,11 @@
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.db import models
 
-from core.behaviors import Amountable
+from core.behaviors import Amountable, Discountable
 from core.common_models import Common
 
 
-class Invoice(Amountable, Common):
+class Invoice(Amountable, Discountable, Common):
     """
     Invoice that we generated for buying package or order.
 
@@ -87,14 +87,6 @@ class Invoice(Amountable, Common):
 
     @property
     def order(self):
-        return None
-
-    @property
-    def discount(self):
-        return None
-
-    @property
-    def dollar_discount(self):
         return None
 
     @property

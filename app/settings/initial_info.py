@@ -65,6 +65,15 @@ PACKAGES = [
     },
 ]
 
+#
+# Coupons
+#
+
+COUPONS = [
+    {"code": "AMOUNT", "discount_by": "amount", "value_off": 1000,},
+    {"code": "PERCENTAGE", "discount_by": "percentage", "value_off": 20,},
+]
+
 
 #
 # Admins

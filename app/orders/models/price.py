@@ -1,10 +1,10 @@
-from django.conf import settings
 from django.db import models
 
+from core.behaviors import Valuable
 from core.common_models import Common
 
 
-class Price(Common):
+class Price(Valuable, Common):
     """
     Intermediate model that holds a logic of pricing
     between item and service.
@@ -41,9 +41,6 @@ class Price(Common):
         on_delete=models.CASCADE,
     )
 
-    value = models.BigIntegerField(
-        verbose_name="price on this service with this item",
-    )
     count = models.PositiveSmallIntegerField(
         verbose_name="count of items",
         default=1,
@@ -62,7 +59,3 @@ class Price(Common):
 
     def __str__(self):
         return f"{self.service.title} on {self.item.title} = {self.dollar_value} $"
-
-    @property
-    def dollar_value(self):
-        return self.value / settings.CENTS_IN_DOLLAR
