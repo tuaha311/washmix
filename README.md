@@ -74,6 +74,23 @@ OpenAPI can be exported and opened in many editors:
 - Swagger
 
 
+## How to run worker for background tasks
+We are using [dramatiq](https://dramatiq.io) for handling background tasks.
+
+* Install Python dependencies:
+  ```bash
+  poetry install
+  ```
+* Go to the `app` folder:
+  ```bash
+  cd app
+  ```
+* Run dramatiq:
+  ```bash
+  python manage.py rundramatiq --reload -p 2 --settings settings.dev
+  ```
+
+
 ## About initial data
 Why we use native objects instead of storing them as JSON (fixtures)?
 

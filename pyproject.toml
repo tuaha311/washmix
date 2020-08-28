@@ -54,21 +54,12 @@ social-auth-app-django = "^3.1.0"
 psycopg2-binary = "2.8.5"
 
 # queue
-django-dramatiq = "0.1.5"
-dramatiq = {version = "1.4", extras = ["redis", "watch"]}
+django-dramatiq = "^0.9.1"
+dramatiq = {version = "^1.9", extras = ["redis", "watch"]}
 
 # money
 stripe = "^2.12"
 twilio = "6.19.2"
-
-# cache
-django-cleanup = "2.1.0"
-django-clear-cache = "0.3"
-
-# static files
-django-compressor = "2.2"
-django-libsass = "0.7"
-django-markdown-deux = "1.0.5"
 
 # seo
 django-robots = "3.1.0"
@@ -102,5 +93,5 @@ environs = "^8.0.0"
 
 
 [build-system]
-requires = ["poetry>=1.0.8"]
+requires = ["poetry>=1.0.10"]
 build-backend = "poetry.masonry.api"
