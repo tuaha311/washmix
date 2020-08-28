@@ -12,3 +12,9 @@ class CouponHolder:
         self._invoice.save()
 
         return self._invoice
+
+    def _apply_by_amount(self):
+        pass
+
+    def _apply_by_percentage(self):
+        pass

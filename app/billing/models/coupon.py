@@ -33,12 +33,10 @@ class Coupon(Common):
         choices=DISCOUNT_BY_CHOICES,
         default=AMOUNT,
     )
-    value_off = models.DecimalField(
+    value_off = models.BigIntegerField(
         verbose_name="value of discount",
-        help_text=("for discount by percentage - it will be percentage in % of discount;"
-                   "for discount by amount - it will be amount in ¢ (cent) of discount"),
-        max_digits=9,
-        decimal_places=2,
+        help_text=("for discount by percentage - it will be percentage in % of discount;\n"
+                   "for discount by amount - it will be amount in cents (¢) of discount"),
         default=0,
     )
     end_date = models.DateTimeField(

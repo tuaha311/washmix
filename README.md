@@ -89,6 +89,12 @@ We are using [dramatiq](https://dramatiq.io) for handling background tasks.
   ```bash
   python manage.py rundramatiq --reload -p 2 --settings settings.dev
   ```
+  
+## About billing stuff
+All prices and money related stuff stored in cents (¢), not in dollars.
+In most places, we provide convenient property for amount in dollars.
+For example, if we have field `price` in model `Foo`, than we have a property 
+called `dollar_price`.
 
 
 ## About initial data

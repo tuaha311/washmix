@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 
 from core.common_models import Common
@@ -40,10 +41,8 @@ class Price(Common):
         on_delete=models.CASCADE,
     )
 
-    value = models.DecimalField(
+    value = models.BigIntegerField(
         verbose_name="price on this service with this item",
-        max_digits=9,
-        decimal_places=2,
     )
     count = models.PositiveSmallIntegerField(
         verbose_name="count of items",
@@ -62,4 +61,8 @@ class Price(Common):
         unique_together = ("service", "item",)
 
     def __str__(self):
-        return f"{self.service.title} on {self.item.title} = {self.value} $"
+        return f"{self.service.title} on {self.item.title} = {self.dollar_value} $"
+
+    @property
+    def dollar_value(self):
+        return self.value / settings.CENTS_IN_DOLLAR

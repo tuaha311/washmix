@@ -39,7 +39,7 @@ PACKAGES = [
     {
         "name": "gold",
         "description": "Pre Pay Credit",
-        "price": 199,
+        "price": 19900,
         "dry_clean": 10,
         "laundry": 10,
         "wash_fold": 10,
@@ -52,7 +52,7 @@ PACKAGES = [
     },
     {
         "name": "platinum",
-        "price": 299,
+        "price": 29900,
         "dry_clean": 20,
         "laundry": 20,
         "wash_fold": 20,
@@ -1032,27 +1032,27 @@ PRICES = [
             {
                 "item": "Option 2 [1 Bag]",
                 "is_visible": True,
-                "price": {"value": 79, "count": 1, "unit": Price.BAG},
+                "price": {"value": 79.00, "count": 1, "unit": Price.BAG},
             },
             {
                 "item": "Option 2 [2 Bag]",
                 "is_visible": True,
-                "price": {"value": 148, "count": 1, "unit": Price.BAG},
+                "price": {"value": 148.00, "count": 1, "unit": Price.BAG},
             },
             {
                 "item": "Option 2 [3 Bag]",
                 "is_visible": True,
-                "price": {"value": 207, "count": 3, "unit": Price.BAG},
+                "price": {"value": 207.00, "count": 3, "unit": Price.BAG},
             },
             {
                 "item": "Option 2 [4 Bag]",
                 "is_visible": True,
-                "price": {"value": 256, "count": 1, "unit": Price.BAG},
+                "price": {"value": 256.00, "count": 1, "unit": Price.BAG},
             },
             {
                 "item": "Option 2 [Each Bag thereafter 4 Bags] [245 + 49 per Additional Bag]",
                 "is_visible": True,
-                "price": {"value": 49, "count": 1, "unit": Price.BAG},
+                "price": {"value": 49.00, "count": 1, "unit": Price.BAG},
             },
         ],
     },
@@ -1072,7 +1072,7 @@ PRICES = [
             {
                 "item": "Cowhide Rug [Minimal Price 99$]",
                 "is_visible": True,
-                "price": {"value": 99, "count": 1, "unit": Price.PCS},
+                "price": {"value": 99.00, "count": 1, "unit": Price.PCS},
             },
         ],
     },

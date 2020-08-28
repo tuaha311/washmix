@@ -36,16 +36,12 @@ class Invoice(Amountable, Common):
         null=True,
     )
 
-    amount = models.BigIntegerField(
-        verbose_name="amount in cents",
-        blank=True,
-        null=True,
-    )
-
-    # field `object` just a wrapper around
-    # `content_type` and `object_id` for convenient
+    # Field `object` just a wrapper around
+    # `_content_type` and `_object_id` for convenient
     # querying and transforming polymorphic key into
-    # real object. field `object` doesn't stored inside db.
+    # real object. Field `object` doesn't stored inside db.
+    # Also, we doesn't use `_content_type` and `_object_id` directly -
+    # and because of this reason, they marked as private attributes.
     # reference - https://docs.djangoproject.com/en/2.2/ref/contrib/contenttypes/#generic-relations
     _content_type = models.ForeignKey(
         "contenttypes.ContentType",

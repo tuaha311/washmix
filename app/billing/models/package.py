@@ -1,9 +1,10 @@
 from django.db import models
 
+from core.behaviors import Priceable
 from core.common_models import Common
 
 
-class Package(Common):
+class Package(Priceable, Common):
     """
     Subscription plans (also called "Packages") that we offer to clients.
 
@@ -33,9 +34,6 @@ class Package(Common):
         verbose_name="description of package",
         max_length=100,
         blank=True,
-    )
-    price = models.FloatField(
-        verbose_name="price",
     )
     dry_clean = models.IntegerField(
         verbose_name="discount on dry clean + press",
@@ -71,4 +69,4 @@ class Package(Common):
         verbose_name_plural = "packages"
 
     def __str__(self):
-        return f"{self.get_name_display()} - {self.price} $"
+        return f"{self.get_name_display()} - {self.dollar_price} $"
