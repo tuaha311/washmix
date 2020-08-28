@@ -18,17 +18,25 @@ class Stripeable(models.Model):
 
 def create_price_class(class_name, attribute_name):
     """
-    This function helps us to create similar fields with different names.
-    We create one field and one property for this field.
+    Here we are using technique called `Metaclasses`.
+    Instead of creating multiple similar class with same set of fields,
+    we creating a function that creates a class definitions.
+
+    If we call this function with `attribute_name=price` resulting model will have this fields:
+    * __module__ (module path)
+    * __doc__ (docstring, documentation)
+    * price = models.BigIntegerField (field in db)
+    * dollar_price (property)
+    * Meta (django model settings)
 
     Also, this class will have an `class Meta` with `abstract = True` - you
-    can easily inherit it in model.
+    can easily inherit it in model and it will add a field for you.
     """
 
     class Meta:
         abstract = True
 
-    def get_amount(self):
+    def get_dollars(self):
         amount_value = getattr(self, attribute_name)
         return amount_value / settings.CENTS_IN_DOLLAR
 
@@ -39,7 +47,7 @@ def create_price_class(class_name, attribute_name):
         "__module__": "core.behaviors",
         "Meta": Meta,
         attribute_name: models.BigIntegerField(verbose_name=f"{attribute_name} in cents (¢)"),
-        dollar_propery_name: property(get_amount),
+        dollar_propery_name: property(get_dollars),
     }
     base_classes = (models.Model,)
 
