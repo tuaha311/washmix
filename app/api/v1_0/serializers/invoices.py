@@ -18,6 +18,8 @@ class InvoiceSerializer(serializers.ModelSerializer):
             "dollar_amount",
             "discount",
             "dollar_discount",
+            "basic",
+            "dollar_basic",
         ]
         read_only_fields = [
             "coupon",
@@ -25,4 +27,5 @@ class InvoiceSerializer(serializers.ModelSerializer):
             "dollar_amount",
             "discount",
             "dollar_discount",
+            "basic",
         ]

@@ -30,4 +30,6 @@ class ApplyCouponInvoiceSerializer(serializers.ModelSerializer):
             "coupon",
             "discount",
             "dollar_discount",
+            "basic",
+            "dollar_basic",
         ]

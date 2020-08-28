@@ -1,12 +1,10 @@
 from billing.models import Coupon, Invoice
-from users.models import Client
 
 PERCENTAGE = 100
 
 
 class CouponHolder:
-    def __init__(self, client: Client, invoice: Invoice, coupon: Coupon):
-        self._client = client
+    def __init__(self, invoice: Invoice, coupon: Coupon):
         self._invoice = invoice
         self._coupon = coupon
 
@@ -22,14 +20,14 @@ class CouponHolder:
         return self._invoice
 
     def _apply_by_amount(self) -> tuple:
-        amount = self._invoice.amount
+        amount = self._invoice.basic
         discount = self._coupon.value_off
         new_amount = amount - discount
 
         return new_amount, discount
 
     def _apply_by_percentage(self) -> tuple:
-        amount = self._invoice.amount
+        amount = self._invoice.basic
         discount = amount * self._coupon.value_off / PERCENTAGE
         new_amount = amount - discount
 

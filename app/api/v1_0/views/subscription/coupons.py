@@ -16,11 +16,10 @@ class ApplyCouponView(GenericAPIView):
         )
         coupon_serializer.is_valid(raise_exception=True)
 
-        client = self.request.user.client
         coupon = coupon_serializer.validated_data["coupon"]
         invoice = coupon_serializer.validated_data["invoice"]
 
-        holder = CouponHolder(client, invoice, coupon)
+        holder = CouponHolder(invoice, coupon)
         invoice = holder.apply_coupon()
 
         invoice_serializer = self.invoice_serializer_class(invoice)

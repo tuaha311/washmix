@@ -1,6 +1,8 @@
 from billing.models import Invoice
 from users.models import Client
 
+DEFAULT_DISCOUNT = 0
+
 
 class PackageHandler:
     def __init__(self, client: Client):
@@ -13,11 +15,15 @@ class PackageHandler:
 
         if not invoice:
             invoice = Invoice.objects.create(
-                client=self._client, entity=package, amount=package.price,
+                client=self._client,
+                entity=package,
+                amount=package.price,
+                discount=DEFAULT_DISCOUNT,
             )
         else:
             invoice.object = package
             invoice.amount = package.price
+            invoice.discount = DEFAULT_DISCOUNT
             invoice.save()
 
         return invoice

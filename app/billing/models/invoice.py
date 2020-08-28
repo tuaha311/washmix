@@ -1,7 +1,9 @@
+from functools import partial
+
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.db import models
 
-from core.behaviors import Amountable, Discountable
+from core.behaviors import Amountable, Discountable, get_dollars
 from core.common_models import Common
 
 
@@ -73,22 +75,39 @@ class Invoice(Amountable, Discountable, Common):
         return f"№ {self.pk} {self.amount}"
 
     @property
-    def is_filled(self):
+    def is_filled(self) -> bool:
         required_fields = [self.card, self.amount, self.entity]
         return all(required_fields)
 
     @property
+    def is_package(self) -> bool:
+        return self._content_type.model == "package"
+
+    @property
+    def is_order(self) -> bool:
+        return self._content_type.model == "order"
+
+    @property
     def package(self):
         try:
-            if self._content_type.model == "package":
+            if self.is_package:
                 return self.entity
         except AttributeError:
             return None
 
     @property
     def order(self):
-        return None
+        try:
+            if self.order:
+                return self.entity
+        except AttributeError:
+            return None
 
     @property
-    def total(self):
-        return None
+    def basic(self) -> int:
+        if self.is_package:
+            return self.package.price
+        else:
+            return self.order.price
+
+    dollar_basic = property(partial(get_dollars, attribute_name="basic"))

@@ -19,4 +19,6 @@ class SetPackageInvoiceSerializer(serializers.ModelSerializer):
             "package",
             "discount",
             "dollar_discount",
+            "basic",
+            "dollar_basic",
         ]
