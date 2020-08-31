@@ -189,7 +189,7 @@ CITIES = [
 # Prices
 #
 
-PRICE_LIST = [
+PRICES = [
     {
         "service": "Laundry",
         "item_list": [
