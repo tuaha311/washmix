@@ -30,12 +30,6 @@ class Invoice(Amountable, Discountable, Common):
         on_delete=models.SET_NULL,
         null=True,
     )
-    transaction = models.OneToOneField(
-        "billing.Transaction",
-        verbose_name="transaction",
-        related_name="invoice",
-        on_delete=models.CASCADE,
-    )
 
     class Meta:
         verbose_name = "invoice"
@@ -52,7 +46,7 @@ class Invoice(Amountable, Discountable, Common):
     @property
     def basic(self) -> int:
         if self.is_package:
-            return self.package.price
+            return self.subscription.price
         else:
             return self.order.price
 

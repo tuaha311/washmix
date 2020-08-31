@@ -3,7 +3,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from api.v1_0.serializers.checkout import CheckoutSerializer
-from billing.checkout_helper import CheckoutHelper
+from billing.services.checkout_helper import CheckoutHelper
 
 
 class CheckoutView(GenericAPIView):

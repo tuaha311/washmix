@@ -17,7 +17,7 @@ class ApplyCouponSerializer(serializers.Serializer):
 
 
 class ApplyCouponInvoiceSerializer(serializers.ModelSerializer):
-    package = serializers.SlugRelatedField(read_only=True, slug_field="name")
+    subscription = serializers.SlugRelatedField(read_only=True, slug_field="name")
     coupon = serializers.SlugRelatedField(read_only=True, slug_field="code")
 
     class Meta:
@@ -26,7 +26,7 @@ class ApplyCouponInvoiceSerializer(serializers.ModelSerializer):
             "id",
             "amount",
             "dollar_amount",
-            "package",
+            "subscription",
             "coupon",
             "discount",
             "dollar_discount",

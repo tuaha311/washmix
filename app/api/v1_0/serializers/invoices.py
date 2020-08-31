@@ -4,14 +4,14 @@ from billing.models import Invoice
 
 
 class InvoiceSerializer(serializers.ModelSerializer):
-    package = serializers.SlugRelatedField(read_only=True, slug_field="name")
+    subscription = serializers.SlugRelatedField(read_only=True, slug_field="name")
 
     class Meta:
         model = Invoice
         fields = [
             "id",
             "card",
-            "package",
+            "subscription",
             "order",
             "coupon",
             "amount",

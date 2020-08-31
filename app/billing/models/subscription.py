@@ -5,6 +5,23 @@ from billing.common_models import CommonPackageSubscription
 from core.common_models import Common
 
 
+class SubscriptionManager(models.Manager):
+    def create_and_fill(self, package, invoice):
+        system_fields = ["id", "created", "changed"]
+
+        for field in package._meta.get_fields():
+            if field in system_fields:
+                continue
+
+            subscription = self.model(invoice=invoice)
+            package_field_value = getattr(package, field)
+            setattr(subscription, field, package_field_value)
+
+            subscription.save()
+
+            return subscription
+
+
 class Subscription(CommonPackageSubscription, Common):
     """
     Concrete instance of Package.
@@ -23,6 +40,8 @@ class Subscription(CommonPackageSubscription, Common):
         related_name="subscription",
         on_delete=models.CASCADE,
     )
+
+    objects = SubscriptionManager()
 
     class Meta:
         verbose_name = "subscription"

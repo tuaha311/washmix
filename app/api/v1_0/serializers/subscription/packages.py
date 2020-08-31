@@ -3,12 +3,12 @@ from rest_framework import serializers
 from billing.models import Invoice, Package
 
 
-class SetPackageSerializer(serializers.Serializer):
-    package = serializers.SlugRelatedField(slug_field="name", queryset=Package.objects.all(),)
+class SetSubscriptionSerializer(serializers.Serializer):
+    subscription = serializers.SlugRelatedField(slug_field="name", queryset=Package.objects.all(),)
 
 
-class SetPackageInvoiceSerializer(serializers.ModelSerializer):
-    package = serializers.SlugRelatedField(read_only=True, slug_field="name")
+class SetSubscriptionInvoiceSerializer(serializers.ModelSerializer):
+    subscription = serializers.SlugRelatedField(read_only=True, slug_field="name")
 
     class Meta:
         model = Invoice
@@ -16,7 +16,7 @@ class SetPackageInvoiceSerializer(serializers.ModelSerializer):
             "id",
             "amount",
             "dollar_amount",
-            "package",
+            "subscription",
             "discount",
             "dollar_discount",
             "basic",

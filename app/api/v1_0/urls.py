@@ -50,7 +50,9 @@ subscription_urls = (
         # packages and subscription payment views:
         # 1. please, choose a package - we will return Invoice.id and attach Package to Invoice,
         # also, we store this data between screens.
-        path("set_package/", subscription.SetPackageView.as_view(), name="set-package"),
+        path(
+            "set_subscription/", subscription.SetSubscriptionView.as_view(), name="set-subscription"
+        ),
         # 2. please, if you have a coupon - apply it to the Invoice.id
         path("apply_coupon/", subscription.ApplyCouponView.as_view(), name="apply-coupon"),
         # 3. submit all your personal and address data
