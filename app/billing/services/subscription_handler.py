@@ -23,4 +23,7 @@ class SubscriptionHandler:
                 invoice.discount = DEFAULT_DISCOUNT
                 invoice.save()
 
+            # here we binding subscription and invoice
+            Subscription.objects.create_and_fill(package, invoice)
+
         return invoice

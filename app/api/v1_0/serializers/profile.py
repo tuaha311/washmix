@@ -8,6 +8,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     subscription = serializers.SlugRelatedField(slug_field="name", read_only=True)
     first_name = serializers.CharField(required=False)
     last_name = serializers.CharField(required=False)
+    balance = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Client
