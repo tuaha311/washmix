@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.generics import get_object_or_404
 
-from billing.models import Card
+from billing.models import Invoice
 from locations.models import Address, ZipCode
 from users.models import Client
 
@@ -32,11 +32,21 @@ class CheckoutAddressSerializer(serializers.ModelSerializer):
 class CheckoutSerializer(serializers.Serializer):
     user = CheckoutUserSerializer()
     address = CheckoutAddressSerializer()
-    card = serializers.PrimaryKeyRelatedField(queryset=Card.objects.all())
+    invoice = serializers.PrimaryKeyRelatedField(queryset=Invoice.objects.all())
 
-    def validate_card(self, value):
+    def validate_invoice(self, value):
         client = self.context["request"].user.client
 
-        get_object_or_404(client.card_list.all(), pk=value.pk)
+        get_object_or_404(client.invoice_list.all(), pk=value.pk)
 
         return value
+
+    def validate(self, attrs):
+        client = self.context["request"].user.client
+
+        if not client.main_card:
+            raise serializers.ValidationError(
+                detail="You have no active main card.", code="no_main_card",
+            )
+
+        return attrs

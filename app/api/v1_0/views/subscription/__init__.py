@@ -1,3 +1,3 @@
 from .checkout import CheckoutView
+from .choose import ChooseView
 from .coupons import ApplyCouponView
-from .packages import SetPackageView

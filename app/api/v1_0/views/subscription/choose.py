@@ -2,16 +2,13 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from api.v1_0.serializers.subscription.packages import (
-    SetPackageInvoiceSerializer,
-    SetPackageSerializer,
-)
-from core.package_handler import PackageHandler
+from api.v1_0.serializers.subscription.choose import ChooseInvoiceSerializer, ChooseSerializer
+from billing.services.subscription_handler import SubscriptionHandler
 
 
-class SetPackageView(GenericAPIView):
-    serializer_class = SetPackageSerializer
-    invoice_serializer_class = SetPackageInvoiceSerializer
+class ChooseView(GenericAPIView):
+    serializer_class = ChooseSerializer
+    invoice_serializer_class = ChooseInvoiceSerializer
 
     def post(self, request: Request, *args, **kwargs):
         package_serializer = self.serializer_class(data=request.data, context={"request": request})
@@ -20,8 +17,8 @@ class SetPackageView(GenericAPIView):
         client = request.user.client
         package = package_serializer.validated_data["package"]
 
-        handler = PackageHandler(client)
-        invoice = handler.change(package)
+        handler = SubscriptionHandler(client)
+        invoice = handler.choose(package)
 
         invoice_serializer = self.invoice_serializer_class(invoice)
 

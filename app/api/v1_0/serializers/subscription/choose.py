@@ -1,31 +1,24 @@
 from rest_framework import serializers
 
-from billing.models import Invoice
+from billing.models import Invoice, Package
 
 
-class InvoiceSerializer(serializers.ModelSerializer):
+class ChooseSerializer(serializers.Serializer):
+    package = serializers.SlugRelatedField(slug_field="name", queryset=Package.objects.all(),)
+
+
+class ChooseInvoiceSerializer(serializers.ModelSerializer):
     subscription = serializers.SlugRelatedField(read_only=True, slug_field="name")
 
     class Meta:
         model = Invoice
         fields = [
             "id",
-            "card",
-            "subscription",
-            "order",
-            "coupon",
             "amount",
             "dollar_amount",
+            "subscription",
             "discount",
             "dollar_discount",
             "basic",
             "dollar_basic",
-        ]
-        read_only_fields = [
-            "coupon",
-            "amount",
-            "dollar_amount",
-            "discount",
-            "dollar_discount",
-            "basic",
         ]

@@ -156,6 +156,16 @@ DEFAULT_PHONE_FORMAT = PhoneNumberFormat.E164
 
 CENTS_IN_DOLLAR = 100
 
+PAYC = "payc"
+GOLD = "gold"
+PLATINUM = "platinum"
+PACKAGE_NAME_MAP = {
+    PAYC: "PAYC",
+    GOLD: "GOLD",
+    PLATINUM: "PLATINUM",
+}
+PACKAGE_NAME_CHOICES = list(PACKAGE_NAME_MAP.items())
+
 
 #########################
 # DJANGO REST FRAMEWORK #

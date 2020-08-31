@@ -1,9 +1,10 @@
 from django.db import models
 
+from core.behaviors import Valuable
 from core.common_models import Common
 
 
-class Price(Common):
+class Price(Valuable, Common):
     """
     Intermediate model that holds a logic of pricing
     between item and service.
@@ -40,11 +41,6 @@ class Price(Common):
         on_delete=models.CASCADE,
     )
 
-    value = models.DecimalField(
-        verbose_name="price on this service with this item",
-        max_digits=9,
-        decimal_places=2,
-    )
     count = models.PositiveSmallIntegerField(
         verbose_name="count of items",
         default=1,
@@ -62,4 +58,4 @@ class Price(Common):
         unique_together = ("service", "item",)
 
     def __str__(self):
-        return f"{self.service.title} on {self.item.title} = {self.value} $"
+        return f"{self.service.title} on {self.item.title} = {self.dollar_value} $"

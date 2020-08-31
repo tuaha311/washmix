@@ -35,11 +35,13 @@ class Transaction(Amountable, Stripeable, Common):
         on_delete=models.CASCADE,
         related_name="transaction_list",
     )
-    invoice = models.ForeignKey(
+    invoice = models.OneToOneField(
         "billing.Invoice",
         verbose_name="invoice",
-        on_delete=models.CASCADE,
-        related_name="transaction_list",
+        on_delete=models.SET_NULL,
+        related_name="transaction",
+        null=True,
+        blank=True,
     )
 
     kind = models.CharField(

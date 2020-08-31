@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.db import models
+from django.db.models import Sum
 
+from billing.models.transaction import Transaction
 from core.behaviors import Stripeable
 from core.common_models import Common
 from modules.enums import Crease, Detergents, Starch
@@ -22,9 +24,9 @@ class Client(Stripeable, Common):
         on_delete=models.CASCADE,
         related_name="client",
     )
-    package = models.ForeignKey(
-        "billing.Package",
-        verbose_name="package of service",
+    subscription = models.ForeignKey(
+        "billing.Subscription",
+        verbose_name="subscription of service",
         related_name="client_list",
         on_delete=models.CASCADE,
         null=True,
@@ -101,6 +103,16 @@ class Client(Stripeable, Common):
     def last_name(self, value: str):
         self.user.last_name = value
         self.user.save()
+
+    @property
+    def balance(self):
+        debit_transactions = self.transaction_list.filter(kind=Transaction.DEBIT)
+        credit_transactions = self.transaction_list.filter(kind=Transaction.CREDIT)
+
+        debit_total = debit_transactions.aggregate(total=Sum('amount'))['total'] or 0
+        credit_total = credit_transactions.aggregate(total=Sum('amount'))['total'] or 0
+
+        return debit_total - credit_total
 
     def __str__(self):
         return self.email

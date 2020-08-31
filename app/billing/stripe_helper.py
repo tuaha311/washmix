@@ -1,5 +1,3 @@
-from decimal import Decimal
-
 import stripe
 from stripe.api_resources.payment_method import PaymentMethod
 from stripe.error import InvalidRequestError
@@ -39,8 +37,6 @@ class StripeHelper:
             customer = stripe.Customer.create(
                 email=self._client.email, metadata={"id": self._client.id},
             )
-            self._client.stripe_id = customer["id"]
-            self._client.save()
 
         return customer
 
@@ -66,10 +62,7 @@ class StripeHelper:
         return setup_intent
 
     def create_payment_intent(
-        self,
-        payment_method: PaymentMethod,
-        dollar_amount: Decimal,
-        currency: str = DEFAULT_CURRENCY,
+        self, payment_method: PaymentMethod, amount: int, currency: str = DEFAULT_CURRENCY,
     ):
         """
         Use this method to immediately charge saved card on customer.
@@ -78,10 +71,8 @@ class StripeHelper:
         Reference - https://stripe.com/docs/api/payment_intents/create
         """
 
-        cent_amount = int(dollar_amount * 100)
-
         payment_intent = stripe.PaymentIntent.create(
-            amount=cent_amount,
+            amount=amount,
             currency=currency,
             customer=self.customer["id"],
             receipt_email=self._client.email,

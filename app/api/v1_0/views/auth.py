@@ -1,6 +1,5 @@
 from functools import partial
 
-from django.conf import settings
 from django.contrib.auth import get_user_model
 
 from djoser.views import UserViewSet
@@ -11,8 +10,7 @@ from rest_framework.response import Response
 
 from api.v1_0.serializers.auth import SignupSerializer
 from core.models import Phone
-from core.tasks import send_email
-from users.models import Client
+from core.services.signup import SignupService
 
 User = get_user_model()
 
@@ -29,10 +27,8 @@ class SignupView(GenericAPIView):
         password = serializer.validated_data["password"]
         phone = Phone.format_number(serializer.validated_data["phone"])
 
-        client = Client.objects.create_client(email, password, phone)
-
-        # TODO dramatiq add .send
-        send_email(client.email, settings.SIGNUP)
+        service = SignupService()
+        client = service.signup(email, password, phone)
 
         return Response({"email": client.email})
 

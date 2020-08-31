@@ -1,11 +1,13 @@
-from django.contrib.contenttypes.fields import GenericForeignKey
-from django.db import models
+from functools import partial
 
-from core.behaviors import Amountable
+from django.db import models
+from django.db.models import ObjectDoesNotExist
+
+from core.behaviors import Amountable, Discountable, get_dollars
 from core.common_models import Common
 
 
-class Invoice(Amountable, Common):
+class Invoice(Amountable, Discountable, Common):
     """
     Invoice that we generated for buying package or order.
 
@@ -17,8 +19,8 @@ class Invoice(Amountable, Common):
     client = models.ForeignKey(
         "users.Client",
         verbose_name="client",
-        related_name="invoice_list",
         on_delete=models.CASCADE,
+        related_name="invoice_list",
     )
     coupon = models.ForeignKey(
         "billing.Coupon",
@@ -36,30 +38,6 @@ class Invoice(Amountable, Common):
         null=True,
     )
 
-    amount = models.BigIntegerField(
-        verbose_name="amount in cents",
-        blank=True,
-        null=True,
-    )
-
-    # TODO сделать content_type и object_id приватными
-    content_type = models.ForeignKey(
-        "contenttypes.ContentType",
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-    )
-    object_id = models.PositiveIntegerField(
-        verbose_name="ID of related object",
-        blank=True,
-        null=True,
-    )
-    # this fields just a wrapper around
-    # `content_type` and `object_id` for convenient
-    # querying. field doesn't stored inside db.
-    # TODO переименовать - object очень похоже на objects
-    object = GenericForeignKey()
-
     class Meta:
         verbose_name = "invoice"
         verbose_name_plural = "invoices"
@@ -68,22 +46,26 @@ class Invoice(Amountable, Common):
         return f"№ {self.pk} {self.amount}"
 
     @property
-    def is_filled(self):
-        required_fields = [self.card, self.amount, self.object]
+    def is_filled(self) -> bool:
+        required_fields = [self.card, self.amount]
         return all(required_fields)
 
     @property
-    def package(self):
+    def basic(self) -> int:
         try:
-            if self.content_type.model == "package":
-                return self.object
-        except AttributeError:
-            return None
+            subscription = self.subscription
+        except ObjectDoesNotExist:
+            return 0
+
+        return subscription.price
 
     @property
-    def order(self):
-        return None
+    def is_paid(self):
+        try:
+            transaction = self.transaction
+        except ObjectDoesNotExist:
+            return False
 
-    @property
-    def discount(self):
-        return None
+        return transaction.amount >= self.amount
+
+    dollar_basic = property(partial(get_dollars, attribute_name="basic"))
