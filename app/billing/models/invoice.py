@@ -1,6 +1,5 @@
 from functools import partial
 
-from django.contrib.contenttypes.fields import GenericForeignKey
 from django.db import models
 
 from core.behaviors import Amountable, Discountable, get_dollars
@@ -16,12 +15,6 @@ class Invoice(Amountable, Discountable, Common):
         - billing.Package
     """
 
-    client = models.ForeignKey(
-        "users.Client",
-        verbose_name="client",
-        related_name="invoice_list",
-        on_delete=models.CASCADE,
-    )
     coupon = models.ForeignKey(
         "billing.Coupon",
         verbose_name="coupon",
@@ -37,34 +30,11 @@ class Invoice(Amountable, Discountable, Common):
         on_delete=models.SET_NULL,
         null=True,
     )
-
-    # Field `entity` just a wrapper around
-    # `_content_type` and `_entity_id` for convenient
-    # querying and transforming polymorphic key into
-    # real object. Field `entity` doesn't stored inside db.
-    #
-    # Also, we don't use `_content_type` and `_entity_id` directly -
-    # and because of this reason, they marked as private attributes.
-    #
-    # Word `object` was not used because it is very similar to word `objects` -
-    # which is a Manager. To avoid typing or understanding errors we
-    # called it as `entity`.
-    #
-    # Reference - https://docs.djangoproject.com/en/2.2/ref/contrib/contenttypes/#generic-relations
-    _content_type = models.ForeignKey(
-        "contenttypes.ContentType",
-        verbose_name="content type of related object",
+    transaction = models.OneToOneField(
+        "billing.Transaction",
+        verbose_name="transaction",
+        related_name="invoice",
         on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-    )
-    _entity_id = models.PositiveIntegerField(
-        verbose_name="ID of related object",
-        blank=True,
-        null=True,
-    )
-    entity = GenericForeignKey(
-        "_content_type", "_entity_id",
     )
 
     class Meta:
@@ -78,30 +48,6 @@ class Invoice(Amountable, Discountable, Common):
     def is_filled(self) -> bool:
         required_fields = [self.card, self.amount, self.entity]
         return all(required_fields)
-
-    @property
-    def is_package(self) -> bool:
-        return self._content_type.model == "package"
-
-    @property
-    def is_order(self) -> bool:
-        return self._content_type.model == "order"
-
-    @property
-    def package(self):
-        try:
-            if self.is_package:
-                return self.entity
-        except AttributeError:
-            return None
-
-    @property
-    def order(self):
-        try:
-            if self.order:
-                return self.entity
-        except AttributeError:
-            return None
 
     @property
     def basic(self) -> int:

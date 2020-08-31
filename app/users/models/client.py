@@ -22,9 +22,9 @@ class Client(Stripeable, Common):
         on_delete=models.CASCADE,
         related_name="client",
     )
-    package = models.ForeignKey(
-        "billing.Package",
-        verbose_name="package of service",
+    subscription = models.ForeignKey(
+        "billing.Subscription",
+        verbose_name="subscription of service",
         related_name="client_list",
         on_delete=models.CASCADE,
         null=True,

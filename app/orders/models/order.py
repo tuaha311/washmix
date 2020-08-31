@@ -11,6 +11,13 @@ class Order(Common):
     related to the order.
     """
 
+    invoice = models.OneToOneField(
+        "billing.Invoice",
+        verbose_name="invoice",
+        related_name="order",
+        on_delete=models.CASCADE,
+    )
+
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="order_list"
     )
