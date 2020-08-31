@@ -48,15 +48,13 @@ auth_urls = (
 subscription_urls = (
     [
         # packages and subscription payment views:
-        # 1. please, choose a package - we will return Invoice.id and attach Package to Invoice,
+        # 1. please, choose a subscription - we will return Invoice.id and attach subscription to Invoice,
         # also, we store this data between screens.
-        path(
-            "set_subscription/", subscription.SetSubscriptionView.as_view(), name="set-subscription"
-        ),
+        path("choose/", subscription.ChooseView.as_view(), name="choose"),
         # 2. please, if you have a coupon - apply it to the Invoice.id
         path("apply_coupon/", subscription.ApplyCouponView.as_view(), name="apply-coupon"),
         # 3. submit all your personal and address data
-        path("checkout/", subscription.checkout.CheckoutView.as_view(), name="checkout"),
+        path("checkout/", subscription.CheckoutView.as_view(), name="checkout"),
     ],
     "subscription",
 )

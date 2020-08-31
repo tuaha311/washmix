@@ -3,11 +3,11 @@ from rest_framework import serializers
 from billing.models import Invoice, Package
 
 
-class SetSubscriptionSerializer(serializers.Serializer):
-    subscription = serializers.SlugRelatedField(slug_field="name", queryset=Package.objects.all(),)
+class ChooseSerializer(serializers.Serializer):
+    package = serializers.SlugRelatedField(slug_field="name", queryset=Package.objects.all(),)
 
 
-class SetSubscriptionInvoiceSerializer(serializers.ModelSerializer):
+class ChooseInvoiceSerializer(serializers.ModelSerializer):
     subscription = serializers.SlugRelatedField(read_only=True, slug_field="name")
 
     class Meta:
