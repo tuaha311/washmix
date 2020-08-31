@@ -516,7 +516,7 @@ PRICE_LIST = [
             {
                 "item": "Draperies [Long or Lined]",
                 "is_visible": False,
-                "price": {"value": 895, "count": 1, "unit": Price.Pleat,},
+                "price": {"value": 895, "count": 1, "unit": Price.PLEAT,},
             },
             {
                 "item": "Napkin",

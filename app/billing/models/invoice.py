@@ -15,6 +15,12 @@ class Invoice(Amountable, Discountable, Common):
         - billing.Package
     """
 
+    client = models.ForeignKey(
+        "users.Client",
+        verbose_name="client",
+        on_delete=models.CASCADE,
+        related_name="invoice_list",
+    )
     coupon = models.ForeignKey(
         "billing.Coupon",
         verbose_name="coupon",

@@ -2,7 +2,6 @@ from django.conf import settings
 from django.db import models
 from django.db.models import Sum
 
-from billing.models.invoice import Invoice
 from billing.models.transaction import Transaction
 from core.behaviors import Stripeable
 from core.common_models import Common
@@ -114,11 +113,6 @@ class Client(Stripeable, Common):
         credit_total = credit_transactions.aggregate(total=Sum('amount'))['total'] or 0
 
         return debit_total - credit_total
-
-    @property
-    def invoice_list(self):
-        transactions = self.transaction_list.all()
-        return Invoice.objects.filter(transaction__in=transactions)
 
     def __str__(self):
         return self.email

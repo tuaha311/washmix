@@ -8,18 +8,20 @@ from core.common_models import Common
 class SubscriptionManager(models.Manager):
     def create_and_fill(self, package, invoice):
         system_fields = ["id", "created", "changed"]
+        subscription = self.model(invoice=invoice)
 
         for field in package._meta.get_fields():
-            if field in system_fields:
+            field_name = field.name
+
+            if field_name in system_fields:
                 continue
 
-            subscription = self.model(invoice=invoice)
-            package_field_value = getattr(package, field)
-            setattr(subscription, field, package_field_value)
+            package_field_value = getattr(package, field_name)
+            setattr(subscription, field_name, package_field_value)
 
-            subscription.save()
+        subscription.save()
 
-            return subscription
+        return subscription
 
 
 class Subscription(CommonPackageSubscription, Common):

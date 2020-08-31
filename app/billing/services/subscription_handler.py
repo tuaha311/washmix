@@ -10,7 +10,7 @@ class SubscriptionHandler:
     def __init__(self, client: Client):
         self._client = client
 
-    def change(self, package: Package):
+    def choose(self, package: Package):
         # invoice without transaction by default not paid
         # and we are looking for them
         invoice = self._client.invoice_list.filter(transaction__isnull=True).last()

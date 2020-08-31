@@ -18,7 +18,7 @@ class ChooseView(GenericAPIView):
         package = package_serializer.validated_data["package"]
 
         handler = SubscriptionHandler(client)
-        invoice = handler.change(package)
+        invoice = handler.choose(package)
 
         invoice_serializer = self.invoice_serializer_class(invoice)
 
