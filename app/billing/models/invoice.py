@@ -1,6 +1,7 @@
 from functools import partial
 
 from django.db import models
+from django.db.models import ObjectDoesNotExist
 
 from core.behaviors import Amountable, Discountable, get_dollars
 from core.common_models import Common
@@ -46,21 +47,23 @@ class Invoice(Amountable, Discountable, Common):
 
     @property
     def is_filled(self) -> bool:
-        required_fields = [self.card, self.amount, self.entity]
+        required_fields = [self.card, self.amount]
         return all(required_fields)
 
     @property
     def basic(self) -> int:
-        if self.is_package:
-            return self.subscription.price
-        else:
-            return self.order.price
+        try:
+            subscription = self.subscription
+        except ObjectDoesNotExist:
+            return 0
+
+        return subscription.price
 
     @property
     def is_paid(self):
-        transaction = self.transaction
-
-        if not transaction:
+        try:
+            transaction = self.transaction
+        except ObjectDoesNotExist:
             return False
 
         return transaction.amount >= self.amount

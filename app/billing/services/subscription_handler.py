@@ -17,13 +17,16 @@ class SubscriptionHandler:
 
         with atomic():
             if not invoice:
-                invoice = Invoice.objects.create(amount=package.price, discount=DEFAULT_DISCOUNT,)
+                invoice = Invoice.objects.create(
+                    amount=package.price, discount=DEFAULT_DISCOUNT, client=self._client,
+                )
             else:
                 invoice.amount = package.price
                 invoice.discount = DEFAULT_DISCOUNT
                 invoice.save()
 
             # here we binding subscription and invoice
-            Subscription.objects.create_and_fill(package, invoice)
+            if not invoice.subscription:
+                Subscription.objects.create_and_fill(package, invoice)
 
         return invoice
