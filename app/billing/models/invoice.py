@@ -50,4 +50,13 @@ class Invoice(Amountable, Discountable, Common):
         else:
             return self.order.price
 
+    @property
+    def is_paid(self):
+        transaction = self.transaction
+
+        if not transaction:
+            return False
+
+        return transaction.amount >= self.amount
+
     dollar_basic = property(partial(get_dollars, attribute_name="basic"))

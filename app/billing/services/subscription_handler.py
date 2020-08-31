@@ -11,9 +11,9 @@ class SubscriptionHandler:
         self._client = client
 
     def change(self, package: Package):
-        # TODO получать последний инвойс, который был не оплачен
-        # TODO рефактор запроса last, create на get_or_create
-        invoice = self._client.invoice_list.last()
+        # invoice without transaction by default not paid
+        # and we are looking for them
+        invoice = self._client.invoice_list.filter(transaction__isnull=True).last()
 
         with atomic():
             if not invoice:
