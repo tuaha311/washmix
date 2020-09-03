@@ -13,9 +13,12 @@ class SignupService:
     def signup(self, email, password, phone) -> Client:
         with atomic():
             client = Client.objects.create_client(email, password, phone)
+            full_name = client.full_name
 
             # TODO dramatiq add .send
-            send_email(client.email, settings.SIGNUP)
+            send_email(
+                email=client.email, event=settings.SIGNUP, full_name=full_name,
+            )
 
             stripe_helper = StripeHelper(client)
             customer = stripe_helper.customer

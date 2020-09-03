@@ -2,6 +2,7 @@ import logging
 
 import dramatiq
 
+from notifications.context import email_context
 from notifications.senders.sendgrid import SendGridSender
 
 
@@ -12,10 +13,12 @@ def count(n: int):
 
 
 @dramatiq.actor
-def send_email(email: str, event: str):
+def send_email(email: str, event: str, full_name: str = ""):
     sender = SendGridSender()
     sender.send(
-        recipient_list=[email], event=event, context={"user": email},
+        recipient_list=[email],
+        event=event,
+        context={"user": email, "full_name": full_name, "washmix": email_context,},
     )
 
     logging.info(f"Sent to email {email}")

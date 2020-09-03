@@ -105,6 +105,10 @@ class Client(Stripeable, Common):
         self.user.save()
 
     @property
+    def full_name(self):
+        return f"{self.first_name} {self.last_name}"
+
+    @property
     def balance(self):
         debit_transactions = self.transaction_list.filter(kind=Transaction.DEBIT)
         credit_transactions = self.transaction_list.filter(kind=Transaction.CREDIT)

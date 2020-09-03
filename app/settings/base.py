@@ -167,6 +167,15 @@ PACKAGE_NAME_MAP = {
 PACKAGE_NAME_CHOICES = list(PACKAGE_NAME_MAP.items())
 
 
+################################
+# APPLICATION GLOBAL VARIABLES #
+################################
+
+TWITTER_URL = "https://twitter.com/mix_wash/"
+INSTAGRAM_URL = "https://www.instagram.com/washmix/"
+FACEBOOK_URL = "https://www.facebook.com/WASHMIXOriginal/"
+
+
 #########################
 # DJANGO REST FRAMEWORK #
 #########################
@@ -300,7 +309,7 @@ SIGNUP = "signup"
 FORGOT_PASSWORD = "forgot_password"
 EMAIL_EVENT_INFO = {
     SIGNUP: {
-        "template_name": "signup.html",
+        "template_name": "welcome.html",
         "subject": "Welcome to Washmix!",
         "from_email": "hello@washmix.com",
     },
