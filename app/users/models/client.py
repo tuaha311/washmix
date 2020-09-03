@@ -69,8 +69,12 @@ class Client(Stripeable, Common):
         choices=[(item, item.value) for item in Crease],
         null=True,
     )
-    fabric_softener = models.BooleanField(default=False,)
-    fix_tears = models.BooleanField(default=False,)
+    fabric_softener = models.BooleanField(
+        default=False,
+    )
+    fix_tears = models.BooleanField(
+        default=False,
+    )
 
     objects = ClientManager()
 
