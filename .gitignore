@@ -36,4 +36,7 @@ django_cache
 venv
 .vscode
 *.code-workspace
+
+# static files and assets
 static
+assets
