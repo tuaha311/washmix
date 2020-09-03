@@ -33,12 +33,8 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     "rest_framework",
     "django_dramatiq",
-    "compressor",
-    "clear_cache",
-    "markdown_deux",
     "djoser",
     "social_django",
-    "django_cleanup",
     "swap_user",
     "swap_user.named_email",
     "drf_yasg",
@@ -158,6 +154,18 @@ AUTH_USER_MODEL = "swap_user_named_email.NamedEmailUser"
 DEFAULT_PHONE_REGION = "US"
 DEFAULT_PHONE_FORMAT = PhoneNumberFormat.E164
 
+CENTS_IN_DOLLAR = 100
+
+PAYC = "payc"
+GOLD = "gold"
+PLATINUM = "platinum"
+PACKAGE_NAME_MAP = {
+    PAYC: "PAYC",
+    GOLD: "GOLD",
+    PLATINUM: "PLATINUM",
+}
+PACKAGE_NAME_CHOICES = list(PACKAGE_NAME_MAP.items())
+
 
 #########################
 # DJANGO REST FRAMEWORK #
@@ -257,16 +265,16 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ["profile", "email", "openid"]
 # DRAMATIQ #
 ############
 
+REDIS_URL = env.str("REDIS_URL", "redis://localhost:6379/0")
 DRAMATIQ_BROKER = {
     "BROKER": "dramatiq.brokers.redis.RedisBroker",
-    "OPTIONS": {"url": "redis://localhost:6379/0"},
+    "OPTIONS": {"url": REDIS_URL},
     "MIDDLEWARE": [
         "dramatiq.middleware.Prometheus",
         "dramatiq.middleware.AgeLimit",
         "dramatiq.middleware.TimeLimit",
         "dramatiq.middleware.Callbacks",
         "dramatiq.middleware.Retries",
-        "django_dramatiq.middleware.AdminMiddleware",
         "django_dramatiq.middleware.DbConnectionsMiddleware",
     ],
 }

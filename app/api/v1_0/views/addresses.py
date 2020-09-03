@@ -13,4 +13,5 @@ class AddressViewSet(PreventDeletionOfMainAttributeMixin, SetMainAttributeMixin,
     main_attribute = "main_address"
 
     def get_queryset(self):
-        return self.request.user.client.address_list.all()
+        client = self.request.user.client
+        return client.address_list.all()

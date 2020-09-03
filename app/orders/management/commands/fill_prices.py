@@ -2,50 +2,13 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 
 from orders.models import Item, Price, Service
-
-PRICE_LIST = [
-    {
-        "service": "Dry Cleaning",
-        "item_list": [
-            {
-                "item": "Pants",
-                "is_visible": True,
-                "price": {"value": 10, "count": 1, "unit": Price.PCS},
-            },
-            {
-                "item": "Shirt",
-                "is_visible": False,
-                "price": {"value": 5, "count": 1, "unit": Price.LBS,},
-            },
-        ],
-    },
-    {
-        "service": "Laundry",
-        "item_list": [
-            {
-                "item": "Coat",
-                "is_visible": True,
-                "price": {"value": 19, "count": 2, "unit": Price.PCS},
-            },
-        ],
-    },
-    {
-        "service": "Alterations & Repair",
-        "item_list": [
-            {
-                "item": "Zipper Repair",
-                "is_visible": True,
-                "price": {"value": 29, "count": 1, "unit": Price.PCS},
-            },
-        ],
-    },
-]
+from settings.initial_info import PRICES
 
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
         with transaction.atomic():
-            for raw_service in PRICE_LIST:
+            for raw_service in PRICES:
                 service, _ = Service.objects.update_or_create(title=raw_service["service"],)
                 print(f"service {service} added")
 

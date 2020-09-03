@@ -1,6 +1,4 @@
 {% load static %}
-{% load domain %}
-{% load social_urls %}
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <!-- saved from url=(0046)http://venturefiji.com/emails/ssa-acquisition/ -->
@@ -384,7 +382,7 @@
                                       text-align: left;
                                     "
                                   >
-                                    Hello{% if name %} {{ name }}{% endif %}, Welcome to WashMix
+                                    Hello{% if full_name %} {{ full_name }}{% endif %}, welcome to WashMix
                                   </td>
                                 </tr>
                                 <tr>
@@ -677,7 +675,7 @@
                                               width: 25px;
                                             "
                                           >
-                                            <a href="{% facebook_url %}" target="_blank"
+                                            <a href="{{ washmix.facebook_url }}" target="_blank"
                                               ><img
                                                 width="22"
                                                 src="{% static 'images/facebook.png' %}"
@@ -706,7 +704,7 @@
                                               width: 25px;
                                             "
                                           >
-                                            <a href="{% twitter_url %}" target="_blank"
+                                            <a href="{{ washmix.twitter_url }}" target="_blank"
                                               ><img
                                                 width="22"
                                                 src="{% static 'images/twitter.png' %}"
@@ -735,7 +733,7 @@
                                               width: 25px;
                                             "
                                           >
-                                            <a href="{% instagram_url %}" target="_blank"
+                                            <a href="{{ washmix.instagram_url }}" target="_blank"
                                               ><img
                                                 width="22"
                                                 src="{% static 'images/instagram.png' %}"
@@ -793,7 +791,7 @@
                                     "
                                   >
                                     <a
-                                      href="https://{% domain %}/privacy-policy"
+                                      href="https://{{ washmix.domain }}/privacy-policy"
                                       style="
                                         color: #757575;
                                         text-decoration: none;
@@ -1001,7 +999,7 @@
                                       text-align: center;
                                     "
                                   >
-                                    © 2018 WashMix, Inc. All Rights Reserved.
+                                    © 2020 WashMix, Inc. All Rights Reserved.
                                   </td>
                                 </tr>
                               </tbody>

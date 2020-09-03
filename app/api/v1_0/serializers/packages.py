@@ -4,13 +4,11 @@ from billing.models import Package
 
 
 class PackageSerializer(serializers.ModelSerializer):
+    dollar_price = serializers.FloatField()
+
     class Meta:
         model = Package
         exclude = [
             "created",
             "changed",
         ]
-
-
-class SetPackageSerializer(serializers.Serializer):
-    package = serializers.SlugRelatedField(slug_field="name", queryset=Package.objects.all(),)

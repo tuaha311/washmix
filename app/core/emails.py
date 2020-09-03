@@ -3,27 +3,24 @@ from django.conf import settings
 from djoser import email
 from templated_mail.mail import BaseEmailMessage
 
-from notifications.senders.sendgrid import SendGridSender
+from core.tasks import raw_send_email
 
 
 class SendGridEmail(BaseEmailMessage):
     event = "-"
     protocol = "https"
 
-    # TODO move logic to dramatiq
-    def send(self, to, *args, **kwargs):
+    def send(self, to: list, *args, **kwargs) -> int:
         self.render()
 
-        sender = SendGridSender()
-
         email_info = self._get_email_info()
-        sender.raw_send(
-            recipient_list=to, html_content=self.html, **email_info,
-        )
+
+        # TODO dramatiq add .send
+        raw_send_email(to=to, html_content=self.html, **email_info)
 
         return len(to)
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs) -> dict:
         # force HTTPS protocol in email template
         context = super().get_context_data(**kwargs)
 
@@ -33,7 +30,7 @@ class SendGridEmail(BaseEmailMessage):
 
         return context
 
-    def _get_email_info(self):
+    def _get_email_info(self) -> dict:
         event_info = settings.EMAIL_EVENT_INFO[self.event]
         subject = event_info["subject"]
         from_email = event_info.get("from_email", settings.SENDGRID_FROM_EMAIL)
