@@ -16,6 +16,11 @@ class Invoice(Amountable, Discountable, Common):
         - billing.Package
     """
 
+    # here we store link on client, because we create
+    # invoice as first step at Welcome scenario and
+    # then we are working based on this.
+    # 1. applying coupon
+    # 2. finding last active invoice of client
     client = models.ForeignKey(
         "users.Client",
         verbose_name="client",
