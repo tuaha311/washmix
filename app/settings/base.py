@@ -233,6 +233,7 @@ DJOSER = {
 # TEMPLATED EMAIL (USED BY DJOSER) #
 ####################################
 
+PROTOCOL = "https"
 DOMAIN = "washmix.evrone.app"
 SITE_NAME = "WashMix"
 
