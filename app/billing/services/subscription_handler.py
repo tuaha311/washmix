@@ -1,3 +1,4 @@
+from django.db.models import ObjectDoesNotExist
 from django.db.transaction import atomic
 
 from billing.models import Invoice, Package, Subscription
@@ -26,7 +27,9 @@ class SubscriptionHandler:
                 invoice.save()
 
             # here we binding subscription and invoice
-            if not invoice.subscription:
+            try:
+                invoice.subscription
+            except ObjectDoesNotExist:
                 Subscription.objects.create_and_fill(package, invoice)
 
         return invoice
