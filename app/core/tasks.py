@@ -18,7 +18,7 @@ def send_email(email: str, event: str, full_name: str = ""):
     sender.send(
         recipient_list=[email],
         event=event,
-        context={"user": email, "full_name": full_name, "washmix": email_context,},
+        context={"email": email, "full_name": email, "washmix": email_context,},
     )
 
     logging.info(f"Sent to email {email}")
