@@ -167,6 +167,15 @@ PACKAGE_NAME_MAP = {
 PACKAGE_NAME_CHOICES = list(PACKAGE_NAME_MAP.items())
 
 
+################################
+# APPLICATION GLOBAL VARIABLES #
+################################
+
+TWITTER_URL = "https://twitter.com/mix_wash/"
+INSTAGRAM_URL = "https://www.instagram.com/washmix/"
+FACEBOOK_URL = "https://www.facebook.com/WASHMIXOriginal/"
+
+
 #########################
 # DJANGO REST FRAMEWORK #
 #########################
@@ -313,9 +322,3 @@ EMAIL_EVENT_INFO = {
 ####################
 
 SWAP_USER = {"EMAIL_USER_ABSTRACT_BASE_CLASS": "swap_user.models.email.AbstractNamedEmailUser"}
-
-# Social urls
-
-TWITTER_URL = "https://twitter.com/mix_wash/"
-INSTAGRAM_URL = "https://www.instagram.com/washmix/"
-FACEBOOK_URL = "https://www.facebook.com/WASHMIXOriginal/"
