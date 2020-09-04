@@ -1,7 +1,6 @@
-from django.db.transaction import atomic
-
 from rest_framework.request import Request
-from rest_framework.serializers import ValidationError
+
+from core.services.main_attribute import MainAttributeService
 
 
 class SetMainAttributeMixin:
@@ -16,15 +15,9 @@ class SetMainAttributeMixin:
     main_attribute: str
 
     def perform_create(self, serializer):
-        client = self.request.user.client
+        service = MainAttributeService(self.request.user.client, self.main_attribute)
 
-        with atomic():
-            instance = serializer.save(client=client)
-            main_attribute_value = getattr(client, self.main_attribute)
-
-            if not main_attribute_value:
-                setattr(client, self.main_attribute, instance)
-                client.save()
+        instance = service.create(serializer)
 
         return instance
 
@@ -42,13 +35,6 @@ class PreventDeletionOfMainAttributeMixin:
     main_attribute: str
 
     def perform_destroy(self, instance):
-        client = self.request.user.client
-        main_attribute_value = getattr(client, self.main_attribute)
+        service = MainAttributeService(self.request.user.client, self.main_attribute)
 
-        if main_attribute_value == instance:
-            raise ValidationError(
-                detail=f"You can't remove {self.main_attribute}.",
-                code=f"{self.main_attribute}_cant_be_removed",
-            )
-
-        instance.delete()
+        service.delete(instance)
