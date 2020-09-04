@@ -49,15 +49,17 @@ class StripeHelper:
 
         return payment_method
 
-    def create_setup_intent(self):
+    def create_setup_intent(self, payment_method: PaymentMethod):
         """
-        Use this method to create SetupIntent for Stripe.
+        Use this method to create SetupIntentView for Stripe.
         Usually, this method called first at card save flow.
 
         Reference - https://stripe.com/docs/api/setup_intents/create
         """
 
-        setup_intent = stripe.SetupIntent.create(customer=self.customer["id"], usage=SESSION_USAGE,)
+        setup_intent = stripe.SetupIntent.create(
+            customer=self.customer.id, usage=SESSION_USAGE, payment_method=payment_method.id,
+        )
 
         return setup_intent
 
@@ -74,13 +76,23 @@ class StripeHelper:
         payment_intent = stripe.PaymentIntent.create(
             amount=amount,
             currency=currency,
-            customer=self.customer["id"],
+            customer=self.customer.id,
             receipt_email=self._client.email,
-            payment_method=payment_method["id"],
+            payment_method=payment_method.id,
             **PAYMENT_INTENT_KWARGS,
         )
 
         return payment_intent
 
-    def create_payment_method(self):
-        pass
+    def create_payment_method(self, number: str, exp_month: int, exp_year: int, cvc: str):
+        """
+        Reference - https://stripe.com/docs/api/payment_methods/create
+        """
+
+        payment_method = stripe.PaymentMethod.create(
+            card={"number": number, "exp_month": exp_month, "exp_year": exp_year, "cvc": cvc,},
+            type="card",
+            customer=self.customer.id,
+        )
+
+        return payment_method
