@@ -62,11 +62,9 @@ subscription_urls = (
 billing_urls = (
     [
         # billing via Stripe related methods:
-        # 1. we are creating SetupIntent object to link Card.id with Client.id for later processing
-        path("setup_intent/", payments.SetupIntent.as_view(), name="setup-intent"),
-        # 2. we charge Card.id at some amount
-        path("charge_payment/", payments.ChargePaymentView.as_view(), name="charge-payment"),
-        # 3. we receive success webhook from Stripe and create an Transaction
+        # 1. we are creating SetupIntentView object to link Card.id with Client.id for later processing
+        path("setup_intent/", payments.SetupIntentView.as_view(), name="setup-intent"),
+        # 2. we receive success webhook from Stripe and create an Transaction
         path("stripe_webhook/", payments.StripeWebhookView.as_view(), name="stripe-webhook"),
     ],
     "billing",

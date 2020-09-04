@@ -2,6 +2,7 @@ from rest_framework import serializers
 from rest_framework.generics import get_object_or_404
 
 from billing.models import Invoice
+from billing.stripe_helper import StripeHelper
 from locations.models import Address, ZipCode
 from users.models import Client
 
@@ -43,10 +44,11 @@ class CheckoutSerializer(serializers.Serializer):
 
     def validate(self, attrs):
         client = self.context["request"].user.client
+        stripe_helper = StripeHelper(client)
 
-        if not client.main_card:
+        if not stripe_helper.payment_method_list:
             raise serializers.ValidationError(
-                detail="You have no active main card.", code="no_main_card",
+                detail="You have no active payment methods.", code="no_payment_methods",
             )
 
         return attrs
