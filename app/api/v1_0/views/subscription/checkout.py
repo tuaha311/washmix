@@ -1,3 +1,5 @@
+from django.db.transaction import atomic
+
 from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -20,10 +22,11 @@ class CheckoutView(GenericAPIView):
         client = request.user.client
         checkout_service = CheckoutService(client, request)
 
-        checkout_service.save_card_list()
-        checkout_service.fill_profile(user)
-        checkout_service.create_address(address)
-        payment = checkout_service.charge(invoice)
-        checkout_service.checkout(invoice, payment)
+        with atomic():
+            checkout_service.save_card_list()
+            checkout_service.fill_profile(user)
+            checkout_service.create_address(address)
+            payment = checkout_service.charge(invoice)
+            checkout_service.checkout(invoice, payment)
 
         return Response(request.data)

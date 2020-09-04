@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from django.db.transaction import atomic
 
@@ -56,11 +56,12 @@ class CheckoutService:
 
         return address
 
-    def charge(self, invoice: Invoice) -> PaymentMethod:
+    def charge(self, invoice: Invoice) -> Optional[PaymentMethod]:
         payment = None
 
         for item in self._client.card_list.all():
             # we are trying to charge the card list of client
+            # and we are stopping at first successful attempt
             try:
                 payment = self._stripe_helper.create_payment_intent(
                     payment_method_id=item.stripe_id, amount=invoice.amount,
@@ -69,14 +70,13 @@ class CheckoutService:
                 self._client.main_card = item
                 self._client.save()
 
-                # we are exiting at first successful attempt
-                return payment
+                # we are exiting from the cycle at first successful attempt
+                break
 
             except StripeError:
                 continue
 
-        if not payment:
-            raise InterruptedError
+        return payment
 
     def checkout(self, invoice: Invoice, payment: PaymentMethod) -> Transaction:
         with atomic():
