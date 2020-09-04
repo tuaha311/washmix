@@ -7,7 +7,7 @@ from users.models import Client
 DEFAULT_DISCOUNT = 0
 
 
-class SubscriptionHandler:
+class SubscriptionService:
     def __init__(self, client: Client):
         self._client = client
 
