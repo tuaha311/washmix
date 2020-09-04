@@ -1,3 +1,5 @@
+from typing import List
+
 import stripe
 from stripe.api_resources.payment_method import PaymentMethod
 from stripe.error import InvalidRequestError
@@ -6,6 +8,7 @@ from users.models import Client
 
 DEFAULT_CURRENCY = "usd"
 SESSION_USAGE = "off_session"
+CARD = "card"
 DEFAULT_CONFIRM = True
 DEFAULT_OFF_SESSION = True
 PAYMENT_INTENT_KWARGS = {
@@ -40,16 +43,17 @@ class StripeHelper:
 
         return customer
 
-    def get_payment_method(self, stripe_id: str):
+    @property
+    def payment_method_list(self) -> List[PaymentMethod]:
         """
         Use this method to retrieve a PaymentMethod for Client.
         """
 
-        payment_method = stripe.PaymentMethod.retrieve(stripe_id)
+        payment_method = stripe.PaymentMethod.list(customer=self.customer.id, type=CARD,).data
 
         return payment_method
 
-    def create_setup_intent(self, payment_method: PaymentMethod):
+    def create_setup_intent(self):
         """
         Use this method to create SetupIntentView for Stripe.
         Usually, this method called first at card save flow.
@@ -57,14 +61,12 @@ class StripeHelper:
         Reference - https://stripe.com/docs/api/setup_intents/create
         """
 
-        setup_intent = stripe.SetupIntent.create(
-            customer=self.customer.id, usage=SESSION_USAGE, payment_method=payment_method.id,
-        )
+        setup_intent = stripe.SetupIntent.create(customer=self.customer.id, usage=SESSION_USAGE,)
 
         return setup_intent
 
     def create_payment_intent(
-        self, payment_method: PaymentMethod, amount: int, currency: str = DEFAULT_CURRENCY,
+        self, payment_method_id: str, amount: int, currency: str = DEFAULT_CURRENCY,
     ):
         """
         Use this method to immediately charge saved card on customer.
@@ -78,7 +80,7 @@ class StripeHelper:
             currency=currency,
             customer=self.customer.id,
             receipt_email=self._client.email,
-            payment_method=payment_method.id,
+            payment_method=payment_method_id,
             **PAYMENT_INTENT_KWARGS,
         )
 

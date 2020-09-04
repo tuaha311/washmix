@@ -16,11 +16,9 @@ class SetupIntentView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
 
         client = self.request.user.client
-        card = serializer.validated_data["card"]
 
         helper = StripeHelper(client)
-        payment_method = helper.get_payment_method(card.stripe_id)
-        setup_intent = helper.create_setup_intent(payment_method)
+        setup_intent = helper.create_setup_intent()
 
         return Response(
             {"public_key": settings.STRIPE_PUBLIC_KEY, "setup_secret": setup_intent.client_secret}

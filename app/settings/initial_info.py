@@ -86,6 +86,7 @@ ADMINS = [
         "number": "12001230210",
         "is_superuser": True,
         "is_staff": True,
+        "stripe_id": "cus_HsLFiIYxwKsoOC",
     },
     {
         "email": "ds.ionin@evrone.com",
@@ -93,6 +94,7 @@ ADMINS = [
         "number": "12001230211",
         "is_superuser": True,
         "is_staff": True,
+        "stripe_id": "cus_HxSYa6ACuzQdtS",
     },
     {
         "email": "savoskin@evrone.com",
@@ -100,6 +102,7 @@ ADMINS = [
         "number": "12001230212",
         "is_superuser": True,
         "is_staff": True,
+        "stripe_id": "cus_HxSYL19Joq6KTq",
     },
     {
         "email": "og@evrone.com",
@@ -107,6 +110,7 @@ ADMINS = [
         "number": "12001230213",
         "is_superuser": True,
         "is_staff": True,
+        "stripe_id": "cus_HxSY7DuMrXnEc1",
     },
 ]
 

@@ -44,9 +44,9 @@ class CheckoutSerializer(serializers.Serializer):
     def validate(self, attrs):
         client = self.context["request"].user.client
 
-        if not client.main_card:
-            raise serializers.ValidationError(
-                detail="You have no active main card.", code="no_main_card",
-            )
+        # if not client.main_card:
+        #     raise serializers.ValidationError(
+        #         detail="You have no active main card.", code="no_main_card",
+        #     )
 
         return attrs
