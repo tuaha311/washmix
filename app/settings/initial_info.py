@@ -81,6 +81,8 @@ COUPONS = [
 
 ADMINS = [
     {
+        # has a good payment method - success
+        # card № 4000 0025 0000 3155
         "email": "api@evrone.com",
         "password": "helloevrone",
         "number": "12001230210",
@@ -89,6 +91,8 @@ ADMINS = [
         "stripe_id": "cus_HsLFiIYxwKsoOC",
     },
     {
+        # has a good payment method - success
+        # card № 4242 4242 4242 4242
         "email": "ds.ionin@evrone.com",
         "password": "helloevrone",
         "number": "12001230211",
@@ -97,6 +101,8 @@ ADMINS = [
         "stripe_id": "cus_HxSYa6ACuzQdtS",
     },
     {
+        # has bad payment method - fail
+        # card № 4000 0000 0000 9995
         "email": "savoskin@evrone.com",
         "password": "helloevrone",
         "number": "12001230212",
@@ -105,6 +111,7 @@ ADMINS = [
         "stripe_id": "cus_HxSYL19Joq6KTq",
     },
     {
+        # have no any payment methods - fail
         "email": "og@evrone.com",
         "password": "helloevrone",
         "number": "12001230213",
