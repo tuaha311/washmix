@@ -43,6 +43,11 @@
     secretKeyRef:
       name: {{ .Values.app.secret }}
       key: stripe_secret_key
+- name: SENTRY_DSN
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.app.secret }}
+      key: sentry_dsn
 - name: TWILIO_ACCOUNT_SID
   value: "test2"
 - name: TWILIO_AUTH_TOKEN

@@ -8,8 +8,8 @@ DEBUG = True
 ALLOWED_HOSTS = ["*"]
 
 
+SENTRY_DSN = env.str("SENTRY_DSN")
+
 sentry_sdk.init(
-    dsn="https://cf2158b8940747c78607487f5a2ef3ca@o430742.ingest.sentry.io/5379821",
-    integrations=[DjangoIntegration()],
-    send_default_pii=True,
+    dsn=SENTRY_DSN, integrations=[DjangoIntegration()], send_default_pii=True,
 )
