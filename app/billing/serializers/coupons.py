@@ -14,7 +14,7 @@ class ApplyCouponSerializer(serializers.Serializer):
 
         if invoice.is_paid:
             raise serializers.ValidationError(
-                detail="Invoice already paid.", code="invoice_is_paid",
+                detail="You already paid this invoice.", code="invoice_already_paid",
             )
 
         return value
