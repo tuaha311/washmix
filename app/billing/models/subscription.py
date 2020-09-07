@@ -6,9 +6,8 @@ from core.common_models import Common
 
 
 class SubscriptionManager(models.Manager):
-    def create_and_fill(self, package, invoice):
+    def fill_subscription(self, subscription, package):
         system_fields = ["id", "created", "changed"]
-        subscription = self.model(invoice=invoice)
 
         for field in package._meta.get_fields():
             field_name = field.name
@@ -18,8 +17,6 @@ class SubscriptionManager(models.Manager):
 
             package_field_value = getattr(package, field_name)
             setattr(subscription, field_name, package_field_value)
-
-        subscription.save()
 
         return subscription
 

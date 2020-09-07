@@ -1,8 +1,9 @@
+from django.conf import settings
+
 from rest_framework import serializers
-from rest_framework.generics import get_object_or_404
 
 from api.fields import InvoiceField
-from billing.models import Coupon, Invoice
+from billing.models import Coupon, Invoice, Package
 
 
 class ApplyCouponSerializer(serializers.Serializer):
@@ -15,6 +16,11 @@ class ApplyCouponSerializer(serializers.Serializer):
         if invoice.is_paid:
             raise serializers.ValidationError(
                 detail="You already paid this invoice.", code="invoice_already_paid",
+            )
+
+        if invoice.subscription.name == settings.PAYC:
+            raise serializers.ValidationError(
+                detail="You cannot apply coupon to PAYC.", code="no_coupon_for_payc",
             )
 
         return value

@@ -84,7 +84,7 @@ class CheckoutService:
 
         return payment
 
-    def checkout(self, invoice: Invoice, payment: PaymentMethod) -> Optional(Transaction):
+    def checkout(self, invoice: Invoice, payment: PaymentMethod) -> Optional[Transaction]:
         if not self._is_save_card:
             return None
 

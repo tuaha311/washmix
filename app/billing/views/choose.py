@@ -3,7 +3,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from billing.serializers.choose import ChooseInvoiceSerializer, ChooseSerializer
-from billing.services.subscription import SubscriptionService
+from billing.services.choose import ChooseService
 
 
 class ChooseView(GenericAPIView):
@@ -17,7 +17,7 @@ class ChooseView(GenericAPIView):
         client = request.user.client
         package = package_serializer.validated_data["package"]
 
-        handler = SubscriptionService(client)
+        handler = ChooseService(client)
         invoice = handler.choose(package)
 
         invoice_serializer = self.invoice_serializer_class(invoice)
