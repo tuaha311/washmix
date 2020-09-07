@@ -29,7 +29,6 @@ class Delivery(Common):
     Delivery to / from our Clients.
     """
 
-    # TODO add relation with order in future
     client = models.ForeignKey(
         "users.Client",
         verbose_name="client",
