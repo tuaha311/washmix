@@ -17,14 +17,14 @@ class CreateIntentView(GenericAPIView):
 
         client = self.request.user.client
         is_save_card = serializer.validated_data["is_save_card"]
-        amount = serializer.validated_data["amount"]
+        invoice = serializer.validated_data["invoice"]
 
         helper = StripeHelper(client)
 
         if is_save_card:
             intent = helper.create_setup_intent()
         else:
-            intent = helper.create_payment_intent(amount=amount)
+            intent = helper.create_payment_intent(amount=invoice.amount)
 
         return Response({"public_key": settings.STRIPE_PUBLIC_KEY, "secret": intent.client_secret})
 

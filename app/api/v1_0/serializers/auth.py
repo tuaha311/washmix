@@ -16,7 +16,9 @@ class SignupSerializer(serializers.Serializer):
         email = value.strip().lower()
 
         if User.objects.filter(email=email).exists():
-            raise serializers.ValidationError({"auth": "invalid_auth_credentials"})
+            raise serializers.ValidationError(
+                detail="Invalid credentials.", code="invalid_auth_credentials",
+            )
 
         return value
 
@@ -24,9 +26,13 @@ class SignupSerializer(serializers.Serializer):
         number = value.strip()
 
         if number.startswith("+"):
-            raise serializers.ValidationError({"auth": "dont_provide_plus"})
+            raise serializers.ValidationError(
+                detail="Invalid phone format.", code="dont_provide_plus",
+            )
 
         if Phone.objects.filter(number=number).exists():
-            raise serializers.ValidationError({"auth": "invalid_auth_credentials"})
+            raise serializers.ValidationError(
+                detail="Invalid credentials.", code="invalid_auth_credentials",
+            )
 
         return value

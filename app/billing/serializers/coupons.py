@@ -1,17 +1,16 @@
 from rest_framework import serializers
 from rest_framework.generics import get_object_or_404
 
+from api.fields import InvoiceField
 from billing.models import Coupon, Invoice
 
 
 class ApplyCouponSerializer(serializers.Serializer):
     coupon = serializers.SlugRelatedField(slug_field="code", queryset=Coupon.objects.all())
-    invoice = serializers.PrimaryKeyRelatedField(queryset=Invoice.objects.all())
+    invoice = InvoiceField()
 
     def validate_invoice(self, value):
-        client = self.context["request"].user.client
-
-        invoice = get_object_or_404(client.invoice_list.all(), pk=value.pk)
+        invoice = value
 
         if invoice.is_paid:
             raise serializers.ValidationError(

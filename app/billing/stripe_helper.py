@@ -11,11 +11,6 @@ SESSION_USAGE = "off_session"
 CARD = "card"
 DEFAULT_CONFIRM = True
 DEFAULT_OFF_SESSION = True
-PAYMENT_INTENT_KWARGS = {
-    # these params used only in pair
-    "confirm": DEFAULT_CONFIRM,
-    "off_session": DEFAULT_OFF_SESSION,
-}
 
 
 class StripeHelper:
@@ -75,13 +70,21 @@ class StripeHelper:
         Reference - https://stripe.com/docs/api/payment_intents/create
         """
 
+        extra_kwargs = {}
+        if payment_method_id:
+            extra_kwargs = {
+                "payment_method": payment_method_id,
+                # these params used only in pair
+                "confirm": DEFAULT_CONFIRM,
+                "off_session": DEFAULT_OFF_SESSION,
+            }
+
         payment_intent = stripe.PaymentIntent.create(
             amount=amount,
             currency=currency,
-            customer=self.customer.id,
             receipt_email=self._client.email,
-            payment_method=payment_method_id,
-            **PAYMENT_INTENT_KWARGS,
+            customer=self.customer.id,
+            **extra_kwargs,
         )
 
         return payment_intent

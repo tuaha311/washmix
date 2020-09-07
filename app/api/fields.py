@@ -1,17 +1,7 @@
 from rest_framework import serializers
 
 
-class EnumField(serializers.ChoiceField):
-    def __init__(self, enum, **kwargs):
-        self.enum = enum
-        kwargs["choices"] = [(e, e.value) for e in enum]
-        super(EnumField, self).__init__(**kwargs)
-
-    def to_representation(self, obj):
-        return obj.name
-
-    def to_internal_value(self, data):
-        try:
-            return self.enum[data].value
-        except KeyError:
-            self.fail("invalid_choice", input=data)
+class InvoiceField(serializers.PrimaryKeyRelatedField):
+    def get_queryset(self):
+        client = self.context["request"].user.client
+        return client.invoice_list.all()
