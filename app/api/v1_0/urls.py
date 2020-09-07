@@ -7,9 +7,11 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView,
 )
 
-from api.v1_0.views import auth, health, locations, orders, payments, phones, services, trigger
+from api.v1_0.views import auth, health, payments, services, trigger
 from billing.views import cards, checkout, choose, coupons, invoices, packages
-from locations.views import addresses, zip_codes
+from core import views
+from locations.views import addresses, locations, zip_codes
+from orders import views
 from pickups import views as deliveries
 from users.views import customers, profile
 
@@ -59,8 +61,8 @@ billing_urls = (
 
 router = SimpleRouter(trailing_slash=True)
 router.register("addresses", addresses.AddressViewSet, basename="addresses")
-router.register("phones", phones.PhoneViewSet, basename="phones")
-router.register("orders", orders.OrderViewSet, basename="orders")
+router.register("phones", views.PhoneViewSet, basename="phones")
+router.register("orders", views.OrderViewSet, basename="orders")
 router.register("cards", cards.CardViewSet, basename="cards")
 router.register("invoices", invoices.InvoiceViewSet, basename="invoices")
 router.register("deliveries", deliveries.DeliveryViewSet, basename="deliveries")
