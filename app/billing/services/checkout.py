@@ -15,14 +15,17 @@ from users.models import Client
 
 
 class CheckoutService:
-    def __init__(self, client: Client, request: Request):
+    def __init__(self, client: Client, request: Request, is_save_card: bool):
         self._client = client
         self._request = request
         self._stripe_helper = StripeHelper(client)
+        self._is_save_card = is_save_card
 
-    def save_card_list(self) -> List[Card]:
+    def save_card_list(self) -> Optional[List[Card]]:
         # we are saving all cards received from Stripe
         # in most cases it is only 1 card.
+        if not self._is_save_card:
+            return None
 
         payment_method_list = self._stripe_helper.payment_method_list
 
@@ -58,6 +61,9 @@ class CheckoutService:
 
     def charge(self, invoice: Invoice) -> Optional[PaymentMethod]:
         payment = None
+
+        if not self._is_save_card:
+            return None
 
         for item in self._client.card_list.all():
             # we are trying to charge the card list of client

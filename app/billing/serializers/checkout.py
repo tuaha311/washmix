@@ -16,6 +16,7 @@ class CheckoutUserSerializer(serializers.ModelSerializer):
         fields = [
             "first_name",
             "last_name",
+            "is_auto_billing",
         ]
 
 
@@ -34,6 +35,7 @@ class CheckoutSerializer(serializers.Serializer):
     user = CheckoutUserSerializer()
     address = CheckoutAddressSerializer()
     invoice = serializers.PrimaryKeyRelatedField(queryset=Invoice.objects.all())
+    is_save_card = serializers.BooleanField(default=True)
 
     def validate_invoice(self, value):
         client = self.context["request"].user.client

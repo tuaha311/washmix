@@ -55,7 +55,7 @@ class StripeHelper:
 
     def create_setup_intent(self):
         """
-        Use this method to create SetupIntentView for Stripe.
+        Use this method to create CreateIntentView for Stripe.
         Usually, this method called first at card save flow.
 
         Reference - https://stripe.com/docs/api/setup_intents/create
@@ -66,7 +66,7 @@ class StripeHelper:
         return setup_intent
 
     def create_payment_intent(
-        self, payment_method_id: str, amount: int, currency: str = DEFAULT_CURRENCY,
+        self, amount: int, currency: str = DEFAULT_CURRENCY, payment_method_id: str = None
     ):
         """
         Use this method to immediately charge saved card on customer.
