@@ -25,6 +25,7 @@ from api.v1_0.views import (
     trigger,
     zip_codes,
 )
+from pickups import views
 
 app_name = "v1_0"
 token_urls = (
@@ -76,6 +77,7 @@ router.register("phones", phones.PhoneViewSet, basename="phones")
 router.register("orders", orders.OrderViewSet, basename="orders")
 router.register("cards", cards.CardViewSet, basename="cards")
 router.register("invoices", invoices.InvoiceViewSet, basename="invoices")
+router.register("deliveries", views.DeliveryViewSet, basename="deliveries")
 
 urlpatterns = [
     # closed methods that require authorization
