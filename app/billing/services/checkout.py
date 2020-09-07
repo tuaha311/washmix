@@ -95,6 +95,7 @@ class CheckoutService:
                 client=self._client,
                 stripe_id=payment.id,
                 amount=payment.amount,
+                source=payment,
             )
 
             # don't save a card if it wasn't marked by user
