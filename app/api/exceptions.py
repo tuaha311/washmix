@@ -33,30 +33,6 @@ class WMError(Exception):
         return 500
 
 
-class InvalidUsage(WMError):
-    @classmethod
-    def http_status_code(cls):
-        return 400
-
-
-class UnauthorizedError(WMError):
-    @classmethod
-    def http_status_code(cls):
-        return 401
-
-
-class ForbiddenError(WMError):
-    @classmethod
-    def http_status_code(cls):
-        return 403
-
-
-class NotFoundError(WMError):
-    @classmethod
-    def http_status_code(cls):
-        return 404
-
-
 class InternalServerError(WMError):
     @classmethod
     def http_status_code(cls):
