@@ -17,6 +17,7 @@ BASE_DIR = Path(__file__).parents[1]
 # DJANGO #
 ##########
 
+DOMAIN = "washmix.evrone.app"
 ALLOWED_HOSTS = ["*"]
 
 SECRET_KEY = env.str("SECRET_KEY")
@@ -212,6 +213,21 @@ STRIPE_PUBLIC_KEY = env.str("STRIPE_PUBLIC_KEY", "")
 STRIPE_SECRET_KEY = env.str("STRIPE_SECRET_KEY", "")
 stripe.api_key = STRIPE_SECRET_KEY
 
+STRIPE_WEBHOOK_IP_WHITELIST = [
+    "3.18.12.63",
+    "3.130.192.231",
+    "13.235.14.237",
+    "13.235.122.149",
+    "35.154.171.200",
+    "52.15.183.38",
+    "54.187.174.169",
+    "54.187.205.235",
+    "54.187.216.72",
+    "54.241.31.99",
+    "54.241.31.102",
+    "54.241.34.107",
+]
+
 
 ##########
 # DJOSER #
@@ -235,7 +251,6 @@ DJOSER = {
 ####################################
 
 PROTOCOL = "https"
-DOMAIN = "washmix.evrone.app"
 SITE_NAME = "WashMix"
 
 

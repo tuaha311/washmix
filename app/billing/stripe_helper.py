@@ -4,6 +4,7 @@ import stripe
 from stripe.api_resources.payment_method import PaymentMethod
 from stripe.error import InvalidRequestError
 
+from billing.models import Invoice
 from users.models import Client
 
 DEFAULT_CURRENCY = "usd"
@@ -61,7 +62,11 @@ class StripeHelper:
         return setup_intent
 
     def create_payment_intent(
-        self, amount: int, currency: str = DEFAULT_CURRENCY, payment_method_id: str = None
+        self,
+        amount: int,
+        invoice: Invoice,
+        currency: str = DEFAULT_CURRENCY,
+        payment_method_id: str = None,
     ):
         """
         Use this method to immediately charge saved card on customer.
@@ -84,6 +89,7 @@ class StripeHelper:
             currency=currency,
             receipt_email=self._client.email,
             customer=self.customer.id,
+            metadata={"invoice_id": invoice.id,},
             **extra_kwargs,
         )
 

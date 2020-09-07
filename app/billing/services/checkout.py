@@ -70,7 +70,7 @@ class CheckoutService:
             # and we are stopping at first successful attempt
             try:
                 payment = self._stripe_helper.create_payment_intent(
-                    payment_method_id=item.stripe_id, amount=invoice.amount,
+                    payment_method_id=item.stripe_id, amount=invoice.amount, invoice=invoice,
                 )
 
                 self._client.main_card = item
