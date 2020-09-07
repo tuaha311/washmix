@@ -1,9 +1,8 @@
 from rest_framework import serializers
 
-
-class SetupIntentSerializer(serializers.Serializer):
-    pass
+from api.fields import InvoiceField
 
 
-class StripeWebhookSerializer(serializers.Serializer):
-    pass
+class CreateIntentSerializer(serializers.Serializer):
+    is_save_card = serializers.BooleanField()
+    invoice = InvoiceField()

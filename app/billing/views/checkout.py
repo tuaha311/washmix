@@ -18,15 +18,15 @@ class CheckoutView(GenericAPIView):
         invoice = serializer.validated_data["invoice"]
         user = serializer.validated_data["user"]
         address = serializer.validated_data["address"]
+        is_save_card = serializer.validated_data["is_save_card"]
 
         client = request.user.client
-        checkout_service = CheckoutService(client, request)
+        checkout_service = CheckoutService(client, request, is_save_card)
 
         with atomic():
             checkout_service.save_card_list()
             checkout_service.fill_profile(user)
             checkout_service.create_address(address)
-            payment = checkout_service.charge(invoice)
-            checkout_service.checkout(invoice, payment)
+            checkout_service.charge(invoice)
 
         return Response(request.data)

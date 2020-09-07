@@ -1,3 +1,4 @@
+from django.contrib.postgres.fields import JSONField
 from django.db import models
 
 from core.behaviors import Amountable, Stripeable
@@ -53,6 +54,10 @@ class Transaction(Amountable, Stripeable, Common):
         verbose_name="provider of transaction",
         max_length=10,
         choices=PROVIDER_CHOICES,
+    )
+    source = JSONField(
+        verbose_name="source of transaction (Stripe raw data)",
+        default=dict,
     )
 
     class Meta:

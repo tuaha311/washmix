@@ -5,7 +5,7 @@ from settings.base import *
 
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = [DOMAIN]
 
 
 SENTRY_DSN = env.str("SENTRY_DSN")

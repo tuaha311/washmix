@@ -75,6 +75,10 @@ class Client(Stripeable, Common):
     fix_tears = models.BooleanField(
         default=False,
     )
+    is_auto_billing = models.BooleanField(
+        verbose_name="automatically bill subscription",
+        default=True,
+    )
 
     objects = ClientManager()
 

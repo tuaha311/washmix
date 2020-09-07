@@ -15,15 +15,18 @@ from users.models import Client
 
 
 class CheckoutService:
-    def __init__(self, client: Client, request: Request):
+    def __init__(self, client: Client, request: Request, is_save_card: bool):
         self._client = client
         self._request = request
         self._stripe_helper = StripeHelper(client)
+        self._is_save_card = is_save_card
 
-    def save_card_list(self) -> List[Card]:
+    def save_card_list(self) -> Optional[List[Card]]:
+        if not self._is_save_card:
+            return None
+
         # we are saving all cards received from Stripe
         # in most cases it is only 1 card.
-
         payment_method_list = self._stripe_helper.payment_method_list
 
         for item in payment_method_list:
@@ -57,6 +60,11 @@ class CheckoutService:
         return address
 
     def charge(self, invoice: Invoice) -> Optional[PaymentMethod]:
+        # card will be charged at the frontend side
+        # if user doesn't want to save a card
+        if not self._is_save_card:
+            return None
+
         payment = None
 
         for item in self._client.card_list.all():
@@ -64,7 +72,7 @@ class CheckoutService:
             # and we are stopping at first successful attempt
             try:
                 payment = self._stripe_helper.create_payment_intent(
-                    payment_method_id=item.stripe_id, amount=invoice.amount,
+                    payment_method_id=item.stripe_id, amount=invoice.amount, invoice=invoice,
                 )
 
                 self._client.main_card = item
@@ -78,7 +86,7 @@ class CheckoutService:
 
         return payment
 
-    def checkout(self, invoice: Invoice, payment: PaymentMethod) -> Transaction:
+    def checkout(self, invoice: Invoice, payment: PaymentMethod) -> Optional[Transaction]:
         with atomic():
             transaction = Transaction.objects.create(
                 invoice=invoice,
@@ -87,10 +95,13 @@ class CheckoutService:
                 client=self._client,
                 stripe_id=payment.id,
                 amount=payment.amount,
+                source=payment,
             )
 
-            invoice.card = self._client.main_card
-            invoice.save()
+            # don't save a card if it wasn't marked by user
+            if not self._is_save_card:
+                invoice.card = self._client.main_card
+                invoice.save()
 
             self._client.subscription = invoice.subscription
             self._client.save()

@@ -1,7 +1,6 @@
 from rest_framework import serializers
-from rest_framework.generics import get_object_or_404
 
-from billing.models import Invoice
+from api.fields import InvoiceField
 from billing.stripe_helper import StripeHelper
 from locations.models import Address, ZipCode
 from users.models import Client
@@ -10,12 +9,14 @@ from users.models import Client
 class CheckoutUserSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField(max_length=50)
     last_name = serializers.CharField(max_length=100)
+    is_auto_billing = serializers.BooleanField()
 
     class Meta:
         model = Client
         fields = [
             "first_name",
             "last_name",
+            "is_auto_billing",
         ]
 
 
@@ -33,12 +34,14 @@ class CheckoutAddressSerializer(serializers.ModelSerializer):
 class CheckoutSerializer(serializers.Serializer):
     user = CheckoutUserSerializer()
     address = CheckoutAddressSerializer()
-    invoice = serializers.PrimaryKeyRelatedField(queryset=Invoice.objects.all())
+    invoice = InvoiceField()
+    is_save_card = serializers.BooleanField()
 
     def validate_invoice(self, value):
-        client = self.context["request"].user.client
-
-        get_object_or_404(client.invoice_list.all(), pk=value.pk)
+        if value.is_paid:
+            raise serializers.ValidationError(
+                detail="You already paid this invoice.", code="invoice_already_paid",
+            )
 
         return value
 

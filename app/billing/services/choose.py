@@ -7,7 +7,7 @@ from users.models import Client
 DEFAULT_DISCOUNT = 0
 
 
-class SubscriptionService:
+class ChooseService:
     def __init__(self, client: Client):
         self._client = client
 
@@ -26,10 +26,15 @@ class SubscriptionService:
                 invoice.discount = DEFAULT_DISCOUNT
                 invoice.save()
 
-            # here we binding subscription and invoice
+            # here we creating or receiving subscription container
+            # and in later steps we will bind it with invoice
             try:
-                invoice.subscription
+                instance = invoice.subscription
             except ObjectDoesNotExist:
-                Subscription.objects.create_and_fill(package, invoice)
+                instance = Subscription()
+
+            subscription = Subscription.objects.fill_subscription(instance, package)
+            subscription.invoice = invoice
+            subscription.save()
 
         return invoice
