@@ -22,11 +22,11 @@ class CheckoutService:
         self._is_save_card = is_save_card
 
     def save_card_list(self) -> Optional[List[Card]]:
-        # we are saving all cards received from Stripe
-        # in most cases it is only 1 card.
         if not self._is_save_card:
             return None
 
+        # we are saving all cards received from Stripe
+        # in most cases it is only 1 card.
         payment_method_list = self._stripe_helper.payment_method_list
 
         for item in payment_method_list:
@@ -60,10 +60,10 @@ class CheckoutService:
         return address
 
     def charge(self, invoice: Invoice) -> Optional[PaymentMethod]:
-        payment = None
-
         if not self._is_save_card:
             return None
+
+        payment = None
 
         for item in self._client.card_list.all():
             # we are trying to charge the card list of client
@@ -84,7 +84,10 @@ class CheckoutService:
 
         return payment
 
-    def checkout(self, invoice: Invoice, payment: PaymentMethod) -> Transaction:
+    def checkout(self, invoice: Invoice, payment: PaymentMethod) -> Optional(Transaction):
+        if not self._is_save_card:
+            return None
+
         with atomic():
             transaction = Transaction.objects.create(
                 invoice=invoice,
