@@ -6,8 +6,8 @@ from rest_framework.request import Request
 from stripe import PaymentMethod
 from stripe.error import StripeError
 
-from api.v1_0.serializers.checkout import CheckoutAddressSerializer, CheckoutUserSerializer
 from billing.models import Card, Invoice, Transaction
+from billing.serializers.checkout import CheckoutAddressSerializer, CheckoutUserSerializer
 from billing.stripe_helper import StripeHelper
 from core.services.main_attribute import MainAttributeService
 from locations.models import Address

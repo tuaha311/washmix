@@ -1,8 +1,8 @@
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import AllowAny
 
-from api.v1_0.serializers.packages import PackageSerializer
 from billing.models import Package
+from billing.serializers.packages import PackageSerializer
 
 
 class PackageListView(ListAPIView):

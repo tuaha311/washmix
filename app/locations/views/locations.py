@@ -1,8 +1,8 @@
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import AllowAny
 
-from api.v1_0.serializers.locations import LocationSerializer
 from locations.models import City
+from locations.serializers.locations import LocationSerializer
 
 
 class LocationListView(ListAPIView):

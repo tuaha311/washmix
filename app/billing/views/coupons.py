@@ -2,7 +2,7 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from api.v1_0.serializers.coupons import ApplyCouponInvoiceSerializer, ApplyCouponSerializer
+from billing.serializers.coupons import ApplyCouponInvoiceSerializer, ApplyCouponSerializer
 from billing.services.coupon import CouponHolder
 
 
