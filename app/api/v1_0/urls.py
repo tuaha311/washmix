@@ -8,7 +8,7 @@ from rest_framework_simplejwt.views import (
 )
 
 from api.v1_0.views import auth, health, payments, services, trigger
-from billing.views import cards, checkout, choose, coupons, invoices, packages
+from billing.views import cards, checkout, choose, coupons, packages
 from core import views as core_views
 from locations.views import addresses, locations, zip_codes
 from orders import views as order_views
@@ -64,7 +64,6 @@ router.register("addresses", addresses.AddressViewSet, basename="addresses")
 router.register("phones", core_views.PhoneViewSet, basename="phones")
 router.register("orders", order_views.OrderViewSet, basename="orders")
 router.register("cards", cards.CardViewSet, basename="cards")
-router.register("invoices", invoices.InvoiceViewSet, basename="invoices")
 router.register("deliveries", deliveries.DeliveryViewSet, basename="deliveries")
 
 urlpatterns = [
