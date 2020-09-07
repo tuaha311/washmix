@@ -9,9 +9,9 @@ from rest_framework_simplejwt.views import (
 
 from api.v1_0.views import auth, health, payments, services, trigger
 from billing.views import cards, checkout, choose, coupons, invoices, packages
-from core import views
+from core import views as core_views
 from locations.views import addresses, locations, zip_codes
-from orders import views
+from orders import views as order_views
 from pickups import views as deliveries
 from users.views import customers, profile
 
@@ -61,8 +61,8 @@ billing_urls = (
 
 router = SimpleRouter(trailing_slash=True)
 router.register("addresses", addresses.AddressViewSet, basename="addresses")
-router.register("phones", views.PhoneViewSet, basename="phones")
-router.register("orders", views.OrderViewSet, basename="orders")
+router.register("phones", core_views.PhoneViewSet, basename="phones")
+router.register("orders", order_views.OrderViewSet, basename="orders")
 router.register("cards", cards.CardViewSet, basename="cards")
 router.register("invoices", invoices.InvoiceViewSet, basename="invoices")
 router.register("deliveries", deliveries.DeliveryViewSet, basename="deliveries")
