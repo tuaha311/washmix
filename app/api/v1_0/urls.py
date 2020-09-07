@@ -7,25 +7,11 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView,
 )
 
-from api.v1_0.views import (
-    addresses,
-    auth,
-    cards,
-    customers,
-    health,
-    invoices,
-    locations,
-    orders,
-    packages,
-    payments,
-    phones,
-    profile,
-    services,
-    subscription,
-    trigger,
-    zip_codes,
-)
-from pickups import views
+from api.v1_0.views import auth, health, locations, orders, payments, phones, services, trigger
+from billing.views import cards, checkout, choose, coupons, invoices, packages
+from locations.views import addresses, zip_codes
+from pickups import views as deliveries
+from users.views import customers, profile
 
 app_name = "v1_0"
 token_urls = (
@@ -51,11 +37,11 @@ subscription_urls = (
         # packages and subscription payment views:
         # 1. please, choose a subscription - we will return Invoice.id and attach subscription to Invoice,
         # also, we store this data between screens.
-        path("choose/", subscription.ChooseView.as_view(), name="choose"),
+        path("choose/", choose.ChooseView.as_view(), name="choose"),
         # 2. please, if you have a coupon - apply it to the Invoice.id
-        path("apply_coupon/", subscription.ApplyCouponView.as_view(), name="apply-coupon"),
+        path("apply_coupon/", coupons.ApplyCouponView.as_view(), name="apply-coupon"),
         # 3. submit all your personal and address data
-        path("checkout/", subscription.CheckoutView.as_view(), name="checkout"),
+        path("checkout/", checkout.CheckoutView.as_view(), name="checkout"),
     ],
     "subscription",
 )
@@ -77,7 +63,7 @@ router.register("phones", phones.PhoneViewSet, basename="phones")
 router.register("orders", orders.OrderViewSet, basename="orders")
 router.register("cards", cards.CardViewSet, basename="cards")
 router.register("invoices", invoices.InvoiceViewSet, basename="invoices")
-router.register("deliveries", views.DeliveryViewSet, basename="deliveries")
+router.register("deliveries", deliveries.DeliveryViewSet, basename="deliveries")
 
 urlpatterns = [
     # closed methods that require authorization

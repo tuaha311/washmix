@@ -1,8 +1,8 @@
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import AllowAny
 
-from api.v1_0.serializers.customers import CustomerSerializer
 from users.models import Customer
+from users.serializers.customers import CustomerSerializer
 
 
 class CustomerCreateView(CreateAPIView):
