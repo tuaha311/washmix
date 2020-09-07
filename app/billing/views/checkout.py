@@ -27,7 +27,6 @@ class CheckoutView(GenericAPIView):
             checkout_service.save_card_list()
             checkout_service.fill_profile(user)
             checkout_service.create_address(address)
-            payment = checkout_service.charge(invoice)
-            checkout_service.checkout(invoice, payment)
+            checkout_service.charge(invoice)
 
         return Response(request.data)

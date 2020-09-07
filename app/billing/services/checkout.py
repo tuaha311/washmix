@@ -60,6 +60,8 @@ class CheckoutService:
         return address
 
     def charge(self, invoice: Invoice) -> Optional[PaymentMethod]:
+        # card will be charged at the frontend side
+        # if user doesn't want to save a card
         if not self._is_save_card:
             return None
 
@@ -85,9 +87,6 @@ class CheckoutService:
         return payment
 
     def checkout(self, invoice: Invoice, payment: PaymentMethod) -> Optional[Transaction]:
-        if not self._is_save_card:
-            return None
-
         with atomic():
             transaction = Transaction.objects.create(
                 invoice=invoice,
@@ -98,8 +97,10 @@ class CheckoutService:
                 amount=payment.amount,
             )
 
-            invoice.card = self._client.main_card
-            invoice.save()
+            # don't save a card if it wasn't marked by user
+            if not self._is_save_card:
+                invoice.card = self._client.main_card
+                invoice.save()
 
             self._client.subscription = invoice.subscription
             self._client.save()

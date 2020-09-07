@@ -37,6 +37,7 @@ class CreateIntentView(GenericAPIView):
 
 class StripeWebhookView(GenericAPIView):
     permission_classes = [AllowAny]
+    # TODO add IP check
 
     def post(self, request: Request, *args, **kwargs):
         # we will use Stripe SDK to check validity of event instead
@@ -44,10 +45,10 @@ class StripeWebhookView(GenericAPIView):
         raw_payload = request.data
         event = stripe.Event.construct_from(raw_payload, stripe.api_key)
 
-        if event.type == "payment_intent.succeeded":
+        if event.type in ["payment_intent.succeeded", "charge.succeeded"]:
             payment = event.data.object
             client = Client.objects.get(stripe_id=payment.customer)
-            invoice = Invoice.objects.get(payment.metadata.invoice_id)
+            invoice = Invoice.objects.get(pk=payment.metadata.invoice_id)
             service = CheckoutService(client, request, False)
             service.checkout(invoice, payment)
 
