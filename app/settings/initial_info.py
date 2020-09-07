@@ -447,27 +447,27 @@ PRICES = [
             {
                 "item": "Option 2 [1 Bag]",
                 "is_visible": True,
-                "price": {"value": 79, "count": 1, "unit": Price.BAG},
+                "price": {"value": 7900, "count": 1, "unit": Price.BAG},
             },
             {
                 "item": "Option 2 [2 Bag]",
                 "is_visible": True,
-                "price": {"value": 148, "count": 1, "unit": Price.BAG},
+                "price": {"value": 14800, "count": 1, "unit": Price.BAG},
             },
             {
                 "item": "Option 2 [3 Bag]",
                 "is_visible": True,
-                "price": {"value": 207, "count": 3, "unit": Price.BAG},
+                "price": {"value": 20700, "count": 3, "unit": Price.BAG},
             },
             {
                 "item": "Option 2 [4 Bag]",
                 "is_visible": True,
-                "price": {"value": 256, "count": 1, "unit": Price.BAG},
+                "price": {"value": 25600, "count": 1, "unit": Price.BAG},
             },
             {
-                "item": "Option 2 [Each Bag thereafter 4 Bags] [245 + 49 per Additional Bag]",
+                "item": "Option 2 [Each Bag thereafter 4 Bags] [245 + 49$ per Additional Bag]",
                 "is_visible": True,
-                "price": {"value": 49, "count": 1, "unit": Price.BAG},
+                "price": {"value": 4900, "count": 1, "unit": Price.BAG},
             },
         ],
     },
