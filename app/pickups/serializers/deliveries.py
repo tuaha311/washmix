@@ -1,7 +1,9 @@
 from rest_framework import serializers
 from rest_framework.generics import get_object_or_404
 
+from locations.models import Address
 from pickups.models import Delivery
+from pickups.services.delivery import DeliveryService
 
 
 class DeliverySerializer(serializers.ModelSerializer):
@@ -20,15 +22,21 @@ class DeliverySerializer(serializers.ModelSerializer):
             "dropoff_end": {"required": False},
         }
 
-    def validate_address(self, value):
+    def validate_address(self, value: Address):
         client = self.context["request"].user.client
         get_object_or_404(client.address_list.all(), pk=value.pk)
         return value
 
-    def validate(self, attrs):
-        if attrs["pickup_start"] >= attrs["pickup_end"]:
-            raise serializers.ValidationError(
-                detail="Start time can't be earlier than end", code="start_earlier_than_end",
-            )
+    def validate(self, attrs: dict):
+        service = DeliveryService(
+            pickup_date=attrs["pickup_date"],
+            pickup_start=attrs["pickup_start"],
+            pickup_end=attrs["pickup_end"],
+        )
+
+        service.validate_date()
+        service.validate_time()
+        service.validate_last_call()
+        service.validate()
 
         return attrs

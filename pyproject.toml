@@ -81,6 +81,7 @@ sentry-sdk = "^0.16.3"
 pre-commit = "^2.6.0"
 drf-yasg = "^1.17.1"
 netaddr = "^0.8.0"
+arrow = "^0.16.0"
 
 
 [tool.poetry.dev-dependencies]

@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import time, timedelta
 from pathlib import Path
 
 import stripe
@@ -167,6 +167,12 @@ PACKAGE_NAME_MAP = {
     PLATINUM: "PLATINUM",
 }
 PACKAGE_NAME_CHOICES = list(PACKAGE_NAME_MAP.items())
+
+ORDER_PROCESSING_BUSINESS_DAYS = timedelta(days=3)
+NON_WORKING_WEEKENDS = [5, 6]
+TODAY_DELIVERY_LAST_CALL_TIME = time(hour=8)
+DELIVERY_START_WORKING = time(hour=9)
+DELIVERY_END_WORKING = time(hour=18)
 
 
 ################################

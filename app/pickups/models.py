@@ -32,7 +32,6 @@ class Delivery(Common):
     )
     pickup_date = models.DateField(
         verbose_name="date for pickup",
-        auto_now_add=True,
     )
     pickup_start = models.TimeField(
         verbose_name="start of pickup interval"
@@ -42,7 +41,6 @@ class Delivery(Common):
     )
     dropoff_date = models.DateField(
         verbose_name="date for dropoff",
-        auto_now_add=True,
     )
     dropoff_start = models.TimeField(
         verbose_name="start of dropoff interval"
