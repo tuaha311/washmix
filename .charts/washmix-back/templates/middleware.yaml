@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Middleware
+metadata:
+  name: {{ include "washmix-back.fullname" . }}
+spec:
+  headers:
+    customRequestHeaders:
+      X-Real-IP: "test"

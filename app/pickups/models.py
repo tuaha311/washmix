@@ -3,27 +3,6 @@ from django.db import models
 from core.common_models import Common
 
 
-class Interval(Common):
-    """
-    Delivery date with start time and end time.
-    """
-
-    date = models.DateField(
-        verbose_name="date for delivery",
-        auto_now_add=True,
-    )
-    start = models.TimeField(
-        verbose_name="start of delivery interval"
-    )
-    end = models.TimeField(
-        verbose_name="end of delivery interval"
-    )
-
-    class Meta:
-        verbose_name = "delivery interval"
-        verbose_name_plural = "delivery intervals"
-
-
 class Delivery(Common):
     """
     Delivery to / from our Clients.
@@ -42,21 +21,27 @@ class Delivery(Common):
         on_delete=models.SET_NULL,
         null=True,
     )
-    pickup_interval = models.ForeignKey(
-        "pickups.Interval",
-        verbose_name="pickup interval",
-        related_name="+",
-        on_delete=models.SET_NULL,
-        null=True,
+    pickup_date = models.DateField(
+        verbose_name="date for pickup",
+        auto_now_add=True,
     )
-    dropoff_interval = models.ForeignKey(
-        "pickups.Interval",
-        verbose_name="drop",
-        related_name="+",
-        on_delete=models.SET,
-        null=True,
+    pickup_start = models.TimeField(
+        verbose_name="start of pickup interval"
+    )
+    pickup_end = models.TimeField(
+        verbose_name="end of pickup interval"
+    )
+    dropoff_date = models.DateField(
+        verbose_name="date for dropoff",
+        auto_now_add=True,
+    )
+    dropoff_start = models.TimeField(
+        verbose_name="start of dropoff interval"
+    )
+    dropoff_end = models.TimeField(
+        verbose_name="end of dropoff interval"
     )
 
     class Meta:
-        verbose_name = "request pickup"
-        verbose_name_plural = "request pickups"
+        verbose_name = "delivery"
+        verbose_name_plural = "deliveries"
