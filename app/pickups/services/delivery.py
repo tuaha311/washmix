@@ -5,7 +5,8 @@ from django.utils.timezone import localtime
 
 from rest_framework import serializers
 
-SUNDAY_WEEKDAY = 6
+SUNDAY_ISO_WEEKDAY = 7
+TOTAL_BUSINESS_DAYS = 5
 
 
 class DeliveryService:
@@ -14,13 +15,23 @@ class DeliveryService:
         self._pickup_start = pickup_start
         self._pickup_end = pickup_end
 
-    def calculate_dropoff(self) -> dict:
+    @property
+    def dropoff(self) -> dict:
         """
         Usually, we processing order 2 days and delivering on the next day - i.e.
         3 business days.
         """
 
-        dropoff_date = self._pickup_date + settings.ORDER_PROCESSING_BUSINESS_DAYS
+        business_days_left = self.business_days_left
+
+        if business_days_left >= settings.ORDER_PROCESSING_BUSINESS_DAYS:
+            dropoff_date = self._pickup_date + settings.ORDER_PROCESSING_TIMEDELTA
+        else:
+            dropoff_date = (
+                self._pickup_date
+                + settings.ORDER_PROCESSING_TIMEDELTA
+                + settings.WEEKENDS_DURATION_TIMEDELTA
+            )
 
         return {
             "dropoff_date": dropoff_date,
@@ -28,9 +39,18 @@ class DeliveryService:
             "dropoff_end": self._pickup_end,
         }
 
+    @property
+    def business_days_left(self) -> int:
+        business_days_left = TOTAL_BUSINESS_DAYS - self._pickup_date.isoweekday()
+
+        if business_days_left < 0:
+            return 0
+
+        return business_days_left
+
     def validate_date(self):
         # we doesn't work at weekends - because we are chilling
-        if self._pickup_date.weekday() in settings.NON_WORKING_WEEKENDS:
+        if self._pickup_date.isoweekday() in settings.NON_WORKING_ISO_WEEKENDS:
             raise serializers.ValidationError(
                 detail="Delivery doesn't work at weekends.", code="pickup_date_is_weekends",
             )
@@ -41,6 +61,8 @@ class DeliveryService:
             raise serializers.ValidationError(
                 detail="Delivery can't handle passed date.", code="pickup_date_is_passed",
             )
+
+        # TODO we can't handle pickup date earlier than dropoff date
 
     def validate_time(self):
         # we can't pickup earlier than we start working

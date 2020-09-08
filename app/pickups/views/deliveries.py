@@ -21,6 +21,6 @@ class DeliveryViewSet(ModelViewSet):
         service = DeliveryService(
             pickup_date=pickup_date, pickup_start=pickup_start, pickup_end=pickup_end,
         )
-        dropoff = service.calculate_dropoff()
+        dropoff_kwargs = service.dropoff
 
-        return serializer.save(client=client, **dropoff)
+        return serializer.save(client=client, **dropoff_kwargs)

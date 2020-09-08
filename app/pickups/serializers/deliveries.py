@@ -40,3 +40,12 @@ class DeliverySerializer(serializers.ModelSerializer):
         service.validate()
 
         return attrs
+
+
+def business_days_left(day):
+    business_days_left = 5 - day
+
+    if business_days_left < 0:
+        return 0
+
+    return business_days_left
