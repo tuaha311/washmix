@@ -21,6 +21,15 @@ class Delivery(Common):
         on_delete=models.SET_NULL,
         null=True,
     )
+
+    comment = models.TextField(
+        verbose_name="comment",
+        blank=True,
+    )
+    is_rush = models.BooleanField(
+        verbose_name="is a rush / urgent delivery",
+        default=False,
+    )
     pickup_date = models.DateField(
         verbose_name="date for pickup",
         auto_now_add=True,
