@@ -11,6 +11,7 @@ from api.v1_0.serializers import payments
 from billing.models import Invoice
 from billing.services.checkout import CheckoutService
 from billing.stripe_helper import StripeHelper
+from core.utils import ip_in_white_list
 from users.models import Client
 
 
@@ -37,9 +38,13 @@ class CreateIntentView(GenericAPIView):
 
 class StripeWebhookView(GenericAPIView):
     permission_classes = [AllowAny]
-    # TODO add IP check
 
     def post(self, request: Request, *args, **kwargs):
+        ip_address = request.META["HTTP_X_REAL_IP"]
+
+        if not ip_in_white_list(ip_address, settings.STRIPE_WEBHOOK_IP_WHITELIST):
+            return Response(status=403)
+
         # we will use Stripe SDK to check validity of event instead
         # of using serializer for this purpose
         raw_payload = request.data
