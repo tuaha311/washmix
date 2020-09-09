@@ -26,7 +26,7 @@ class ApplyCouponSerializer(serializers.Serializer):
         return value
 
 
-class ApplyCouponInvoiceSerializer(serializers.ModelSerializer):
+class ApplyCouponResponseSerializer(serializers.ModelSerializer):
     subscription = serializers.SlugRelatedField(read_only=True, slug_field="name")
     coupon = serializers.SlugRelatedField(read_only=True, slug_field="code")
 

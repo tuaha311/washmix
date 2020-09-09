@@ -2,13 +2,13 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from billing.serializers.choose import ChooseInvoiceSerializer, ChooseSerializer
+from billing.serializers.choose import ChooseResponseSerializer, ChooseSerializer
 from billing.services.choose import ChooseService
 
 
 class ChooseView(GenericAPIView):
     serializer_class = ChooseSerializer
-    invoice_serializer_class = ChooseInvoiceSerializer
+    response_serializer_class = ChooseResponseSerializer
 
     def post(self, request: Request, *args, **kwargs):
         package_serializer = self.serializer_class(data=request.data, context={"request": request})
@@ -20,6 +20,6 @@ class ChooseView(GenericAPIView):
         handler = ChooseService(client)
         invoice = handler.choose(package)
 
-        invoice_serializer = self.invoice_serializer_class(invoice)
+        response = self.response_serializer_class(invoice).data
 
-        return Response(invoice_serializer.data)
+        return Response(response)

@@ -104,7 +104,7 @@ LOGGING = {
     "disable_existing_loggers": False,
     "handlers": {"null": {"class": "logging.NullHandler",},},
     # disable drf_yasg warning stuff
-    "loggers": {"drf_yasg": {"handlers": ["null"]},},
+    "loggers": {"drf_yasg": {"handlers": ["null"]}, "inspectors": {"handlers": ["null"]},},
 }
 
 
@@ -218,7 +218,8 @@ SIMPLE_JWT = {
 ############
 
 SWAGGER_SETTINGS = {
-    "SECURITY_DEFINITIONS": {"Bearer": {"type": "apiKey", "name": "Authorization", "in": "header"}}
+    "SECURITY_DEFINITIONS": {"Bearer": {"type": "apiKey", "name": "Authorization", "in": "header"}},
+    "DEFAULT_AUTO_SCHEMA_CLASS": "api.inspectors.WashMixAutoSchema",
 }
 
 

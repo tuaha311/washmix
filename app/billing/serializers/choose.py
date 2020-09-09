@@ -7,7 +7,7 @@ class ChooseSerializer(serializers.Serializer):
     package = serializers.SlugRelatedField(slug_field="name", queryset=Package.objects.all(),)
 
 
-class ChooseInvoiceSerializer(serializers.ModelSerializer):
+class ChooseResponseSerializer(serializers.ModelSerializer):
     subscription = serializers.SlugRelatedField(read_only=True, slug_field="name")
 
     class Meta:

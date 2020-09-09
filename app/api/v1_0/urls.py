@@ -1,11 +1,7 @@
 from django.urls import include, path
 
 from rest_framework.routers import SimpleRouter
-from rest_framework_simplejwt.views import (
-    TokenObtainSlidingView,
-    TokenRefreshSlidingView,
-    TokenVerifyView,
-)
+from rest_framework_simplejwt.views import TokenRefreshSlidingView, TokenVerifyView
 
 from api.v1_0.views import auth, health, services, trigger
 from billing.views import cards, checkout, choose, coupons, packages, payments
@@ -26,7 +22,7 @@ token_urls = (
 
 auth_urls = (
     [
-        path("login/", TokenObtainSlidingView.as_view(), name="obtain"),
+        path("login/", auth.LoginView.as_view(), name="obtain"),
         path("signup/", auth.SignupView.as_view(), name="signup"),
         path("forgot_password/", auth.ForgotPasswordView.as_view(), name="forgot-password",),
         path("reset_new_password/", auth.SetNewPasswordView.as_view(), name="reset-new-password",),
