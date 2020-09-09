@@ -72,6 +72,7 @@ class DeliveryService:
                 code="start_earlier_than_our_working_hours",
             )
 
+        # we can't pickup after than we finish working
         if self._pickup_end > settings.DELIVERY_END_WORKING:
             raise serializers.ValidationError(
                 detail="End time can't be later than our work time.",

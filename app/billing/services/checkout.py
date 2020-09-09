@@ -90,7 +90,7 @@ class CheckoutService:
 
     def checkout(self, payment: PaymentMethod) -> Optional[Transaction]:
         # .checkout method works idempotently - if we already marked
-        # invoice as paid, that we doesn't make changes
+        # invoice as paid, than we doesn't make changes
         if not self._invoice.is_paid:
             return None
 
