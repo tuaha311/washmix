@@ -1,7 +1,7 @@
 from django.contrib import admin
 
-from pickups.models import Delivery, Interval
+from pickups.models import Delivery
 
-models = [Interval, Delivery]
+models = [Delivery]
 for item in models:
     admin.site.register(item)

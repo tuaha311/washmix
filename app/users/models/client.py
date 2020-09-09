@@ -24,10 +24,10 @@ class Client(Stripeable, Common):
         on_delete=models.CASCADE,
         related_name="client",
     )
-    subscription = models.ForeignKey(
+    subscription = models.OneToOneField(
         "billing.Subscription",
         verbose_name="subscription of service",
-        related_name="client_list",
+        related_name="client",
         on_delete=models.CASCADE,
         null=True,
     )

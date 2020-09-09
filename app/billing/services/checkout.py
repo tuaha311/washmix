@@ -15,14 +15,14 @@ from users.models import Client
 
 
 class CheckoutService:
-    def __init__(self, client: Client, request: Request, is_save_card: bool):
+    def __init__(self, client: Client, request: Request, invoice: Invoice):
         self._client = client
         self._request = request
         self._stripe_helper = StripeHelper(client)
-        self._is_save_card = is_save_card
+        self._invoice = invoice
 
     def save_card_list(self) -> Optional[List[Card]]:
-        if not self._is_save_card:
+        if not self._invoice.is_save_card:
             return None
 
         # we are saving all cards received from Stripe
@@ -59,10 +59,10 @@ class CheckoutService:
 
         return address
 
-    def charge(self, invoice: Invoice) -> Optional[PaymentMethod]:
+    def charge(self) -> Optional[PaymentMethod]:
         # card will be charged at the frontend side
         # if user doesn't want to save a card
-        if not self._is_save_card:
+        if not self._invoice.is_save_card:
             return None
 
         payment = None
@@ -72,7 +72,9 @@ class CheckoutService:
             # and we are stopping at first successful attempt
             try:
                 payment = self._stripe_helper.create_payment_intent(
-                    payment_method_id=item.stripe_id, amount=invoice.amount, invoice=invoice,
+                    payment_method_id=item.stripe_id,
+                    amount=self._invoice.amount,
+                    invoice=self._invoice,
                 )
 
                 self._client.main_card = item
@@ -86,10 +88,15 @@ class CheckoutService:
 
         return payment
 
-    def checkout(self, invoice: Invoice, payment: PaymentMethod) -> Optional[Transaction]:
+    def checkout(self, payment: PaymentMethod) -> Optional[Transaction]:
+        # .checkout method works idempotently - if we already marked
+        # invoice as paid, than we doesn't make changes
+        if not self._invoice.is_paid:
+            return None
+
         with atomic():
             transaction = Transaction.objects.create(
-                invoice=invoice,
+                invoice=self._invoice,
                 kind=Transaction.DEBIT,
                 provider=Transaction.STRIPE,
                 client=self._client,
@@ -99,11 +106,11 @@ class CheckoutService:
             )
 
             # don't save a card if it wasn't marked by user
-            if not self._is_save_card:
-                invoice.card = self._client.main_card
-                invoice.save()
+            if not self._invoice.is_save_card:
+                self._invoice.card = self._client.main_card
+                self._invoice.save()
 
-            self._client.subscription = invoice.subscription
+            self._client.subscription = self._invoice.subscription
             self._client.save()
 
         return transaction
