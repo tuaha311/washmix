@@ -8,7 +8,7 @@ from pickups.services.delivery import DeliveryService
 
 class DeliverySerializer(serializers.ModelSerializer):
     pickup_date = serializers.DateField()
-    dropoff_date = serializers.DateField(required=False)
+    dropoff_date = serializers.DateField(required=False, read_only=True)
 
     class Meta:
         model = Delivery
@@ -18,8 +18,8 @@ class DeliverySerializer(serializers.ModelSerializer):
             "client",
         ]
         extra_kwargs = {
-            "dropoff_start": {"required": False},
-            "dropoff_end": {"required": False},
+            "dropoff_start": {"required": False, "read_only": True},
+            "dropoff_end": {"required": False, "read_only": True},
         }
 
     def validate_address(self, value: Address):
@@ -40,12 +40,3 @@ class DeliverySerializer(serializers.ModelSerializer):
         service.validate()
 
         return attrs
-
-
-def business_days_left(day):
-    business_days_left = 5 - day
-
-    if business_days_left < 0:
-        return 0
-
-    return business_days_left

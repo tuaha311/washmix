@@ -15,6 +15,10 @@ class DeliveryService:
         self._pickup_start = pickup_start
         self._pickup_end = pickup_end
 
+        assert (
+            self._pickup_date.isoweekday() not in settings.NON_WORKING_ISO_WEEKENDS
+        ), "We doesn't working at weekends."
+
     @property
     def dropoff(self) -> dict:
         """
