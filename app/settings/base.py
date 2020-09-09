@@ -104,7 +104,7 @@ LOGGING = {
     "disable_existing_loggers": False,
     "handlers": {"null": {"class": "logging.NullHandler",},},
     # disable drf_yasg warning stuff
-    "loggers": {"drf_yasg": {"handlers": ["null"]},},
+    "loggers": {"drf_yasg": {"handlers": ["null"]}, "inspectors": {"handlers": ["null"]},},
 }
 
 
@@ -198,7 +198,6 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
     "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer",],
     "DEFAULT_PARSER_CLASSES": ["rest_framework.parsers.JSONParser",],
-    "DEFAULT_SCHEMA_CLASS": "api.schema.WashMixAutoSchema",
 }
 
 ####################################
@@ -211,6 +210,16 @@ SIMPLE_JWT = {
     "SIGNING_KEY": env.str("SIMPLE_JWT_SIGNING_KEY"),
     "AUTH_HEADER_TYPES": ("Bearer",),
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.SlidingToken",),
+}
+
+
+############
+# DRF-YASG #
+############
+
+SWAGGER_SETTINGS = {
+    "SECURITY_DEFINITIONS": {"Bearer": {"type": "apiKey", "name": "Authorization", "in": "header"}},
+    "DEFAULT_AUTO_SCHEMA_CLASS": "api.inspectors.WashMixAutoSchema",
 }
 
 

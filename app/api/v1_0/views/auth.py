@@ -1,5 +1,3 @@
-from functools import partial
-
 from django.contrib.auth import get_user_model
 
 from djoser.views import UserViewSet
@@ -7,8 +5,9 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework_simplejwt.views import TokenObtainSlidingView
 
-from api.v1_0.serializers.auth import SignupSerializer
+from api.v1_0.serializers import auth
 from core.models import Phone
 from core.services.signup import SignupService
 
@@ -16,7 +15,7 @@ User = get_user_model()
 
 
 class SignupView(GenericAPIView):
-    serializer_class = SignupSerializer
+    serializer_class = auth.SignupSerializer
     permission_classes = [AllowAny]
 
     def post(self, request: Request, *args, **kwargs):
@@ -33,9 +32,31 @@ class SignupView(GenericAPIView):
         return Response({"email": client.email})
 
 
-class ForgotPasswordView(UserViewSet):
-    as_view = partial(UserViewSet.as_view, {"post": "reset_password"})
+class DjoserProxyView(UserViewSet):
+    """
+    We are using this view to proxy all behavior and methods
+    to Djoser. Djoser has already implemented auth cases, but it has
+    some messy implementation in 1 viewset. Instead of using this
+    awkward viewset - we splitting this behavior into atomic views.
+    """
+
+    proxy_action: dict
+
+    @classmethod
+    def as_view(cls, actions=None, **initkwargs):
+        view = super().as_view(cls.proxy_action)
+        return view
 
 
-class SetNewPasswordView(UserViewSet):
-    as_view = partial(UserViewSet.as_view, {"post": "reset_password_confirm"})
+class ForgotPasswordView(DjoserProxyView):
+    response_serializer_class = auth.EmptyResponseSerializer
+    proxy_action = {"post": "reset_password"}
+
+
+class SetNewPasswordView(DjoserProxyView):
+    response_serializer_class = auth.EmptyResponseSerializer
+    proxy_action = {"post": "reset_password_confirm"}
+
+
+class LoginView(TokenObtainSlidingView):
+    response_serializer_class = auth.LoginResponseSerializer

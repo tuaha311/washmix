@@ -36,3 +36,11 @@ class SignupSerializer(serializers.Serializer):
             )
 
         return value
+
+
+class EmptyResponseSerializer(serializers.Serializer):
+    pass
+
+
+class LoginResponseSerializer(serializers.Serializer):
+    token = serializers.CharField()

@@ -2,13 +2,13 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from billing.serializers.coupons import ApplyCouponInvoiceSerializer, ApplyCouponSerializer
+from billing.serializers.coupons import ApplyCouponResponseSerializer, ApplyCouponSerializer
 from billing.services.coupon import CouponHolder
 
 
 class ApplyCouponView(GenericAPIView):
     serializer_class = ApplyCouponSerializer
-    invoice_serializer_class = ApplyCouponInvoiceSerializer
+    response_serializer_class = ApplyCouponResponseSerializer
 
     def post(self, request: Request, *args, **kwargs):
         coupon_serializer = self.serializer_class(
@@ -22,6 +22,6 @@ class ApplyCouponView(GenericAPIView):
         holder = CouponHolder(invoice, coupon)
         invoice = holder.apply_coupon()
 
-        invoice_serializer = self.invoice_serializer_class(invoice)
+        response = self.response_serializer_class(invoice).data
 
-        return Response(invoice_serializer.data)
+        return Response(response)

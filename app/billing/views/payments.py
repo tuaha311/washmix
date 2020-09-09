@@ -17,6 +17,7 @@ from users.models import Client
 
 class CreateIntentView(GenericAPIView):
     serializer_class = payments.CreateIntentSerializer
+    response_serializer_class = payments.CreateIntentResponseSerializer
 
     def post(self, request: Request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data, context={"request": self.request})
@@ -30,7 +31,10 @@ class CreateIntentView(GenericAPIView):
         service.update_invoice(is_save_card)
         intent = service.create_intent()
 
-        return Response({"public_key": settings.STRIPE_PUBLIC_KEY, "secret": intent.client_secret})
+        response_body = {"public_key": settings.STRIPE_PUBLIC_KEY, "secret": intent.client_secret}
+        response = self.response_serializer_class(response_body).data
+
+        return Response(response)
 
 
 class StripeWebhookView(GenericAPIView):
