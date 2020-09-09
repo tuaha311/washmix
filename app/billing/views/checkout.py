@@ -6,6 +6,7 @@ from rest_framework.response import Response
 
 from billing.serializers.checkout import CheckoutSerializer
 from billing.services.checkout import CheckoutService
+from billing.services.payments import PaymentService
 
 
 class CheckoutView(GenericAPIView):
@@ -21,12 +22,14 @@ class CheckoutView(GenericAPIView):
         is_save_card = serializer.validated_data["is_save_card"]
 
         client = request.user.client
-        checkout_service = CheckoutService(client, request, is_save_card)
+        payment_service = PaymentService(client, invoice)
+        checkout_service = CheckoutService(client, request, invoice)
 
         with atomic():
+            payment_service.update_invoice(is_save_card)
             checkout_service.save_card_list()
             checkout_service.fill_profile(user)
             checkout_service.create_address(address)
-            checkout_service.charge(invoice)
+            checkout_service.charge()
 
         return Response(request.data)

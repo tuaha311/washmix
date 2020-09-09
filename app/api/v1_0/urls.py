@@ -7,8 +7,8 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView,
 )
 
-from api.v1_0.views import auth, health, payments, services, trigger
-from billing.views import cards, checkout, choose, coupons, packages
+from api.v1_0.views import auth, health, services, trigger
+from billing.views import cards, checkout, choose, coupons, packages, payments
 from core import views as core_views
 from locations.views import addresses, locations, zip_codes
 from orders import views as order_views

@@ -7,10 +7,10 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK
 
-from api.v1_0.serializers import payments
 from billing.models import Invoice
+from billing.serializers import payments
 from billing.services.checkout import CheckoutService
-from billing.stripe_helper import StripeHelper
+from billing.services.payments import PaymentService
 from core.utils import ip_in_white_list
 from users.models import Client
 
@@ -26,12 +26,9 @@ class CreateIntentView(GenericAPIView):
         is_save_card = serializer.validated_data["is_save_card"]
         invoice = serializer.validated_data["invoice"]
 
-        helper = StripeHelper(client)
-
-        if is_save_card:
-            intent = helper.create_setup_intent()
-        else:
-            intent = helper.create_payment_intent(amount=invoice.amount, invoice=invoice)
+        service = PaymentService(client, invoice)
+        service.update_invoice(is_save_card)
+        intent = service.create_intent()
 
         return Response({"public_key": settings.STRIPE_PUBLIC_KEY, "secret": intent.client_secret})
 
@@ -54,7 +51,7 @@ class StripeWebhookView(GenericAPIView):
             payment = event.data.object
             client = Client.objects.get(stripe_id=payment.customer)
             invoice = Invoice.objects.get(pk=payment.metadata.invoice_id)
-            service = CheckoutService(client, request, False)
-            service.checkout(invoice, payment)
+            service = CheckoutService(client, request, invoice)
+            service.checkout(payment)
 
         return Response({}, status=HTTP_200_OK)
