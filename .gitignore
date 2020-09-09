@@ -39,4 +39,6 @@ venv
 
 # static files and assets
 static
-assets
+assets/admin
+assets/drf-yasg
+assets/rest_framework
