@@ -35,7 +35,6 @@ class CheckoutSerializer(serializers.Serializer):
     user = CheckoutUserSerializer()
     address = CheckoutAddressSerializer()
     invoice = InvoiceField()
-    is_save_card = serializers.BooleanField()
 
     def validate_invoice(self, value):
         if value.is_paid:
