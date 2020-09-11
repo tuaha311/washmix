@@ -38,7 +38,7 @@ venv
 *.code-workspace
 
 # static files and assets
-static
-assets/admin
-assets/drf-yasg
-assets/rest_framework
+*/static
+*/assets/admin
+*/assets/drf-yasg
+*/assets/rest_framework
