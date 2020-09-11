@@ -12,7 +12,6 @@ then
 elif [ "$action" = "migrations" ]
 then
   echo "Running migrations and initial scripts"
-  sleep 5
   python manage.py migrate --settings settings.staging
   python manage.py collectstatic --settings settings.staging
   python manage.py fill --settings settings.staging
