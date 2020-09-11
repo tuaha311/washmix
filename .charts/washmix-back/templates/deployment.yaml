@@ -28,7 +28,7 @@ spec:
           env:
             {{- include "common.container.env" . | nindent 12 }}
       containers:
-        - name: {{ .Chart.Name }}
+        - name: {{ .Chart.Name }}-application
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
@@ -37,6 +37,7 @@ spec:
               protocol: TCP
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          command: ["application"]
           env:
             {{- include "common.container.env" . | nindent 12 }}
       {{- with .Values.nodeSelector }}
