@@ -37,7 +37,7 @@ spec:
               protocol: TCP
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          command: ["application]
+          command: ["application"]
           env:
             {{- include "common.container.env" . | nindent 12 }}
       {{- with .Values.nodeSelector }}
