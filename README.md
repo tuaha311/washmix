@@ -54,11 +54,37 @@
 
 `core` - core models of washmix project.
 
-`notifications` - this application responsible for sending SMS and email messages to users.
+`notifications` - this application responsible for sending SMS and email messages to users and storing historical info about sending.
 
 `orders` - here we store all logic related to the order creation, cart and item management.
 
 `users` - one of the main applications, whole logic of clients, employees management stored here.
+
+`pickups` - logic of request pickups, deliveries
+
+`locations` - main logic of addresses, cities were we present  and zip codes that we support
+
+
+## Project layout
+All applications have a default Django layout - we are trying to stay classic and trying to use default practices.
+All views and serializers related to the application incapsulated in application package.
+Some of custom views and serializers that doesn't fit logically in application context was saved in `api` package.
+
+Also, we are holding most of complex business logic rules in separate classes called `services`.
+And inside views we are using composition approach - instantiating an service and calling methods of service.
+In most complex cases it looks very simple and declarative - step by step execution of some methods of service.
+For example:
+```python
+checkout_service = CheckoutService(client, request, invoice)
+
+with atomic():
+    checkout_service.save_card_list()
+    checkout_service.fill_profile(user)
+    checkout_service.create_address(address)
+    checkout_service.charge()
+```
+
+Looks great isn't it?
 
 
 ## Docs

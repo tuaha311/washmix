@@ -3,7 +3,7 @@
 import django.utils.timezone
 from django.db import migrations, models
 
-import modules.enums
+import legacy.enums
 
 
 class Migration(migrations.Migration):
@@ -110,8 +110,8 @@ class Migration(migrations.Migration):
                     "kind",
                     models.CharField(
                         choices=[
-                            (modules.enums.CouponType("FIRST"), "FIRST"),
-                            (modules.enums.CouponType("PACKAGE"), "PACKAGE"),
+                            (legacy.enums.CouponType("FIRST"), "FIRST"),
+                            (legacy.enums.CouponType("PACKAGE"), "PACKAGE"),
                         ],
                         default="FIRST",
                         max_length=30,

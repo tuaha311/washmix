@@ -2,7 +2,7 @@ from django.db import models
 from django.utils.timezone import localtime
 
 from core.common_models import Common
-from modules.enums import CouponType
+from legacy.enums import CouponType
 
 
 class Coupon(Common):
