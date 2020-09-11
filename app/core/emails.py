@@ -15,8 +15,7 @@ class SendGridEmail(BaseEmailMessage):
 
         email_info = self._get_email_info()
 
-        # TODO dramatiq add .send
-        raw_send_email(to=to, html_content=self.html, **email_info)
+        raw_send_email.send(to=to, html_content=self.html, **email_info)
 
         return len(to)
 

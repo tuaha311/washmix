@@ -15,8 +15,7 @@ class SignupService:
             client = Client.objects.create_client(email, password, phone)
             full_name = client.full_name
 
-            # TODO dramatiq add .send
-            send_email(
+            send_email.send(
                 email=client.email, event=settings.SIGNUP, full_name=full_name,
             )
 

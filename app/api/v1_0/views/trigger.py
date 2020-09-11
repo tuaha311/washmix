@@ -6,9 +6,7 @@ from core.tasks import count
 
 
 class TriggerView(GenericAPIView):
-    permission_classes = [
-        AllowAny,
-    ]
+    permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
         count.send(100)
