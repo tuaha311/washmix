@@ -1,7 +1,22 @@
 # Release Notes
 
 ## v1.3 (11.09.2020)
-* 
+* Added Coupon, Delivery models
+* Finished Invoice, Transaction logic
+* Added welcome email template
+* Implemented logic of CouponHolder
+* Business logic moved into `services` packages
+* Implemented CheckoutService
+* Implemented ChooseService
+* Implemented PaymentService
+* Implemented SignupService
+* MainAttributeMixin transformed into MainAttributeService
+* Implemented Package cloning into Subscription
+* Fully implemented StripeHelper
+* Added docker-entrypoint.sh cmd argument handling
+* Move some views and serializers from `api` into applications
+* Added `security` entity and response schema improvements for OpenAPI
+* Added Stripe webhook implementation
 
 
 ## v1.2 (28.08.2020)

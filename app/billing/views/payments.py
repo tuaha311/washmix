@@ -11,7 +11,6 @@ from billing.models import Invoice
 from billing.serializers import payments
 from billing.services.checkout import CheckoutService
 from billing.services.payments import PaymentService
-from core.utils import ip_in_white_list
 from users.models import Client
 
 
@@ -43,7 +42,8 @@ class StripeWebhookView(GenericAPIView):
     def post(self, request: Request, *args, **kwargs):
         ip_address = request.META["HTTP_X_REAL_IP"]
 
-        if not ip_in_white_list(ip_address, settings.STRIPE_WEBHOOK_IP_WHITELIST):
+        # don't allowing other IPs excluding Stripe's IPs
+        if ip_address not in settings.STRIPE_WEBHOOK_IP_WHITELIST:
             return Response(status=403)
 
         # we will use Stripe SDK to check validity of event instead
