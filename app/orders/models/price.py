@@ -59,3 +59,7 @@ class Price(Valuable, Common):
 
     def __str__(self):
         return f"{self.service.title} on {self.item.title} = {self.dollar_value} $"
+
+    @property
+    def pretty_unit(self):
+        return self.get_unit_display()

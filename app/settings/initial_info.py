@@ -300,7 +300,7 @@ PRICES = [
                 "price": {"value": 2495, "count": 1, "unit": Price.PCS,},
             },
             {
-                "item": "Dress [Grown] [Minimal price $2995]",
+                "item": "Dress [Grown] [Minimal price $29.95]",
                 "is_visible": True,
                 "price": {"value": 3995, "count": 1, "unit": Price.PCS,},
             },
@@ -315,7 +315,7 @@ PRICES = [
                 "price": {"value": 1595, "count": 1, "unit": Price.PCS,},
             },
             {
-                "item": "Jacket [Leather] [Minimal price $4995]",
+                "item": "Jacket [Leather] [Minimal price $49.95]",
                 "is_visible": True,
                 "price": {"value": 4995, "count": 1, "unit": Price.PCS,},
             },
@@ -465,7 +465,7 @@ PRICES = [
                 "price": {"value": 25600, "count": 1, "unit": Price.BAG},
             },
             {
-                "item": "Option 2 [Each Bag thereafter 4 Bags] [245 + 49$ per Additional Bag]",
+                "item": "Option 2 [Each Bag thereafter 4 Bags] [$245 + $49 per Additional Bag]",
                 "is_visible": True,
                 "price": {"value": 4900, "count": 1, "unit": Price.BAG},
             },
@@ -610,7 +610,7 @@ PRICES = [
                 "price": {"value": 795, "count": 1, "unit": Price.PCS},
             },
             {
-                "item": "Button Replacement [Special] [Minimal Price $995]",
+                "item": "Button Replacement [Special] [Minimal Price $9.95]",
                 "is_visible": False,
                 "price": {"value": 995, "count": 1, "unit": Price.PCS},
             },
@@ -975,17 +975,17 @@ PRICES = [
         "service": "Wedding Growns",
         "item_list": [
             {
-                "item": "Clean Only [Minimal price $14995]",
+                "item": "Clean Only [Minimal price $149.95]",
                 "is_visible": True,
                 "price": {"value": 14995, "count": 1, "unit": Price.PCS},
             },
             {
-                "item": "Clean + Preservation [Minimal price $29995]",
+                "item": "Clean + Preservation [Minimal price $299.95]",
                 "is_visible": True,
                 "price": {"value": 29995, "count": 1, "unit": Price.PCS},
             },
             {
-                "item": "Additional Accessories [Minimal price $2495]",
+                "item": "Additional Accessories [Minimal price $24.95]",
                 "is_visible": True,
                 "price": {"value": 2495, "count": 1, "unit": Price.PCS},
             },
@@ -997,12 +997,12 @@ PRICES = [
             {
                 "item": "Machine Made [Minimal price $99]",
                 "is_visible": True,
-                "price": {"value": 39500, "count": 1, "unit": Price.SQ_FT},
+                "price": {"value": 395, "count": 1, "unit": Price.SQ_FT},
             },
             {
                 "item": "Handmade Rug [Persian/Indian] [Minimal Price $99]",
                 "is_visible": True,
-                "price": {"value": 69500, "count": 1, "unit": Price.SQ_FT},
+                "price": {"value": 695, "count": 1, "unit": Price.SQ_FT},
             },
             {
                 "item": "Cowhide Rug [Minimal Price 99$]",
