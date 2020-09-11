@@ -3,11 +3,6 @@ from uuid import uuid4
 
 from django.contrib.auth.models import User
 
-from rest_framework import status
-from rest_framework.test import APIClient, APITestCase
-
-from billing.models import Card
-from locations.models import Address
 from modules.helpers import (
     mock_add_customer,
     mock_get_card,
@@ -15,6 +10,11 @@ from modules.helpers import (
     mock_get_token,
     mocked_twilio_create,
 )
+from rest_framework import status
+from rest_framework.test import APIClient, APITestCase
+
+from billing.models import Card
+from locations.models import Address
 from orders.models import Order
 from tests.conftest import fake
 from users.models import Profile

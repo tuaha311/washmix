@@ -16,6 +16,7 @@ class PriceSerializer(serializers.ModelSerializer):
             "title",
             "count",
             "unit",
+            "pretty_unit",
             "image",
         ]
 

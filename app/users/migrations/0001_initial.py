@@ -6,7 +6,7 @@ from django.conf import settings
 from django.db import migrations, models
 
 import core.validators
-import modules.enums
+import legacy.enums
 
 
 class Migration(migrations.Migration):
@@ -153,8 +153,8 @@ class Migration(migrations.Migration):
                     "detergents",
                     models.CharField(
                         choices=[
-                            (modules.enums.Detergents("Scented"), "Scented"),
-                            (modules.enums.Detergents("Hypo-Allergenic"), "Hypo-Allergenic"),
+                            (legacy.enums.Detergents("Scented"), "Scented"),
+                            (legacy.enums.Detergents("Hypo-Allergenic"), "Hypo-Allergenic"),
                         ],
                         max_length=50,
                         null=True,
@@ -164,10 +164,10 @@ class Migration(migrations.Migration):
                     "starch",
                     models.CharField(
                         choices=[
-                            (modules.enums.Starch("NONE"), "NONE"),
-                            (modules.enums.Starch("LIGHT"), "LIGHT"),
-                            (modules.enums.Starch("MEDIUM"), "MEDIUM"),
-                            (modules.enums.Starch("HEAVY"), "HEAVY"),
+                            (legacy.enums.Starch("NONE"), "NONE"),
+                            (legacy.enums.Starch("LIGHT"), "LIGHT"),
+                            (legacy.enums.Starch("MEDIUM"), "MEDIUM"),
+                            (legacy.enums.Starch("HEAVY"), "HEAVY"),
                         ],
                         max_length=50,
                         null=True,
@@ -177,8 +177,8 @@ class Migration(migrations.Migration):
                     "no_crease",
                     models.CharField(
                         choices=[
-                            (modules.enums.Crease("ALL_PANTS"), "ALL_PANTS"),
-                            (modules.enums.Crease("JEANS_ONLY"), "JEANS_ONLY"),
+                            (legacy.enums.Crease("ALL_PANTS"), "ALL_PANTS"),
+                            (legacy.enums.Crease("JEANS_ONLY"), "JEANS_ONLY"),
                         ],
                         max_length=50,
                         null=True,

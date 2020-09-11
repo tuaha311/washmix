@@ -5,7 +5,7 @@ from django.db.models import Sum
 from billing.models.transaction import Transaction
 from core.behaviors import Stripeable
 from core.common_models import Common
-from modules.enums import Crease, Detergents, Starch
+from legacy.enums import Crease, Detergents, Starch
 from users.managers import ClientManager
 
 
