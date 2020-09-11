@@ -24,22 +24,29 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          command: ["migrations"]
+          command: ["bash", "-c", "python manage.py migrate --settings=settings.staging"]
           env:
-            {{- include "common.container.env" . | nindent 12 }}
+          {{- include "common.container.env" . | nindent 12 }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+          {{- include "common.container.env" . | nindent 12 }}
           ports:
             - name: http
               containerPort: 8000
               protocol: TCP
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          command: ["application"]
-          env:
-            {{- include "common.container.env" . | nindent 12 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
