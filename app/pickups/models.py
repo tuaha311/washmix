@@ -21,6 +21,13 @@ class Delivery(Common):
         on_delete=models.SET_NULL,
         null=True,
     )
+    employee = models.ForeignKey(
+        "users.Employee",
+        on_delete=models.SET_NULL,
+        related_name="delivery_list",
+        null=True,
+        blank=True,
+    )
 
     comment = models.TextField(
         verbose_name="comment",

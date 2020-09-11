@@ -17,10 +17,19 @@ class Order(Common):
         related_name="order",
         on_delete=models.CASCADE,
     )
-
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="order_list"
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="order_list",
     )
+    employee = models.ForeignKey(
+        "users.Employee",
+        on_delete=models.SET_NULL,
+        related_name="order_list",
+        null=True,
+        blank=True,
+    )
+
     pickup_address = models.ForeignKey(
         "locations.Address", on_delete=models.CASCADE, related_name="pickup_address_list",
     )

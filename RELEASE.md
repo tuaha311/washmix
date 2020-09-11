@@ -1,5 +1,9 @@
 # Release Notes
 
+## v1.3 (11.09.2020)
+* 
+
+
 ## v1.2 (28.08.2020)
 * Move from default DRF's OpenAPI library to drf-yasg
 * Change static path from /static/ -> /assets/
