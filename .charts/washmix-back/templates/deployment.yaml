@@ -27,7 +27,6 @@ spec:
           command: ["migrations"]
           env:
             {{- include "common.container.env" . | nindent 12 }}
-
       containers:
         - name: {{ .Chart.Name }}-application
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -41,7 +40,6 @@ spec:
           command: ["application"]
           env:
             {{- include "common.container.env" . | nindent 12 }}
-
         - name: {{ .Chart.Name }}-worker
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
