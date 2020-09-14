@@ -12,6 +12,10 @@ class WashMixSchemaGenerator(OpenAPISchemaGenerator):
         operation = super().get_operation(view, path, prefix, method, components, request)
 
         if IsAuthenticated in view.permission_classes:
-            operation.security = ["Bearer"]
+            operation.security = [{"Bearer": []}]
 
         return operation
+
+    # hiding `security` item
+    def get_security_requirements(self, security_definitions):
+        return None
