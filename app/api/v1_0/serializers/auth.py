@@ -25,12 +25,12 @@ class SignupSerializer(serializers.Serializer):
     def validate_phone(self, value):
         number = value.strip()
 
-        if number.startswith("+"):
+        if not number.startswith("+"):
             raise serializers.ValidationError(
-                detail="Invalid phone format.", code="dont_provide_plus",
+                detail="Invalid phone format.", code="provide_plus",
             )
 
-        if Phone.objects.filter(number=number).exists():
+        if Phone.objects.filter(number__icontains=number).exists():
             raise serializers.ValidationError(
                 detail="Invalid credentials.", code="invalid_auth_credentials",
             )
