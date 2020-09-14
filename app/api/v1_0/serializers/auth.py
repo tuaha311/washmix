@@ -31,7 +31,7 @@ class SignupSerializer(serializers.Serializer):
                 detail="Invalid phone format.", code="provide_plus",
             )
 
-        if Phone.objects.filter(number__icontains=number).exists():
+        if Phone.objects.filter(number=number).exists():
             raise serializers.ValidationError(
                 detail="Invalid credentials.", code="invalid_auth_credentials",
             )
