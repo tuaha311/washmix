@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 
+import phonenumbers
 from rest_framework import serializers
 
 from core.models import Phone
@@ -33,6 +34,13 @@ class SignupSerializer(serializers.Serializer):
         if Phone.objects.filter(number__icontains=number).exists():
             raise serializers.ValidationError(
                 detail="Invalid credentials.", code="invalid_auth_credentials",
+            )
+
+        try:
+            Phone.format_number(value)
+        except phonenumbers.NumberParseException:
+            raise serializers.ValidationError(
+                detail="Invalid phone format.", code="invalid_phone",
             )
 
         return value
