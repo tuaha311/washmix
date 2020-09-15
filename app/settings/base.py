@@ -176,6 +176,8 @@ NON_WORKING_ISO_WEEKENDS = [6, 7]
 TODAY_DELIVERY_LAST_CALL_TIME = time(hour=8)
 DELIVERY_START_WORKING = time(hour=9)
 DELIVERY_END_WORKING = time(hour=18)
+SUCCESS = "success"
+FAIL = "fail"
 
 
 ################################
