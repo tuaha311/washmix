@@ -1,10 +1,11 @@
 from django.db import models
 
+from core.behaviors import Twilioable
 from core.common_models import Common
 from core.validators import validate_phone
 
 
-class Customer(Common):
+class Customer(Twilioable, Common):
     """
     OFFLINE-ONLY customer. They can't login or use our web application.
     We gather information about them to use in future.

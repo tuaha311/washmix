@@ -3,13 +3,13 @@ from django.db import models
 from django.db.models import Sum
 
 from billing.models.transaction import Transaction
-from core.behaviors import Stripeable
+from core.behaviors import Stripeable, Twilioable
 from core.common_models import Common
 from legacy.enums import Crease, Detergents, Starch
 from users.managers import ClientManager
 
 
-class Client(Stripeable, Common):
+class Client(Stripeable, Twilioable, Common):
     """
     ONLINE-ONLY clients of application. They use our web-application to
     make orders and request pickups. Our main targeted audience.

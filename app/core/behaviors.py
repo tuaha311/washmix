@@ -18,6 +18,20 @@ class Stripeable(models.Model):
         abstract = True
 
 
+class Twilioable(models.Model):
+    """
+    Behavior for model that define default fields
+    for Twilio integration.
+    """
+
+    twilio_id = models.CharField(
+        verbose_name="Twilio ID", max_length=100, blank=True, null=True, unique=True,
+    )
+
+    class Meta:
+        abstract = True
+
+
 def get_dollars(self, attribute_name):
     amount_value = getattr(self, attribute_name)
     return amount_value / settings.CENTS_IN_DOLLAR
