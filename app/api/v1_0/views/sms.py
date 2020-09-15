@@ -7,11 +7,11 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 
-from api.v1_0.serializers.sms import FlexWebhookSerializer
-from pickups.services.sms import FlexService
+from api.v1_0.serializers.sms import TwilioFlexWebhookSerializer
+from pickups.services.sms import TwilioFlexService
 
 
-class FlexWebhookView(GenericAPIView):
+class TwilioFlexWebhookView(GenericAPIView):
     """
     Twilio `Make HTTP Request` widget status logic:
     - 200 or 204 (success)
@@ -21,7 +21,7 @@ class FlexWebhookView(GenericAPIView):
 
     permission_classes = [AllowAny]
     parser_classes = [FormParser, JSONParser]
-    serializer_class = FlexWebhookSerializer
+    serializer_class = TwilioFlexWebhookSerializer
 
     def post(self, request: Request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data, context={"request": request})
@@ -31,7 +31,7 @@ class FlexWebhookView(GenericAPIView):
         contact = serializer.validated_data["contact"]
         datetime = serializer.validated_data["datetime"]
 
-        service = FlexService(message, contact, datetime)
+        service = TwilioFlexService(message, contact, datetime)
         service_status = service.handle()
 
         if service_status == settings.SUCCESS:

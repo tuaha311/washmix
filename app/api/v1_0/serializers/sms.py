@@ -166,7 +166,7 @@ Raw webhook data example:
 """
 
 
-class FlexWebhookSerializer(serializers.Serializer):
+class TwilioFlexWebhookSerializer(serializers.Serializer):
     """
     Request data from Twilio Flex Widget:
     {

@@ -55,7 +55,10 @@ billing_urls = (
     "billing",
 )
 
-sms_urls = ([path("flex_webhook/", sms.FlexWebhookView.as_view(), name="flex-webhook"),], "sms")
+sms_urls = (
+    [path("flex_webhook/", sms.TwilioFlexWebhookView.as_view(), name="flex-webhook"),],
+    "sms",
+)
 
 router = SimpleRouter(trailing_slash=True)
 router.register("addresses", addresses.AddressViewSet, basename="addresses")

@@ -6,7 +6,7 @@ from core.models import Phone
 from users.models.customer import Customer
 
 
-class FlexService:
+class TwilioFlexService:
     def __init__(self, message: str, contact: str, date_n_time: datetime) -> None:
         self._message = message
         self._contact = contact
@@ -14,14 +14,18 @@ class FlexService:
 
     def handle(self):
         try:
-            # we are trying to find a Client with a phone number
+            # we can check only Phone table, because inside it
+            # we have a full list of valid client phones.
+            # if phone number doesn't exists inside Phone table -
+            # it means, that Client hasn't using our web application and
+            # admin should handle this case manually.
             Phone.objects.get(number=self._contact)
 
             return settings.SUCCESS
 
         except Phone.DoesNotExist:
             Customer.objects.get_or_create(
-                phobe=self._contact, defaults={"kind": Customer.POSSIBLE,}
+                phone=self._contact, defaults={"kind": Customer.POSSIBLE,}
             )
 
             return settings.FAIL
