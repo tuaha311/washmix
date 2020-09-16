@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.utils.timezone import localtime
 
 from rest_framework.generics import GenericAPIView
 from rest_framework.parsers import FormParser, JSONParser
@@ -29,14 +30,16 @@ class TwilioFlexWebhookView(GenericAPIView):
 
         message = serializer.validated_data["message"]
         contact = serializer.validated_data["contact"]
-        datetime = serializer.validated_data["datetime"]
+        datetime = localtime()
 
         service = TwilioFlexService(message, contact, datetime)
         service_status = service.handle()
 
         if service_status == settings.SUCCESS:
             status = HTTP_200_OK
+            body = {"message": "3 January"}
         else:
             status = HTTP_400_BAD_REQUEST
+            body = {"message": "10 December"}
 
-        return Response(status=status)
+        return Response(data=body, status=status)

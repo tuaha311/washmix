@@ -168,16 +168,16 @@ Raw webhook data example:
 
 class TwilioFlexWebhookSerializer(serializers.Serializer):
     """
-    Request data from Twilio Flex Widget:
+    Request data from Twilio Flex Widget.
+    Pretty form:
     {
         "message": "{{trigger.message.Body}}",
-        "contact": "{{trigger.message.From}}",
-        "datetime": "{{trigger.message.DateCreated}}",
-        "channel": "{{trigger.message.ChannelAttributes.channel_type}}"
+        "contact": "{{trigger.message.From}}"
     }
+
+    Short form:
+    {"message": "{{trigger.message.Body}}", "contact": "{{trigger.message.From}}"}
     """
 
     message = serializers.CharField()
     contact = serializers.CharField()
-    datetime = serializers.DateTimeField(input_formats=[settings.TWILIO_DATETIME_FORMAT])
-    channel = serializers.CharField()

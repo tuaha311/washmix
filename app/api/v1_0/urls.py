@@ -56,7 +56,7 @@ billing_urls = (
 )
 
 sms_urls = (
-    [path("flex_webhook/", sms.TwilioFlexWebhookView.as_view(), name="flex-webhook"),],
+    [path("twilio_webhook/", sms.TwilioFlexWebhookView.as_view(), name="flex-webhook"),],
     "sms",
 )
 
