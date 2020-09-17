@@ -28,15 +28,14 @@ class DeliverySerializer(serializers.ModelSerializer):
         return value
 
     def validate(self, attrs: dict):
+        client = self.context["request"].user.client
         service = DeliveryService(
+            client=client,
             pickup_date=attrs["pickup_date"],
             pickup_start=attrs["pickup_start"],
             pickup_end=attrs["pickup_end"],
         )
 
-        service.validate_date()
-        service.validate_time()
-        service.validate_last_call()
         service.validate()
 
         return attrs

@@ -181,3 +181,15 @@ class TwilioFlexWebhookSerializer(serializers.Serializer):
 
     message = serializers.CharField()
     contact = serializers.CharField()
+
+    def validate(self, attrs):
+        client = self.context["request"].user.client
+
+        # if client doesn't have an address
+        # we can't handle pickup request
+        if not client.main_address:
+            raise serializers.ValidationError(
+                detail="Client doesn't have an address.", code="no_pickup_address",
+            )
+
+        return attrs

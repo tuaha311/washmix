@@ -28,18 +28,22 @@ class TwilioFlexWebhookView(GenericAPIView):
         serializer = self.serializer_class(data=request.data, context={"request": request})
         serializer.is_valid(raise_exception=False)
 
+        client = self.request.user.client
         message = serializer.validated_data["message"]
         contact = serializer.validated_data["contact"]
-        datetime = localtime()
+        now = localtime()
 
-        service = TwilioFlexService(message, contact, datetime)
-        service_status = service.handle()
+        twilio_service = TwilioFlexService(client, message, contact, now)
+        service_status = twilio_service.get_status()
+
+        status = HTTP_400_BAD_REQUEST
+        message = ""
+        body = {"message": message}
 
         if service_status == settings.SUCCESS:
             status = HTTP_200_OK
-            body = {"message": "3 January"}
-        else:
-            status = HTTP_400_BAD_REQUEST
-            body = {"message": "10 December"}
+            delivery = twilio_service.create_delivery()
+            message = delivery.pretty_pickup_message
+            body = {"message": message}
 
         return Response(data=body, status=status)
