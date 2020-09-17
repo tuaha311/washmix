@@ -2,7 +2,7 @@ from django.conf import settings
 
 from rest_framework import serializers
 
-from pickups.services.sms import TwilioFlexService
+from pickups.services.twilio import TwilioFlexService
 from users.models import Client
 
 """

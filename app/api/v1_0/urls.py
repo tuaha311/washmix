@@ -3,7 +3,7 @@ from django.urls import include, path
 from rest_framework.routers import SimpleRouter
 from rest_framework_simplejwt.views import TokenRefreshSlidingView, TokenVerifyView
 
-from api.v1_0.views import auth, health, services, sms, trigger
+from api.v1_0.views import auth, health, services, trigger, twilio
 from billing.views import cards, checkout, choose, coupons, packages, payments
 from core import views as core_views
 from locations.views import addresses, locations, zip_codes
@@ -56,7 +56,7 @@ billing_urls = (
 )
 
 sms_urls = (
-    [path("twilio_webhook/", sms.TwilioFlexWebhookView.as_view(), name="flex-webhook"),],
+    [path("twilio_webhook/", twilio.TwilioFlexWebhookView.as_view(), name="flex-webhook"),],
     "sms",
 )
 
