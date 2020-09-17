@@ -2,6 +2,9 @@ from django.conf import settings
 
 from rest_framework import serializers
 
+from pickups.services.sms import TwilioFlexService
+from users.models import Client
+
 """
 Raw webhook data example:
 {
@@ -172,24 +175,22 @@ class TwilioFlexWebhookSerializer(serializers.Serializer):
     Pretty form:
     {
         "message": "{{trigger.message.Body}}",
-        "contact": "{{trigger.message.From}}"
+        "phone": "{{trigger.message.From}}"
     }
 
     Short form:
-    {"message": "{{trigger.message.Body}}", "contact": "{{trigger.message.From}}"}
+    {"message": "{{trigger.message.Body}}", "phone": "{{trigger.message.From}}"}
     """
 
     message = serializers.CharField()
-    contact = serializers.CharField()
+    phone = serializers.CharField()
 
     def validate(self, attrs):
-        client = self.context["request"].user.client
+        message = attrs["message"]
+        phone = attrs["phone"]
 
-        # if client doesn't have an address
-        # we can't handle pickup request
-        if not client.main_address:
-            raise serializers.ValidationError(
-                detail="Client doesn't have an address.", code="no_pickup_address",
-            )
+        service = TwilioFlexService(message, phone)
+        service.create_customer()
+        service.validate()
 
         return attrs

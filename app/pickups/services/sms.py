@@ -1,6 +1,6 @@
-from datetime import datetime
+from django.utils.timezone import localtime
 
-from django.conf import settings
+from rest_framework import serializers
 
 from core.models import Phone
 from pickups.models import Delivery
@@ -9,37 +9,54 @@ from users.models import Client, Customer
 
 
 class TwilioFlexService:
-    def __init__(self, client: Client, message: str, contact: str, date_n_time: datetime) -> None:
+    def __init__(self, message: str, phone: str) -> None:
         self._message = message
-        self._contact = contact
-        self._date_n_time = date_n_time
-        self._client = client
-        self._delivery_service = DeliveryService(
-            client=client,
-            pickup_date=date_n_time.date(),
-            pickup_start=date_n_time.time(),
-            pickup_end=date_n_time.time(),
-        )
-
-    def get_status(self):
-        try:
-            # we can check only Phone table, because inside it
-            # we have a full list of valid client phones.
-            # if phone number doesn't exists inside Phone table -
-            # it means, that Client hasn't using our web application and
-            # admin should handle this case manually.
-            Phone.objects.get(number=self._contact)
-
-            return settings.SUCCESS
-
-        except Phone.DoesNotExist:
-            Customer.objects.get_or_create(
-                phone=self._contact, defaults={"kind": Customer.POSSIBLE,}
-            )
-
-            return settings.FAIL
+        self._phone = phone
 
     def create_delivery(self) -> Delivery:
-        delivery = self._delivery_service.create()
+        self.validate()
+
+        pickup_kwargs = self._pickup_kwargs
+        service = DeliveryService(client=self._client, **pickup_kwargs,)
+        delivery = service.create()
 
         return delivery
+
+    def create_customer(self) -> Customer:
+        self.validate()
+
+        customer, _ = Customer.objects.get_or_create(
+            phone=self._phone, defaults={"kind": Customer.POSSIBLE,}
+        )
+
+        return customer
+
+    def validate(self):
+        self._validate_phone()
+        self._validate_address()
+
+    @property
+    def _pickup_kwargs(self) -> dict:
+        now = localtime()
+        return {}
+
+    @property
+    def _client(self) -> Client:
+        phone = Phone.objects.get(number=self._phone)
+        return phone.client
+
+    def _validate_phone(self):
+        try:
+            Phone.objects.get(number=self._phone)
+        except Phone.DoesNotExist:
+            raise serializers.ValidationError(detail="Client not found.", code="client_not_found")
+
+    def _validate_address(self):
+        client = self._client
+
+        # if client doesn't have an address
+        # we can't handle pickup request
+        if not client.main_address:
+            raise serializers.ValidationError(
+                detail="Client doesn't have an address.", code="no_pickup_address",
+            )

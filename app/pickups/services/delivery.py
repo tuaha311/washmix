@@ -40,7 +40,7 @@ class DeliveryService:
         self._validate_common()
 
     @property
-    def business_days_left(self) -> int:
+    def _business_days_left(self) -> int:
         business_days_left = TOTAL_BUSINESS_DAYS - self._pickup_date.isoweekday()
 
         if business_days_left < 0:
@@ -55,7 +55,7 @@ class DeliveryService:
         3 business days.
         """
 
-        business_days_left = self.business_days_left
+        business_days_left = self._business_days_left
 
         if business_days_left >= settings.ORDER_PROCESSING_BUSINESS_DAYS:
             dropoff_date = self._pickup_date + settings.ORDER_PROCESSING_TIMEDELTA

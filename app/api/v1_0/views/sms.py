@@ -1,12 +1,9 @@
-from django.conf import settings
-from django.utils.timezone import localtime
-
 from rest_framework.generics import GenericAPIView
 from rest_framework.parsers import FormParser, JSONParser
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
+from rest_framework.status import HTTP_200_OK
 
 from api.v1_0.serializers.sms import TwilioFlexWebhookSerializer
 from pickups.services.sms import TwilioFlexService
@@ -26,24 +23,15 @@ class TwilioFlexWebhookView(GenericAPIView):
 
     def post(self, request: Request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data, context={"request": request})
-        serializer.is_valid(raise_exception=False)
+        serializer.is_valid(raise_exception=True)
 
-        client = self.request.user.client
         message = serializer.validated_data["message"]
-        contact = serializer.validated_data["contact"]
-        now = localtime()
+        phone = serializer.validated_data["phone"]
 
-        twilio_service = TwilioFlexService(client, message, contact, now)
-        service_status = twilio_service.get_status()
+        twilio_service = TwilioFlexService(message, phone)
 
-        status = HTTP_400_BAD_REQUEST
-        message = ""
+        delivery = twilio_service.create_delivery()
+        message = delivery.pretty_pickup_message
         body = {"message": message}
 
-        if service_status == settings.SUCCESS:
-            status = HTTP_200_OK
-            delivery = twilio_service.create_delivery()
-            message = delivery.pretty_pickup_message
-            body = {"message": message}
-
-        return Response(data=body, status=status)
+        return Response(data=body, status=HTTP_200_OK)
