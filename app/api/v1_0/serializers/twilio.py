@@ -1,9 +1,6 @@
-from django.conf import settings
-
 from rest_framework import serializers
 
 from pickups.services.twilio import TwilioFlexService
-from users.models import Client
 
 """
 Raw webhook data example:
@@ -191,6 +188,6 @@ class TwilioFlexWebhookSerializer(serializers.Serializer):
 
         service = TwilioFlexService(message, phone)
 
-        service.save_or_validate()
+        service.validate_or_save()
 
         return attrs

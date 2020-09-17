@@ -9,9 +9,6 @@ from locations.models import Address
 from pickups.models import Delivery
 from users.models import Client
 
-SUNDAY_ISO_WEEKDAY = 7
-TOTAL_BUSINESS_DAYS = 5
-
 
 class DeliveryService:
     def __init__(
@@ -51,7 +48,7 @@ class DeliveryService:
 
     @property
     def _business_days_left(self) -> int:
-        business_days_left = TOTAL_BUSINESS_DAYS - self._pickup_date.isoweekday()
+        business_days_left = settings.BUSINESS_DAYS - self._pickup_date.isoweekday()
 
         if business_days_left < 0:
             return 0
@@ -70,6 +67,7 @@ class DeliveryService:
         if business_days_left >= settings.ORDER_PROCESSING_BUSINESS_DAYS:
             dropoff_date = self._pickup_date + settings.ORDER_PROCESSING_TIMEDELTA
         else:
+            # TODO refactor
             dropoff_date = (
                 self._pickup_date
                 + settings.ORDER_PROCESSING_TIMEDELTA
@@ -96,8 +94,6 @@ class DeliveryService:
                 detail="Delivery can't handle passed date.", code="pickup_date_is_passed",
             )
 
-        # TODO we can't handle pickup date earlier than dropoff date
-
     def _validate_time(self):
         # we can't pickup earlier than we start working
         if self._pickup_start < settings.DELIVERY_START_WORKING:
@@ -116,7 +112,9 @@ class DeliveryService:
     def _validate_last_call(self):
         # we can't handle today pickup if it was made after last call
         now = localtime()
-        if now.date() == self._pickup_date and now.time() > settings.TODAY_DELIVERY_LAST_CALL_TIME:
+        today = now.date()
+
+        if today == self._pickup_date and now.time() > settings.TODAY_DELIVERY_CUT_OFF_TIME:
             raise serializers.ValidationError(
                 detail="Today last call time is passed - please, choose another day",
                 code="today_last_call_is_passed",
