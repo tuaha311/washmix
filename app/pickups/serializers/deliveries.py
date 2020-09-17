@@ -20,6 +20,7 @@ class DeliverySerializer(serializers.ModelSerializer):
         extra_kwargs = {
             "dropoff_start": {"required": False, "read_only": True},
             "dropoff_end": {"required": False, "read_only": True},
+            "address": {"allow_null": False},
         }
 
     def validate_address(self, value: Address):
@@ -29,11 +30,17 @@ class DeliverySerializer(serializers.ModelSerializer):
 
     def validate(self, attrs: dict):
         client = self.context["request"].user.client
+        pickup_date = attrs["pickup_date"]
+        pickup_start = attrs["pickup_start"]
+        pickup_end = attrs["pickup_end"]
+        address = attrs["address"]
+
         service = DeliveryService(
             client=client,
-            pickup_date=attrs["pickup_date"],
-            pickup_start=attrs["pickup_start"],
-            pickup_end=attrs["pickup_end"],
+            address=address,
+            pickup_date=pickup_date,
+            pickup_start=pickup_start,
+            pickup_end=pickup_end,
         )
 
         service.validate()

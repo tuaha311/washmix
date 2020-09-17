@@ -5,6 +5,7 @@ from django.utils.timezone import localtime
 
 from rest_framework import serializers
 
+from locations.models import Address
 from pickups.models import Delivery
 from users.models import Client
 
@@ -13,8 +14,16 @@ TOTAL_BUSINESS_DAYS = 5
 
 
 class DeliveryService:
-    def __init__(self, client: Client, pickup_date: date, pickup_start: time, pickup_end: time):
+    def __init__(
+        self,
+        client: Client,
+        address: Address,
+        pickup_date: date,
+        pickup_start: time,
+        pickup_end: time,
+    ):
         self._client = client
+        self._address = address
         self._pickup_date = pickup_date
         self._pickup_start = pickup_start
         self._pickup_end = pickup_end
@@ -25,6 +34,7 @@ class DeliveryService:
         dropoff_kwargs = self._dropoff_kwargs
         instance = Delivery.objects.create(
             client=self._client,
+            address=self._client.main_address,
             pickup_date=self._pickup_date,
             pickup_start=self._pickup_start,
             pickup_end=self._pickup_end,

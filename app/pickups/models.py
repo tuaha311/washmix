@@ -14,6 +14,7 @@ class Delivery(Common):
         related_name="delivery_list",
         on_delete=models.CASCADE,
     )
+    # can be null only after address removing
     address = models.ForeignKey(
         "locations.Address",
         verbose_name="address to pickup and dropoff",

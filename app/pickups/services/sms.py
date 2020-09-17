@@ -14,7 +14,7 @@ class TwilioFlexService:
         self._phone = phone
 
     def create_delivery(self) -> Delivery:
-        self.validate()
+        self._validate_address()
 
         pickup_kwargs = self._pickup_kwargs
         service = DeliveryService(client=self._client, **pickup_kwargs,)
@@ -22,17 +22,8 @@ class TwilioFlexService:
 
         return delivery
 
-    def create_customer(self) -> Customer:
-        self.validate()
-
-        customer, _ = Customer.objects.get_or_create(
-            phone=self._phone, defaults={"kind": Customer.POSSIBLE,}
-        )
-
-        return customer
-
     def validate(self):
-        self._validate_phone()
+        self._validate_or_save_phone()
         self._validate_address()
 
     @property
@@ -45,10 +36,12 @@ class TwilioFlexService:
         phone = Phone.objects.get(number=self._phone)
         return phone.client
 
-    def _validate_phone(self):
+    def _validate_or_save_phone(self):
         try:
             Phone.objects.get(number=self._phone)
         except Phone.DoesNotExist:
+            Customer.objects.get_or_create(phone=self._phone, defaults={"kind": Customer.POSSIBLE,})
+
             raise serializers.ValidationError(detail="Client not found.", code="client_not_found")
 
     def _validate_address(self):

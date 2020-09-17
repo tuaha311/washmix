@@ -190,7 +190,7 @@ class TwilioFlexWebhookSerializer(serializers.Serializer):
         phone = attrs["phone"]
 
         service = TwilioFlexService(message, phone)
-        service.create_customer()
-        service.validate()
+
+        service.save_or_validate()
 
         return attrs
