@@ -6,7 +6,7 @@ from rest_framework import serializers
 from core.models import Phone
 from pickups.models import Delivery
 from pickups.services.delivery import DeliveryService
-from pickups.utils import get_next_business_day
+from pickups.utils import get_pickup_day
 from users.models import Client, Customer
 
 
@@ -18,9 +18,9 @@ class TwilioFlexService:
     def create_delivery(self) -> Delivery:
         self._validate_address()
 
-        pickup_kwargs = self._pickup_kwargs
+        pickup_info = self._pickup_info
         service = DeliveryService(
-            client=self._client, address=self._client.main_address, **pickup_kwargs,
+            client=self._client, address=self._client.main_address, **pickup_info,
         )
         delivery = service.create()
 
@@ -31,15 +31,11 @@ class TwilioFlexService:
         self._validate_address()
 
     @property
-    def _pickup_kwargs(self) -> dict:
+    def _pickup_info(self) -> dict:
         now = localtime()
-        today = now.date()
         time = now.time()
 
-        pickup_date = today
-        if time > settings.TODAY_DELIVERY_CUT_OFF_TIME:
-            pickup_date = get_next_business_day(today)
-
+        pickup_date = get_pickup_day(now)
         pickup_start = time + settings.SAME_DAY_TIMEDELTA
         pickup_end = pickup_start + settings.END_TIMEDELTA
 
