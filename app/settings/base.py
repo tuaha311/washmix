@@ -168,19 +168,43 @@ PACKAGE_NAME_MAP = {
 }
 PACKAGE_NAME_CHOICES = list(PACKAGE_NAME_MAP.items())
 
+
+##########################
+# DELIVERY HANDLING INFO #
+##########################
+
 ORDER_PROCESSING_BUSINESS_DAYS = 3
 ORDER_PROCESSING_TIMEDELTA = timedelta(days=ORDER_PROCESSING_BUSINESS_DAYS)
 WEEKENDS_DURATION_DAYS = 2
 WEEKENDS_DURATION_TIMEDELTA = timedelta(days=WEEKENDS_DURATION_DAYS)
 NON_WORKING_ISO_WEEKENDS = [6, 7]
-TODAY_DELIVERY_LAST_CALL_TIME = time(hour=8)
+
+
+#################
+# WORKING HOURS #
+#################
+
+TODAY_DELIVERY_CUT_OFF_TIME = time(hour=9)
 DELIVERY_START_WORKING = time(hour=9)
 DELIVERY_END_WORKING = time(hour=18)
+
+
+################
+# PICKUPS INFO #
+################
+
+PICKUP_SAME_DAY_START_TIMEDELTA = timedelta(hours=4)
+PICKUP_SAME_DAY_END_TIMEDELTA = timedelta(hours=2)
 
 
 ################################
 # APPLICATION GLOBAL VARIABLES #
 ################################
+
+BUSINESS_DAYS = 5
+FULL_WEEK_LENGTH = 7
+NEXT_DAY = 1
+DAYS_IN_YEAR = 365
 
 TWITTER_URL = "https://twitter.com/mix_wash/"
 INSTAGRAM_URL = "https://www.instagram.com/washmix/"

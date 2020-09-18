@@ -3,7 +3,7 @@ from django.urls import include, path
 from rest_framework.routers import SimpleRouter
 from rest_framework_simplejwt.views import TokenRefreshSlidingView, TokenVerifyView
 
-from api.v1_0.views import auth, health, services, sms, trigger
+from api.v1_0.views import auth, health, services, trigger, twilio
 from billing.views import cards, checkout, choose, coupons, packages, payments
 from core import views as core_views
 from locations.views import addresses, locations, zip_codes
@@ -55,7 +55,10 @@ billing_urls = (
     "billing",
 )
 
-sms_urls = ([path("flex_webhook/", sms.FlexWebhookView.as_view(), name="flex-webhook"),], "sms")
+sms_urls = (
+    [path("twilio_webhook/", twilio.TwilioFlexWebhookView.as_view(), name="flex-webhook"),],
+    "sms",
+)
 
 router = SimpleRouter(trailing_slash=True)
 router.register("addresses", addresses.AddressViewSet, basename="addresses")
@@ -71,6 +74,7 @@ urlpatterns = [
     path("zip_codes/", zip_codes.ZipCodeListView.as_view(), name="zip-code-list"),
     path("billing/", include(billing_urls)),
     path("subscription/", include(subscription_urls)),
+    path("sms/", include(sms_urls)),
     path("trigger/", trigger.TriggerView.as_view(), name="trigger"),
     # open methods without authorization (landing page, authorization, health check)
     path("jwt/", include(token_urls)),

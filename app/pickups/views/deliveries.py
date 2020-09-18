@@ -17,10 +17,13 @@ class DeliveryViewSet(ModelViewSet):
         pickup_date = serializer.validated_data["pickup_date"]
         pickup_start = serializer.validated_data["pickup_start"]
         pickup_end = serializer.validated_data["pickup_end"]
+        address = serializer.validated_data["address"]
 
         service = DeliveryService(
-            pickup_date=pickup_date, pickup_start=pickup_start, pickup_end=pickup_end,
+            client=client,
+            address=address,
+            pickup_date=pickup_date,
+            pickup_start=pickup_start,
+            pickup_end=pickup_end,
         )
-        dropoff_kwargs = service.dropoff
-
-        return serializer.save(client=client, **dropoff_kwargs)
+        return service.create()
