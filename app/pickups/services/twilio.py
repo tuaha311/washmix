@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.utils.timezone import localtime
 
 from rest_framework import serializers
@@ -6,7 +5,7 @@ from rest_framework import serializers
 from core.models import Phone
 from pickups.models import Delivery
 from pickups.services.delivery import DeliveryService
-from pickups.utils import get_pickup_day
+from pickups.utils import get_pickup_day, get_pickup_start_end
 from users.models import Client, Customer
 
 
@@ -33,11 +32,9 @@ class TwilioFlexService:
     @property
     def _pickup_info(self) -> dict:
         now = localtime()
-        time = now.time()
 
         pickup_date = get_pickup_day(now)
-        pickup_start = time + settings.SAME_DAY_TIMEDELTA
-        pickup_end = pickup_start + settings.END_TIMEDELTA
+        pickup_start, pickup_end = get_pickup_start_end(now)
 
         return {
             "pickup_date": pickup_date,

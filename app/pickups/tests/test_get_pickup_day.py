@@ -4,15 +4,23 @@ from pickups.utils import get_pickup_day
 
 
 def test_same_day():
-    start_date = datetime(2020, 9, 14, 7, 30)
+    dates = [
+        [datetime(2020, 9, 14, 7, 30), date(2020, 9, 14)],
+        [datetime(2020, 9, 14, 4, 00), date(2020, 9, 14)],
+    ]
 
-    assert date(2020, 9, 14) == get_pickup_day(start_date)
+    for start, result in dates:
+        assert start, result == get_pickup_day(start)
 
 
 def test_next_day():
-    start_date = datetime(2020, 9, 14, 14, 30)
+    dates = [
+        [datetime(2020, 9, 14, 14, 30), date(2020, 9, 15)],
+        [datetime(2020, 9, 14, 23, 30), date(2020, 9, 15)],
+    ]
 
-    assert date(2020, 9, 15) == get_pickup_day(start_date)
+    for start, result in dates:
+        assert start, result == get_pickup_day(start)
 
 
 def test_friday_and_weekends():
