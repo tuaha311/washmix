@@ -38,18 +38,20 @@ class CreateIntentView(GenericAPIView):
 
 class StripeWebhookView(GenericAPIView):
     permission_classes = [AllowAny]
+    enable_ip_check = False
 
     def post(self, request: Request, *args, **kwargs):
-        ip_address = request.META["HTTP_X_REAL_IP"]
-
-        # don't allowing other IPs excluding Stripe's IPs
-        if ip_address not in settings.STRIPE_WEBHOOK_IP_WHITELIST:
-            return Response(status=403)
-
         # we will use Stripe SDK to check validity of event instead
         # of using serializer for this purpose
         raw_payload = request.data
         event = stripe.Event.construct_from(raw_payload, stripe.api_key)
+
+        if self.enable_ip_check:
+            ip_address = request.META["HTTP_X_REAL_IP"]
+
+            # don't allowing other IPs excluding Stripe's IPs
+            if ip_address not in settings.STRIPE_WEBHOOK_IP_WHITELIST:
+                return Response(status=403)
 
         if event.type in ["payment_intent.succeeded", "charge.succeeded"]:
             payment = event.data.object
