@@ -6,6 +6,7 @@ from django.utils.timezone import localtime
 from rest_framework import serializers
 
 from locations.models import Address
+from pickups.models import Delivery
 from pickups.utils import get_dropoff_day
 from users.models import Client
 
@@ -29,6 +30,27 @@ class DeliveryService:
             raise serializers.ValidationError(
                 detail="Pickup day can't be at weekends.", code="cant_pickup_at_weekends",
             )
+
+    def create(self) -> Delivery:
+        self.validate()
+
+        dropoff_info = self._dropoff_info
+        instance = Delivery.objects.create(
+            client=self._client,
+            address=self._client.main_address,
+            pickup_date=self._pickup_date,
+            pickup_start=self._pickup_start,
+            pickup_end=self._pickup_end,
+            **dropoff_info,
+        )
+
+        return instance
+
+    def validate(self):
+        self._validate_date()
+        self._validate_time()
+        self._validate_last_call()
+        self._validate_common()
 
     @property
     def _dropoff_info(self) -> dict:

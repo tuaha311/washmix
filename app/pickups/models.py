@@ -63,6 +63,6 @@ class Delivery(Common):
 
     @property
     def pretty_pickup_message(self) -> str:
-        pretty_date = self.pickup_date.strftime("%d")
+        pretty_date = self.pickup_date.strftime("%d %B")
 
         return pretty_date
