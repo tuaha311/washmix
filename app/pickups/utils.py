@@ -57,8 +57,8 @@ def get_pickup_start_end(start_datetime: datetime) -> Tuple[time, time]:
             year=start_datetime.year,
             month=start_datetime.month,
             day=start_datetime.day,
-            hour=settings.TODAY_DELIVERY_CUT_OFF_TIME.hour,
-            minute=settings.TODAY_DELIVERY_CUT_OFF_TIME.minute,
+            hour=settings.DELIVERY_START_WORKING.hour,
+            minute=settings.DELIVERY_START_WORKING.minute,
         )
         pickup_start_datetime = pickup_start_datetime + settings.PICKUP_SAME_DAY_START_TIMEDELTA
 
