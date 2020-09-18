@@ -25,9 +25,10 @@ class DeliveryService:
         self._pickup_start = pickup_start
         self._pickup_end = pickup_end
 
-        assert (
-            self._pickup_date.isoweekday() not in settings.NON_WORKING_ISO_WEEKENDS
-        ), "We doesn't working at weekends."
+        if self._pickup_date.isoweekday() in settings.NON_WORKING_ISO_WEEKENDS:
+            raise serializers.ValidationError(
+                detail="Pickup day can't be at weekends.", code="cant_pickup_at_weekends",
+            )
 
     @property
     def _dropoff_info(self) -> dict:

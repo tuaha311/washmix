@@ -9,15 +9,12 @@ def get_business_days_with_offset(start_date: date, offset: int) -> date:
     For example, you can use it for calculating next business day at end of week.
     """
 
-    start_date_weekday = start_date.isoweekday()
-    probable_day = start_date + timedelta(days=offset)
-    probable_weekday = probable_day.isoweekday()
+    days = [start_date + timedelta(days=index + 1) for index in range(settings.DAYS_IN_YEAR)]
+    business_only_days = [
+        item for item in days if item.isoweekday() not in settings.NON_WORKING_ISO_WEEKENDS
+    ]
 
-    if probable_weekday in settings.NON_WORKING_ISO_WEEKENDS:
-        delta_weekdays = settings.FULL_WEEK_LENGTH - start_date_weekday
-        probable_day = probable_day + timedelta(days=delta_weekdays)
-
-    return probable_day
+    return business_only_days[offset - 1]
 
 
 def get_pickup_day(start_datetime: datetime) -> date:

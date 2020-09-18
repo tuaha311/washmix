@@ -26,5 +26,4 @@ def test_next_week():
     ]
 
     for pickup_date, result in wed_and_rest_of_week:
-        dropoff = get_dropoff_day(pickup_date)
-        assert result == dropoff
+        assert result == get_dropoff_day(pickup_date)
