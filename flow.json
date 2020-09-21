@@ -1,0 +1,155 @@
+{
+  "description": "Proxy to Backend",
+  "states": [
+    {
+      "name": "Trigger",
+      "type": "trigger",
+      "transitions": [
+        {
+          "next": "Find-a-pickup-keyword",
+          "event": "incomingMessage"
+        },
+        {
+          "event": "incomingCall"
+        },
+        {
+          "event": "incomingRequest"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    {
+      "name": "Find-a-pickup-keyword",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "Send-fallback-text",
+          "event": "noMatch"
+        },
+        {
+          "next": "Proxy-request",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value matches_any_of pickup, pick",
+              "arguments": [
+                "{{trigger.message.Body}}"
+              ],
+              "type": "matches_any_of",
+              "value": "pickup, pick, request"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.message.Body}}",
+        "offset": {
+          "x": -10,
+          "y": 270
+        }
+      }
+    },
+    {
+      "name": "Send-fallback-text",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -460,
+          "y": 270
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "to": "{{contact.channel.address}}",
+        "body": "Thank you for message. Unfortunately, we can't handle you request. Please, try again."
+      }
+    },
+    {
+      "name": "Proxy-request",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "Send-checkout-text",
+          "event": "success"
+        },
+        {
+          "next": "Send-no-match-found",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 60,
+          "y": 670
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "body": "{\"message\": \"{{trigger.message.Body}}\", \"phone\": \"{{trigger.message.From}}\"}",
+        "url": "https://ed403909e0b9.ngrok.io/api/v1.0/sms/twilio_webhook/"
+      }
+    },
+    {
+      "name": "Send-checkout-text",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -310,
+          "y": 1060
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "to": "{{contact.channel.address}}",
+        "body": "Thank you for requesting a pickup. You’re scheduled for {{widgets.Proxy-request.parsed.message}} . Please have your bag out. If any questions call\nus back"
+      }
+    },
+    {
+      "name": "Send-no-match-found",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 153,
+          "y": 1046
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "to": "{{contact.channel.address}}",
+        "body": "Thank you for your pickup request. Unfortunately, we can’t locate\nyou in our database. But not to worry, we will be in touch soon"
+      }
+    }
+  ],
+  "initial_state": "Trigger",
+  "flags": {
+    "allow_concurrent_calls": true
+  }
+}
