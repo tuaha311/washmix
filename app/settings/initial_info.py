@@ -85,7 +85,8 @@ ADMINS = [
         # card № 4000 0025 0000 3155
         "email": "api@evrone.com",
         "password": "helloevrone",
-        "number": "+12001230210",
+        # real
+        "number": "+79261213702",
         "is_superuser": True,
         "is_staff": True,
         "stripe_id": "cus_HsLFiIYxwKsoOC",
@@ -95,7 +96,8 @@ ADMINS = [
         # card № 4242 4242 4242 4242
         "email": "ds.ionin@evrone.com",
         "password": "helloevrone",
-        "number": "+12001230211",
+        # real
+        "number": "+79150321367",
         "is_superuser": True,
         "is_staff": True,
         "stripe_id": "cus_HxSYa6ACuzQdtS",
@@ -114,10 +116,22 @@ ADMINS = [
         # have no any payment methods - fail
         "email": "og@evrone.com",
         "password": "helloevrone",
-        "number": "+12001230213",
+        # real
+        "number": "+14152994883",
         "is_superuser": True,
         "is_staff": True,
         "stripe_id": "cus_HxSY7DuMrXnEc1",
+    },
+    {
+        # have no any payment methods - fail
+        "email": "michaelbehestaein@evrone.com",
+        "password": "helloevrone",
+        # real
+        "number": "+14086660079‬",
+        "is_superuser": True,
+        "is_staff": True,
+        # invalid stripe_id
+        "stripe_id": "cus_HxSY7DuMrXnEc0",
     },
 ]
 

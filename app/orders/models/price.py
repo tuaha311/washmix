@@ -6,8 +6,10 @@ from core.common_models import Common
 
 class Price(Valuable, Common):
     """
-    Intermediate model that holds a logic of pricing
+    **Intermediate** model that holds a logic of pricing
     between item and service.
+
+    Reference - https://docs.djangoproject.com/en/2.2/ref/models/fields/#django.db.models.ManyToManyField.through
 
     For example:
     - Dry clean on Pants price is 10$
@@ -41,6 +43,12 @@ class Price(Valuable, Common):
         on_delete=models.CASCADE,
     )
 
+    # it usually mean a `pack`, `kit` or `set` of some
+    # items that handles only in group.
+    # for example:
+    # - Suits [2 Pcs]
+    # - Tuxedo [3 Pcs]
+    # - Bed Sheet [Set] [4 PCs]
     count = models.PositiveSmallIntegerField(
         verbose_name="count of items",
         default=1,
