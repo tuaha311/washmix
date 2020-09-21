@@ -1,6 +1,4 @@
-from django.conf import settings
 from django.db import models
-from django.utils import timezone
 
 from core.common_models import Common
 
@@ -17,50 +15,38 @@ class Order(Common):
         related_name="order",
         on_delete=models.CASCADE,
     )
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+    basket = models.OneToOneField(
+        "orders.Basket",
+        verbose_name="basket",
+        related_name="order",
+        on_delete=models.CASCADE,
+        null=True,
+    )
+    client = models.ForeignKey(
+        "users.Client",
+        verbose_name="client",
         on_delete=models.CASCADE,
         related_name="order_list",
     )
     employee = models.ForeignKey(
         "users.Employee",
+        verbose_name="employee that handles this order",
         on_delete=models.SET_NULL,
         related_name="order_list",
         null=True,
         blank=True,
     )
-
-    pickup_address = models.ForeignKey(
-        "locations.Address", on_delete=models.CASCADE, related_name="pickup_address_list",
+    # can be null only after delivery removing
+    delivery = models.ForeignKey(
+        "pickups.Delivery",
+        verbose_name="delivery",
+        on_delete=models.SET_NULL,
+        null=True,
     )
-    dropoff_address = models.ForeignKey(
-        "locations.Address", on_delete=models.CASCADE, related_name="dropoff_address_list",
-    )
 
-    # TODO rename to delivery_day
-    next_day_delivery = models.BooleanField(default=False)
-    same_day_delivery = models.BooleanField(default=False)
+    # TODO добавить поле total
+    # TODO добавить ценовой лог
 
-    # TODO переместить в отдельную модель
-    # TODO возможно, стоит добавить флаги ежедневной доставки
-    pick_up_from_datetime = models.DateTimeField(default=timezone.now)
-    pick_up_to_datetime = models.DateTimeField(default=timezone.now)
-
-    # TODO переместить в отдельную модель
-    # TODO возможно, стоит добавить флаги ежедневной доставки
-    drop_off_from_datetime = models.DateTimeField(default=timezone.now)
-    drop_off_to_datetime = models.DateTimeField(default=timezone.now)
-
-    # TODO what a diff
-    instructions = models.TextField(blank=True)
-    additional_notes = models.TextField(blank=True)
-
-    # TODO move logic to products
-    total_cost = models.FloatField(default=0.0)
-
-    # TODO move logic to coupons
-    discount_description = models.TextField(blank=True)
-    discount_amount = models.FloatField(default=0)
-
-    count = models.IntegerField(default=0)
-    is_paid = models.BooleanField(default=False)
+    class Meta:
+        verbose_name = "order"
+        verbose_name_plural = "orders"
