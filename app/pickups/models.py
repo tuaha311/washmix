@@ -14,6 +14,13 @@ class Delivery(Common):
         related_name="delivery_list",
         on_delete=models.CASCADE,
     )
+    employee = models.ForeignKey(
+        "users.Employee",
+        on_delete=models.SET_NULL,
+        related_name="delivery_list",
+        null=True,
+        blank=True,
+    )
     # can be null only after address removing
     address = models.ForeignKey(
         "locations.Address",
@@ -21,13 +28,6 @@ class Delivery(Common):
         related_name="delivery_list",
         on_delete=models.SET_NULL,
         null=True,
-    )
-    employee = models.ForeignKey(
-        "users.Employee",
-        on_delete=models.SET_NULL,
-        related_name="delivery_list",
-        null=True,
-        blank=True,
     )
 
     comment = models.TextField(

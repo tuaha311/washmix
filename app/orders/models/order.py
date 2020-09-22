@@ -9,19 +9,6 @@ class Order(Common):
     related to the order.
     """
 
-    invoice = models.OneToOneField(
-        "billing.Invoice",
-        verbose_name="invoice",
-        related_name="order",
-        on_delete=models.CASCADE,
-    )
-    basket = models.OneToOneField(
-        "orders.Basket",
-        verbose_name="basket",
-        related_name="order",
-        on_delete=models.CASCADE,
-        null=True,
-    )
     client = models.ForeignKey(
         "users.Client",
         verbose_name="client",
@@ -35,6 +22,19 @@ class Order(Common):
         related_name="order_list",
         null=True,
         blank=True,
+    )
+    invoice = models.OneToOneField(
+        "billing.Invoice",
+        verbose_name="invoice",
+        related_name="order",
+        on_delete=models.CASCADE,
+    )
+    basket = models.OneToOneField(
+        "orders.Basket",
+        verbose_name="basket",
+        related_name="order",
+        on_delete=models.CASCADE,
+        null=True,
     )
     # can be null only after delivery removing
     delivery = models.ForeignKey(
