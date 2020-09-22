@@ -7,7 +7,7 @@ from api.v1_0.views import auth, health, services, trigger, twilio
 from billing.views import cards, checkout, choose, coupons, packages, payments
 from core import views as core_views
 from locations.views import addresses, locations, zip_codes
-from orders import views as order_views
+from orders.views import basket, orders
 from pickups.views import deliveries
 from users.views import customers, profile
 
@@ -60,10 +60,20 @@ sms_urls = (
     "sms",
 )
 
+
+basket_urls = (
+    [
+        path("change_item/", basket.ChangeView.as_view(), name="change-item"),
+        path("clear/", basket.ClearView.as_view(), name="clear"),
+        path("checkout/", basket.CheckoutView.as_view(), name="checkout"),
+    ],
+    "basket",
+)
+
 router = SimpleRouter(trailing_slash=True)
 router.register("addresses", addresses.AddressViewSet, basename="addresses")
 router.register("phones", core_views.PhoneViewSet, basename="phones")
-router.register("orders", order_views.OrderViewSet, basename="orders")
+router.register("orders", orders.OrderViewSet, basename="orders")
 router.register("cards", cards.CardViewSet, basename="cards")
 router.register("deliveries", deliveries.DeliveryViewSet, basename="deliveries")
 
@@ -74,6 +84,7 @@ urlpatterns = [
     path("zip_codes/", zip_codes.ZipCodeListView.as_view(), name="zip-code-list"),
     path("billing/", include(billing_urls)),
     path("subscription/", include(subscription_urls)),
+    path("basket/", include(basket_urls)),
     path("sms/", include(sms_urls)),
     path("trigger/", trigger.TriggerView.as_view(), name="trigger"),
     # open methods without authorization (landing page, authorization, health check)
