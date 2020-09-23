@@ -1,6 +1,7 @@
 from django.db import models
 
 from core.common_models import Common
+from core.utils import get_dollars
 
 
 class Quantity(Common):
@@ -35,6 +36,15 @@ class Quantity(Common):
     class Meta:
         verbose_name = "quantity"
         verbose_name_plural = "quantity"
+
+    @property
+    def amount(self):
+        return self.price.value * self.count
+
+    @property
+    def dollar_amount(self):
+        return get_dollars(self, "amount")
+
 
 
 

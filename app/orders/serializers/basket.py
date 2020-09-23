@@ -24,6 +24,16 @@ class ChangeItemSerializer(serializers.Serializer):
 
 
 class ChangeItemResponseSerializer(serializers.ModelSerializer):
+    service = serializers.CharField(source="price.service.title")
+    item = serializers.CharField(source="price.item.title")
+
     class Meta:
         model = Quantity
-        fields = "__all__"
+        fields = [
+            "id",
+            "count",
+            "service",
+            "item",
+            "amount",
+            "dollar_amount",
+        ]

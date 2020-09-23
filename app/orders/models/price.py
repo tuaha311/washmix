@@ -4,6 +4,7 @@ from core.behaviors import Valuable
 from core.common_models import Common
 
 
+# TODO переименовать value -> amount
 class Price(Valuable, Common):
     """
     **Intermediate** model that holds a logic of pricing

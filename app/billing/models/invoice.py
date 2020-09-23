@@ -3,8 +3,9 @@ from functools import partial
 from django.db import models
 from django.db.models import ObjectDoesNotExist
 
-from core.behaviors import Amountable, Discountable, get_dollars
+from core.behaviors import Amountable, Discountable
 from core.common_models import Common
+from core.utils import get_dollars
 
 
 class Invoice(Amountable, Discountable, Common):
