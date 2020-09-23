@@ -63,7 +63,8 @@ sms_urls = (
 
 basket_urls = (
     [
-        path("change_item/", basket.ChangeView.as_view(), name="change-item"),
+        path("", basket.BasketView.as_view(), name="basket"),
+        path("change_item/", basket.ChangeItemView.as_view(), name="change-item"),
         path("clear/", basket.ClearView.as_view(), name="clear"),
         path("checkout/", basket.CheckoutView.as_view(), name="checkout"),
     ],

@@ -16,12 +16,14 @@ class Quantity(Common):
 
     basket = models.ForeignKey(
         "orders.Basket",
+        related_name="quantity_list",
         verbose_name="basket",
         on_delete=models.CASCADE,
     )
     # can be null only after price removing
     price = models.ForeignKey(
         "orders.Price",
+        related_name="quantity_list",
         verbose_name="price",
         on_delete=models.SET_NULL,
         null=True,

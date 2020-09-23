@@ -2,12 +2,13 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from orders.serializers.basket import ChangeSerializer
+from orders.serializers.basket import ChangeItemResponseSerializer, ChangeItemSerializer
 from orders.services.basket import BasketService
 
 
-class ChangeView(GenericAPIView):
-    serializer_class = ChangeSerializer
+class ChangeItemView(GenericAPIView):
+    serializer_class = ChangeItemSerializer
+    response_serializer_class = ChangeItemResponseSerializer
 
     def post(self, request: Request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data, context={"request": request})
@@ -20,20 +21,16 @@ class ChangeView(GenericAPIView):
 
         service = BasketService(client)
         method = getattr(service, f"{action}_item")
-        method(price, count)
+        basket = method(price, count)
 
-        return Response()
+        response = self.response_serializer_class(basket.quantity_list.all(), many=True).data
+
+        return Response(response)
 
 
 class ClearView(GenericAPIView):
-    serializer_class = ChangeSerializer
-
     def post(self, request: Request, *args, **kwargs):
-        package_serializer = self.serializer_class(data=request.data, context={"request": request})
-        package_serializer.is_valid(raise_exception=True)
-
         client = request.user.client
-        price = package_serializer.validated_data["price"]
 
         service = BasketService(client)
         service.clear_all()
@@ -41,8 +38,22 @@ class ClearView(GenericAPIView):
         return Response()
 
 
+class BasketView(GenericAPIView):
+    response_serializer_class = ChangeItemResponseSerializer
+
+    def get(self, request: Request, *args, **kwargs):
+        client = request.user.client
+
+        service = BasketService(client)
+        basket = service.basket
+
+        response = self.response_serializer_class(basket.quantity_list.all(), many=True).data
+
+        return Response(response)
+
+
 class CheckoutView(GenericAPIView):
-    serializer_class = ChangeSerializer
+    serializer_class = ChangeItemSerializer
 
     def post(self, request: Request, *args, **kwargs):
         package_serializer = self.serializer_class(data=request.data, context={"request": request})
