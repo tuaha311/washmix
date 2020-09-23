@@ -2,13 +2,13 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from orders.serializers.basket import ChangeItemResponseSerializer, ChangeItemSerializer
+from orders.serializers.basket import BasketSerializer, ChangeItemSerializer
 from orders.services.basket import BasketService
 
 
 class ChangeItemView(GenericAPIView):
     serializer_class = ChangeItemSerializer
-    response_serializer_class = ChangeItemResponseSerializer
+    response_serializer_class = BasketSerializer
 
     def post(self, request: Request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data, context={"request": request})
@@ -23,7 +23,7 @@ class ChangeItemView(GenericAPIView):
         method = getattr(service, f"{action}_item")
         basket = method(price, count)
 
-        response = self.response_serializer_class(basket.quantity_list.all(), many=True).data
+        response = self.response_serializer_class(basket).data
 
         return Response(response)
 
@@ -39,7 +39,7 @@ class ClearView(GenericAPIView):
 
 
 class BasketView(GenericAPIView):
-    response_serializer_class = ChangeItemResponseSerializer
+    response_serializer_class = BasketSerializer
 
     def get(self, request: Request, *args, **kwargs):
         client = request.user.client
@@ -47,7 +47,7 @@ class BasketView(GenericAPIView):
         service = BasketService(client)
         basket = service.basket
 
-        response = self.response_serializer_class(basket.quantity_list.all(), many=True).data
+        response = self.response_serializer_class(basket).data
 
         return Response(response)
 
