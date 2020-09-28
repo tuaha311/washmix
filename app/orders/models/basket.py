@@ -1,6 +1,7 @@
 from django.db import models
 
 from core.common_models import Common
+from core.utils import get_dollars
 
 
 class Basket(Common):
@@ -30,6 +31,15 @@ class Basket(Common):
         verbose_name = "basket"
         verbose_name_plural = "baskets"
 
+    @property
+    def amount(self):
+        quantity_list = self.quantity_list.all()
+        quantity_amount = [item.amount for item in quantity_list]
 
+        return sum(quantity_amount)
+
+    @property
+    def dollar_amount(self):
+        return get_dollars(self, "amount")
 
 

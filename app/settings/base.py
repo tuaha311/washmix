@@ -168,6 +168,14 @@ PACKAGE_NAME_MAP = {
 }
 PACKAGE_NAME_CHOICES = list(PACKAGE_NAME_MAP.items())
 
+BASKET_ADD = "add"
+BASKET_REMOVE = "remove"
+BASKET_ACTION_MAP = {
+    BASKET_ADD: "Add item",
+    BASKET_REMOVE: "Remove",
+}
+BASKET_ACTION_CHOICES = list(BASKET_ACTION_MAP.items())
+
 
 ##########################
 # DELIVERY HANDLING INFO #

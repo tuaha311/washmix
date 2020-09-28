@@ -7,7 +7,7 @@ from api.v1_0.views import auth, health, services, trigger, twilio
 from billing.views import cards, checkout, choose, coupons, packages, payments
 from core import views as core_views
 from locations.views import addresses, locations, zip_codes
-from orders import views as order_views
+from orders.views import basket, orders
 from pickups.views import deliveries
 from users.views import customers, profile
 
@@ -37,11 +37,35 @@ subscription_urls = (
         # also, we store this data between screens.
         path("choose/", choose.ChooseView.as_view(), name="choose"),
         # 2. please, if you have a coupon - apply it to the Invoice.id
+        # TODO удалить и оставить только в invoices
         path("apply_coupon/", coupons.ApplyCouponView.as_view(), name="apply-coupon"),
         # 3. submit all your personal and address data
         path("checkout/", checkout.CheckoutView.as_view(), name="checkout"),
     ],
     "subscription",
+)
+
+basket_urls = (
+    [
+        # 1. you can view items in basket
+        path("", basket.BasketView.as_view(), name="basket"),
+        # 2. add or remove items from basket
+        path("change_item/", basket.ChangeItemView.as_view(), name="change-item"),
+        # 3. you can clear whole basket
+        path("clear/", basket.ClearView.as_view(), name="clear"),
+        # 4. checkout
+        path("checkout/", basket.CheckoutView.as_view(), name="checkout"),
+    ],
+    "basket",
+)
+
+invoices_urls = (
+    [
+        # common operation - you can apply coupons at subscription buy scenario
+        # or order payment scenario
+        path("apply_coupon/", coupons.ApplyCouponView.as_view(), name="apply-coupon"),
+    ],
+    "invoices",
 )
 
 billing_urls = (
@@ -60,10 +84,11 @@ sms_urls = (
     "sms",
 )
 
+
 router = SimpleRouter(trailing_slash=True)
 router.register("addresses", addresses.AddressViewSet, basename="addresses")
 router.register("phones", core_views.PhoneViewSet, basename="phones")
-router.register("orders", order_views.OrderViewSet, basename="orders")
+router.register("orders", orders.OrderViewSet, basename="orders")
 router.register("cards", cards.CardViewSet, basename="cards")
 router.register("deliveries", deliveries.DeliveryViewSet, basename="deliveries")
 
@@ -74,6 +99,7 @@ urlpatterns = [
     path("zip_codes/", zip_codes.ZipCodeListView.as_view(), name="zip-code-list"),
     path("billing/", include(billing_urls)),
     path("subscription/", include(subscription_urls)),
+    path("basket/", include(basket_urls)),
     path("sms/", include(sms_urls)),
     path("trigger/", trigger.TriggerView.as_view(), name="trigger"),
     # open methods without authorization (landing page, authorization, health check)

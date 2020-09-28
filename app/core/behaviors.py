@@ -1,7 +1,8 @@
 from functools import partial
 
-from django.conf import settings
 from django.db import models
+
+from core.utils import get_dollars
 
 
 class Stripeable(models.Model):
@@ -16,11 +17,6 @@ class Stripeable(models.Model):
 
     class Meta:
         abstract = True
-
-
-def get_dollars(self, attribute_name):
-    amount_value = getattr(self, attribute_name)
-    return amount_value / settings.CENTS_IN_DOLLAR
 
 
 def create_price_class(class_name, attribute_name):
