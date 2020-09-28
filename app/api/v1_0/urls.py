@@ -37,11 +37,35 @@ subscription_urls = (
         # also, we store this data between screens.
         path("choose/", choose.ChooseView.as_view(), name="choose"),
         # 2. please, if you have a coupon - apply it to the Invoice.id
+        # TODO удалить и оставить только в invoices
         path("apply_coupon/", coupons.ApplyCouponView.as_view(), name="apply-coupon"),
         # 3. submit all your personal and address data
         path("checkout/", checkout.CheckoutView.as_view(), name="checkout"),
     ],
     "subscription",
+)
+
+basket_urls = (
+    [
+        # 1. you can view items in basket
+        path("", basket.BasketView.as_view(), name="basket"),
+        # 2. add or remove items from basket
+        path("change_item/", basket.ChangeItemView.as_view(), name="change-item"),
+        # 3. you can clear whole basket
+        path("clear/", basket.ClearView.as_view(), name="clear"),
+        # 4. checkout
+        path("checkout/", basket.CheckoutView.as_view(), name="checkout"),
+    ],
+    "basket",
+)
+
+invoices_urls = (
+    [
+        # common operation - you can apply coupons at subscription buy scenario
+        # or order payment scenario
+        path("apply_coupon/", coupons.ApplyCouponView.as_view(), name="apply-coupon"),
+    ],
+    "invoices",
 )
 
 billing_urls = (
@@ -60,16 +84,6 @@ sms_urls = (
     "sms",
 )
 
-
-basket_urls = (
-    [
-        path("", basket.BasketView.as_view(), name="basket"),
-        path("change_item/", basket.ChangeItemView.as_view(), name="change-item"),
-        path("clear/", basket.ClearView.as_view(), name="clear"),
-        path("checkout/", basket.CheckoutView.as_view(), name="checkout"),
-    ],
-    "basket",
-)
 
 router = SimpleRouter(trailing_slash=True)
 router.register("addresses", addresses.AddressViewSet, basename="addresses")
