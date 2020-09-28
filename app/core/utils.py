@@ -23,6 +23,7 @@ def get_clean_number(raw_number: str):
     '+14086660079 ' -> '+14086660079‬‬'
     """
 
+    # provide phone in international format - should start with `+` sign
     if not raw_number.startswith("+"):
         raise serializers.ValidationError(
             detail="Provide number in international format.", code="provide_international_format",
@@ -35,7 +36,15 @@ def get_clean_number(raw_number: str):
             detail="Invalid phone format.", code="invalid_phone_format",
         )
 
+    # library check for phone validity in region
     if not phonenumbers.is_possible_number(parsed) or not phonenumbers.is_valid_number(parsed):
+        raise serializers.ValidationError(
+            detail="Invalid phone region.", code="invalid_phone_region",
+        )
+
+    # extra check for matching country code
+    phone_region = phonenumbers.region_code_for_number(parsed)
+    if phone_region != settings.DEFAULT_PHONE_REGION:
         raise serializers.ValidationError(
             detail="Invalid phone region.", code="invalid_phone_region",
         )
