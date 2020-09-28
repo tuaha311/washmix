@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.db import IntegrityError, models, transaction
 
 from core.models import Phone
+from core.utils import get_clean_number
 
 User = get_user_model()
 
@@ -10,6 +11,8 @@ class ClientManager(models.Manager):
     def create_client(
         self, email: str, password: str, number: str, stripe_id: str = "", **extra_kwargs
     ):
+        clean_number = get_clean_number(number)
+
         # when we have multiple workers, we can face with
         # situation when 2 simultaneous requests came to 2 different
         # gunicorn workers and pass validation checks and trying to
@@ -19,7 +22,7 @@ class ClientManager(models.Manager):
                 user = User.objects.create_user(email, password, is_active=True, **extra_kwargs)
 
                 client = self.create(user=user, stripe_id=stripe_id)
-                phone = Phone.objects.create(client=client, number=number,)
+                phone = Phone.objects.create(client=client, number=clean_number,)
 
                 client.main_phone = phone
                 client.save()

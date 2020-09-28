@@ -3,6 +3,7 @@ from django.utils.timezone import localtime
 from rest_framework import serializers
 
 from core.models import Phone
+from core.utils import get_clean_number
 from pickups.models import Delivery
 from pickups.services.delivery import DeliveryService
 from pickups.utils import get_pickup_day, get_pickup_start_end
@@ -12,7 +13,7 @@ from users.models import Client, Customer
 class TwilioFlexService:
     def __init__(self, message: str, phone: str) -> None:
         self._message = message
-        self._phone = phone
+        self._phone = get_clean_number(phone)
 
     def create_delivery(self) -> Delivery:
         self._validate_address()

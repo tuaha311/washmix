@@ -30,8 +30,3 @@ class Phone(Common):
     class Meta:
         verbose_name = "phone"
         verbose_name_plural = "phones"
-
-    @classmethod
-    def format_number(cls, value):
-        phone = phonenumbers.parse(value, settings.DEFAULT_PHONE_REGION)
-        return phonenumbers.format_number(phone, settings.DEFAULT_PHONE_FORMAT)

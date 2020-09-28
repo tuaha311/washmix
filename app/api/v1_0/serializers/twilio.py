@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from core.utils import get_clean_number
 from pickups.services.twilio import TwilioFlexService
 
 """
@@ -184,7 +185,8 @@ class TwilioFlexWebhookSerializer(serializers.Serializer):
 
     def validate(self, attrs):
         message = attrs["message"]
-        phone = attrs["phone"]
+        raw_phone = attrs["phone"]
+        phone = get_clean_number(raw_phone)
 
         service = TwilioFlexService(message, phone)
 
