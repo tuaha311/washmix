@@ -10,5 +10,5 @@ def validate_phone(value: str):
         get_clean_number(value)
     except rest_exceptions.ValidationError:
         raise db_exceptions.ValidationError(
-            "You have provided invalid region for phone", code="invalid_region"
+            message="You have provided invalid region for phone", code="invalid_region"
         )
