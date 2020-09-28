@@ -1,5 +1,27 @@
 # Release Notes
 
+## v1.4 (25.09.2020)
+* Added Twilio integration
+* Added Twilio webhooks
+* Added docs folder with following content:
+  - Model architecture diagram (models_architecture.drawio)
+  - Twilio flow for importing in JSON format (twilio_import_flow.json)
+  - Twilio scenario flowcart (twilio_scenario_flowchart.drawio)
+* Added business days calculation
+* Added test cases for calculation functions and all related stuff
+* Added some methods on DeliveryService
+* Added models:
+  - `Basket` for storing quantity of items in shopping basket
+  - `Quantity` intermediate model that shows how many items in shopping basket
+* Re-implemented `Order` model
+* Added BasketService
+* Added basic basket operations:
+  - `/api/v1.0/basket/`
+  - `/api/v1.0/basket/change_item/`
+  - `/api/v1.0/basket/clear/`
+  - `/api/v1.0/checkout/`
+  
+
 ## v1.3 (11.09.2020)
 * Added Coupon, Delivery models
 * Finished Invoice, Transaction logic
