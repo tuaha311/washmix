@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK
 
 from api.v1_0.serializers.twilio import TwilioFlexWebhookSerializer
+from core.utils import get_clean_number
 from pickups.services.twilio import TwilioFlexService
 
 
@@ -26,7 +27,8 @@ class TwilioFlexWebhookView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
 
         message = serializer.validated_data["message"]
-        phone = serializer.validated_data["phone"]
+        raw_phone = serializer.validated_data["phone"]
+        phone = get_clean_number(raw_phone)
 
         twilio_service = TwilioFlexService(message, phone)
 

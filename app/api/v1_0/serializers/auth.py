@@ -4,6 +4,7 @@ import phonenumbers
 from rest_framework import serializers
 
 from core.models import Phone
+from core.utils import get_clean_number
 
 User = get_user_model()
 
@@ -24,23 +25,11 @@ class SignupSerializer(serializers.Serializer):
         return value
 
     def validate_phone(self, value):
-        number = value.strip()
-
-        if not number.startswith("+"):
-            raise serializers.ValidationError(
-                detail="Invalid phone format.", code="provide_plus",
-            )
+        number = get_clean_number(value)
 
         if Phone.objects.filter(number=number).exists():
             raise serializers.ValidationError(
                 detail="Invalid credentials.", code="invalid_auth_credentials",
-            )
-
-        try:
-            Phone.format_number(value)
-        except phonenumbers.NumberParseException:
-            raise serializers.ValidationError(
-                detail="Invalid phone format.", code="invalid_phone",
             )
 
         return value

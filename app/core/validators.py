@@ -1,14 +1,14 @@
-from django.conf import settings
-from django.core.exceptions import ValidationError
+from django.core import exceptions as db_exceptions
 
-import phonenumbers
+from rest_framework import serializers as rest_exceptions
+
+from core.utils import get_clean_number
 
 
-def validate_phone(value):
-    if value.startswith("+"):
-        raise ValidationError("Provide phone number without + sign", code="dont_provide_plus")
-
+def validate_phone(value: str):
     try:
-        phonenumbers.parse(value, region=settings.DEFAULT_PHONE_REGION)
-    except phonenumbers.NumberParseException:
-        raise ValidationError("You have provided invalid region for phone", code="invalid_region")
+        get_clean_number(value)
+    except rest_exceptions.ValidationError:
+        raise db_exceptions.ValidationError(
+            message="You have provided invalid region for phone", code="invalid_region"
+        )

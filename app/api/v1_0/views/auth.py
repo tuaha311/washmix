@@ -10,6 +10,7 @@ from rest_framework_simplejwt.views import TokenObtainSlidingView
 from api.v1_0.serializers import auth
 from core.models import Phone
 from core.services.signup import SignupService
+from core.utils import get_clean_number
 
 User = get_user_model()
 
@@ -24,7 +25,8 @@ class SignupView(GenericAPIView):
 
         email = serializer.validated_data["email"]
         password = serializer.validated_data["password"]
-        phone = Phone.format_number(serializer.validated_data["phone"])
+        raw_phone = serializer.validated_data["phone"]
+        phone = get_clean_number(raw_phone)
 
         service = SignupService()
         client = service.signup(email, password, phone)

@@ -127,7 +127,7 @@ ADMINS = [
         "email": "michaelbehestaein@evrone.com",
         "password": "helloevrone",
         # real
-        "number": "+14086660079‬",
+        "number": "+14086660079",
         "is_superuser": True,
         "is_staff": True,
         # invalid stripe_id
