@@ -1,9 +1,12 @@
+from django.test import override_settings
+
 import pytest
 from rest_framework.serializers import ValidationError
 
 from core.utils import get_clean_number
 
 
+@override_settings(ALLOWED_COUNTRY_CODES=["US"])
 def test_invalid_phone_numbers():
     phones = [
         # 1 (USA, Canada)
@@ -45,6 +48,7 @@ def test_invalid_phone_numbers():
             get_clean_number(item)
 
 
+@override_settings(ALLOWED_COUNTRY_CODES=["US"])
 def test_valid_phone_numbers():
     phones = [
         "+14132994663",

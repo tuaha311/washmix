@@ -10,7 +10,7 @@ class Command(BaseCommand):
         with transaction.atomic():
             for item in ADMINS:
                 try:
-                    client = Client.objects.create_client(**item, skip_phone_check=True)
+                    client = Client.objects.create_client(**item)
                     print(f"{client} added")
                 except IntegrityError:
                     email = item["email"]

@@ -155,6 +155,7 @@ AUTH_USER_MODEL = "swap_user_named_email.NamedEmailUser"
 
 DEFAULT_PHONE_REGION = "US"
 DEFAULT_PHONE_FORMAT = PhoneNumberFormat.E164
+ALLOWED_COUNTRY_CODES = ["RU", "US"]
 
 CENTS_IN_DOLLAR = 100
 

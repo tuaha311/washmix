@@ -44,7 +44,7 @@ def get_clean_number(raw_number: str):
 
     # extra check for matching country code
     phone_region = phonenumbers.region_code_for_number(parsed)
-    if phone_region != settings.DEFAULT_PHONE_REGION:
+    if phone_region not in settings.ALLOWED_COUNTRY_CODES:
         raise serializers.ValidationError(
             detail="Invalid phone region.", code="invalid_phone_region",
         )

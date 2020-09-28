@@ -7,6 +7,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = [DOMAIN]
 
+ALLOWED_COUNTRY_CODES = ["RU", "US"]
+
 
 SENTRY_DSN = env.str("SENTRY_DSN")
 

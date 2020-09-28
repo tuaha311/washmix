@@ -9,17 +9,9 @@ User = get_user_model()
 
 class ClientManager(models.Manager):
     def create_client(
-        self,
-        email: str,
-        password: str,
-        number: str,
-        stripe_id: str = "",
-        skip_phone_check=False,
-        **extra_kwargs
+        self, email: str, password: str, number: str, stripe_id: str = "", **extra_kwargs
     ):
-        clean_number = number
-        if not skip_phone_check:
-            clean_number = get_clean_number(number)
+        clean_number = get_clean_number(number)
 
         # when we have multiple workers, we can face with
         # situation when 2 simultaneous requests came to 2 different

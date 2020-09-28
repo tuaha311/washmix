@@ -107,7 +107,7 @@ ADMINS = [
         # card № 4000 0000 0000 9995
         "email": "savoskin@evrone.com",
         "password": "helloevrone",
-        "number": "+12001230212",
+        "number": "+15052302133",
         "is_superuser": True,
         "is_staff": True,
         "stripe_id": "cus_HxSYL19Joq6KTq",
