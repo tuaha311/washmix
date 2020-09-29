@@ -32,8 +32,8 @@ if settings.DEBUG:
 
 
 urlpatterns += [
-    # new REST API
-    path("api/v1.0/", include("api.v1_0.urls")),
+    # REST API
+    path("api/", include("api.urls")),
     path("admin/", admin.site.urls),
     # Temporary static files serving
     *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),

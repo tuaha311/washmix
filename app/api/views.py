@@ -2,7 +2,7 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
-from api.v1_0.serializers.health import HealthSerializer
+from api.serializers import HealthSerializer
 
 
 class HealthView(GenericAPIView):

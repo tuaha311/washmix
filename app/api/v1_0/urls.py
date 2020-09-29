@@ -3,8 +3,8 @@ from django.urls import include, path
 from rest_framework.routers import SimpleRouter
 from rest_framework_simplejwt.views import TokenRefreshSlidingView, TokenVerifyView
 
-from api.v1_0.views import auth, health, services, trigger, twilio
-from billing.views import cards, checkout, choose, coupons, packages, payments
+from api.v1_0.views import auth, services, trigger, twilio
+from billing.views import cards, packages
 from core import views as core_views
 from locations.views import addresses, locations, zip_codes
 from orders.views import basket, orders
@@ -30,20 +30,6 @@ auth_urls = (
     "auth",
 )
 
-subscription_urls = (
-    [
-        # packages and subscription payment views:
-        # 1. please, choose a subscription - we will return Invoice.id and attach subscription to Invoice,
-        # also, we store this data between screens.
-        path("choose/", choose.ChooseView.as_view(), name="choose"),
-        # 2. please, if you have a coupon - apply it to the Invoice.id
-        # TODO удалить и оставить только в invoices
-        path("apply_coupon/", coupons.ApplyCouponView.as_view(), name="apply-coupon"),
-        # 3. submit all your personal and address data
-        path("checkout/", checkout.CheckoutView.as_view(), name="checkout"),
-    ],
-    "subscription",
-)
 
 basket_urls = (
     [
@@ -59,25 +45,6 @@ basket_urls = (
     "basket",
 )
 
-invoices_urls = (
-    [
-        # common operation - you can apply coupons at subscription buy scenario
-        # or order payment scenario
-        path("apply_coupon/", coupons.ApplyCouponView.as_view(), name="apply-coupon"),
-    ],
-    "invoices",
-)
-
-billing_urls = (
-    [
-        # billing via Stripe related methods:
-        # 1. we are creating CreateIntentView object to link Card.id with Client.id for later processing
-        path("create_intent/", payments.CreateIntentView.as_view(), name="setup-intent"),
-        # 2. we receive success webhook from Stripe and create an Transaction
-        path("stripe_webhook/", payments.StripeWebhookView.as_view(), name="stripe-webhook"),
-    ],
-    "billing",
-)
 
 sms_urls = (
     [path("twilio_webhook/", twilio.TwilioFlexWebhookView.as_view(), name="flex-webhook"),],
@@ -97,8 +64,8 @@ urlpatterns = [
     *router.urls,
     path("profile/", profile.ProfileView.as_view(), name="profile"),
     path("zip_codes/", zip_codes.ZipCodeListView.as_view(), name="zip-code-list"),
-    path("billing/", include(billing_urls)),
-    path("subscription/", include(subscription_urls)),
+    path("billing/", include("billing.urls.billing")),
+    path("subscription/", include("billing.urls.subscription")),
     path("basket/", include(basket_urls)),
     path("sms/", include(sms_urls)),
     path("trigger/", trigger.TriggerView.as_view(), name="trigger"),
@@ -109,5 +76,4 @@ urlpatterns = [
     path("locations/", locations.LocationListView.as_view(), name="location-list"),
     path("services/", services.ServiceListView.as_view(), name="service-list"),
     path("customers/", customers.CustomerCreateView.as_view(), name="customer-create"),
-    path("health/", health.HealthView.as_view(), name="ping"),
 ]
