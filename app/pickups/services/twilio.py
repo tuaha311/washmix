@@ -6,7 +6,7 @@ from core.models import Phone
 from core.utils import get_clean_number
 from pickups.models import Delivery
 from pickups.services.delivery import DeliveryService
-from pickups.utils import get_pickup_day, get_pickup_start_end
+from pickups.utils import get_pickup_day
 from users.models import Client, Customer
 
 
@@ -22,9 +22,8 @@ class TwilioFlexService:
         service = DeliveryService(
             client=self._client, address=self._client.main_address, **pickup_info,
         )
-        delivery = service.create()
 
-        return delivery
+        return service.create()
 
     def validate_or_save(self):
         self._validate_or_save_phone()
@@ -35,12 +34,9 @@ class TwilioFlexService:
         now = localtime()
 
         pickup_date = get_pickup_day(now)
-        pickup_start, pickup_end = get_pickup_start_end(now)
 
         return {
             "pickup_date": pickup_date,
-            "pickup_start": pickup_start,
-            "pickup_end": pickup_end,
         }
 
     @property

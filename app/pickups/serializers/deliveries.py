@@ -7,17 +7,24 @@ from pickups.services.delivery import DeliveryService
 
 
 class DeliverySerializer(serializers.ModelSerializer):
-    pickup_date = serializers.DateField()
     dropoff_date = serializers.DateField(required=False, read_only=True)
 
     class Meta:
         model = Delivery
-        exclude = [
-            "changed",
-            "created",
-            "client",
+        fields = [
+            "address",
+            "pickup_date",
+            "pickup_start",
+            "pickup_end",
+            "dropoff_date",
+            "dropoff_start",
+            "dropoff_end",
+            "is_rush",
+            "comment",
         ]
         extra_kwargs = {
+            "pickup_start": {"required": False, "read_only": True},
+            "pickup_end": {"required": False, "read_only": True},
             "dropoff_start": {"required": False, "read_only": True},
             "dropoff_end": {"required": False, "read_only": True},
             "address": {"allow_null": False},
@@ -31,17 +38,9 @@ class DeliverySerializer(serializers.ModelSerializer):
     def validate(self, attrs: dict):
         client = self.context["request"].user.client
         pickup_date = attrs["pickup_date"]
-        pickup_start = attrs["pickup_start"]
-        pickup_end = attrs["pickup_end"]
         address = attrs["address"]
 
-        service = DeliveryService(
-            client=client,
-            address=address,
-            pickup_date=pickup_date,
-            pickup_start=pickup_start,
-            pickup_end=pickup_end,
-        )
+        service = DeliveryService(client=client, address=address, pickup_date=pickup_date,)
 
         service.validate()
 

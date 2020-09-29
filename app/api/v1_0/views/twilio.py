@@ -38,7 +38,7 @@ class TwilioFlexWebhookView(GenericAPIView):
         # we are forced to handle error in this way instead of
         # storing all validation logic in serializer, because when
         # Twilio Flex received an 4xx status code it send an SMS / Email to
-        # owner with error log (Twilio sees 4xx as a full errors, not just a negative scenario).
+        # owner with error log (Twilio sees 4xx as a application errors, not just a negative scenario).
         # for this reason, we are sending an 2xx status code and storing all logic in
         # `event` and `code` fields of response body.
         try:

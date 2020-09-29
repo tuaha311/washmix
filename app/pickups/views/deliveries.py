@@ -15,15 +15,11 @@ class DeliveryViewSet(ModelViewSet):
     def perform_create(self, serializer: Serializer):
         client = self.request.user.client
         pickup_date = serializer.validated_data["pickup_date"]
-        pickup_start = serializer.validated_data["pickup_start"]
-        pickup_end = serializer.validated_data["pickup_end"]
         address = serializer.validated_data["address"]
 
-        service = DeliveryService(
-            client=client,
-            address=address,
-            pickup_date=pickup_date,
-            pickup_start=pickup_start,
-            pickup_end=pickup_end,
-        )
-        return service.create()
+        service = DeliveryService(client=client, address=address, pickup_date=pickup_date,)
+        delivery = service.create()
+
+        serializer.instance = delivery
+
+        return delivery

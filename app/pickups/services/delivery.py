@@ -1,4 +1,5 @@
 from datetime import date, time
+from typing import Tuple
 
 from django.conf import settings
 from django.utils.timezone import localtime
@@ -7,7 +8,7 @@ from rest_framework import serializers
 
 from locations.models import Address
 from pickups.models import Delivery
-from pickups.utils import get_dropoff_day
+from pickups.utils import get_dropoff_day, get_pickup_start_end
 from users.models import Client
 
 
@@ -17,12 +18,16 @@ class DeliveryService:
         client: Client,
         address: Address,
         pickup_date: date,
-        pickup_start: time,
-        pickup_end: time,
+        pickup_start: time = None,
+        pickup_end: time = None,
     ):
         self._client = client
         self._address = address
         self._pickup_date = pickup_date
+
+        if pickup_start is None or pickup_end is None:
+            pickup_start, pickup_end = self._pickup_info
+
         self._pickup_start = pickup_start
         self._pickup_end = pickup_end
 
@@ -51,6 +56,11 @@ class DeliveryService:
         self._validate_time()
         self._validate_last_call()
         self._validate_common()
+
+    @property
+    def _pickup_info(self) -> Tuple[time, time]:
+        now = localtime()
+        return get_pickup_start_end(now)
 
     @property
     def _dropoff_info(self) -> dict:
