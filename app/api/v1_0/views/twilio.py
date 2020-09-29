@@ -1,8 +1,11 @@
+from django.conf import settings
+
 from rest_framework.generics import GenericAPIView
 from rest_framework.parsers import FormParser, JSONParser
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.serializers import ValidationError
 from rest_framework.status import HTTP_200_OK
 
 from api.v1_0.serializers.twilio import TwilioFlexWebhookSerializer
@@ -30,10 +33,29 @@ class TwilioFlexWebhookView(GenericAPIView):
         raw_phone = serializer.validated_data["phone"]
         phone = get_clean_number(raw_phone)
 
-        twilio_service = TwilioFlexService(message, phone)
+        service = TwilioFlexService(message, phone)
 
-        delivery = twilio_service.create_delivery()
-        message = delivery.pretty_pickup_message
-        body = {"message": message}
+        # we are forced to handle error in this way instead of
+        # storing all validation logic in serializer, because when
+        # Twilio Flex received an 4xx status code it send an SMS / Email to
+        # owner with error log (Twilio sees 4xx as a full errors, not just a negative scenario).
+        # for this reason, we are sending an 2xx status code and storing all logic in
+        # `event` and `code` fields of response body.
+        try:
+            service.validate_or_save()
+            delivery = service.create_delivery()
+            message = delivery.pretty_pickup_message
+            body = {
+                "message": message,
+                "event": settings.TWILIO_SUCCESS,
+                "code": settings.TWILIO_PICKUP_CODE,
+            }
+        except ValidationError as e:
+            error_detail = e.detail[0]
+            body = {
+                "message": error_detail,
+                "event": settings.TWILIO_FAIL,
+                "code": error_detail.code,
+            }
 
         return Response(data=body, status=HTTP_200_OK)

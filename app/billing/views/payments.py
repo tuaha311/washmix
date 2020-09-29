@@ -38,7 +38,7 @@ class CreateIntentView(GenericAPIView):
 
 class StripeWebhookView(GenericAPIView):
     permission_classes = [AllowAny]
-    enable_ip_check = False
+    enable_ip_check = True
 
     def post(self, request: Request, *args, **kwargs):
         # we will use Stripe SDK to check validity of event instead
@@ -47,7 +47,7 @@ class StripeWebhookView(GenericAPIView):
         event = stripe.Event.construct_from(raw_payload, stripe.api_key)
 
         if self.enable_ip_check:
-            ip_address = request.META["HTTP_X_REAL_IP"]
+            ip_address = request.META["HTTP_X_FORWARDED_FOR"]
 
             # don't allowing other IPs excluding Stripe's IPs
             if ip_address not in settings.STRIPE_WEBHOOK_IP_WHITELIST:

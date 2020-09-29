@@ -365,6 +365,9 @@ DRAMATIQ_BROKER = {
 TWILIO_NUMBER = env.str("TWILIO_NUMBER", "")
 TWILIO_ACCOUNT_SID = env.str("TWILIO_ACCOUNT_SID", "")
 TWILIO_AUTH_TOKEN = env.str("TWILIO_AUTH_TOKEN", "")
+TWILIO_SUCCESS = "success"
+TWILIO_FAIL = "fail"
+TWILIO_PICKUP_CODE = "pickup_scheduled"
 
 
 ############
