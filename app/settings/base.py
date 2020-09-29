@@ -67,6 +67,7 @@ DATABASES = {
 
 
 MIDDLEWARE = [
+    "core.middleware.logging_middleware",
     "django.middleware.security.SecurityMiddleware",
     "django.middleware.cache.UpdateCacheMiddleware",
     "django.middleware.gzip.GZipMiddleware",
