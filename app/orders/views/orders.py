@@ -11,4 +11,5 @@ class OrderViewSet(ModelViewSet):
     serializer_class = OrderSerializer
 
     def get_queryset(self):
-        return self.request.user.order_list.all()
+        client = self.request.user.client
+        return client.order_list.all()
