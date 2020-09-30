@@ -54,7 +54,6 @@ social-auth-app-django = "^3.1.0"
 psycopg2-binary = "2.8.5"
 
 # queue
-django-dramatiq = "^0.9.1"
 dramatiq = {version = "^1.9", extras = ["redis", "watch"]}
 
 # money
@@ -82,6 +81,7 @@ pre-commit = "^2.6.0"
 drf-yasg = "^1.17.1"
 netaddr = "^0.8.0"
 pytest-django = "^3.10.0"
+periodiq = "^0.12.1"
 
 
 [tool.poetry.dev-dependencies]

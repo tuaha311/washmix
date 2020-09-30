@@ -48,6 +48,14 @@ spec:
           args: ["worker"]
           env:
             {{- include "common.container.env" . | nindent 12 }}
+        - name: {{ .Chart.Name }}-scheduler
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          args: ["scheduler"]
+          env:
+            {{- include "common.container.env" . | nindent 12 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

@@ -7,12 +7,17 @@ action=$1
 if [ "$action" = "worker" ]
 then
   echo "Running dramatiq worker"
-  python manage.py rundramatiq --reload -p 2 --settings settings.dev
+  dramatiq -v settings.dramatiq
 
 elif [ "$action" = "migrations" ]
 then
   echo "Running migrations"
   python manage.py migrate --settings settings.staging --noinput
+
+elif [ "$action" = "scheduler" ]
+then
+  echo "Running periodiq scheduler"
+  periodiq -v settings.dramatiq
 
 else
   echo "Running django application"

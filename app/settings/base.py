@@ -1,8 +1,11 @@
 from datetime import time, timedelta
 from pathlib import Path
 
+import dramatiq
 import stripe
+from dramatiq.brokers.redis import RedisBroker
 from environs import Env
+from periodiq import PeriodiqMiddleware
 from phonenumbers import PhoneNumberFormat
 from sendgrid.helpers.mail import Email
 
@@ -33,7 +36,6 @@ DJANGO_APPS = [
 
 THIRD_PARTY_APPS = [
     "rest_framework",
-    "django_dramatiq",
     "djoser",
     "social_django",
     "swap_user",
@@ -344,18 +346,15 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ["profile", "email", "openid"]
 ############
 
 REDIS_URL = env.str("REDIS_URL", "redis://localhost:6379/0")
-DRAMATIQ_BROKER = {
-    "BROKER": "dramatiq.brokers.redis.RedisBroker",
-    "OPTIONS": {"url": REDIS_URL},
-    "MIDDLEWARE": [
-        "dramatiq.middleware.Prometheus",
-        "dramatiq.middleware.AgeLimit",
-        "dramatiq.middleware.TimeLimit",
-        "dramatiq.middleware.Callbacks",
-        "dramatiq.middleware.Retries",
-        "django_dramatiq.middleware.DbConnectionsMiddleware",
-    ],
-}
+DRAMATIQ_BROKER = RedisBroker(url=REDIS_URL)
+
+# define list of modules with tasks
+DRAMATIQ_IMPORT_MODULES = [
+    "core.tasks",
+    "billing.tasks",
+]
+DRAMATIQ_BROKER.add_middleware(PeriodiqMiddleware(skip_delay=30))
+dramatiq.set_broker(DRAMATIQ_BROKER)
 
 
 ##########

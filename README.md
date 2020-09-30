@@ -113,8 +113,24 @@ We are using [dramatiq](https://dramatiq.io) for handling background tasks.
   ```
 * Run dramatiq:
   ```bash
-  python manage.py rundramatiq --reload -p 2 --settings settings.dev
+  dramatiq -v settings.dramatiq
   ```
+## How to run periodic scheduler (task emitter) for dramatiq
+For this purpose we are using [periodiq](https://gitlab.com/bersace/periodiq).
+
+* Install Python dependencies:
+  ```bash
+  poetry install
+  ```
+* Go to the `app` folder:
+  ```bash
+  cd app
+  ```
+* Run dramatiq:
+  ```bash
+  periodiq -v settings.periodiq
+  ```
+
   
 ## About billing stuff
 All prices and money related stuff stored in cents (¢), not in dollars.
