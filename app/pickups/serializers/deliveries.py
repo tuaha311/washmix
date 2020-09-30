@@ -10,6 +10,7 @@ class DeliverySerializer(serializers.ModelSerializer):
     class Meta:
         model = Delivery
         fields = [
+            "id",
             "address",
             "pickup_date",
             "pickup_start",
