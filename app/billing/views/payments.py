@@ -51,7 +51,7 @@ class StripeWebhookView(GenericAPIView):
 
             # don't allowing other IPs excluding Stripe's IPs
             if ip_address not in settings.STRIPE_WEBHOOK_IP_WHITELIST:
-                return Response(status=403)
+                return Response(data={"id": ip_address,}, status=403,)
 
         if event.type in ["payment_intent.succeeded", "charge.succeeded"]:
             payment = event.data.object
