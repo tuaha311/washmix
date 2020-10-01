@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.db.models import ObjectDoesNotExist
 
 import stripe
 from rest_framework.generics import GenericAPIView
@@ -53,11 +54,17 @@ class StripeWebhookView(GenericAPIView):
             if ip_address not in settings.STRIPE_WEBHOOK_IP_WHITELIST:
                 return Response(data={"ip": ip_address,}, status=403,)
 
-        if event.type in ["payment_intent.succeeded", "charge.succeeded"]:
+        if event.type not in ["payment_intent.succeeded", "charge.succeeded"]:
+            return Response({}, status=HTTP_200_OK)
+
+        try:
             payment = event.data.object
             client = Client.objects.get(stripe_id=payment.customer)
             invoice = Invoice.objects.get(pk=payment.metadata.invoice_id)
-            service = CheckoutService(client, request, invoice)
-            service.checkout(payment)
+        except ObjectDoesNotExist:
+            return Response({}, status=HTTP_200_OK)
+
+        service = CheckoutService(client, request, invoice)
+        service.checkout(payment)
 
         return Response({}, status=HTTP_200_OK)
