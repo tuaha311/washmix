@@ -22,6 +22,6 @@ then
 else
   echo "Running django application"
   python manage.py collectstatic --settings settings.staging --noinput
-  python manage.py fill --settings settings.staging
+  python manage.py loaddata dump.json --settings settings.staging
   gunicorn --bind 0.0.0.0:8000 --workers 2 settings.wsgi:application
 fi

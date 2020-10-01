@@ -139,17 +139,12 @@ For example, if we have field `price` in model `Foo`, than we have a property
 called `dollar_price`.
 
 
-## About initial data
-Why we use native objects instead of storing them as JSON (fixtures)?
-
-Because fixtures have some problems:
-- They don't give a guarantee that relations such as ForeignKey, OneToOne, ManyToMany
-will be resolved correctly. Relations by default represented as integers (PK) and 
-at records creation time, `loaddata` doesn't guarantee a correct order of model creation.
-Preferable, to use `--natural-foreign` and `--natural-primary` with `dumpdata` command.
-But it require of implementation `get_by_natural_key` and `natural_key` method on models and managers.
-Reference:
-    - https://docs.djangoproject.com/en/2.2/ref/django-admin/#dumpdata
-    - https://docs.djangoproject.com/en/2.2/topics/serialization/#topics-serialization-natural-keys
-- Fixture doesn't provide a guarantee between ports of databases. As example, we can't load data
-from PostgreSQL into SQLite and vice versa.
+## About initial data (fixtures)
+1. To create dump of database in JSON format
+```bash
+python manage.py dumpdata swap_user_named_email users billing core locations notifications orders pickups -o dump.json
+```
+2. To load data from dump in JSON format to database
+```bash
+python manage.py loaddata dump.json
+```
