@@ -66,6 +66,7 @@ urlpatterns = [
     path("zip_codes/", zip_codes.ZipCodeListView.as_view(), name="zip-code-list"),
     path("billing/", include("billing.urls.billing")),
     path("subscription/", include("billing.urls.subscription")),
+    path("invoices/", include("billing.urls.invoices")),
     path("basket/", include(basket_urls)),
     path("sms/", include(sms_urls)),
     path("trigger/", trigger.TriggerView.as_view(), name="trigger"),
