@@ -34,6 +34,7 @@ class CheckoutAddressSerializer(serializers.ModelSerializer):
 class CheckoutSerializer(serializers.Serializer):
     user = CheckoutUserSerializer()
     address = CheckoutAddressSerializer()
+    billing_address = CheckoutAddressSerializer()
     invoice = InvoiceField()
 
     def validate_invoice(self, value):

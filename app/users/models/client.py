@@ -52,6 +52,13 @@ class Client(Stripeable, Common):
         on_delete=models.SET_NULL,
         null=True,
     )
+    main_billing_address = models.OneToOneField(
+        "locations.Address",
+        verbose_name="main billing address",
+        related_name="+",
+        on_delete=models.SET_NULL,
+        null=True,
+    )
 
     # Preferences
     detergents = models.CharField(

@@ -12,6 +12,7 @@ django_cache
 .idea/modules.xml
 .idea/codeStyleSettings.xml
 .idea
+reload.sh
 
 # Sensitive or high-churn files:
 .idea/dataSources.ids

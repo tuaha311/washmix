@@ -50,14 +50,18 @@ class CheckoutService:
 
         return self._client
 
-    def create_address(self, address: dict) -> Address:
-        serializer = CheckoutAddressSerializer(data=address)
-        serializer.is_valid()
+    def create_main_address(self, address: dict) -> Address:
+        return self._create_address(address, "main_address")
 
-        service = MainAttributeService(self._request.user.client, "main_address")
-        address = service.create(serializer)
+    def create_billing_address(self, raw_billing_address: dict, is_same_address: bool) -> Address:
+        if is_same_address:
+            billing_address = self._client.main_address
+            self._client.main_billing_address = billing_address
+            self._client.save()
+        else:
+            billing_address = self._create_address(raw_billing_address, "main_billing_address")
 
-        return address
+        return billing_address
 
     def charge(self) -> Optional[PaymentMethod]:
         # card will be charged at the frontend side
@@ -114,3 +118,12 @@ class CheckoutService:
             self._client.save()
 
         return transaction
+
+    def _create_address(self, address: dict, attribute: str):
+        serializer = CheckoutAddressSerializer(data=address)
+        serializer.is_valid()
+
+        service = MainAttributeService(self._request.user.client, attribute)
+        address = service.create(serializer)
+
+        return address
