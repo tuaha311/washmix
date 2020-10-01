@@ -7,5 +7,5 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         exclude = [
-            "user",
+            "client",
         ]
