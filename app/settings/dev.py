@@ -5,4 +5,4 @@ from settings.base import *
 
 DEBUG = True
 
-ALLOWED_COUNTRY_CODES = ["RU", "US"]
+ALLOWED_COUNTRY_CODES = [1, 7]

@@ -1,3 +1,5 @@
+from django.conf import settings
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 from core.common_models import Common
@@ -30,6 +32,7 @@ class Delivery(Common):
         null=True,
     )
 
+    # usual fields
     comment = models.TextField(
         verbose_name="comment",
         blank=True,
@@ -38,6 +41,30 @@ class Delivery(Common):
         verbose_name="is a rush / urgent delivery",
         default=False,
     )
+    # recurring delivery fields
+    days = ArrayField(
+        base_field=models.CharField(
+            max_length=10,
+            verbose_name="day of week",
+            choices=settings.DELIVERY_DAY_CHOICES,
+        ),
+        verbose_name="recurring pickup days",
+        max_length=7,
+    )
+    origin = models.ForeignKey(
+        "self",
+        verbose_name="origin recurring delivery",
+        on_delete=models.SET_NULL,
+        related_name="recurring_list",
+        blank=True,
+        null=True,
+    )
+    status = models.CharField(
+        max_length=20,
+        verbose_name="status of recurring delivery",
+        choices=settings.DELIVERY_STATUS_CHOICES,
+    )
+    # fields about date and intervals
     pickup_date = models.DateField(
         verbose_name="date for pickup",
     )

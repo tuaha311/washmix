@@ -158,7 +158,7 @@ AUTH_USER_MODEL = "swap_user_named_email.NamedEmailUser"
 
 DEFAULT_PHONE_REGION = "US"
 DEFAULT_PHONE_FORMAT = PhoneNumberFormat.E164
-ALLOWED_COUNTRY_CODES = ["RU", "US"]
+ALLOWED_COUNTRY_CODES = [1, 7]
 
 CENTS_IN_DOLLAR = 100
 
@@ -199,6 +199,37 @@ NON_WORKING_ISO_WEEKENDS = [6, 7]
 TODAY_DELIVERY_CUT_OFF_TIME = time(hour=9)
 DELIVERY_START_WORKING = time(hour=9)
 DELIVERY_END_WORKING = time(hour=18)
+
+
+############
+# DELIVERY #
+############
+
+MON = "mon"
+TUE = "tue"
+WED = "wed"
+THU = "thu"
+FRI = "fri"
+SAT = "sat"
+SUN = "sun"
+DELIVERY_DAYS_MAP = {
+    MON: "Monday",
+    TUE: "Tuesday",
+    WED: "Wednesday",
+    THU: "Thursday",
+    FRI: "Friday",
+    SAT: "Saturday",
+    SUN: "Sunday",
+}
+DELIVERY_DAY_CHOICES = list(DELIVERY_DAYS_MAP.items())
+
+ACTIVE = "active"
+PAUSED = "paused"
+DELIVERY_STATUS_MAP = {
+    ACTIVE: "Active recurring delivery",
+    PAUSED: "Paused recurring delivery",
+}
+DELIVERY_STATUS_CHOICES = list(DELIVERY_STATUS_MAP.items())
 
 
 ################
