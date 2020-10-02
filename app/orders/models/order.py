@@ -1,9 +1,10 @@
 from django.db import models
 
+from core.behaviors import Amountable
 from core.common_models import Common
 
 
-class Order(Common):
+class Order(Amountable, Common):
     """
     Central point of system - where we processing orders and storing all info
     related to the order.
@@ -43,9 +44,6 @@ class Order(Common):
         on_delete=models.SET_NULL,
         null=True,
     )
-
-    # TODO добавить поле total
-    # TODO добавить ценовой лог
 
     class Meta:
         verbose_name = "order"

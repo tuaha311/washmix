@@ -217,6 +217,7 @@ BUSINESS_DAYS = 5
 FULL_WEEK_LENGTH = 7
 NEXT_DAY = 1
 DAYS_IN_YEAR = 365
+CREDIT_BACK_PERIOD = 90
 
 TWITTER_URL = "https://twitter.com/mix_wash/"
 INSTAGRAM_URL = "https://www.instagram.com/washmix/"

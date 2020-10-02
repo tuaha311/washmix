@@ -9,6 +9,7 @@ from stripe.error import StripeError
 from billing.models import Card, Invoice, Transaction
 from billing.serializers.checkout import CheckoutAddressSerializer, CheckoutUserSerializer
 from billing.stripe_helper import StripeHelper
+from billing.utils import create_debit
 from core.services.main_attribute import MainAttributeService
 from locations.models import Address
 from users.models import Client
@@ -99,11 +100,9 @@ class CheckoutService:
             return None
 
         with atomic():
-            transaction = Transaction.objects.create(
-                invoice=self._invoice,
-                kind=Transaction.DEBIT,
-                provider=Transaction.STRIPE,
+            transaction = create_debit(
                 client=self._client,
+                invoice=self._invoice,
                 stripe_id=payment.id,
                 amount=payment.amount,
                 source=payment,
