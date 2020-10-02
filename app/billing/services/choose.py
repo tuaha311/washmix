@@ -33,7 +33,7 @@ class ChooseService:
             except ObjectDoesNotExist:
                 instance = Subscription()
 
-            subscription = Subscription.objects.fill_subscription(instance, package)
+            subscription = Subscription.objects.fill_subscription(package, instance)
             subscription.invoice = invoice
             subscription.save()
 

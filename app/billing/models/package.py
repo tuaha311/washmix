@@ -7,6 +7,8 @@ from core.common_models import Common
 
 class Package(CommonPackageSubscription, Common):
     """
+    NOTE: Package / Subscription uses the same pattern such Schedule / Delivery.
+
     Main Packages that we offer to clients.
     It is a templates that we use to create concrete instances of
     Packages called Subscription.

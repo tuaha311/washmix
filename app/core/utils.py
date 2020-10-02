@@ -52,3 +52,16 @@ def get_clean_number(raw_number: str):
     clean_number = phonenumbers.format_number(parsed, settings.DEFAULT_PHONE_FORMAT)
 
     return clean_number
+
+
+def clone_from_to(from_object, to_object, exclude_fields: list):
+    for field in from_object._meta.get_fields():
+        field_name = field.name
+
+        if field_name in exclude_fields:
+            continue
+
+        package_field_value = getattr(from_object, field_name)
+        setattr(to_object, field_name, package_field_value)
+
+    return to_object

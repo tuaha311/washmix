@@ -17,9 +17,7 @@ class SetMainAttributeMixin:
     def perform_create(self, serializer):
         service = MainAttributeService(self.request.user.client, self.main_attribute)
 
-        instance = service.create(serializer)
-
-        return instance
+        service.create(serializer)
 
 
 class PreventDeletionOfMainAttributeMixin:

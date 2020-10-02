@@ -1,12 +1,23 @@
-from django.conf import settings
-from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 from core.common_models import Common
+from core.utils import clone_from_to
+from pickups.common_models import CommonScheduleDelivery
 
 
-class Delivery(Common):
+class DeliveryManager(models.Manager):
+    exclude_fields = ["id", "created", "changed",]
+
+    def fill_delivery(self, schedule, delivery):
+        clone_from_to(schedule, delivery, self.exclude_fields)
+
+        return delivery
+
+
+class Delivery(CommonScheduleDelivery, Common):
     """
+    NOTE: Schedule / Delivery uses the same pattern such Package / Subscription.
+
     Delivery to / from our Clients.
     """
 
@@ -31,39 +42,7 @@ class Delivery(Common):
         on_delete=models.SET_NULL,
         null=True,
     )
-    origin = models.ForeignKey(
-        "self",
-        verbose_name="origin recurring delivery",
-        on_delete=models.SET_NULL,
-        related_name="recurring_list",
-        blank=True,
-        null=True,
-    )
 
-    # usual fields
-    comment = models.TextField(
-        verbose_name="comment",
-        blank=True,
-    )
-    is_rush = models.BooleanField(
-        verbose_name="is a rush / urgent delivery",
-        default=False,
-    )
-    # recurring delivery fields
-    days = ArrayField(
-        base_field=models.CharField(
-            max_length=10,
-            verbose_name="day of week",
-            choices=settings.DELIVERY_DAY_CHOICES,
-        ),
-        verbose_name="recurring pickup days",
-        max_length=7,
-    )
-    status = models.CharField(
-        max_length=20,
-        verbose_name="status of recurring delivery",
-        choices=settings.DELIVERY_STATUS_CHOICES,
-    )
     # fields about date and intervals
     pickup_date = models.DateField(
         verbose_name="date for pickup",
@@ -83,6 +62,8 @@ class Delivery(Common):
     dropoff_end = models.TimeField(
         verbose_name="end of dropoff interval"
     )
+
+    objects = DeliveryManager()
 
     class Meta:
         verbose_name = "delivery"

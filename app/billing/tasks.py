@@ -18,6 +18,9 @@ def hello():
 def accrue_credit_back_every_3_month():
     now = localtime()
 
+    # TODO что делать, когда подписка протухла
+    # TODO учитывать ордера только за последние 3 месяца
+
     for client in Client.objects.all():
         delta_days = (now - client.created).days
         credit_back_period = settings.CREDIT_BACK_PERIOD

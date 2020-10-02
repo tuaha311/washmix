@@ -21,5 +21,3 @@ class DeliveryViewSet(ModelViewSet):
         delivery = service.create()
 
         serializer.instance = delivery
-
-        return delivery

@@ -3,31 +3,28 @@ from django.db import models
 
 from billing.common_models import CommonPackageSubscription
 from core.common_models import Common
+from core.utils import clone_from_to
 
 
 class SubscriptionManager(models.Manager):
-    def fill_subscription(self, subscription, package):
-        system_fields = ["id", "created", "changed"]
+    exclude_fields = ["id", "created", "changed",]
 
-        for field in package._meta.get_fields():
-            field_name = field.name
-
-            if field_name in system_fields:
-                continue
-
-            package_field_value = getattr(package, field_name)
-            setattr(subscription, field_name, package_field_value)
+    def fill_subscription(self, package, subscription):
+        clone_from_to(package, subscription, self.exclude_fields)
 
         return subscription
 
 
 class Subscription(CommonPackageSubscription, Common):
     """
+    NOTE: Package / Subscription uses the same pattern such Schedule / Delivery.
+
     Concrete instance of Package.
     It holds all the field of Package, and can be interpreted as
     per user conditions of Package.
     """
 
+    # TODO возможно, стоит сюда перенести связь client
     name = models.CharField(
         verbose_name="name",
         max_length=20,

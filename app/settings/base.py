@@ -384,6 +384,7 @@ DRAMATIQ_BROKER = RedisBroker(url=REDIS_URL)
 DRAMATIQ_IMPORT_MODULES = [
     "core.tasks",
     "billing.tasks",
+    "pickups.tasks",
 ]
 DRAMATIQ_BROKER.add_middleware(PeriodiqMiddleware(skip_delay=30))
 dramatiq.set_broker(DRAMATIQ_BROKER)
