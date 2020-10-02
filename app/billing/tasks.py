@@ -1,5 +1,4 @@
 from django.conf import settings
-from django.db.models import Sum
 from django.utils.timezone import localtime
 
 import dramatiq
@@ -19,10 +18,10 @@ def hello():
 def accrue_credit_back_every_3_month():
     now = localtime()
 
-    for item in Client.objects.all():
-        delta_days = (now - item.created).days
+    for client in Client.objects.all():
+        delta_days = (now - client.created).days
         credit_back_period = settings.CREDIT_BACK_PERIOD
-        subscription = item.subscription
+        subscription = client.subscription
 
         # if client doesn't have a subscription or subscription doesn't includes credit back
         # we are skip him
@@ -34,11 +33,11 @@ def accrue_credit_back_every_3_month():
         if delta_days % credit_back_period != 0:
             continue
 
-        order_list = item.order_list.all()
-        amount = order_list.aggregate(amount=Sum("amount"))["amount"] or 0
+        order_list = client.order_list.all()
+        amount = sum(item.amount for item in order_list)
 
         # if client doesn't have any orders - we are skip him
         if amount == 0:
             continue
 
-        create_credit_back(item, amount)
+        create_credit_back(client, amount)

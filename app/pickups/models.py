@@ -31,6 +31,14 @@ class Delivery(Common):
         on_delete=models.SET_NULL,
         null=True,
     )
+    origin = models.ForeignKey(
+        "self",
+        verbose_name="origin recurring delivery",
+        on_delete=models.SET_NULL,
+        related_name="recurring_list",
+        blank=True,
+        null=True,
+    )
 
     # usual fields
     comment = models.TextField(
@@ -50,14 +58,6 @@ class Delivery(Common):
         ),
         verbose_name="recurring pickup days",
         max_length=7,
-    )
-    origin = models.ForeignKey(
-        "self",
-        verbose_name="origin recurring delivery",
-        on_delete=models.SET_NULL,
-        related_name="recurring_list",
-        blank=True,
-        null=True,
     )
     status = models.CharField(
         max_length=20,

@@ -8,6 +8,7 @@ from core.common_models import Common
 from core.utils import get_dollars
 
 
+# TODO добавить поле delivery_amount
 class Invoice(Amountable, Discountable, Common):
     """
     Invoice that we generated for buying package or order.

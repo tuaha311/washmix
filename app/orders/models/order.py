@@ -1,10 +1,9 @@
 from django.db import models
 
-from core.behaviors import Amountable
 from core.common_models import Common
 
 
-class Order(Amountable, Common):
+class Order(Common):
     """
     Central point of system - where we processing orders and storing all info
     related to the order.
@@ -48,3 +47,11 @@ class Order(Amountable, Common):
     class Meta:
         verbose_name = "order"
         verbose_name_plural = "orders"
+
+    @property
+    def amount(self):
+        return self.basket.amount
+
+    @property
+    def dollar_amount(self):
+        return self.basket.dollar_amount
