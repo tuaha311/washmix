@@ -36,8 +36,7 @@ def get_clean_number(raw_number: str):
             detail="Invalid phone format.", code="invalid_phone_format",
         )
 
-    # library check for phone validity in region
-    if not phonenumbers.is_possible_number(parsed) or not phonenumbers.is_valid_number(parsed):
+    if not phonenumbers.is_possible_number(parsed):
         raise serializers.ValidationError(
             detail="Invalid phone region.", code="invalid_phone_region",
         )
