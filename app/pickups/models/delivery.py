@@ -1,17 +1,7 @@
 from django.db import models
 
 from core.common_models import Common
-from core.utils import clone_from_to
 from pickups.common_models import CommonScheduleDelivery
-
-
-class DeliveryManager(models.Manager):
-    exclude_fields = ["id", "created", "changed",]
-
-    def fill_delivery(self, schedule, delivery):
-        clone_from_to(schedule, delivery, self.exclude_fields)
-
-        return delivery
 
 
 class Delivery(CommonScheduleDelivery, Common):
@@ -42,6 +32,13 @@ class Delivery(CommonScheduleDelivery, Common):
         on_delete=models.SET_NULL,
         null=True,
     )
+    schedule = models.ForeignKey(
+        "pickups.Schedule",
+        verbose_name="recurring schedule of delivery",
+        related_name="delivery_list",
+        on_delete=models.SET_NULL,
+        null=True
+    )
 
     # fields about date and intervals
     pickup_date = models.DateField(
@@ -62,8 +59,6 @@ class Delivery(CommonScheduleDelivery, Common):
     dropoff_end = models.TimeField(
         verbose_name="end of dropoff interval"
     )
-
-    objects = DeliveryManager()
 
     class Meta:
         verbose_name = "delivery"
