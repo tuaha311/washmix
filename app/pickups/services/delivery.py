@@ -8,7 +8,7 @@ from rest_framework import serializers
 
 from locations.models import Address
 from pickups.models import Delivery
-from pickups.utils import get_dropoff_day, get_pickup_start_end
+from pickups.utils import get_dropoff_day, get_pickup_day, get_pickup_start_end
 from users.models import Client
 
 
@@ -17,17 +17,20 @@ class DeliveryService:
         self,
         client: Client,
         address: Address,
-        pickup_date: date,
+        pickup_date: date = None,
         pickup_start: time = None,
         pickup_end: time = None,
     ):
         self._client = client
         self._address = address
-        self._pickup_date = pickup_date
+
+        if pickup_date is None:
+            pickup_date = self._pickup_day_auto_complete
 
         if pickup_start is None or pickup_end is None:
-            pickup_start, pickup_end = self._pickup_info
+            pickup_start, pickup_end = self._pickup_start_end_auto_complete
 
+        self._pickup_date = pickup_date
         self._pickup_start = pickup_start
         self._pickup_end = pickup_end
 
@@ -36,7 +39,13 @@ class DeliveryService:
                 detail="Pickup day can't be at weekends.", code="cant_pickup_at_weekends",
             )
 
-    def create(self) -> Delivery:
+    def create(self, **extra_kwargs) -> Delivery:
+        """
+        Like default manager's `create` method but with some changes:
+            - Added extra validation on date, time, etc.
+            - Added auto completion of dropoff info.
+        """
+
         self.validate()
 
         dropoff_info = self._dropoff_info
@@ -47,9 +56,34 @@ class DeliveryService:
             pickup_start=self._pickup_start,
             pickup_end=self._pickup_end,
             **dropoff_info,
+            **extra_kwargs,
         )
 
         return instance
+
+    def get_or_create(self, extra_query: dict, extra_defaults: dict) -> Tuple[Delivery, bool]:
+        """
+        Like default manager's `get_or_create` method but with some changes:
+            - Added extra validation on date, time, etc.
+            - Added auto completion of dropoff info.
+        """
+        self.validate()
+
+        dropoff_info = self._dropoff_info
+        instance, created = Delivery.objects.get_or_create(
+            client=self._client,
+            address=self._client.main_address,
+            **extra_query,
+            defaults={
+                "pickup_date": self._pickup_date,
+                "pickup_start": self._pickup_start,
+                "pickup_end": self._pickup_end,
+                **dropoff_info,
+                **extra_defaults,
+            },
+        )
+
+        return instance, created
 
     def validate(self):
         self._validate_date()
@@ -58,9 +92,14 @@ class DeliveryService:
         self._validate_common()
 
     @property
-    def _pickup_info(self) -> Tuple[time, time]:
+    def _pickup_start_end_auto_complete(self) -> Tuple[time, time]:
         now = localtime()
         return get_pickup_start_end(now)
+
+    @property
+    def _pickup_day_auto_complete(self) -> date:
+        now = localtime()
+        return get_pickup_day(now)
 
     @property
     def _dropoff_info(self) -> dict:

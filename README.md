@@ -148,3 +148,8 @@ python manage.py dumpdata swap_user_named_email users billing core locations not
 ```bash
 python manage.py loaddata dump.json
 ```
+
+
+## Notes
+For weekday storing in database and when working in codebase we are using integers starting from 1 (Mon) to 7 (Sun).
+In Python code you can use `.isoweekday` method for access to this value.

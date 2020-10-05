@@ -205,13 +205,13 @@ DELIVERY_END_WORKING = time(hour=18)
 # DELIVERY #
 ############
 
-MON = "mon"
-TUE = "tue"
-WED = "wed"
-THU = "thu"
-FRI = "fri"
-SAT = "sat"
-SUN = "sun"
+MON = 1
+TUE = 2
+WED = 3
+THU = 4
+FRI = 5
+SAT = 6
+SUN = 7
 DELIVERY_DAYS_MAP = {
     MON: "Monday",
     TUE: "Tuesday",
