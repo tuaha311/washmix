@@ -8,7 +8,7 @@ from billing.views import cards, packages
 from core import views as core_views
 from locations.views import addresses, locations, zip_codes
 from orders.views import basket, orders
-from pickups.views import deliveries
+from pickups.views import deliveries, schedules
 from users.views import customers, profile
 
 app_name = "v1_0"
@@ -58,6 +58,7 @@ router.register("phones", core_views.PhoneViewSet, basename="phones")
 router.register("orders", orders.OrderViewSet, basename="orders")
 router.register("cards", cards.CardViewSet, basename="cards")
 router.register("deliveries", deliveries.DeliveryViewSet, basename="deliveries")
+router.register("schedules", schedules.ScheduleViewSet, basename="schedules")
 
 urlpatterns = [
     # closed methods that require authorization

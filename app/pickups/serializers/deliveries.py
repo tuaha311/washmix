@@ -20,6 +20,7 @@ class DeliverySerializer(serializers.ModelSerializer):
             "dropoff_end",
             "is_rush",
             "comment",
+            "schedule",
         ]
         extra_kwargs = {
             "pickup_date": {"required": True},
@@ -29,6 +30,7 @@ class DeliverySerializer(serializers.ModelSerializer):
             "dropoff_start": {"required": False, "read_only": True},
             "dropoff_end": {"required": False, "read_only": True},
             "address": {"allow_null": False, "required": True},
+            "schedule": {"read_only": True},
         }
 
     def validate_address(self, value: Address):
