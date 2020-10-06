@@ -163,6 +163,8 @@ ALLOWED_COUNTRY_CODES = [1, 7]
 
 CENTS_IN_DOLLAR = 100
 
+DEFAULT_DISCOUNT = 0
+
 PAYC = "payc"
 GOLD = "gold"
 PLATINUM = "platinum"

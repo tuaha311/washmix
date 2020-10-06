@@ -53,14 +53,8 @@ class BasketView(GenericAPIView):
 
 
 class CheckoutView(GenericAPIView):
-    serializer_class = ChangeItemSerializer
-
     def post(self, request: Request, *args, **kwargs):
-        package_serializer = self.serializer_class(data=request.data, context={"request": request})
-        package_serializer.is_valid(raise_exception=True)
-
         client = request.user.client
-        price = package_serializer.validated_data["price"]
 
         service = BasketService(client)
         service.checkout()

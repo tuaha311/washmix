@@ -4,7 +4,10 @@ from django.db.transaction import atomic
 
 from rest_framework import serializers
 
-from orders.models import Basket, Price, Quantity
+from billing.models import Invoice
+from billing.services.invoice import InvoiceService
+from orders.models import Basket, Order, Price, Quantity
+from orders.services.order import OrderService
 from users.models import Client
 
 
@@ -47,7 +50,14 @@ class BasketService:
         self.basket.save()
 
     def checkout(self):
-        pass
+        invoice_service = InvoiceService(self._client)
+        order_service = OrderService(self._client)
+
+        with atomic():
+            invoice = invoice_service.get_or_create(self.basket.amount)
+            order = order_service.checkout(invoice)
+
+        return order
 
     @property
     def basket(self) -> Basket:

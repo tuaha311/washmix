@@ -1,30 +1,22 @@
 from django.db.models import ObjectDoesNotExist
 from django.db.transaction import atomic
 
-from billing.models import Invoice, Package, Subscription
+from billing.models import Package, Subscription
+from billing.services.invoice import InvoiceService
 from users.models import Client
-
-DEFAULT_DISCOUNT = 0
 
 
 class ChooseService:
-    def __init__(self, client: Client):
+    def __init__(self, client: Client, package: Package):
         self._client = client
+        self._package = package
 
-    def choose(self, package: Package):
-        # invoice without transaction by default not paid
-        # and we are looking for them
-        invoice = self._client.invoice_list.filter(transaction__isnull=True).last()
+    def set_package(self):
+        package = self._package
+        invoice_service = InvoiceService(self._client)
 
         with atomic():
-            if not invoice:
-                invoice = Invoice.objects.create(
-                    amount=package.price, discount=DEFAULT_DISCOUNT, client=self._client,
-                )
-            else:
-                invoice.amount = package.price
-                invoice.discount = DEFAULT_DISCOUNT
-                invoice.save()
+            invoice = invoice_service.get_or_create(self._package.price)
 
             # here we creating or receiving subscription container
             # and in later steps we will bind it with invoice
