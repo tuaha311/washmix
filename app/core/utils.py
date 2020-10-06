@@ -71,14 +71,8 @@ def clone_from_to(from_object, to_object, exclude_fields: list):
 
 
 def exists_in_execution_cache(key: str) -> bool:
-    """
-    
-    """
-    pass
+    return settings.REDIS_CLIENT.exists(key)
 
 
 def add_to_execution_cache(key: str, expiration_time: int = settings.REDIS_DEFAULT_EXPIRATION_TIME):
-    """
-
-    """
-    pass
+    return settings.REDIS_CLIENT.set(key, 1, ex=expiration_time)

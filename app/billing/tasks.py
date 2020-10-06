@@ -38,7 +38,7 @@ def accrue_credit_back_every_3_month():
 
         key = f"credit_back_for_client:{client.pk}"
         if exists_in_execution_cache(key):
-            pass
+            continue
 
         logger.info(f"Start of accruing credit back for client {client.email}")
 

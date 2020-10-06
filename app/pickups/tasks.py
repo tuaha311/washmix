@@ -33,7 +33,7 @@ def create_recurring_delivery_every_day():
 
         key = f"recurring_schedule:{schedule.pk}"
         if exists_in_execution_cache(key):
-            pass
+            continue
 
         logger.info(f"Start of handling schedule # {schedule.pk}")
 
