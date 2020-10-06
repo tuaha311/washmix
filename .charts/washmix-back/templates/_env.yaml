@@ -15,8 +15,10 @@
       name: {{ .Values.app.db.secret }}
       key: postgresql-password
 # Redis
-- name: REDIS_URL
-  value: "redis://{{ .Values.app.redis.host }}:6379/1"
+- name: REDIS_HOST
+  value: "redis://{{ .Values.app.redis.host }}"
+- name: REDIS_PORT
+  value: "6379"
 # Secrets
 - name: SECRET_KEY
   valueFrom:

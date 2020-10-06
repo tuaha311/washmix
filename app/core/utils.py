@@ -54,6 +54,10 @@ def get_clean_number(raw_number: str):
 
 
 def clone_from_to(from_object, to_object, exclude_fields: list):
+    """
+    Clones one object in another.
+    """
+
     for field in from_object._meta.get_fields():
         field_name = field.name
 
@@ -64,3 +68,17 @@ def clone_from_to(from_object, to_object, exclude_fields: list):
         setattr(to_object, field_name, package_field_value)
 
     return to_object
+
+
+def exists_in_execution_cache(key: str) -> bool:
+    """
+    
+    """
+    pass
+
+
+def add_to_execution_cache(key: str, expiration_time: int = settings.REDIS_DEFAULT_EXPIRATION_TIME):
+    """
+
+    """
+    pass

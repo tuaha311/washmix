@@ -7,6 +7,7 @@ from dramatiq.brokers.redis import RedisBroker
 from environs import Env
 from periodiq import PeriodiqMiddleware
 from phonenumbers import PhoneNumberFormat
+from redis import StrictRedis
 from sendgrid.helpers.mail import Email
 
 env = Env()
@@ -373,12 +374,25 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = "0S9ZLeT-5FBXh9magVyiDlBG"
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ["profile", "email", "openid"]
 
 
+#########
+# REDIS #
+#########
+
+REDIS_HOST = env.str("REDIS_HOST", "redis://localhost")
+REDIS_PORT = env.str("REDIS_PORT", "6379")
+REDIS_DB = 0
+REDIS_URL = f"{REDIS_HOST}:{REDIS_PORT}"
+REDIS_CLIENT = StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB,)
+REDIS_DEFAULT_EXPIRATION_TIME = 60 * 60 * 24
+
+
 ############
 # DRAMATIQ #
 ############
 
-REDIS_URL = env.str("REDIS_URL", "redis://localhost:6379/0")
-DRAMATIQ_BROKER = RedisBroker(url=REDIS_URL)
+DRAMATIQ_DB = 1
+DRAMATIQ_REDIS_URL = f"{REDIS_URL}/{DRAMATIQ_DB}"
+DRAMATIQ_BROKER = RedisBroker(url=DRAMATIQ_REDIS_URL)
 
 # define list of modules with tasks
 DRAMATIQ_IMPORT_MODULES = [

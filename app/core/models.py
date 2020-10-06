@@ -1,7 +1,4 @@
-from django.conf import settings
 from django.db import models
-
-import phonenumbers
 
 from core.common_models import Common
 from core.validators import validate_phone
