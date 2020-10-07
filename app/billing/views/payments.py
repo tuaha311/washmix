@@ -10,7 +10,6 @@ from rest_framework.status import HTTP_200_OK
 
 from billing.models import Invoice
 from billing.serializers import payments
-from billing.services.checkout import CheckoutService
 from billing.services.payments import PaymentService
 from users.models import Client
 
@@ -64,7 +63,7 @@ class StripeWebhookView(GenericAPIView):
         except ObjectDoesNotExist:
             return Response({}, status=HTTP_200_OK)
 
-        service = CheckoutService(client, request, invoice)
-        service.checkout(payment)
+        service = PaymentService(client, invoice)
+        service.confirm(payment)
 
         return Response({}, status=HTTP_200_OK)
