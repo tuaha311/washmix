@@ -18,7 +18,6 @@ class PaymentService:
 
     This service main core capabilities:
         - Save user's card in Stripe
-        - Save user's card list in WashMix
         - Charge user's card immediately
         - Charge user's card later
         - Confirm payment

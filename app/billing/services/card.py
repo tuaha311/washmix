@@ -6,6 +6,15 @@ from users.models import Client
 
 
 class CardService:
+    """
+    Main purpose of this service is to save user's card list in WashMix
+    for later billing.
+
+    Capabilities:
+        - Save user's card list in WashMix
+        - Update main card
+    """
+
     def __init__(self, client: Client, invoice: Invoice):
         self._client = client
         self._invoice = invoice
