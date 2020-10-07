@@ -34,3 +34,10 @@ class CardService:
             )
 
         return self._client.card_list.all()
+
+    @classmethod
+    def update_main_card(cls, client: Client, card: Card):
+        client.main_card = card
+        client.save()
+
+        return card

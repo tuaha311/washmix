@@ -10,6 +10,7 @@ from rest_framework.status import HTTP_200_OK
 
 from billing.models import Invoice
 from billing.serializers import payments
+from billing.services.invoice import InvoiceService
 from billing.services.payments import PaymentService
 from users.models import Client
 
@@ -26,9 +27,10 @@ class CreateIntentView(GenericAPIView):
         is_save_card = serializer.validated_data["is_save_card"]
         invoice = serializer.validated_data["invoice"]
 
-        service = PaymentService(client, invoice)
-        service.update_invoice(is_save_card)
-        intent = service.create_intent()
+        payment_service = PaymentService(client, invoice)
+
+        InvoiceService.update_invoice(invoice, is_save_card)
+        intent = payment_service.create_intent()
 
         response_body = {"public_key": settings.STRIPE_PUBLIC_KEY, "secret": intent.client_secret}
         response = self.response_serializer_class(response_body).data

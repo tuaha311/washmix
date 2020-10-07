@@ -8,10 +8,6 @@ class InvoiceService:
     def __init__(self, client: Client):
         self._client = client
 
-    def update_invoice(self, is_save_card: bool):
-        self._invoice.is_save_card = is_save_card
-        self._invoice.save()
-
     def get_or_create(self, amount: int):
         # invoice without transaction by default not paid
         # and we are looking for them
@@ -25,5 +21,12 @@ class InvoiceService:
             invoice.amount = amount
             invoice.discount = settings.DEFAULT_DISCOUNT
             invoice.save()
+
+        return invoice
+
+    @classmethod
+    def update_invoice(cls, invoice, is_save_card: bool) -> Invoice:
+        invoice.is_save_card = is_save_card
+        invoice.save()
 
         return invoice

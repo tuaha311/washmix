@@ -6,6 +6,7 @@ from stripe import PaymentIntent, PaymentMethod, SetupIntent
 from stripe.error import StripeError
 
 from billing.models import Invoice, Transaction
+from billing.services.card import CardService
 from billing.stripe_helper import StripeHelper
 from billing.utils import create_debit
 from users.models import Client
@@ -27,6 +28,7 @@ class PaymentService:
         self._client = client
         self._invoice = invoice
         self._stripe_helper = StripeHelper(client)
+        self._card_service = CardService(client, invoice)
 
     def create_intent(self) -> Union[SetupIntent, PaymentIntent]:
         """
@@ -76,8 +78,7 @@ class PaymentService:
                     invoice=self._invoice,
                 )
 
-                self._client.main_card = item
-                self._client.save()
+                self._card_service.update_main_card(self._client, item)
 
                 # we are exiting from the cycle at first successful attempt
                 break
