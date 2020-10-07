@@ -1,8 +1,6 @@
-from typing import List, Optional
-
 from rest_framework.request import Request
 
-from billing.models import Card, Invoice
+from billing.models import Invoice
 from billing.serializers.checkout import CheckoutAddressSerializer, CheckoutUserSerializer
 from billing.stripe_helper import StripeHelper
 from core.services.main_attribute import MainAttributeService
@@ -16,27 +14,6 @@ class CheckoutService:
         self._request = request
         self._stripe_helper = StripeHelper(client)
         self._invoice = invoice
-
-    def save_card_list(self) -> Optional[List[Card]]:
-        if not self._invoice.is_save_card:
-            return None
-
-        # we are saving all cards received from Stripe
-        # in most cases it is only 1 card.
-        payment_method_list = self._stripe_helper.payment_method_list
-
-        for item in payment_method_list:
-            card, _ = Card.objects.get_or_create(
-                client=self._client,
-                stripe_id=item.id,
-                defaults={
-                    "last": item.card.last4,
-                    "expiration_month": item.card.exp_month,
-                    "expiration_year": item.card.exp_year,
-                },
-            )
-
-        return self._client.card_list.all()
 
     def fill_profile(self, user: dict) -> Client:
         serializer = CheckoutUserSerializer(self._client, data=user, partial=True)

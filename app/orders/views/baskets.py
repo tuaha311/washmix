@@ -50,13 +50,3 @@ class BasketView(GenericAPIView):
         response = self.response_serializer_class(basket).data
 
         return Response(response)
-
-
-class CheckoutView(GenericAPIView):
-    def post(self, request: Request, *args, **kwargs):
-        client = request.user.client
-
-        service = BasketService(client)
-        service.checkout()
-
-        return Response()

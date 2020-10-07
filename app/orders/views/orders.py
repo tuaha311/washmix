@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from orders.serializers.orders import OrderSerializer
+from orders.services.basket import BasketService
 
 
 class OrderViewSet(ModelViewSet):
@@ -24,4 +25,14 @@ class OrderRepeatView(GenericAPIView):
     """
 
     def post(self, request: Request, *args, **kwargs):
+        return Response()
+
+
+class OrderCheckoutView(GenericAPIView):
+    def post(self, request: Request, *args, **kwargs):
+        client = request.user.client
+
+        service = BasketService(client)
+        service.checkout()
+
         return Response()

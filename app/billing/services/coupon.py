@@ -3,7 +3,7 @@ from billing.models import Coupon, Invoice
 PERCENTAGE = 100
 
 
-class CouponHolder:
+class CouponService:
     def __init__(self, invoice: Invoice, coupon: Coupon):
         self._invoice = invoice
         self._coupon = coupon

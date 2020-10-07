@@ -11,5 +11,5 @@ urlpatterns = [
     # TODO удалить и оставить только в invoices
     path("apply_coupon/", coupons.ApplyCouponView.as_view(), name="apply-coupon"),
     # 3. submit all your personal and address data
-    path("checkout/", checkout.CheckoutView.as_view(), name="checkout"),
+    path("checkout/", checkout.SubscriptionCheckoutView.as_view(), name="checkout"),
 ]

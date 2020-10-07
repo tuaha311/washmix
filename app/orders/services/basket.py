@@ -4,14 +4,20 @@ from django.db.transaction import atomic
 
 from rest_framework import serializers
 
-from billing.models import Invoice
-from billing.services.invoice import InvoiceService
-from orders.models import Basket, Order, Price, Quantity
-from orders.services.order import OrderService
+from orders.models import Basket, Price, Quantity
 from users.models import Client
 
 
 class BasketService:
+    """
+    This service is responsible for basket (card) business logic.
+    Using this service you can:
+        - Add items to basket
+        - Remove items from basket
+        - Clear basket
+        - See items in basket
+    """
+
     def __init__(self, client: Client):
         self._client = client
 
@@ -48,16 +54,6 @@ class BasketService:
     def clear_all(self):
         self.basket.item_list.set([])
         self.basket.save()
-
-    def checkout(self):
-        invoice_service = InvoiceService(self._client)
-        order_service = OrderService(self._client)
-
-        with atomic():
-            invoice = invoice_service.get_or_create(self.basket.amount)
-            order = order_service.checkout(invoice)
-
-        return order
 
     @property
     def basket(self) -> Basket:

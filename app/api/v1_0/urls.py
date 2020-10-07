@@ -55,8 +55,8 @@ urlpatterns = [
     path("billing/", include("billing.urls.billing")),
     path("subscription/", include("billing.urls.subscription")),
     path("invoices/", include("billing.urls.invoices")),
-    path("basket/", include("orders.urls")),
-    path("orders/repeat/", orders.OrderRepeatView.as_view(), name="order-repeat"),
+    path("basket/", include("orders.urls.baskets")),
+    path("orders/", include("orders.urls.orders")),
     # default routes has a higher priority under router URLS
     *router.urls,
     # open methods without authorization (landing page, authorization, health check)

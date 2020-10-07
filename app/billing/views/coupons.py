@@ -3,7 +3,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from billing.serializers.coupons import ApplyCouponResponseSerializer, ApplyCouponSerializer
-from billing.services.coupon import CouponHolder
+from billing.services.coupon import CouponService
 
 
 class ApplyCouponView(GenericAPIView):
@@ -19,7 +19,7 @@ class ApplyCouponView(GenericAPIView):
         coupon = coupon_serializer.validated_data["coupon"]
         invoice = coupon_serializer.validated_data["invoice"]
 
-        holder = CouponHolder(invoice, coupon)
+        holder = CouponService(invoice, coupon)
         invoice = holder.apply_coupon()
 
         response = self.response_serializer_class(invoice).data
