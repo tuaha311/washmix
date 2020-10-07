@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from billing.models import Invoice, Package
+from billing.models import Invoice
+from subscriptions.models import Package
 
 
 class ChooseSerializer(serializers.Serializer):

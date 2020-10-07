@@ -20,9 +20,6 @@ schema_view = get_schema_view(
 
 
 local_patterns = [
-    # OpenAPI docs
-    path("openapi/", schema_view.without_ui(cache_timeout=0), name="openapi-schema",),
-    # Static files serving
     *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
     *static(settings.STATIC_URL, document_root=settings.STATIC_ROOT),
 ]

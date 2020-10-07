@@ -38,7 +38,7 @@ class Order(Common):
     )
     # can be null only after delivery removing
     delivery = models.ForeignKey(
-        "pickups.Delivery",
+        "deliveries.Delivery",
         verbose_name="delivery",
         on_delete=models.SET_NULL,
         null=True,

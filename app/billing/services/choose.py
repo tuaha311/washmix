@@ -1,8 +1,8 @@
 from django.db.models import ObjectDoesNotExist
 from django.db.transaction import atomic
 
-from billing.models import Package, Subscription
 from billing.services.invoice import InvoiceService
+from subscriptions.models import Package, Subscription
 from users.models import Client
 
 

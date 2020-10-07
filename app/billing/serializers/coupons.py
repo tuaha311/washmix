@@ -3,7 +3,7 @@ from django.conf import settings
 from rest_framework import serializers
 
 from api.fields import InvoiceField
-from billing.models import Coupon, Invoice, Package
+from billing.models import Coupon, Invoice
 
 
 class ApplyCouponSerializer(serializers.Serializer):

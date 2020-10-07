@@ -51,7 +51,8 @@ LOCAL_APPS = [
     "billing",
     "locations",
     "notifications",
-    "pickups",
+    "deliveries",
+    "subscriptions",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -400,7 +401,7 @@ DRAMATIQ_BROKER = RedisBroker(url=DRAMATIQ_REDIS_URL)
 DRAMATIQ_IMPORT_MODULES = [
     "core.tasks",
     "billing.tasks",
-    "pickups.tasks",
+    "deliveries.tasks",
 ]
 DRAMATIQ_BROKER.add_middleware(PeriodiqMiddleware(skip_delay=30))
 dramatiq.set_broker(DRAMATIQ_BROKER)

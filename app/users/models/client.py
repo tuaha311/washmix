@@ -12,7 +12,7 @@ from users.managers import ClientManager
 class Client(Stripeable, Common):
     """
     ONLINE-ONLY clients of application. They use our web-application to
-    make orders and request pickups. Our main targeted audience.
+    make orders and request deliveries. Our main targeted audience.
 
     To this client we can offer a full-featured web-application without any
     restrictions. This kind of client can login into application, because they
@@ -25,7 +25,7 @@ class Client(Stripeable, Common):
         related_name="client",
     )
     subscription = models.OneToOneField(
-        "billing.Subscription",
+        "subscriptions.Subscription",
         verbose_name="subscription of service",
         related_name="client",
         on_delete=models.CASCADE,

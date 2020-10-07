@@ -10,7 +10,7 @@ from rest_framework.status import HTTP_200_OK
 
 from api.v1_0.serializers.twilio import TwilioFlexWebhookSerializer
 from core.utils import get_clean_number
-from pickups.services.twilio import TwilioFlexService
+from deliveries.services.twilio import TwilioFlexService
 
 
 class TwilioFlexWebhookView(GenericAPIView):

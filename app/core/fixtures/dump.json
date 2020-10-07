@@ -212,7 +212,7 @@
     }
   },
   {
-    "model": "billing.package",
+    "model": "subscriptions.package",
     "pk": 1,
     "fields": {
       "created": "2020-10-01T01:59:40.438Z",
@@ -232,7 +232,7 @@
     }
   },
   {
-    "model": "billing.package",
+    "model": "subscriptions.package",
     "pk": 2,
     "fields": {
       "created": "2020-10-01T01:59:40.457Z",
@@ -252,7 +252,7 @@
     }
   },
   {
-    "model": "billing.package",
+    "model": "subscriptions.package",
     "pk": 3,
     "fields": {
       "created": "2020-10-01T01:59:40.481Z",
