@@ -26,7 +26,7 @@ class BasketService:
 
         if action == settings.BASKET_REMOVE and quantity.count < count:
             raise serializers.ValidationError(
-                detail="You can't remove more items that in basket.",
+                detail="You can't remove more items than in basket.",
                 code="cant_perform_item_remove",
             )
 
