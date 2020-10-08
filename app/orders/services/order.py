@@ -1,6 +1,5 @@
 from django.db.transaction import atomic
 
-from billing.models import Invoice
 from billing.services.invoice import InvoiceService
 from orders.models import Order
 from orders.services import delivery, discount, extras
@@ -14,14 +13,14 @@ class OrderService:
         self._delivery_service = delivery.DeliveryService(client)
         self._discount_service = discount.DiscountService(client)
         self._extras_service = extras.ExtrasService(client)
+        self._invoice_service = InvoiceService(self._client)
+        self._basket_service = BasketService(self._client)
 
     def checkout(self):
-        invoice_service = InvoiceService(self._client)
-        basket_service = BasketService(self._client)
-        basket = basket_service.basket
+        basket = self._basket_service.basket
 
         with atomic():
-            invoice = invoice_service.get_or_create(basket.amount)
+            invoice = self._invoice_service.get_or_create(basket.amount)
             order = Order.objects.create(client=self._client, invoice=invoice, basket=basket,)
 
     @property

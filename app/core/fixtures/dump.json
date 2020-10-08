@@ -3133,7 +3133,7 @@
     "fields": {
       "created": "2020-10-01T01:59:43.223Z",
       "changed": "2020-10-01T01:59:43.223Z",
-      "value": 695,
+      "amount": 695,
       "service": 1,
       "item": 1,
       "count": 1,
@@ -3146,7 +3146,7 @@
     "fields": {
       "created": "2020-10-01T01:59:43.268Z",
       "changed": "2020-10-01T01:59:43.268Z",
-      "value": 695,
+      "amount": 695,
       "service": 1,
       "item": 2,
       "count": 1,
@@ -3159,7 +3159,7 @@
     "fields": {
       "created": "2020-10-01T01:59:43.308Z",
       "changed": "2020-10-01T01:59:43.308Z",
-      "value": 695,
+      "amount": 695,
       "service": 1,
       "item": 3,
       "count": 1,
@@ -3172,7 +3172,7 @@
     "fields": {
       "created": "2020-10-01T01:59:43.354Z",
       "changed": "2020-10-01T01:59:43.354Z",
-      "value": 595,
+      "amount": 595,
       "service": 1,
       "item": 4,
       "count": 1,
@@ -3185,7 +3185,7 @@
     "fields": {
       "created": "2020-10-01T01:59:43.401Z",
       "changed": "2020-10-01T01:59:43.401Z",
-      "value": 595,
+      "amount": 595,
       "service": 1,
       "item": 5,
       "count": 1,
@@ -3198,7 +3198,7 @@
     "fields": {
       "created": "2020-10-01T01:59:43.455Z",
       "changed": "2020-10-01T01:59:43.455Z",
-      "value": 395,
+      "amount": 395,
       "service": 1,
       "item": 6,
       "count": 1,
@@ -3211,7 +3211,7 @@
     "fields": {
       "created": "2020-10-01T01:59:43.496Z",
       "changed": "2020-10-01T01:59:43.496Z",
-      "value": 695,
+      "amount": 695,
       "service": 1,
       "item": 7,
       "count": 1,
@@ -3224,7 +3224,7 @@
     "fields": {
       "created": "2020-10-01T01:59:43.534Z",
       "changed": "2020-10-01T01:59:43.534Z",
-      "value": 595,
+      "amount": 595,
       "service": 1,
       "item": 8,
       "count": 1,
@@ -3237,7 +3237,7 @@
     "fields": {
       "created": "2020-10-01T01:59:43.580Z",
       "changed": "2020-10-01T01:59:43.580Z",
-      "value": 595,
+      "amount": 595,
       "service": 1,
       "item": 9,
       "count": 1,
@@ -3250,7 +3250,7 @@
     "fields": {
       "created": "2020-10-01T01:59:43.634Z",
       "changed": "2020-10-01T01:59:43.634Z",
-      "value": 795,
+      "amount": 795,
       "service": 1,
       "item": 10,
       "count": 1,
@@ -3263,7 +3263,7 @@
     "fields": {
       "created": "2020-10-01T01:59:43.713Z",
       "changed": "2020-10-01T01:59:43.713Z",
-      "value": 595,
+      "amount": 595,
       "service": 2,
       "item": 11,
       "count": 1,
@@ -3276,7 +3276,7 @@
     "fields": {
       "created": "2020-10-01T01:59:43.761Z",
       "changed": "2020-10-01T01:59:43.761Z",
-      "value": 695,
+      "amount": 695,
       "service": 2,
       "item": 12,
       "count": 1,
@@ -3289,7 +3289,7 @@
     "fields": {
       "created": "2020-10-01T01:59:43.820Z",
       "changed": "2020-10-01T01:59:43.820Z",
-      "value": 1295,
+      "amount": 1295,
       "service": 2,
       "item": 13,
       "count": 1,
@@ -3302,7 +3302,7 @@
     "fields": {
       "created": "2020-10-01T01:59:43.881Z",
       "changed": "2020-10-01T01:59:43.881Z",
-      "value": 1495,
+      "amount": 1495,
       "service": 2,
       "item": 14,
       "count": 1,
@@ -3315,7 +3315,7 @@
     "fields": {
       "created": "2020-10-01T01:59:43.926Z",
       "changed": "2020-10-01T01:59:43.926Z",
-      "value": 1695,
+      "amount": 1695,
       "service": 2,
       "item": 15,
       "count": 1,
@@ -3328,7 +3328,7 @@
     "fields": {
       "created": "2020-10-01T01:59:43.971Z",
       "changed": "2020-10-01T01:59:43.971Z",
-      "value": 1995,
+      "amount": 1995,
       "service": 2,
       "item": 16,
       "count": 1,
@@ -3341,7 +3341,7 @@
     "fields": {
       "created": "2020-10-01T01:59:44.012Z",
       "changed": "2020-10-01T01:59:44.012Z",
-      "value": 1395,
+      "amount": 1395,
       "service": 2,
       "item": 17,
       "count": 1,
@@ -3354,7 +3354,7 @@
     "fields": {
       "created": "2020-10-01T01:59:44.046Z",
       "changed": "2020-10-01T01:59:44.777Z",
-      "value": 2495,
+      "amount": 2495,
       "service": 2,
       "item": 18,
       "count": 1,
@@ -3367,7 +3367,7 @@
     "fields": {
       "created": "2020-10-01T01:59:44.104Z",
       "changed": "2020-10-01T01:59:44.104Z",
-      "value": 3995,
+      "amount": 3995,
       "service": 2,
       "item": 19,
       "count": 1,
@@ -3380,7 +3380,7 @@
     "fields": {
       "created": "2020-10-01T01:59:44.182Z",
       "changed": "2020-10-01T01:59:44.183Z",
-      "value": 1595,
+      "amount": 1595,
       "service": 2,
       "item": 20,
       "count": 1,
@@ -3393,7 +3393,7 @@
     "fields": {
       "created": "2020-10-01T01:59:44.217Z",
       "changed": "2020-10-01T01:59:44.217Z",
-      "value": 4995,
+      "amount": 4995,
       "service": 2,
       "item": 21,
       "count": 1,
@@ -3406,7 +3406,7 @@
     "fields": {
       "created": "2020-10-01T01:59:44.255Z",
       "changed": "2020-10-01T01:59:44.255Z",
-      "value": 695,
+      "amount": 695,
       "service": 2,
       "item": 2,
       "count": 1,
@@ -3419,7 +3419,7 @@
     "fields": {
       "created": "2020-10-01T01:59:44.301Z",
       "changed": "2020-10-01T01:59:44.302Z",
-      "value": 695,
+      "amount": 695,
       "service": 2,
       "item": 3,
       "count": 1,
@@ -3432,7 +3432,7 @@
     "fields": {
       "created": "2020-10-01T01:59:44.344Z",
       "changed": "2020-10-01T01:59:44.344Z",
-      "value": 595,
+      "amount": 595,
       "service": 2,
       "item": 4,
       "count": 1,
@@ -3445,7 +3445,7 @@
     "fields": {
       "created": "2020-10-01T01:59:44.387Z",
       "changed": "2020-10-01T01:59:44.387Z",
-      "value": 595,
+      "amount": 595,
       "service": 2,
       "item": 22,
       "count": 1,
@@ -3458,7 +3458,7 @@
     "fields": {
       "created": "2020-10-01T01:59:44.426Z",
       "changed": "2020-10-01T01:59:44.426Z",
-      "value": 795,
+      "amount": 795,
       "service": 2,
       "item": 23,
       "count": 1,
@@ -3471,7 +3471,7 @@
     "fields": {
       "created": "2020-10-01T01:59:44.464Z",
       "changed": "2020-10-01T01:59:44.464Z",
-      "value": 595,
+      "amount": 595,
       "service": 2,
       "item": 5,
       "count": 1,
@@ -3484,7 +3484,7 @@
     "fields": {
       "created": "2020-10-01T01:59:44.512Z",
       "changed": "2020-10-01T01:59:44.512Z",
-      "value": 895,
+      "amount": 895,
       "service": 2,
       "item": 24,
       "count": 1,
@@ -3497,7 +3497,7 @@
     "fields": {
       "created": "2020-10-01T01:59:44.559Z",
       "changed": "2020-10-01T01:59:44.560Z",
-      "value": 595,
+      "amount": 595,
       "service": 2,
       "item": 25,
       "count": 1,
@@ -3510,7 +3510,7 @@
     "fields": {
       "created": "2020-10-01T01:59:44.606Z",
       "changed": "2020-10-01T01:59:44.606Z",
-      "value": 595,
+      "amount": 595,
       "service": 2,
       "item": 8,
       "count": 1,
@@ -3523,7 +3523,7 @@
     "fields": {
       "created": "2020-10-01T01:59:44.645Z",
       "changed": "2020-10-01T01:59:44.645Z",
-      "value": 595,
+      "amount": 595,
       "service": 2,
       "item": 9,
       "count": 1,
@@ -3536,7 +3536,7 @@
     "fields": {
       "created": "2020-10-01T01:59:44.688Z",
       "changed": "2020-10-01T01:59:44.688Z",
-      "value": 595,
+      "amount": 595,
       "service": 2,
       "item": 26,
       "count": 1,
@@ -3549,7 +3549,7 @@
     "fields": {
       "created": "2020-10-01T01:59:44.742Z",
       "changed": "2020-10-01T01:59:44.742Z",
-      "value": 795,
+      "amount": 795,
       "service": 2,
       "item": 27,
       "count": 1,
@@ -3562,7 +3562,7 @@
     "fields": {
       "created": "2020-10-01T01:59:44.821Z",
       "changed": "2020-10-01T01:59:44.821Z",
-      "value": 595,
+      "amount": 595,
       "service": 2,
       "item": 28,
       "count": 1,
@@ -3575,7 +3575,7 @@
     "fields": {
       "created": "2020-10-01T01:59:44.868Z",
       "changed": "2020-10-01T01:59:44.868Z",
-      "value": 795,
+      "amount": 795,
       "service": 2,
       "item": 29,
       "count": 1,
@@ -3588,7 +3588,7 @@
     "fields": {
       "created": "2020-10-01T01:59:44.916Z",
       "changed": "2020-10-01T01:59:44.916Z",
-      "value": 995,
+      "amount": 995,
       "service": 2,
       "item": 30,
       "count": 1,
@@ -3601,7 +3601,7 @@
     "fields": {
       "created": "2020-10-01T01:59:44.958Z",
       "changed": "2020-10-01T01:59:44.958Z",
-      "value": 1995,
+      "amount": 1995,
       "service": 2,
       "item": 31,
       "count": 1,
@@ -3614,7 +3614,7 @@
     "fields": {
       "created": "2020-10-01T01:59:45.003Z",
       "changed": "2020-10-01T01:59:45.003Z",
-      "value": 2495,
+      "amount": 2495,
       "service": 2,
       "item": 32,
       "count": 1,
@@ -3627,7 +3627,7 @@
     "fields": {
       "created": "2020-10-01T01:59:45.047Z",
       "changed": "2020-10-01T01:59:45.047Z",
-      "value": 495,
+      "amount": 495,
       "service": 2,
       "item": 33,
       "count": 1,
@@ -3640,7 +3640,7 @@
     "fields": {
       "created": "2020-10-01T01:59:45.085Z",
       "changed": "2020-10-01T01:59:45.085Z",
-      "value": 2995,
+      "amount": 2995,
       "service": 2,
       "item": 34,
       "count": 1,
@@ -3653,7 +3653,7 @@
     "fields": {
       "created": "2020-10-01T01:59:45.142Z",
       "changed": "2020-10-01T01:59:45.142Z",
-      "value": 3495,
+      "amount": 3495,
       "service": 2,
       "item": 35,
       "count": 1,
@@ -3666,7 +3666,7 @@
     "fields": {
       "created": "2020-10-01T01:59:45.186Z",
       "changed": "2020-10-01T01:59:45.186Z",
-      "value": 995,
+      "amount": 995,
       "service": 2,
       "item": 36,
       "count": 1,
@@ -3679,7 +3679,7 @@
     "fields": {
       "created": "2020-10-01T01:59:45.233Z",
       "changed": "2020-10-01T01:59:45.233Z",
-      "value": 595,
+      "amount": 595,
       "service": 2,
       "item": 37,
       "count": 1,
@@ -3692,7 +3692,7 @@
     "fields": {
       "created": "2020-10-01T01:59:45.306Z",
       "changed": "2020-10-01T01:59:45.306Z",
-      "value": 399,
+      "amount": 399,
       "service": 3,
       "item": 38,
       "count": 1,
@@ -3705,7 +3705,7 @@
     "fields": {
       "created": "2020-10-01T01:59:45.362Z",
       "changed": "2020-10-01T01:59:45.362Z",
-      "value": 7900,
+      "amount": 7900,
       "service": 3,
       "item": 39,
       "count": 1,
@@ -3718,7 +3718,7 @@
     "fields": {
       "created": "2020-10-01T01:59:45.411Z",
       "changed": "2020-10-01T01:59:45.411Z",
-      "value": 14800,
+      "amount": 14800,
       "service": 3,
       "item": 40,
       "count": 1,
@@ -3731,7 +3731,7 @@
     "fields": {
       "created": "2020-10-01T01:59:45.453Z",
       "changed": "2020-10-01T01:59:45.453Z",
-      "value": 20700,
+      "amount": 20700,
       "service": 3,
       "item": 41,
       "count": 3,
@@ -3744,7 +3744,7 @@
     "fields": {
       "created": "2020-10-01T01:59:45.512Z",
       "changed": "2020-10-01T01:59:45.512Z",
-      "value": 25600,
+      "amount": 25600,
       "service": 3,
       "item": 42,
       "count": 1,
@@ -3757,7 +3757,7 @@
     "fields": {
       "created": "2020-10-01T01:59:45.562Z",
       "changed": "2020-10-01T01:59:45.562Z",
-      "value": 4900,
+      "amount": 4900,
       "service": 3,
       "item": 43,
       "count": 1,
@@ -3770,7 +3770,7 @@
     "fields": {
       "created": "2020-10-01T01:59:45.627Z",
       "changed": "2020-10-01T01:59:45.627Z",
-      "value": 2695,
+      "amount": 2695,
       "service": 4,
       "item": 44,
       "count": 1,
@@ -3783,7 +3783,7 @@
     "fields": {
       "created": "2020-10-01T01:59:45.668Z",
       "changed": "2020-10-01T01:59:45.668Z",
-      "value": 1295,
+      "amount": 1295,
       "service": 4,
       "item": 45,
       "count": 1,
@@ -3796,7 +3796,7 @@
     "fields": {
       "created": "2020-10-01T01:59:45.714Z",
       "changed": "2020-10-01T01:59:45.714Z",
-      "value": 2495,
+      "amount": 2495,
       "service": 4,
       "item": 46,
       "count": 1,
@@ -3809,7 +3809,7 @@
     "fields": {
       "created": "2020-10-01T01:59:45.768Z",
       "changed": "2020-10-01T01:59:45.768Z",
-      "value": 2995,
+      "amount": 2995,
       "service": 4,
       "item": 47,
       "count": 1,
@@ -3822,7 +3822,7 @@
     "fields": {
       "created": "2020-10-01T01:59:45.827Z",
       "changed": "2020-10-01T01:59:45.827Z",
-      "value": 3495,
+      "amount": 3495,
       "service": 4,
       "item": 48,
       "count": 1,
@@ -3835,7 +3835,7 @@
     "fields": {
       "created": "2020-10-01T01:59:45.865Z",
       "changed": "2020-10-01T01:59:45.865Z",
-      "value": 3995,
+      "amount": 3995,
       "service": 4,
       "item": 49,
       "count": 1,
@@ -3848,7 +3848,7 @@
     "fields": {
       "created": "2020-10-01T01:59:45.913Z",
       "changed": "2020-10-01T01:59:45.913Z",
-      "value": 4495,
+      "amount": 4495,
       "service": 4,
       "item": 50,
       "count": 1,
@@ -3861,7 +3861,7 @@
     "fields": {
       "created": "2020-10-01T01:59:45.963Z",
       "changed": "2020-10-01T01:59:45.963Z",
-      "value": 4995,
+      "amount": 4995,
       "service": 4,
       "item": 51,
       "count": 1,
@@ -3874,7 +3874,7 @@
     "fields": {
       "created": "2020-10-01T01:59:45.999Z",
       "changed": "2020-10-01T01:59:45.999Z",
-      "value": 3995,
+      "amount": 3995,
       "service": 4,
       "item": 52,
       "count": 1,
@@ -3887,7 +3887,7 @@
     "fields": {
       "created": "2020-10-01T01:59:46.046Z",
       "changed": "2020-10-01T01:59:46.046Z",
-      "value": 495,
+      "amount": 495,
       "service": 4,
       "item": 53,
       "count": 1,
@@ -3900,7 +3900,7 @@
     "fields": {
       "created": "2020-10-01T01:59:46.099Z",
       "changed": "2020-10-01T01:59:46.099Z",
-      "value": 895,
+      "amount": 895,
       "service": 4,
       "item": 54,
       "count": 1,
@@ -3913,7 +3913,7 @@
     "fields": {
       "created": "2020-10-01T01:59:46.153Z",
       "changed": "2020-10-01T01:59:46.153Z",
-      "value": 395,
+      "amount": 395,
       "service": 4,
       "item": 55,
       "count": 1,
@@ -3926,7 +3926,7 @@
     "fields": {
       "created": "2020-10-01T01:59:46.213Z",
       "changed": "2020-10-01T01:59:46.213Z",
-      "value": 1995,
+      "amount": 1995,
       "service": 4,
       "item": 56,
       "count": 1,
@@ -3939,7 +3939,7 @@
     "fields": {
       "created": "2020-10-01T01:59:46.255Z",
       "changed": "2020-10-01T01:59:46.255Z",
-      "value": 3995,
+      "amount": 3995,
       "service": 4,
       "item": 57,
       "count": 1,
@@ -3952,7 +3952,7 @@
     "fields": {
       "created": "2020-10-01T01:59:46.317Z",
       "changed": "2020-10-01T01:59:46.317Z",
-      "value": 5995,
+      "amount": 5995,
       "service": 4,
       "item": 58,
       "count": 1,
@@ -3965,7 +3965,7 @@
     "fields": {
       "created": "2020-10-01T01:59:46.367Z",
       "changed": "2020-10-01T01:59:46.367Z",
-      "value": 9995,
+      "amount": 9995,
       "service": 4,
       "item": 59,
       "count": 1,
@@ -3978,7 +3978,7 @@
     "fields": {
       "created": "2020-10-01T01:59:46.417Z",
       "changed": "2020-10-01T01:59:46.417Z",
-      "value": 595,
+      "amount": 595,
       "service": 4,
       "item": 60,
       "count": 1,
@@ -3991,7 +3991,7 @@
     "fields": {
       "created": "2020-10-01T01:59:46.476Z",
       "changed": "2020-10-01T01:59:46.476Z",
-      "value": 795,
+      "amount": 795,
       "service": 4,
       "item": 61,
       "count": 1,
@@ -4004,7 +4004,7 @@
     "fields": {
       "created": "2020-10-01T01:59:46.527Z",
       "changed": "2020-10-01T01:59:46.527Z",
-      "value": 3995,
+      "amount": 3995,
       "service": 4,
       "item": 62,
       "count": 1,
@@ -4017,7 +4017,7 @@
     "fields": {
       "created": "2020-10-01T01:59:46.595Z",
       "changed": "2020-10-01T01:59:46.595Z",
-      "value": 5995,
+      "amount": 5995,
       "service": 4,
       "item": 63,
       "count": 1,
@@ -4030,7 +4030,7 @@
     "fields": {
       "created": "2020-10-01T01:59:46.652Z",
       "changed": "2020-10-01T01:59:46.652Z",
-      "value": 8995,
+      "amount": 8995,
       "service": 4,
       "item": 64,
       "count": 1,
@@ -4043,7 +4043,7 @@
     "fields": {
       "created": "2020-10-01T01:59:46.700Z",
       "changed": "2020-10-01T01:59:46.700Z",
-      "value": 1695,
+      "amount": 1695,
       "service": 4,
       "item": 65,
       "count": 1,
@@ -4056,7 +4056,7 @@
     "fields": {
       "created": "2020-10-01T01:59:46.761Z",
       "changed": "2020-10-01T01:59:46.761Z",
-      "value": 1995,
+      "amount": 1995,
       "service": 4,
       "item": 66,
       "count": 1,
@@ -4069,7 +4069,7 @@
     "fields": {
       "created": "2020-10-01T01:59:46.811Z",
       "changed": "2020-10-01T01:59:46.812Z",
-      "value": 2995,
+      "amount": 2995,
       "service": 4,
       "item": 67,
       "count": 1,
@@ -4082,7 +4082,7 @@
     "fields": {
       "created": "2020-10-01T01:59:46.884Z",
       "changed": "2020-10-01T01:59:46.884Z",
-      "value": 395,
+      "amount": 395,
       "service": 5,
       "item": 68,
       "count": 1,
@@ -4095,7 +4095,7 @@
     "fields": {
       "created": "2020-10-01T01:59:46.922Z",
       "changed": "2020-10-01T01:59:46.999Z",
-      "value": 795,
+      "amount": 795,
       "service": 5,
       "item": 69,
       "count": 1,
@@ -4108,7 +4108,7 @@
     "fields": {
       "created": "2020-10-01T01:59:46.963Z",
       "changed": "2020-10-01T01:59:46.963Z",
-      "value": 995,
+      "amount": 995,
       "service": 5,
       "item": 70,
       "count": 1,
@@ -4121,7 +4121,7 @@
     "fields": {
       "created": "2020-10-01T01:59:47.047Z",
       "changed": "2020-10-01T01:59:47.047Z",
-      "value": 2495,
+      "amount": 2495,
       "service": 5,
       "item": 71,
       "count": 1,
@@ -4134,7 +4134,7 @@
     "fields": {
       "created": "2020-10-01T01:59:47.084Z",
       "changed": "2020-10-01T01:59:47.084Z",
-      "value": 2695,
+      "amount": 2695,
       "service": 5,
       "item": 72,
       "count": 1,
@@ -4147,7 +4147,7 @@
     "fields": {
       "created": "2020-10-01T01:59:47.133Z",
       "changed": "2020-10-01T01:59:47.133Z",
-      "value": 2995,
+      "amount": 2995,
       "service": 5,
       "item": 73,
       "count": 1,
@@ -4160,7 +4160,7 @@
     "fields": {
       "created": "2020-10-01T01:59:47.165Z",
       "changed": "2020-10-01T01:59:47.165Z",
-      "value": 4995,
+      "amount": 4995,
       "service": 5,
       "item": 74,
       "count": 1,
@@ -4173,7 +4173,7 @@
     "fields": {
       "created": "2020-10-01T01:59:47.204Z",
       "changed": "2020-10-01T01:59:47.204Z",
-      "value": 9995,
+      "amount": 9995,
       "service": 5,
       "item": 75,
       "count": 1,
@@ -4186,7 +4186,7 @@
     "fields": {
       "created": "2020-10-01T01:59:47.249Z",
       "changed": "2020-10-01T01:59:47.249Z",
-      "value": 29995,
+      "amount": 29995,
       "service": 5,
       "item": 76,
       "count": 1,
@@ -4199,7 +4199,7 @@
     "fields": {
       "created": "2020-10-01T01:59:47.297Z",
       "changed": "2020-10-01T01:59:47.298Z",
-      "value": 14995,
+      "amount": 14995,
       "service": 5,
       "item": 77,
       "count": 1,
@@ -4212,7 +4212,7 @@
     "fields": {
       "created": "2020-10-01T01:59:47.357Z",
       "changed": "2020-10-01T01:59:47.357Z",
-      "value": 6995,
+      "amount": 6995,
       "service": 5,
       "item": 78,
       "count": 1,
@@ -4225,7 +4225,7 @@
     "fields": {
       "created": "2020-10-01T01:59:47.408Z",
       "changed": "2020-10-01T01:59:47.408Z",
-      "value": 6995,
+      "amount": 6995,
       "service": 5,
       "item": 79,
       "count": 1,
@@ -4238,7 +4238,7 @@
     "fields": {
       "created": "2020-10-01T01:59:47.455Z",
       "changed": "2020-10-01T01:59:47.455Z",
-      "value": 14995,
+      "amount": 14995,
       "service": 5,
       "item": 80,
       "count": 1,
@@ -4251,7 +4251,7 @@
     "fields": {
       "created": "2020-10-01T01:59:47.495Z",
       "changed": "2020-10-01T01:59:47.495Z",
-      "value": 29995,
+      "amount": 29995,
       "service": 5,
       "item": 81,
       "count": 1,
@@ -4264,7 +4264,7 @@
     "fields": {
       "created": "2020-10-01T01:59:47.541Z",
       "changed": "2020-10-01T01:59:47.541Z",
-      "value": 6995,
+      "amount": 6995,
       "service": 5,
       "item": 82,
       "count": 1,
@@ -4277,7 +4277,7 @@
     "fields": {
       "created": "2020-10-01T01:59:47.594Z",
       "changed": "2020-10-01T01:59:47.594Z",
-      "value": 6995,
+      "amount": 6995,
       "service": 5,
       "item": 83,
       "count": 1,
@@ -4290,7 +4290,7 @@
     "fields": {
       "created": "2020-10-01T01:59:47.641Z",
       "changed": "2020-10-01T01:59:47.641Z",
-      "value": 14995,
+      "amount": 14995,
       "service": 5,
       "item": 84,
       "count": 1,
@@ -4303,7 +4303,7 @@
     "fields": {
       "created": "2020-10-01T01:59:47.687Z",
       "changed": "2020-10-01T01:59:47.687Z",
-      "value": 29995,
+      "amount": 29995,
       "service": 5,
       "item": 85,
       "count": 1,
@@ -4316,7 +4316,7 @@
     "fields": {
       "created": "2020-10-01T01:59:47.727Z",
       "changed": "2020-10-01T01:59:47.727Z",
-      "value": 6995,
+      "amount": 6995,
       "service": 5,
       "item": 86,
       "count": 1,
@@ -4329,7 +4329,7 @@
     "fields": {
       "created": "2020-10-01T01:59:47.768Z",
       "changed": "2020-10-01T01:59:47.768Z",
-      "value": 6995,
+      "amount": 6995,
       "service": 5,
       "item": 87,
       "count": 1,
@@ -4342,7 +4342,7 @@
     "fields": {
       "created": "2020-10-01T01:59:47.810Z",
       "changed": "2020-10-01T01:59:47.810Z",
-      "value": 14995,
+      "amount": 14995,
       "service": 5,
       "item": 88,
       "count": 1,
@@ -4355,7 +4355,7 @@
     "fields": {
       "created": "2020-10-01T01:59:47.857Z",
       "changed": "2020-10-01T01:59:47.857Z",
-      "value": 29995,
+      "amount": 29995,
       "service": 5,
       "item": 89,
       "count": 1,
@@ -4368,7 +4368,7 @@
     "fields": {
       "created": "2020-10-01T01:59:47.894Z",
       "changed": "2020-10-01T01:59:47.894Z",
-      "value": 4995,
+      "amount": 4995,
       "service": 5,
       "item": 90,
       "count": 1,
@@ -4381,7 +4381,7 @@
     "fields": {
       "created": "2020-10-01T01:59:47.945Z",
       "changed": "2020-10-01T01:59:47.945Z",
-      "value": 6995,
+      "amount": 6995,
       "service": 5,
       "item": 91,
       "count": 1,
@@ -4394,7 +4394,7 @@
     "fields": {
       "created": "2020-10-01T01:59:47.999Z",
       "changed": "2020-10-01T01:59:47.999Z",
-      "value": 5995,
+      "amount": 5995,
       "service": 5,
       "item": 92,
       "count": 1,
@@ -4407,7 +4407,7 @@
     "fields": {
       "created": "2020-10-01T01:59:48.049Z",
       "changed": "2020-10-01T01:59:48.049Z",
-      "value": 6995,
+      "amount": 6995,
       "service": 5,
       "item": 93,
       "count": 1,
@@ -4420,7 +4420,7 @@
     "fields": {
       "created": "2020-10-01T01:59:48.106Z",
       "changed": "2020-10-01T01:59:48.107Z",
-      "value": 9995,
+      "amount": 9995,
       "service": 5,
       "item": 94,
       "count": 1,
@@ -4433,7 +4433,7 @@
     "fields": {
       "created": "2020-10-01T01:59:48.164Z",
       "changed": "2020-10-01T01:59:48.164Z",
-      "value": 7995,
+      "amount": 7995,
       "service": 5,
       "item": 95,
       "count": 1,
@@ -4446,7 +4446,7 @@
     "fields": {
       "created": "2020-10-01T01:59:48.217Z",
       "changed": "2020-10-01T01:59:48.217Z",
-      "value": 14995,
+      "amount": 14995,
       "service": 5,
       "item": 96,
       "count": 1,
@@ -4459,7 +4459,7 @@
     "fields": {
       "created": "2020-10-01T01:59:48.270Z",
       "changed": "2020-10-01T01:59:48.270Z",
-      "value": 19995,
+      "amount": 19995,
       "service": 5,
       "item": 97,
       "count": 1,
@@ -4472,7 +4472,7 @@
     "fields": {
       "created": "2020-10-01T01:59:48.317Z",
       "changed": "2020-10-01T01:59:48.317Z",
-      "value": 9995,
+      "amount": 9995,
       "service": 5,
       "item": 98,
       "count": 1,
@@ -4485,7 +4485,7 @@
     "fields": {
       "created": "2020-10-01T01:59:48.369Z",
       "changed": "2020-10-01T01:59:48.370Z",
-      "value": 7995,
+      "amount": 7995,
       "service": 5,
       "item": 99,
       "count": 1,
@@ -4498,7 +4498,7 @@
     "fields": {
       "created": "2020-10-01T01:59:48.425Z",
       "changed": "2020-10-01T01:59:48.425Z",
-      "value": 14995,
+      "amount": 14995,
       "service": 5,
       "item": 100,
       "count": 1,
@@ -4511,7 +4511,7 @@
     "fields": {
       "created": "2020-10-01T01:59:48.471Z",
       "changed": "2020-10-01T01:59:48.471Z",
-      "value": 5995,
+      "amount": 5995,
       "service": 5,
       "item": 101,
       "count": 1,
@@ -4524,7 +4524,7 @@
     "fields": {
       "created": "2020-10-01T01:59:48.518Z",
       "changed": "2020-10-01T01:59:48.518Z",
-      "value": 29995,
+      "amount": 29995,
       "service": 5,
       "item": 102,
       "count": 1,
@@ -4537,7 +4537,7 @@
     "fields": {
       "created": "2020-10-01T01:59:48.566Z",
       "changed": "2020-10-01T01:59:48.566Z",
-      "value": 1895,
+      "amount": 1895,
       "service": 5,
       "item": 103,
       "count": 1,
@@ -4550,7 +4550,7 @@
     "fields": {
       "created": "2020-10-01T01:59:48.614Z",
       "changed": "2020-10-01T01:59:48.614Z",
-      "value": 2295,
+      "amount": 2295,
       "service": 5,
       "item": 104,
       "count": 1,
@@ -4563,7 +4563,7 @@
     "fields": {
       "created": "2020-10-01T01:59:48.659Z",
       "changed": "2020-10-01T01:59:48.659Z",
-      "value": 2995,
+      "amount": 2995,
       "service": 5,
       "item": 105,
       "count": 1,
@@ -4576,7 +4576,7 @@
     "fields": {
       "created": "2020-10-01T01:59:48.706Z",
       "changed": "2020-10-01T01:59:48.706Z",
-      "value": 2495,
+      "amount": 2495,
       "service": 5,
       "item": 106,
       "count": 1,
@@ -4589,7 +4589,7 @@
     "fields": {
       "created": "2020-10-01T01:59:48.750Z",
       "changed": "2020-10-01T01:59:48.750Z",
-      "value": 1995,
+      "amount": 1995,
       "service": 5,
       "item": 107,
       "count": 1,
@@ -4602,7 +4602,7 @@
     "fields": {
       "created": "2020-10-01T01:59:48.818Z",
       "changed": "2020-10-01T01:59:48.818Z",
-      "value": 2495,
+      "amount": 2495,
       "service": 5,
       "item": 108,
       "count": 1,
@@ -4615,7 +4615,7 @@
     "fields": {
       "created": "2020-10-01T01:59:48.871Z",
       "changed": "2020-10-01T01:59:48.871Z",
-      "value": 2995,
+      "amount": 2995,
       "service": 5,
       "item": 109,
       "count": 1,
@@ -4628,7 +4628,7 @@
     "fields": {
       "created": "2020-10-01T01:59:48.922Z",
       "changed": "2020-10-01T01:59:48.922Z",
-      "value": 2495,
+      "amount": 2495,
       "service": 5,
       "item": 110,
       "count": 1,
@@ -4641,7 +4641,7 @@
     "fields": {
       "created": "2020-10-01T01:59:48.969Z",
       "changed": "2020-10-01T01:59:48.969Z",
-      "value": 1295,
+      "amount": 1295,
       "service": 5,
       "item": 111,
       "count": 1,
@@ -4654,7 +4654,7 @@
     "fields": {
       "created": "2020-10-01T01:59:49.018Z",
       "changed": "2020-10-01T01:59:49.019Z",
-      "value": 2495,
+      "amount": 2495,
       "service": 5,
       "item": 112,
       "count": 1,
@@ -4667,7 +4667,7 @@
     "fields": {
       "created": "2020-10-01T01:59:49.083Z",
       "changed": "2020-10-01T01:59:49.083Z",
-      "value": 2995,
+      "amount": 2995,
       "service": 5,
       "item": 113,
       "count": 1,
@@ -4680,7 +4680,7 @@
     "fields": {
       "created": "2020-10-01T01:59:49.147Z",
       "changed": "2020-10-01T01:59:49.147Z",
-      "value": 2495,
+      "amount": 2495,
       "service": 5,
       "item": 114,
       "count": 1,
@@ -4693,7 +4693,7 @@
     "fields": {
       "created": "2020-10-01T01:59:49.188Z",
       "changed": "2020-10-01T01:59:49.188Z",
-      "value": 1295,
+      "amount": 1295,
       "service": 5,
       "item": 115,
       "count": 1,
@@ -4706,7 +4706,7 @@
     "fields": {
       "created": "2020-10-01T01:59:49.235Z",
       "changed": "2020-10-01T01:59:49.235Z",
-      "value": 1995,
+      "amount": 1995,
       "service": 5,
       "item": 116,
       "count": 1,
@@ -4719,7 +4719,7 @@
     "fields": {
       "created": "2020-10-01T01:59:49.285Z",
       "changed": "2020-10-01T01:59:49.285Z",
-      "value": 2495,
+      "amount": 2495,
       "service": 5,
       "item": 117,
       "count": 1,
@@ -4732,7 +4732,7 @@
     "fields": {
       "created": "2020-10-01T01:59:49.333Z",
       "changed": "2020-10-01T01:59:49.333Z",
-      "value": 995,
+      "amount": 995,
       "service": 5,
       "item": 118,
       "count": 1,
@@ -4745,7 +4745,7 @@
     "fields": {
       "created": "2020-10-01T01:59:49.377Z",
       "changed": "2020-10-01T01:59:49.377Z",
-      "value": 2295,
+      "amount": 2295,
       "service": 5,
       "item": 119,
       "count": 1,
@@ -4758,7 +4758,7 @@
     "fields": {
       "created": "2020-10-01T01:59:49.430Z",
       "changed": "2020-10-01T01:59:49.430Z",
-      "value": 2495,
+      "amount": 2495,
       "service": 5,
       "item": 120,
       "count": 1,
@@ -4771,7 +4771,7 @@
     "fields": {
       "created": "2020-10-01T01:59:49.474Z",
       "changed": "2020-10-01T01:59:49.475Z",
-      "value": 2995,
+      "amount": 2995,
       "service": 5,
       "item": 121,
       "count": 1,
@@ -4784,7 +4784,7 @@
     "fields": {
       "created": "2020-10-01T01:59:49.526Z",
       "changed": "2020-10-01T01:59:49.527Z",
-      "value": 1995,
+      "amount": 1995,
       "service": 5,
       "item": 122,
       "count": 1,
@@ -4797,7 +4797,7 @@
     "fields": {
       "created": "2020-10-01T01:59:49.580Z",
       "changed": "2020-10-01T01:59:49.580Z",
-      "value": 2495,
+      "amount": 2495,
       "service": 5,
       "item": 123,
       "count": 1,
@@ -4810,7 +4810,7 @@
     "fields": {
       "created": "2020-10-01T01:59:49.646Z",
       "changed": "2020-10-01T01:59:49.646Z",
-      "value": 2695,
+      "amount": 2695,
       "service": 5,
       "item": 124,
       "count": 1,
@@ -4823,7 +4823,7 @@
     "fields": {
       "created": "2020-10-01T01:59:49.695Z",
       "changed": "2020-10-01T01:59:49.695Z",
-      "value": 2995,
+      "amount": 2995,
       "service": 5,
       "item": 125,
       "count": 1,
@@ -4836,7 +4836,7 @@
     "fields": {
       "created": "2020-10-01T01:59:49.745Z",
       "changed": "2020-10-01T01:59:49.745Z",
-      "value": 2495,
+      "amount": 2495,
       "service": 5,
       "item": 126,
       "count": 1,
@@ -4849,7 +4849,7 @@
     "fields": {
       "created": "2020-10-01T01:59:49.789Z",
       "changed": "2020-10-01T01:59:49.789Z",
-      "value": 2695,
+      "amount": 2695,
       "service": 5,
       "item": 127,
       "count": 1,
@@ -4862,7 +4862,7 @@
     "fields": {
       "created": "2020-10-01T01:59:49.839Z",
       "changed": "2020-10-01T01:59:49.840Z",
-      "value": 2995,
+      "amount": 2995,
       "service": 5,
       "item": 128,
       "count": 1,
@@ -4875,7 +4875,7 @@
     "fields": {
       "created": "2020-10-01T01:59:49.877Z",
       "changed": "2020-10-01T01:59:49.877Z",
-      "value": 2495,
+      "amount": 2495,
       "service": 5,
       "item": 129,
       "count": 1,
@@ -4888,7 +4888,7 @@
     "fields": {
       "created": "2020-10-01T01:59:49.915Z",
       "changed": "2020-10-01T01:59:49.915Z",
-      "value": 2695,
+      "amount": 2695,
       "service": 5,
       "item": 130,
       "count": 1,
@@ -4901,7 +4901,7 @@
     "fields": {
       "created": "2020-10-01T01:59:49.962Z",
       "changed": "2020-10-01T01:59:49.962Z",
-      "value": 2995,
+      "amount": 2995,
       "service": 5,
       "item": 131,
       "count": 1,
@@ -4914,7 +4914,7 @@
     "fields": {
       "created": "2020-10-01T01:59:50.010Z",
       "changed": "2020-10-01T01:59:50.010Z",
-      "value": 2295,
+      "amount": 2295,
       "service": 5,
       "item": 132,
       "count": 1,
@@ -4927,7 +4927,7 @@
     "fields": {
       "created": "2020-10-01T01:59:50.054Z",
       "changed": "2020-10-01T01:59:50.054Z",
-      "value": 2995,
+      "amount": 2995,
       "service": 5,
       "item": 133,
       "count": 1,
@@ -4940,7 +4940,7 @@
     "fields": {
       "created": "2020-10-01T01:59:50.101Z",
       "changed": "2020-10-01T01:59:50.101Z",
-      "value": 2295,
+      "amount": 2295,
       "service": 5,
       "item": 134,
       "count": 1,
@@ -4953,7 +4953,7 @@
     "fields": {
       "created": "2020-10-01T01:59:50.149Z",
       "changed": "2020-10-01T01:59:50.149Z",
-      "value": 2295,
+      "amount": 2295,
       "service": 5,
       "item": 135,
       "count": 1,
@@ -4966,7 +4966,7 @@
     "fields": {
       "created": "2020-10-01T01:59:50.196Z",
       "changed": "2020-10-01T01:59:50.196Z",
-      "value": 2995,
+      "amount": 2995,
       "service": 5,
       "item": 136,
       "count": 1,
@@ -4979,7 +4979,7 @@
     "fields": {
       "created": "2020-10-01T01:59:50.232Z",
       "changed": "2020-10-01T01:59:50.232Z",
-      "value": 2795,
+      "amount": 2795,
       "service": 5,
       "item": 137,
       "count": 1,
@@ -4992,7 +4992,7 @@
     "fields": {
       "created": "2020-10-01T01:59:50.277Z",
       "changed": "2020-10-01T01:59:50.278Z",
-      "value": 2495,
+      "amount": 2495,
       "service": 5,
       "item": 138,
       "count": 1,
@@ -5005,7 +5005,7 @@
     "fields": {
       "created": "2020-10-01T01:59:50.320Z",
       "changed": "2020-10-01T01:59:50.320Z",
-      "value": 3495,
+      "amount": 3495,
       "service": 5,
       "item": 139,
       "count": 1,
@@ -5018,7 +5018,7 @@
     "fields": {
       "created": "2020-10-01T01:59:50.369Z",
       "changed": "2020-10-01T01:59:50.369Z",
-      "value": 3995,
+      "amount": 3995,
       "service": 5,
       "item": 140,
       "count": 1,
@@ -5031,7 +5031,7 @@
     "fields": {
       "created": "2020-10-01T01:59:50.451Z",
       "changed": "2020-10-01T01:59:50.451Z",
-      "value": 14995,
+      "amount": 14995,
       "service": 6,
       "item": 141,
       "count": 1,
@@ -5044,7 +5044,7 @@
     "fields": {
       "created": "2020-10-01T01:59:50.491Z",
       "changed": "2020-10-01T01:59:50.491Z",
-      "value": 29995,
+      "amount": 29995,
       "service": 6,
       "item": 142,
       "count": 1,
@@ -5057,7 +5057,7 @@
     "fields": {
       "created": "2020-10-01T01:59:50.539Z",
       "changed": "2020-10-01T01:59:50.539Z",
-      "value": 2495,
+      "amount": 2495,
       "service": 6,
       "item": 143,
       "count": 1,
@@ -5070,7 +5070,7 @@
     "fields": {
       "created": "2020-10-01T01:59:50.614Z",
       "changed": "2020-10-01T01:59:50.614Z",
-      "value": 395,
+      "amount": 395,
       "service": 7,
       "item": 144,
       "count": 1,
@@ -5083,7 +5083,7 @@
     "fields": {
       "created": "2020-10-01T01:59:50.665Z",
       "changed": "2020-10-01T01:59:50.665Z",
-      "value": 695,
+      "amount": 695,
       "service": 7,
       "item": 145,
       "count": 1,
@@ -5096,7 +5096,7 @@
     "fields": {
       "created": "2020-10-01T01:59:50.714Z",
       "changed": "2020-10-01T01:59:50.714Z",
-      "value": 9900,
+      "amount": 9900,
       "service": 7,
       "item": 146,
       "count": 1,

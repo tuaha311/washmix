@@ -1,11 +1,10 @@
 from django.db import models
 
-from core.behaviors import Valuable
+from core.behaviors import Amountable
 from core.common_models import Common
 
 
-# TODO переименовать value -> amount
-class Price(Valuable, Common):
+class Price(Amountable, Common):
     """
     **Intermediate** model that holds a logic of pricing
     between item and service.
@@ -67,7 +66,7 @@ class Price(Valuable, Common):
         unique_together = ("service", "item",)
 
     def __str__(self):
-        return f"{self.service.title} on {self.item.title} = {self.dollar_value} $"
+        return f"{self.service.title} on {self.item.title} = {self.dollar_amount} $"
 
     @property
     def pretty_unit(self):

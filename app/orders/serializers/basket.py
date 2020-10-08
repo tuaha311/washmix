@@ -37,6 +37,8 @@ class QuantitySerializer(serializers.ModelSerializer):
             "item",
             "amount",
             "dollar_amount",
+            "discount",
+            "dollar_discount",
         ]
 
 
@@ -50,4 +52,6 @@ class BasketSerializer(serializers.ModelSerializer):
             "item_list",
             "amount",
             "dollar_amount",
+            "discount",
+            "dollar_discount",
         ]

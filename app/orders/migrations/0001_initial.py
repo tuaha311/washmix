@@ -92,7 +92,7 @@ class Migration(migrations.Migration):
                     "changed",
                     models.DateTimeField(auto_now=True, verbose_name="last changed date and time"),
                 ),
-                ("value", models.BigIntegerField(verbose_name="value in cents (¢)")),
+                ("amount", models.BigIntegerField(verbose_name="amount in cents (¢)")),
                 (
                     "count",
                     models.PositiveSmallIntegerField(default=1, verbose_name="count of items"),

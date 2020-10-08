@@ -33,13 +33,24 @@ class Basket(Common):
 
     @property
     def amount(self):
-        quantity_list = self.quantity_list.all()
-        quantity_amount = [item.amount for item in quantity_list]
-
-        return sum(quantity_amount)
+        return self._calculate_sum("amount")
 
     @property
     def dollar_amount(self):
         return get_dollars(self, "amount")
+
+    @property
+    def discount(self):
+        return self._calculate_sum("discount")
+
+    @property
+    def dollar_discount(self):
+        return get_dollars(self, "discount")
+
+    def _calculate_sum(self, attribute_name):
+        quantity_list = self.quantity_list.all()
+        amount = [getattr(item, attribute_name) for item in quantity_list]
+
+        return sum(amount)
 
 

@@ -39,7 +39,7 @@ class Transaction(Amountable, Stripeable, Common):
     invoice = models.OneToOneField(
         "billing.Invoice",
         verbose_name="invoice",
-        on_delete=models.SET_NULL,
+        on_delete=models.PROTECT,
         related_name="transaction",
         null=True,
         blank=True,

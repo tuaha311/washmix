@@ -37,13 +37,25 @@ class Quantity(Common):
         verbose_name = "quantity"
         verbose_name_plural = "quantity"
 
+    def __str__(self):
+        price = self.price
+        return f"{price.service} on {price.item} x {self.count} qty."
+
     @property
     def amount(self):
-        return self.price.value * self.count
+        return self.price.amount * self.count
 
     @property
     def dollar_amount(self):
         return get_dollars(self, "amount")
+
+    @property
+    def discount(self):
+        return 100
+
+    @property
+    def dollar_discount(self):
+        return 1
 
 
 
