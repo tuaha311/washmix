@@ -5,7 +5,10 @@ from django.db.transaction import atomic
 from rest_framework import serializers
 
 from orders.models import Basket, Price, Quantity
+from orders.services.discount import DiscountService
 from users.models import Client
+
+DEFAULT_COUNT = 0
 
 
 class BasketService:
@@ -20,6 +23,7 @@ class BasketService:
 
     def __init__(self, client: Client):
         self._client = client
+        self._discount_service = DiscountService(client, self.basket)
 
     def validate(self, price: Price, count: int, action: str):
         quantity = self._get_or_create_quantity(price)
@@ -46,7 +50,7 @@ class BasketService:
             quantity.count = F("count") - count
             quantity.save()
 
-            if quantity.count == 0:
+            if quantity.count == DEFAULT_COUNT:
                 quantity.delete()
 
         return self.basket
@@ -62,6 +66,6 @@ class BasketService:
 
     def _get_or_create_quantity(self, price: Price) -> Quantity:
         quantity, _ = Quantity.objects.get_or_create(
-            basket=self.basket, price=price, defaults={"count": 0,},
+            basket=self.basket, price=price, defaults={"count": DEFAULT_COUNT,},
         )
         return quantity

@@ -1,3 +1,4 @@
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 from core.behaviors import Priceable
@@ -6,15 +7,23 @@ from core.behaviors import Priceable
 class CommonPackageSubscription(Priceable, models.Model):
     dry_clean = models.IntegerField(
         verbose_name="discount on dry clean + press",
+        help_text="in percents",
+        validators=[MinValueValidator(1), MaxValueValidator(100)],
     )
     laundry = models.IntegerField(
         verbose_name="discount on laundry + press",
+        help_text="in percents",
+        validators=[MinValueValidator(1), MaxValueValidator(100)],
     )
     alterations = models.IntegerField(
         verbose_name="alterations discount",
+        help_text="in percents",
+        validators=[MinValueValidator(1), MaxValueValidator(100)],
     )
     wash_fold = models.IntegerField(
         verbose_name="discount on wash & fold",
+        help_text="in percents",
+        validators=[MinValueValidator(1), MaxValueValidator(100)],
     )
     has_delivery = models.BooleanField(
         verbose_name="has a free delivery",

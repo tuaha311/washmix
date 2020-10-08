@@ -51,11 +51,14 @@ class Quantity(Common):
 
     @property
     def discount(self):
-        return 100
+        # unfortunately, here we are doing inline import to prevent circular import
+        from orders.utils import get_discount_for_quantity
+
+        return get_discount_for_quantity(self)
 
     @property
     def dollar_discount(self):
-        return 1
+        return get_dollars(self, "discount")
 
 
 

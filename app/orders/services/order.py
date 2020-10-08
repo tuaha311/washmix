@@ -29,7 +29,7 @@ class OrderService:
 
     @property
     def discounts(self):
-        return self._discount_service.discounts
+        return self._discount_service.discount_list
 
     @property
     def extras(self):

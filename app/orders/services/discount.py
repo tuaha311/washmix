@@ -1,9 +1,9 @@
-from typing import Dict, List
+from typing import Dict
 
 from django.conf import settings
 
-from core.utils import get_dollars
-from orders.models import Basket, Service
+from orders.models import Basket, Quantity, Service
+from subscriptions.models import Subscription
 from users.models import Client
 
 
@@ -19,6 +19,19 @@ class DiscountService:
         self._client = client
         self._basket = basket
 
+    def get_discount_for_service(self, quantity: Quantity, subscription: Subscription):
+        service = quantity.price.service
+        service_map = self.service_map
+
+        try:
+            attribute_name = service_map[service]
+            subscription_discount_for_service = getattr(subscription, attribute_name)
+            discount = quantity.amount * subscription_discount_for_service / settings.PERCENTAGE
+        except (KeyError, AttributeError):
+            discount = settings.DEFAULT_DISCOUNT
+        finally:
+            return discount
+
     @property
     def service_map(self) -> Dict[Service, str]:
         result = {}
@@ -29,36 +42,5 @@ class DiscountService:
 
             service = Service.objects.get(title=title)
             result[service] = attribute_name
-
-        return result
-
-    @property
-    def discounts(self) -> List[Dict]:
-        subscription = self._client.subscription
-
-        if not subscription:
-            return []
-
-        result = []
-        service_map = self.service_map
-
-        for quantity in self._basket.quantity_list.all():
-            service = quantity.price.service
-
-            try:
-                attribute_name = service_map[service]
-            except KeyError:
-                continue
-
-            subscription_discount_for_service = getattr(subscription, attribute_name)
-            discount = quantity.amount * subscription_discount_for_service
-
-            result.append(
-                {
-                    "quantity": quantity,
-                    "discount": discount,
-                    "dollar_discount": discount / settings.CENTS_IN_DOLLAR,
-                }
-            )
 
         return result
