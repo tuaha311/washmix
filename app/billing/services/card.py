@@ -24,6 +24,7 @@ class CardService:
         """
         Save card list for user.
         """
+
         if not self._invoice.is_save_card:
             return None
 

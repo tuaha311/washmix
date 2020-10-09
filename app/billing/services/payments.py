@@ -109,7 +109,7 @@ class PaymentService:
             )
 
             # don't save a card if it wasn't marked by user
-            if not self._invoice.is_save_card:
+            if self._invoice.is_save_card:
                 self._invoice.card = self._client.main_card
                 self._invoice.save()
 
