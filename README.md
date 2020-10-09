@@ -100,6 +100,16 @@ OpenAPI can be exported and opened in many editors:
 - Swagger
 
 
+## Billing
+
+Test card list:
+```bash
+4242 4242 4242 4242 - success
+4000 0025 0000 3155 - requires authentication
+4000 0000 0000 9995 - declined
+```
+
+
 ## How to run worker for background tasks
 We are using [dramatiq](https://dramatiq.io) for handling background tasks.
 
