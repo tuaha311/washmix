@@ -52,9 +52,8 @@ urlpatterns = [
     path("zip_codes/", zip_codes.ZipCodeListView.as_view(), name="zip-code-list"),
     path("sms/", include(sms_urls)),
     path("trigger/", trigger.TriggerView.as_view(), name="trigger"),
-    path("billing/", include("billing.urls.billing")),
+    path("billing/", include("billing.urls")),
     path("subscription/", include("subscriptions.urls")),
-    path("invoices/", include("billing.urls.invoices")),
     path("basket/", include("orders.urls.baskets")),
     path("orders/", include("orders.urls.orders")),
     # default routes has a higher priority under router URLS
