@@ -1,6 +1,6 @@
 from rest_framework.generics import RetrieveUpdateAPIView
 
-from users.serializers.profile import ProfileSerializer
+from users.v1.serializers.profile import ProfileSerializer
 
 
 class ProfileView(RetrieveUpdateAPIView):

@@ -2,7 +2,7 @@ from rest_framework.generics import ListAPIView
 from rest_framework.permissions import AllowAny
 
 from subscriptions.models import Package
-from subscriptions.serializers.packages import PackageSerializer
+from subscriptions.v1.serializers.packages import PackageSerializer
 
 
 class PackageListView(ListAPIView):

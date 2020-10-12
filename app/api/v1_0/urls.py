@@ -9,8 +9,8 @@ from core import views as core_views
 from deliveries.views import deliveries, schedules
 from locations.views import addresses, locations, zip_codes
 from orders.views import orders
-from subscriptions.views import packages
-from users.views import customers, profile
+from subscriptions.v1.views import packages
+from users.v1.views import customers, profile
 
 app_name = "v1_0"
 token_urls = (

@@ -1,7 +1,7 @@
 from django.urls import path
 
 from billing.views import checkout
-from subscriptions.views import choose
+from subscriptions.v1.views import choose
 
 urlpatterns = [
     # packages and subscription payment views:
