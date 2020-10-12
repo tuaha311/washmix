@@ -9,9 +9,9 @@ from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK
 
 from billing.models import Invoice
-from billing.serializers import payments
 from billing.services.invoice import InvoiceService
 from billing.services.payments import PaymentService
+from billing.v1.serializers import payments
 from users.models import Client
 
 

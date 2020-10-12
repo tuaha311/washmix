@@ -1,8 +1,8 @@
 from rest_framework.serializers import Serializer
 from rest_framework.viewsets import ModelViewSet
 
-from deliveries.serializers.deliveries import DeliverySerializer
 from deliveries.services.delivery import DeliveryService
+from deliveries.v1.serializers.deliveries import DeliverySerializer
 
 
 class DeliveryViewSet(ModelViewSet):

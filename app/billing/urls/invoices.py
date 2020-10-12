@@ -1,6 +1,6 @@
 from django.urls import path
 
-from billing.views import coupons
+from billing.v1.views import coupons
 
 urlpatterns = [
     # common operation - you can apply coupons at subscription buy scenario

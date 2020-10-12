@@ -1,7 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 
 from api.v1_0.mixins import PreventDeletionOfMainAttributeMixin, SetMainAttributeMixin
-from core.serializers import PhoneSerializer
+from core.v1.serializers import PhoneSerializer
 
 
 class PhoneViewSet(PreventDeletionOfMainAttributeMixin, SetMainAttributeMixin, ModelViewSet):

@@ -1,6 +1,6 @@
 from django.urls import path
 
-from billing.views import checkout
+from billing.v1.views import checkout
 from subscriptions.v1.views import choose
 
 urlpatterns = [

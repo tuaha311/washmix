@@ -4,9 +4,9 @@ from rest_framework.routers import SimpleRouter
 from rest_framework_simplejwt.views import TokenRefreshSlidingView, TokenVerifyView
 
 from api.v1_0.views import auth, services, trigger, twilio
-from billing.views import cards
-from core import views as core_views
-from deliveries.views import deliveries, schedules
+from billing.v1.views import cards
+from core.v1 import views as core_views
+from deliveries.v1.views import deliveries, schedules
 from locations.v1.views import addresses, locations, zip_codes
 from orders.v1.views import orders
 from subscriptions.v1.views import packages

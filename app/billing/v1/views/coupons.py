@@ -2,8 +2,8 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from billing.serializers.coupons import ApplyCouponResponseSerializer, ApplyCouponSerializer
 from billing.services.coupon import CouponService
+from billing.v1.serializers.coupons import ApplyCouponResponseSerializer, ApplyCouponSerializer
 
 
 class ApplyCouponView(GenericAPIView):

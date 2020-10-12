@@ -1,8 +1,8 @@
 from rest_framework.request import Request
 
 from billing.models import Invoice
-from billing.serializers.checkout import CheckoutAddressSerializer, CheckoutUserSerializer
 from billing.stripe_helper import StripeHelper
+from billing.v1.serializers import CheckoutAddressSerializer, CheckoutUserSerializer
 from core.services.main_attribute import MainAttributeService
 from locations.models import Address
 from users.models import Client

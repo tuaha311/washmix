@@ -1,7 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 
 from api.v1_0.mixins import PreventDeletionOfMainAttributeMixin, SetMainAttributeMixin
-from billing.serializers.cards import CardSerializer
+from billing.v1.serializers.cards import CardSerializer
 
 
 class CardViewSet(PreventDeletionOfMainAttributeMixin, SetMainAttributeMixin, ModelViewSet):
