@@ -13,7 +13,7 @@ class CreateIntentSerializer(serializers.Serializer):
         invoice = attrs["invoice"]
         is_save_card = attrs["is_save_card"]
 
-        if invoice.subscription.name == settings.PAYC and is_save_card == False:
+        if invoice.subscription.name == settings.PAYC and not is_save_card:
             raise serializers.ValidationError(
                 detail="For PAYC package you should save payment card.",
                 code="card_save_required_for_payc",
