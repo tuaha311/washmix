@@ -2,7 +2,10 @@ from rest_framework.request import Request
 
 from billing.models import Invoice
 from billing.stripe_helper import StripeHelper
-from billing.v1.serializers.checkout import CheckoutAddressSerializer, CheckoutUserSerializer
+from billing.v1.serializers.checkout import (
+    WelcomeCheckoutAddressSerializer,
+    WelcomeCheckoutUserSerializer,
+)
 from core.services.main_attribute import MainAttributeService
 from locations.models import Address
 from users.models import Client
@@ -16,7 +19,7 @@ class CheckoutService:
         self._invoice = invoice
 
     def fill_profile(self, user: dict) -> Client:
-        serializer = CheckoutUserSerializer(self._client, data=user, partial=True)
+        serializer = WelcomeCheckoutUserSerializer(self._client, data=user, partial=True)
 
         serializer.is_valid()
         serializer.save()
@@ -37,7 +40,7 @@ class CheckoutService:
         return billing_address
 
     def _create_address(self, address: dict, attribute: str):
-        serializer = CheckoutAddressSerializer(data=address)
+        serializer = WelcomeCheckoutAddressSerializer(data=address)
         serializer.is_valid()
 
         service = MainAttributeService(self._request.user.client, attribute)

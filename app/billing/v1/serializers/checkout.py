@@ -6,7 +6,7 @@ from locations.models import Address, ZipCode
 from users.models import Client
 
 
-class CheckoutUserSerializer(serializers.ModelSerializer):
+class WelcomeCheckoutUserSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField(max_length=50)
     last_name = serializers.CharField(max_length=100)
     is_auto_billing = serializers.BooleanField()
@@ -20,7 +20,7 @@ class CheckoutUserSerializer(serializers.ModelSerializer):
         ]
 
 
-class CheckoutAddressSerializer(serializers.ModelSerializer):
+class WelcomeCheckoutAddressSerializer(serializers.ModelSerializer):
     zip_code = serializers.SlugRelatedField(slug_field="value", queryset=ZipCode.objects.all())
     title = serializers.CharField(default="Main", required=False)
 
@@ -31,10 +31,10 @@ class CheckoutAddressSerializer(serializers.ModelSerializer):
         ]
 
 
-class CheckoutSerializer(serializers.Serializer):
-    user = CheckoutUserSerializer()
-    address = CheckoutAddressSerializer()
-    billing_address = CheckoutAddressSerializer()
+class WelcomeCheckoutSerializer(serializers.Serializer):
+    user = WelcomeCheckoutUserSerializer()
+    address = WelcomeCheckoutAddressSerializer()
+    billing_address = WelcomeCheckoutAddressSerializer()
     invoice = InvoiceField()
 
     def validate_invoice(self, value):

@@ -7,11 +7,11 @@ from rest_framework.response import Response
 from billing.services.card import CardService
 from billing.services.checkout import CheckoutService
 from billing.services.payments import PaymentService
-from billing.v1.serializers.checkout import CheckoutSerializer
+from billing.v1.serializers.checkout import WelcomeCheckoutSerializer
 
 
-class SubscriptionCheckoutView(GenericAPIView):
-    serializer_class = CheckoutSerializer
+class WelcomeCheckoutView(GenericAPIView):
+    serializer_class = WelcomeCheckoutSerializer
 
     def post(self, request: Request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data, context={"request": request})
