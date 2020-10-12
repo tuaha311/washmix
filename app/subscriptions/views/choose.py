@@ -2,8 +2,8 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from billing.serializers.choose import ChooseResponseSerializer, ChooseSerializer
-from billing.services.choose import ChooseService
+from subscriptions.serializers.choose import ChooseResponseSerializer, ChooseSerializer
+from subscriptions.services.choose import ChooseService
 
 
 class ChooseView(GenericAPIView):

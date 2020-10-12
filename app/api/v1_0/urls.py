@@ -53,7 +53,7 @@ urlpatterns = [
     path("sms/", include(sms_urls)),
     path("trigger/", trigger.TriggerView.as_view(), name="trigger"),
     path("billing/", include("billing.urls.billing")),
-    path("subscription/", include("billing.urls.subscription")),
+    path("subscription/", include("subscriptions.urls")),
     path("invoices/", include("billing.urls.invoices")),
     path("basket/", include("orders.urls.baskets")),
     path("orders/", include("orders.urls.orders")),
