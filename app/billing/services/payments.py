@@ -1,5 +1,7 @@
+import logging
 from typing import Optional, Union
 
+from django.conf import settings
 from django.db.transaction import atomic
 
 from stripe import PaymentIntent, PaymentMethod, SetupIntent
@@ -10,6 +12,8 @@ from billing.services.card import CardService
 from billing.stripe_helper import StripeHelper
 from billing.utils import create_debit
 from users.models import Client
+
+logger = logging.getLogger(__name__)
 
 
 class PaymentService:
@@ -66,6 +70,13 @@ class PaymentService:
             return None
 
         payment = None
+        subscription = self._invoice.subscription
+
+        if subscription.name == settings.PAYC:
+            card = self._client.card_list.first()
+            self._card_service.update_main_card(self._client, card)
+
+            return payment
 
         for item in self._client.card_list.all():
             # we are trying to charge the card list of client
@@ -82,7 +93,8 @@ class PaymentService:
                 # we are exiting from the cycle at first successful attempt
                 break
 
-            except StripeError:
+            except StripeError as err:
+                logger.error(err)
                 continue
 
         return payment
