@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from api.fields import InvoiceField
-from billing.stripe_helper import StripeHelper
+from billing.validators import validate_payment_method
 from locations.models import Address, ZipCode
 from users.models import Client
 
@@ -47,11 +47,7 @@ class WelcomeCheckoutSerializer(serializers.Serializer):
 
     def validate(self, attrs):
         client = self.context["request"].user.client
-        stripe_helper = StripeHelper(client)
 
-        if not stripe_helper.payment_method_list:
-            raise serializers.ValidationError(
-                detail="You have no active payment methods.", code="no_payment_methods",
-            )
+        validate_payment_method(client)
 
         return attrs
