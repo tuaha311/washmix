@@ -7,8 +7,8 @@ from api.v1_0.views import auth, services, trigger, twilio
 from billing.views import cards
 from core import views as core_views
 from deliveries.views import deliveries, schedules
-from locations.views import addresses, locations, zip_codes
-from orders.views import orders
+from locations.v1.views import addresses, locations, zip_codes
+from orders.v1.views import orders
 from subscriptions.v1.views import packages
 from users.v1.views import customers, profile
 

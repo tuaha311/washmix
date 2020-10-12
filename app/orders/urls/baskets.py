@@ -1,6 +1,6 @@
 from django.urls import path
 
-from orders.views import baskets
+from orders.v1.views import baskets
 
 urlpatterns = [
     # 1. you can view items in basket

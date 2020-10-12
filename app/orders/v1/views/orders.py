@@ -3,8 +3,8 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from orders.serializers.orders import OrderSerializer
 from orders.services.order import OrderService
+from orders.v1.serializers.orders import OrderSerializer
 
 
 class OrderViewSet(ModelViewSet):

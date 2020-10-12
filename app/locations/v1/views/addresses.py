@@ -1,7 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 
 from api.v1_0.mixins import PreventDeletionOfMainAttributeMixin, SetMainAttributeMixin
-from locations.serializers.addresses import AddressSerializer
+from locations.v1.serializers.addresses import AddressSerializer
 
 
 class AddressViewSet(PreventDeletionOfMainAttributeMixin, SetMainAttributeMixin, ModelViewSet):
