@@ -1,5 +1,25 @@
 # Release Notes
 
+## v1.5 (09.10.2020)
+* Added more phone validation
+* Added exception handling in body for Twilio
+* Added new scheduler service for periodic tasks
+* Move from script to fixtures to load initial data
+* Added credit back logic for every quarter:
+  - New task `accrue_credit_back_every_3_month`
+* Added recurring pickup logic:
+  - New `Schedule` model
+  - `/api/v1.0/schedules/` endpoint
+  - New task `create_recurring_delivery_every_day`
+* Added task idempotency implementation
+* Move `Package`, `Subscription` into `subscriptions` application
+* Added new services:
+  - `PaymentService`
+  - `InvoiceService`
+  - `CardService`
+  - `DiscountService`
+
+
 ## v1.4 (25.09.2020)
 * Added Twilio integration
 * Added Twilio webhooks
