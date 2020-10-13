@@ -11,7 +11,7 @@ from locations.models import Address
 from users.models import Client
 
 
-class CheckoutService:
+class WelcomeCheckoutService:
     def __init__(self, client: Client, request: Request, invoice: Invoice):
         self._client = client
         self._request = request
