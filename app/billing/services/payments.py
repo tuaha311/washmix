@@ -2,7 +2,6 @@ import logging
 from typing import Optional, Union
 
 from django.conf import settings
-from django.db.transaction import atomic
 
 from stripe import PaymentIntent, PaymentMethod, SetupIntent
 from stripe.error import StripeError
@@ -90,14 +89,11 @@ class PaymentService:
 
                 self._card_service.update_main_card(self._client, item)
 
-                # we are exiting from the cycle at first successful attempt
-                break
+                return payment
 
             except StripeError as err:
                 logger.error(err)
                 continue
-
-        return payment
 
     def confirm(self, payment: PaymentMethod) -> Optional[Transaction]:
         """
@@ -111,21 +107,12 @@ class PaymentService:
         if self._invoice.is_paid:
             return None
 
-        with atomic():
-            transaction = create_debit(
-                client=self._client,
-                invoice=self._invoice,
-                stripe_id=payment.id,
-                amount=payment.amount,
-                source=payment,
-            )
-
-            # don't save a card if it wasn't marked by user
-            if self._invoice.is_save_card:
-                self._invoice.card = self._client.main_card
-                self._invoice.save()
-
-            self._client.subscription = self._invoice.subscription
-            self._client.save()
+        transaction = create_debit(
+            client=self._client,
+            invoice=self._invoice,
+            stripe_id=payment.id,
+            amount=payment.amount,
+            source=payment,
+        )
 
         return transaction

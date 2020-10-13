@@ -2,7 +2,7 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from subscriptions.services.choose import ChooseService
+from subscriptions.services.subscription import SubscriptionService
 from subscriptions.v1.serializers.choose import ChooseResponseSerializer, ChooseSerializer
 
 
@@ -17,8 +17,8 @@ class ChooseView(GenericAPIView):
         client = request.user.client
         package = package_serializer.validated_data["package"]
 
-        handler = ChooseService(client, package)
-        invoice = handler.set_package()
+        service = SubscriptionService(client)
+        invoice = service.clone_from_package(package)
 
         response = self.response_serializer_class(invoice).data
 

@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db.models import ObjectDoesNotExist
+from django.db.transaction import atomic
 
 import stripe
 from rest_framework.generics import GenericAPIView
@@ -12,6 +13,7 @@ from billing.models import Invoice
 from billing.services.invoice import InvoiceService
 from billing.services.payments import PaymentService
 from billing.v1.serializers import payments
+from subscriptions.services.subscription import SubscriptionService
 from users.models import Client
 
 
@@ -65,7 +67,13 @@ class StripeWebhookView(GenericAPIView):
         except ObjectDoesNotExist:
             return Response({}, status=HTTP_200_OK)
 
-        service = PaymentService(client, invoice)
-        service.confirm(payment)
+        payment_service = PaymentService(client, invoice)
+        subscription_service = SubscriptionService(client)
+
+        with atomic():
+            # we are marked our invoice as paid
+            payment_service.confirm(payment)
+            # and set subscription to user
+            subscription_service.set_subscription(invoice)
 
         return Response({}, status=HTTP_200_OK)

@@ -8,6 +8,7 @@ from billing.services.card import CardService
 from billing.services.checkout import WelcomeCheckoutService
 from billing.services.payments import PaymentService
 from billing.v1.serializers.checkout import WelcomeCheckoutSerializer
+from subscriptions.services.subscription import SubscriptionService
 
 
 class WelcomeCheckoutView(GenericAPIView):
@@ -27,6 +28,7 @@ class WelcomeCheckoutView(GenericAPIView):
         checkout_service = WelcomeCheckoutService(client, request, invoice)
         payment_service = PaymentService(client, invoice)
         card_service = CardService(client, invoice)
+        subscription_service = SubscriptionService(client)
 
         with atomic():
             card_service.save_card_list()
@@ -36,5 +38,7 @@ class WelcomeCheckoutView(GenericAPIView):
             checkout_service.create_billing_address(raw_billing_address, is_same_address)
 
             payment_service.charge()
+
+            subscription_service.set_subscription(invoice)
 
         return Response(request.data)
