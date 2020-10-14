@@ -21,8 +21,9 @@ def create_recurring_delivery_every_day():
 
     for schedule in Schedule.objects.all():
         client = schedule.client
+        address = client.main_address
 
-        if not client.main_address:
+        if not address:
             continue
 
         if weekday not in schedule.days:
@@ -37,9 +38,9 @@ def create_recurring_delivery_every_day():
 
         logger.info(f"Start of handling schedule # {schedule.pk}")
 
-        service = DeliveryService(client=client, address=client.main_address,)
+        service = DeliveryService(client=client)
         delivery, _ = service.get_or_create(
-            extra_query={"schedule": schedule,},
+            extra_query={"schedule": schedule, "address": address},
             extra_defaults={"comment": schedule.comment, "is_rush": schedule.is_rush,},
         )
 

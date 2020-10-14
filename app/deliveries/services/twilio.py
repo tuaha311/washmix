@@ -19,11 +19,11 @@ class TwilioFlexService:
         self._validate_address()
 
         pickup_info = self._pickup_info
-        service = DeliveryService(
-            client=self._client, address=self._client.main_address, **pickup_info,
-        )
+        address = self._client.main_address
 
-        return service.create()
+        service = DeliveryService(client=self._client, **pickup_info,)
+
+        return service.create(address=address)
 
     def validate_or_save(self):
         self._validate_or_save_phone()

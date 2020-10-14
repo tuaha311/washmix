@@ -8,7 +8,6 @@ from rest_framework import serializers
 
 from deliveries.models import Delivery
 from deliveries.utils import get_dropoff_day, get_pickup_day, get_pickup_start_end
-from locations.models import Address
 from users.models import Client
 
 
@@ -16,13 +15,11 @@ class DeliveryService:
     def __init__(
         self,
         client: Client,
-        address: Address,
         pickup_date: date = None,
         pickup_start: time = None,
         pickup_end: time = None,
     ):
         self._client = client
-        self._address = address
 
         if pickup_date is None:
             pickup_date = self._pickup_day_auto_complete
@@ -72,7 +69,6 @@ class DeliveryService:
         dropoff_info = self._dropoff_info
         instance, created = Delivery.objects.get_or_create(
             client=self._client,
-            address=self._client.main_address,
             **extra_query,
             defaults={
                 "pickup_date": self._pickup_date,
@@ -84,6 +80,15 @@ class DeliveryService:
         )
 
         return instance, created
+
+    def recalculate(self, delivery: Delivery) -> Delivery:
+        dropoff_info = self._dropoff_info
+
+        for key, value in dropoff_info.items():
+            setattr(delivery, key, value)
+        delivery.save()
+
+        return delivery
 
     def validate(self):
         self._validate_date()

@@ -98,7 +98,7 @@
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
         "body": "{\"message\": \"{{trigger.message.Body}}\", \"phone\": \"{{trigger.message.From}}\"}",
-        "url": "https://ed403909e0b9.ngrok.io/api/v1.0/sms/twilio_webhook/"
+        "url": "https://washmix.evrone.app/api/v1.0/sms/twilio_webhook/"
       }
     },
     {

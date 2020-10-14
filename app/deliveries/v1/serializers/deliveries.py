@@ -41,9 +41,8 @@ class DeliverySerializer(serializers.ModelSerializer):
     def validate(self, attrs: dict):
         client = self.context["request"].user.client
         pickup_date = attrs["pickup_date"]
-        address = attrs["address"]
 
-        service = DeliveryService(client=client, address=address, pickup_date=pickup_date,)
+        service = DeliveryService(client=client, pickup_date=pickup_date,)
 
         service.validate()
 
