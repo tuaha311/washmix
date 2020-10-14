@@ -46,9 +46,11 @@ class DeliveryService:
         self.validate()
 
         dropoff_info = self._dropoff_info
+        address = self._client.main_address
+        extra_kwargs.setdefault("address", address)
+
         instance = Delivery.objects.create(
             client=self._client,
-            address=self._client.main_address,
             pickup_date=self._pickup_date,
             pickup_start=self._pickup_start,
             pickup_end=self._pickup_end,
@@ -67,6 +69,9 @@ class DeliveryService:
         self.validate()
 
         dropoff_info = self._dropoff_info
+        address = self._client.main_address
+        extra_query.setdefault("address", address)
+
         instance, created = Delivery.objects.get_or_create(
             client=self._client,
             **extra_query,
