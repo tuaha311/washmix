@@ -51,3 +51,9 @@ class WelcomeCheckoutSerializer(serializers.Serializer):
         validate_payment_method(client)
 
         return attrs
+
+
+class WelcomeCheckoutResponseSerializer(serializers.Serializer):
+    user = WelcomeCheckoutUserSerializer()
+    address = WelcomeCheckoutAddressSerializer()
+    billing_address = WelcomeCheckoutAddressSerializer()

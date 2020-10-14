@@ -7,12 +7,16 @@ from rest_framework.response import Response
 from billing.services.card import CardService
 from billing.services.checkout import WelcomeCheckoutService
 from billing.services.payments import PaymentService
-from billing.v1.serializers.checkout import WelcomeCheckoutSerializer
+from billing.v1.serializers.checkout import (
+    WelcomeCheckoutResponseSerializer,
+    WelcomeCheckoutSerializer,
+)
 from subscriptions.services.subscription import SubscriptionService
 
 
 class WelcomeCheckoutView(GenericAPIView):
     serializer_class = WelcomeCheckoutSerializer
+    response_serializer_class = WelcomeCheckoutResponseSerializer
 
     def post(self, request: Request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data, context={"request": request})
@@ -33,12 +37,21 @@ class WelcomeCheckoutView(GenericAPIView):
         with atomic():
             card_service.save_card_list()
 
-            checkout_service.fill_profile(user)
-            checkout_service.create_main_address(raw_address)
-            checkout_service.create_billing_address(raw_billing_address, is_same_address)
+            user = checkout_service.fill_profile(user)
+            address = checkout_service.create_main_address(raw_address)
+            billing_address = checkout_service.create_billing_address(
+                raw_billing_address, is_same_address
+            )
 
             payment_service.charge()
 
             subscription_service.set_subscription(invoice)
 
-        return Response(request.data)
+        response_body = {
+            "user": user,
+            "address": address,
+            "billing_address": billing_address,
+        }
+        response = self.response_serializer_class(response_body).data
+
+        return Response(response)
