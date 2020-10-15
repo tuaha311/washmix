@@ -39,11 +39,12 @@ class OrderCheckoutView(GenericAPIView):
 
         client = request.user.client
         invoice = serializer.validated_data["invoice"]
+        delivery = serializer.validated_data["delivery"]
 
-        order_service = OrderService(client, invoice)
+        order_service = OrderService(client, delivery)
 
         with atomic():
-            order_service.charge()
             order_service.checkout()
+            order_service.charge(invoice)
 
         return Response()

@@ -7,6 +7,8 @@ from core.utils import get_dollars
 class Basket(Common):
     """
     Basket for your shopping.
+    Basket is about items storing.
+
     Client can add / remove items from basket.
     After shopping, client can create and order and pay invoice.
     """

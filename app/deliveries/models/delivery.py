@@ -1,10 +1,11 @@
 from django.db import models
 
+from core.behaviors import Amountable
 from core.common_models import Common
 from deliveries.common_models import CommonScheduleDelivery
 
 
-class Delivery(CommonScheduleDelivery, Common):
+class Delivery(Amountable, CommonScheduleDelivery, Common):
     """
     NOTE: Schedule / Delivery uses the same pattern such Package / Subscription.
 

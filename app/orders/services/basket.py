@@ -19,6 +19,8 @@ class BasketService:
         - Remove items from basket
         - Clear basket
         - See items in basket
+        - See discount for item
+        - See total discount on your basket
     """
 
     def __init__(self, client: Client):
