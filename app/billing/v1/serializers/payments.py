@@ -7,6 +7,10 @@ from api.fields import InvoiceField
 
 class CreateIntentSerializer(serializers.Serializer):
     is_save_card = serializers.BooleanField()
+    # this serializer used in many cases where user can have payment method or not
+    # 1. welcome scenario (no payment method)
+    # 2. subscription purchase (should have method)
+    # 3. order processing (should have)
     invoice = InvoiceField()
 
     def validate(self, attrs):

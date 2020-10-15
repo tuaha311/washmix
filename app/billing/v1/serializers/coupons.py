@@ -8,15 +8,13 @@ from billing.models import Coupon, Invoice
 
 class ApplyCouponSerializer(serializers.Serializer):
     coupon = serializers.SlugRelatedField(slug_field="code", queryset=Coupon.objects.all())
+    # at this moment client can have or not to have payment method
+    # 1. welcome scenario (no payment method)
+    # 2. etc (have payment method)
     invoice = InvoiceField()
 
     def validate_invoice(self, value):
         invoice = value
-
-        if invoice.is_paid:
-            raise serializers.ValidationError(
-                detail="You already paid this invoice.", code="invoice_already_paid",
-            )
 
         if invoice.subscription.name == settings.PAYC:
             raise serializers.ValidationError(

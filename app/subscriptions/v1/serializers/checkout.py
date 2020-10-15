@@ -1,15 +1,10 @@
 from rest_framework import serializers
 
 from api.fields import InvoiceField
-from billing.validators import validate_paid_invoice, validate_payment_method
+from billing.validators import validate_client_can_pay
 
 
 class SubscriptionCheckoutSerializer(serializers.Serializer):
-    invoice = InvoiceField(validators=[validate_paid_invoice])
-
-    def validate(self, attrs):
-        client = self.context["request"].user.client
-
-        validate_payment_method(client)
-
-        return attrs
+    # at this moment client should have payment method
+    # 1. upgrade subscription plan (should have payment method)
+    invoice = InvoiceField(validators=[validate_client_can_pay])

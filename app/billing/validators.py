@@ -5,10 +5,8 @@ from billing.stripe_helper import StripeHelper
 from users.models import Client
 
 
-def validate_payment_method(client: Client):
-    """
-    Use this validator at start of checkout process.
-    """
+def validate_client_can_pay(invoice: Invoice):
+    client = invoice.client
 
     stripe_helper = StripeHelper(client)
 
