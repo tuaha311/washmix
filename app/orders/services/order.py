@@ -2,6 +2,7 @@ from django.db.transaction import atomic
 
 from billing.models import Invoice
 from billing.services.invoice import InvoiceService
+from billing.services.payments import PaymentService
 from orders.models import Order
 from orders.services import delivery, discount, extras
 from orders.services.basket import BasketService
@@ -19,7 +20,14 @@ class OrderService:
         self._basket_service = BasketService(self._client)
 
     def charge(self):
-        pass
+        """
+        We are charging user for basket amount.
+        """
+
+        payment_service = PaymentService()
+        payment = payment_service.charge()
+
+        return payment
 
     def checkout(self):
         basket = self._basket_service.basket

@@ -1,4 +1,7 @@
+from typing import Optional
+
 from rest_framework.request import Request
+from stripe import PaymentMethod
 
 from billing.models import Invoice
 from billing.stripe_helper import StripeHelper
@@ -8,6 +11,7 @@ from billing.v1.serializers.checkout import (
 )
 from core.services.main_attribute import MainAttributeService
 from locations.models import Address
+from subscriptions.services.subscription import SubscriptionService
 from users.models import Client
 
 
@@ -18,8 +22,21 @@ class WelcomeCheckoutService:
         self._stripe_helper = StripeHelper(client)
         self._invoice = invoice
 
-    def charge(self):
-        pass
+    def charge(self) -> Optional[PaymentMethod]:
+        """
+        If user don't wanna save a card as payment method - all payment flow
+        should be handled at frontend side.
+        In other cases, we are applying same flow as for Subscription.
+        """
+
+        subscription_service = SubscriptionService(self._client)
+        payment = None
+
+        if not self._invoice.is_save_card:
+            return payment
+
+        payment = subscription_service.charge(self._invoice)
+        return payment
 
     def fill_profile(self, user: dict) -> Client:
         serializer = WelcomeCheckoutUserSerializer(self._client, data=user, partial=True)

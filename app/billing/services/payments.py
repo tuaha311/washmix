@@ -1,8 +1,6 @@
 import logging
 from typing import Optional, Union
 
-from django.conf import settings
-
 from stripe import PaymentIntent, PaymentMethod, SetupIntent
 from stripe.error import StripeError
 
@@ -30,7 +28,6 @@ class PaymentService:
         self._client = client
         self._invoice = invoice
         self._stripe_helper = StripeHelper(client)
-        self._card_service = CardService(client, invoice)
 
     def create_intent(self) -> Union[SetupIntent, PaymentIntent]:
         """
@@ -42,12 +39,10 @@ class PaymentService:
             called `PaymentIntent`
         """
 
-        helper = StripeHelper(self._client)
-
         if self._invoice.is_save_card:
-            intent = helper.create_setup_intent()
+            intent = self._stripe_helper.create_setup_intent()
         else:
-            intent = helper.create_payment_intent(
+            intent = self._stripe_helper.create_payment_intent(
                 amount=self._invoice.amount, invoice=self._invoice
             )
 
@@ -62,23 +57,7 @@ class PaymentService:
         In most cases, we are creating `PaymentIntent` under the hood and then waiting for
         web hook event from Stripe to confirm and finish payment flow.
         """
-
-        if self._invoice.is_paid:
-            return None
-
-        # card will be charged at the frontend side
-        # if user doesn't want to save a card
-        if not self._invoice.is_save_card:
-            return None
-
-        payment = None
-        subscription = self._invoice.subscription
-
-        if subscription.name == settings.PAYC:
-            card = self._client.card_list.first()
-            self._card_service.update_main_card(self._client, card)
-
-            return payment
+        card_service = CardService(self._client, self._invoice)
 
         for item in self._client.card_list.all():
             # we are trying to charge the card list of client
@@ -90,7 +69,7 @@ class PaymentService:
                     invoice=self._invoice,
                 )
 
-                self._card_service.update_main_card(self._client, item)
+                card_service.update_main_card(self._client, item)
 
                 return payment
 

@@ -4,8 +4,12 @@ from django.conf import settings
 from django.db.models import ObjectDoesNotExist
 from django.db.transaction import atomic
 
+from stripe import PaymentMethod
+
 from billing.models import Invoice
+from billing.services.card import CardService
 from billing.services.invoice import InvoiceService
+from billing.services.payments import PaymentService
 from subscriptions.models import Package, Subscription
 from users.models import Client
 
@@ -21,8 +25,25 @@ class SubscriptionService:
     def __init__(self, client: Client):
         self._client = client
 
-    def charge(self, invoice: Invoice):
-        pass
+    def charge(self, invoice: Invoice) -> Optional[PaymentMethod]:
+        """
+        For PAYC package we have a special case, where we just store a payment method.
+        For other packages - we are charging user for subscription amount.
+        """
+
+        payment_service = PaymentService(self._client, invoice)
+        card_service = CardService(self._client, invoice)
+
+        subscription = invoice.subscription
+        payment = None
+
+        if subscription.name == settings.PAYC:
+            card = self._client.card_list.first()
+            card_service.update_main_card(self._client, card)
+            return payment
+
+        payment = payment_service.charge()
+        return payment
 
     def set_subscription(self, invoice: Invoice) -> Optional[Subscription]:
         """
