@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from api.fields import InvoiceField
-from billing.validators import validate_invoice, validate_payment_method
+from billing.validators import validate_paid_invoice, validate_payment_method
 from locations.models import Address, ZipCode
 from users.models import Client
 
@@ -35,15 +35,7 @@ class WelcomeCheckoutSerializer(serializers.Serializer):
     user = WelcomeCheckoutUserSerializer()
     address = WelcomeCheckoutAddressSerializer()
     billing_address = WelcomeCheckoutAddressSerializer()
-    invoice = InvoiceField(validators=[validate_invoice])
-
-    def validate_invoice(self, value):
-        if value.is_paid:
-            raise serializers.ValidationError(
-                detail="You already paid this invoice.", code="invoice_already_paid",
-            )
-
-        return value
+    invoice = InvoiceField(validators=[validate_paid_invoice])
 
     def validate(self, attrs):
         client = self.context["request"].user.client

@@ -5,7 +5,6 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from billing.services.payments import PaymentService
 from orders.services.order import OrderService
 from orders.v1.serializers.orders import OrderCheckoutSerializer, OrderSerializer
 
@@ -41,12 +40,10 @@ class OrderCheckoutView(GenericAPIView):
         client = request.user.client
         invoice = serializer.validated_data["invoice"]
 
-        payment_service = PaymentService(client, invoice)
         order_service = OrderService(client, invoice)
 
         with atomic():
-            payment_service.charge()
-
+            order_service.charge()
             order_service.checkout()
 
         return Response()

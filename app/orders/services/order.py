@@ -18,6 +18,9 @@ class OrderService:
         self._invoice_service = InvoiceService(self._client)
         self._basket_service = BasketService(self._client)
 
+    def charge(self):
+        pass
+
     def checkout(self):
         basket = self._basket_service.basket
 

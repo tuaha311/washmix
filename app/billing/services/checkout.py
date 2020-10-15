@@ -18,6 +18,9 @@ class WelcomeCheckoutService:
         self._stripe_helper = StripeHelper(client)
         self._invoice = invoice
 
+    def charge(self):
+        pass
+
     def fill_profile(self, user: dict) -> Client:
         serializer = WelcomeCheckoutUserSerializer(self._client, data=user, partial=True)
 

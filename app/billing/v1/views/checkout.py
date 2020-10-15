@@ -6,7 +6,6 @@ from rest_framework.response import Response
 
 from billing.services.card import CardService
 from billing.services.checkout import WelcomeCheckoutService
-from billing.services.payments import PaymentService
 from billing.v1.serializers.checkout import (
     WelcomeCheckoutResponseSerializer,
     WelcomeCheckoutSerializer,
@@ -30,7 +29,6 @@ class WelcomeCheckoutView(GenericAPIView):
 
         client = request.user.client
         checkout_service = WelcomeCheckoutService(client, request, invoice)
-        payment_service = PaymentService(client, invoice)
         card_service = CardService(client, invoice)
         subscription_service = SubscriptionService(client)
 
@@ -42,8 +40,7 @@ class WelcomeCheckoutView(GenericAPIView):
             billing_address = checkout_service.create_billing_address(
                 raw_billing_address, is_same_address
             )
-
-            payment_service.charge()
+            checkout_service.charge()
 
             subscription_service.set_subscription(invoice)
 

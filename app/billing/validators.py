@@ -18,7 +18,7 @@ def validate_payment_method(client: Client):
         )
 
 
-def validate_invoice(invoice: Invoice):
+def validate_paid_invoice(invoice: Invoice):
     if invoice.is_paid:
         raise serializers.ValidationError(
             detail="You already paid this invoice.", code="invoice_already_paid",

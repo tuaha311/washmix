@@ -11,8 +11,18 @@ from users.models import Client
 
 
 class SubscriptionService:
+    """
+    Used for:
+        - Set subscription via `choose`
+        - Clone subscription from package
+        - Charging user for subscription price
+    """
+
     def __init__(self, client: Client):
         self._client = client
+
+    def charge(self, invoice: Invoice):
+        pass
 
     def set_subscription(self, invoice: Invoice) -> Optional[Subscription]:
         """
