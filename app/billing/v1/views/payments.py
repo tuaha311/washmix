@@ -1,5 +1,4 @@
 from django.conf import settings
-from django.db.models import ObjectDoesNotExist
 from django.db.transaction import atomic
 
 import stripe
@@ -9,12 +8,12 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK
 
-from billing.models import Invoice
 from billing.services.invoice import InvoiceService
 from billing.services.payments import PaymentService
+from billing.services.webhook import StripeWebhookService
 from billing.v1.serializers import payments
+from orders.services.order import OrderService
 from subscriptions.services.subscription import SubscriptionService
-from users.models import Client
 
 
 class CreateIntentView(GenericAPIView):
@@ -42,38 +41,33 @@ class CreateIntentView(GenericAPIView):
 
 class StripeWebhookView(GenericAPIView):
     permission_classes = [AllowAny]
-    enable_ip_check = False
 
     def post(self, request: Request, *args, **kwargs):
         # we will use Stripe SDK to check validity of event instead
         # of using serializer for this purpose
         raw_payload = request.data
         event = stripe.Event.construct_from(raw_payload, stripe.api_key)
+        webhook_service = StripeWebhookService(request, event)
 
-        if self.enable_ip_check:
-            ip_address = request.META["HTTP_X_FORWARDED_FOR"]
+        if not webhook_service.is_valid():
+            status = webhook_service.status
+            body = webhook_service.body
+            return Response(body, status=status)
 
-            # don't allowing other IPs excluding Stripe's IPs
-            if ip_address not in settings.STRIPE_WEBHOOK_IP_WHITELIST:
-                return Response(data={"ip": ip_address,}, status=403,)
-
-        if event.type not in ["payment_intent.succeeded", "charge.succeeded"]:
-            return Response({}, status=HTTP_200_OK)
-
-        try:
-            payment = event.data.object
-            client = Client.objects.get(stripe_id=payment.customer)
-            invoice = Invoice.objects.get(pk=payment.metadata.invoice_id)
-        except ObjectDoesNotExist:
-            return Response({}, status=HTTP_200_OK)
+        payment, client, invoice, purpose = webhook_service.parse()
 
         payment_service = PaymentService(client, invoice)
         subscription_service = SubscriptionService(client)
+        order_service = OrderService(client, invoice)
 
         with atomic():
             # we are marked our invoice as paid
             payment_service.confirm(payment)
-            # and set subscription to user
-            subscription_service.set_subscription(invoice)
+
+            if purpose == settings.STRIPE_SUBSCRIPTION_PURPOSE:
+                subscription_service.set_subscription(invoice)
+
+            elif purpose == settings.STRIPE_ORDER_PURPOSE:
+                order_service.process()
 
         return Response({}, status=HTTP_200_OK)

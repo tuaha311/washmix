@@ -63,6 +63,9 @@ class PaymentService:
         web hook event from Stripe to confirm and finish payment flow.
         """
 
+        if self._invoice.is_paid:
+            return None
+
         # card will be charged at the frontend side
         # if user doesn't want to save a card
         if not self._invoice.is_save_card:
