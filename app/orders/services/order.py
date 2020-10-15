@@ -21,10 +21,13 @@ class OrderService:
 
     def charge(self):
         """
-        We are charging user for basket amount.
+        We are charging user for:
+        - basket amount
+        - delivery amount
+        - extras amount
         """
 
-        payment_service = PaymentService()
+        payment_service = PaymentService(self._client, self._invoice)
         payment = payment_service.charge()
 
         return payment

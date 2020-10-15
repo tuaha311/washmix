@@ -7,7 +7,7 @@ def get_discount_for_quantity(quantity: Quantity):
     client = basket.client
     subscription = client.subscription
 
-    service = DiscountService(client, basket)
+    service = DiscountService(client)
     discount = service.get_discount_for_service(quantity, subscription)
 
     return discount

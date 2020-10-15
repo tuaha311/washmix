@@ -23,7 +23,7 @@ class BasketService:
 
     def __init__(self, client: Client):
         self._client = client
-        self._discount_service = DiscountService(client, self.basket)
+        self._discount_service = DiscountService(client)
 
     def validate(self, price: Price, count: int, action: str):
         quantity = self._get_or_create_quantity(price)

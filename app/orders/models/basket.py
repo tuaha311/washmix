@@ -32,24 +32,32 @@ class Basket(Common):
         verbose_name_plural = "baskets"
 
     @property
-    def amount(self):
+    def amount(self) -> int:
         return self._calculate_sum("amount")
 
     @property
-    def dollar_amount(self):
+    def dollar_amount(self) -> float:
         return get_dollars(self, "amount")
 
     @property
-    def discount(self):
+    def discount(self) -> int:
         return self._calculate_sum("discount")
 
     @property
-    def dollar_discount(self):
+    def dollar_discount(self) -> float:
         return get_dollars(self, "discount")
 
-    def _calculate_sum(self, attribute_name):
+    @property
+    def amount_with_discount(self) -> int:
+        return self._calculate_sum("amount_with_discount")
+
+    @property
+    def dollar_amount_with_discount(self) -> float:
+        return get_dollars(self, "amount_with_discount")
+
+    def _calculate_sum(self, item_attribute_name: str) -> int:
         quantity_list = self.quantity_list.all()
-        amount = [getattr(item, attribute_name) for item in quantity_list]
+        amount = [getattr(item, item_attribute_name) for item in quantity_list]
 
         return sum(amount)
 

@@ -14,9 +14,8 @@ class InvoiceField(serializers.PrimaryKeyRelatedField):
         client = self.context["request"].user.client
         return client.invoice_list.all()
 
-    @property
-    def validators(self):
-        default_validators = super().validators
+    def get_validators(self):
+        default_validators = super().get_validators()
 
         default_validators.extend(self.extra_validators)
 

@@ -2,7 +2,7 @@ from typing import Dict
 
 from django.conf import settings
 
-from orders.models import Basket, Quantity, Service
+from orders.models import Quantity, Service
 from subscriptions.models import Subscription
 from users.models import Client
 
@@ -15,9 +15,8 @@ class DiscountService:
         {"attribute_name": "wash_fold", "title": "Wash & Folds",},
     ]
 
-    def __init__(self, client: Client, basket: Basket):
+    def __init__(self, client: Client):
         self._client = client
-        self._basket = basket
 
     def get_discount_for_service(self, quantity: Quantity, subscription: Subscription) -> int:
         """
