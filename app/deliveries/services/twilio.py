@@ -16,6 +16,11 @@ class TwilioFlexService:
         self._phone = get_clean_number(phone)
 
     def create_delivery(self) -> Delivery:
+        """
+        Method, that creates Delivery request when client sent an SMS to our
+        number with Twilio Studio.
+        """
+
         self._validate_address()
 
         pickup_info = self._pickup_info

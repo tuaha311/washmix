@@ -35,6 +35,10 @@ class BasketService:
             )
 
     def add_item(self, price: Price, count: int) -> Basket:
+        """
+        Adds item to basket.
+        """
+
         with atomic():
             quantity = self._get_or_create_quantity(price)
 
@@ -44,6 +48,10 @@ class BasketService:
         return self.basket
 
     def remove_item(self, price: Price, count: int) -> Basket:
+        """
+        Removes item to basket.
+        """
+
         with atomic():
             quantity = self._get_or_create_quantity(price)
 
@@ -56,6 +64,10 @@ class BasketService:
         return self.basket
 
     def clear_all(self):
+        """
+        Clears basket. Removes all items from basket.
+        """
+
         self.basket.item_list.set([])
         self.basket.save()
 

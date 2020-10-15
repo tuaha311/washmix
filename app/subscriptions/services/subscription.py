@@ -15,6 +15,10 @@ class SubscriptionService:
         self._client = client
 
     def set_subscription(self, invoice: Invoice) -> Optional[Subscription]:
+        """
+        Final method that sets subscription on client after payment (checkout).
+        """
+
         subscription = invoice.subscription
 
         # if invoice not paid - we can handle only PAYC subscription
@@ -33,6 +37,11 @@ class SubscriptionService:
         return subscription
 
     def clone_from_package(self, package: Package):
+        """
+        Method helps to clone subscription based on package.
+        It copies all fields from package to subscription.
+        """
+
         package = package
         invoice_service = InvoiceService(self._client)
 

@@ -19,7 +19,11 @@ class DiscountService:
         self._client = client
         self._basket = basket
 
-    def get_discount_for_service(self, quantity: Quantity, subscription: Subscription):
+    def get_discount_for_service(self, quantity: Quantity, subscription: Subscription) -> int:
+        """
+        Returns discount amount for Service based on Service category.
+        """
+
         service = quantity.price.service
         service_map = self.service_map
 
@@ -34,6 +38,17 @@ class DiscountService:
 
     @property
     def service_map(self) -> Dict[Service, str]:
+        """
+        Using this you can retrieve discount's attribute name of `Subscription` model.
+
+        Subscription has following discount's attributes,
+        that holds an discount of service category:
+            - dry_clean
+            - laundry
+            - alterations
+            - wash_fold
+        """
+
         result = {}
 
         for item in self.service_list:

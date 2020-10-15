@@ -66,6 +66,7 @@ class DeliveryService:
             - Added extra validation on date, time, etc.
             - Added auto completion of dropoff info.
         """
+
         self.validate()
 
         dropoff_info = self._dropoff_info
@@ -87,6 +88,11 @@ class DeliveryService:
         return instance, created
 
     def recalculate(self, delivery: Delivery) -> Delivery:
+        """
+        This method helps to recalculate dropoff info on update
+        field `pickup_date`.
+        """
+
         dropoff_info = self._dropoff_info
 
         for key, value in dropoff_info.items():
