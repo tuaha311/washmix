@@ -76,7 +76,7 @@ class Address(Common):
         verbose_name="address line 2",
         blank=True,
     )
-    has_doormen = models.BooleanField(
+    has_doorman = models.BooleanField(
         verbose_name="is doorman at this address",
         default=False,
     )
