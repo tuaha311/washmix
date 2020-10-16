@@ -23,10 +23,12 @@ class Transaction(Amountable, Stripeable, Common):
     STRIPE = "stripe"
     COUPON = "coupon"
     CREDIT_BACK = "credit_back"
+    WASHMIX = "washmix"
     PROVIDER_MAP = {
         STRIPE: "Stripe",
         COUPON: "Coupon",
         CREDIT_BACK: "Credit back",
+        WASHMIX: "WashMix",
     }
     PROVIDER_CHOICES = list(PROVIDER_MAP.items())
 

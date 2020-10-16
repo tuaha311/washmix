@@ -42,8 +42,7 @@ class SubscriptionService:
             card_service.update_main_card(self._client, card)
             return payment
 
-        payment = payment_service.charge()
-        return payment
+        payment_service.charge()
 
     def set_subscription(self, invoice: Invoice) -> Optional[Subscription]:
         """

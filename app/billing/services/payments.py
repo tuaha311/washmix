@@ -50,7 +50,7 @@ class PaymentService:
 
         return intent
 
-    def charge(self) -> Optional[PaymentMethod]:
+    def charge(self):
         """
         We are iterating to the all user's card list and choosing first one
         where we find an enough money to charge. At first successful attempt we
@@ -63,8 +63,8 @@ class PaymentService:
         with atomic():
             paid_amount, unpaid_amount = self._charge_prepaid_balance()
 
-            if unpaid_amount:
-                self._charge_card()
+            if unpaid_amount > 0:
+                self._charge_card(unpaid_amount)
 
     def confirm(self, payment: PaymentMethod) -> Optional[Transaction]:
         """
@@ -88,8 +88,34 @@ class PaymentService:
 
         return transaction
 
-    def _charge_prepaid_balance(self) -> Tuple[int, int]:
-        amount = self._invoice.amount
+    def _calculate_paid_and_unpaid(self) -> Tuple[int, int]:
+        invoice = self._invoice
+        amount = invoice.amount
+        client = self._client
+        balance = client.balance
+        paid_amount = 0
+        unpaid_amount = amount
+
+        if balance >= amount:
+            paid_amount = amount
+            unpaid_amount = 0
+        elif 0 < balance < amount:
+            paid_amount = balance
+            unpaid_amount = amount - balance
+
+        return paid_amount, unpaid_amount
+
+    def _charge_prepaid_balance(self):
+        client = self._client
+        invoice = self._invoice
+        paid_amount, unpaid_amount = self._calculate_paid_and_unpaid()
+
+        if paid_amount > 0:
+            create_credit(
+                client=client, invoice=invoice, amount=paid_amount,
+            )
+
+        return paid_amount, unpaid_amount
 
     def _charge_card(self, amount: int):
         card_service = CardService(self._client, self._invoice)

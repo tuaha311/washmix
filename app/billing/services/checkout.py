@@ -22,7 +22,7 @@ class WelcomeCheckoutService:
         self._stripe_helper = StripeHelper(client)
         self._invoice = invoice
 
-    def charge(self) -> Optional[PaymentMethod]:
+    def charge(self):
         """
         If user don't wanna save a card as payment method - all payment flow
         should be handled at frontend side.
@@ -35,8 +35,7 @@ class WelcomeCheckoutService:
         if not self._invoice.is_save_card:
             return payment
 
-        payment = subscription_service.charge(self._invoice)
-        return payment
+        subscription_service.charge(self._invoice)
 
     def fill_profile(self, user: dict) -> Client:
         serializer = WelcomeCheckoutUserSerializer(self._client, data=user, partial=True)

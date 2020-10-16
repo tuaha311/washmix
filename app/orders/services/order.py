@@ -43,9 +43,7 @@ class OrderService:
         """
 
         payment_service = PaymentService(self._client, invoice)
-        payment = payment_service.charge()
-
-        return payment
+        payment_service.charge()
 
     def process(self):
         pass
