@@ -48,6 +48,6 @@ class StripeWebhookService:
 
     def parse(self) -> Tuple[stripe.PaymentMethod, Client, Invoice, str]:
         client = Client.objects.get(stripe_id=self._payment.customer)
-        purpose = getattr(self._payment.metadata, "purpose", settings.STRIPE_SUBSCRIPTION_PURPOSE)
+        purpose = getattr(self._payment.metadata, "purpose", Invoice.SUBSCRIPTION)
 
         return self._payment, client, self._invoice, purpose

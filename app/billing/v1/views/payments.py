@@ -8,6 +8,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK
 
+from billing.models import Invoice
 from billing.services.invoice import InvoiceService
 from billing.services.payments import PaymentService
 from billing.services.webhook import StripeWebhookService
@@ -64,10 +65,10 @@ class StripeWebhookView(GenericAPIView):
             # we are marked our invoice as paid
             payment_service.confirm(payment)
 
-            if purpose == settings.STRIPE_SUBSCRIPTION_PURPOSE:
+            if purpose == Invoice.SUBSCRIPTION:
                 subscription_service.set_subscription(invoice)
 
-            elif purpose == settings.STRIPE_ORDER_PURPOSE:
+            elif purpose == Invoice.ORDER:
                 order_service.process()
 
         return Response({}, status=HTTP_200_OK)

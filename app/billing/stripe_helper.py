@@ -69,7 +69,7 @@ class StripeHelper:
         invoice: Invoice,
         currency: str = DEFAULT_CURRENCY,
         payment_method_id: str = None,
-        purpose: str = settings.STRIPE_SUBSCRIPTION_PURPOSE,
+        purpose: str = Invoice.SUBSCRIPTION,
     ):
         """
         Use this method to immediately charge saved card on customer.
