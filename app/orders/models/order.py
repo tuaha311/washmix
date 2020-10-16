@@ -3,6 +3,7 @@ from django.db import models
 from core.common_models import Common
 
 
+# TODO maybe add status
 class Order(Common):
     """
     Central point of system - where we processing orders and storing all info

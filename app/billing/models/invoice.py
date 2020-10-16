@@ -8,7 +8,6 @@ from core.common_models import Common
 from core.utils import get_dollars
 
 
-# TODO добавить поле delivery_amount
 class Invoice(Amountable, Discountable, Common):
     """
     Invoice that we generated for buying package or order.
@@ -17,6 +16,16 @@ class Invoice(Amountable, Discountable, Common):
         - orders.Order
         - billing.Package
     """
+
+    SUBSCRIPTION = "subscription"
+    ORDER = "order"
+    DELIVERY = "delivery"
+    PURPOSE_MAP = {
+        SUBSCRIPTION: "Subscription purchase",
+        ORDER: "Order processing payment",
+        DELIVERY: "Payment for delivery",
+    }
+    PURPOSE_CHOICES = list(PURPOSE_MAP.items())
 
     # here we store link on client, because we create
     # invoice as first step at Welcome scenario and
@@ -47,6 +56,12 @@ class Invoice(Amountable, Discountable, Common):
     is_save_card = models.BooleanField(
         verbose_name="should we save the card",
         default=True,
+    )
+    purpose = models.CharField(
+        max_length=20,
+        verbose_name="purpose of this invoice",
+        default=SUBSCRIPTION,
+        choices=PURPOSE_CHOICES,
     )
 
     class Meta:

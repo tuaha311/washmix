@@ -32,19 +32,21 @@ class OrderRepeatView(GenericAPIView):
 
 class OrderCheckoutView(GenericAPIView):
     serializer_class = OrderCheckoutSerializer
+    response_serializer_class = OrderSerializer
 
     def post(self, request: Request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data, context={"request": request})
         serializer.is_valid(raise_exception=True)
 
         client = request.user.client
-        invoice = serializer.validated_data["invoice"]
         delivery = serializer.validated_data["delivery"]
+        basket = serializer.validated_data["basket"]
 
         order_service = OrderService(client, delivery)
 
         with atomic():
-            order_service.checkout()
+            order, invoice = order_service.checkout(basket)
             order_service.charge(invoice)
 
-        return Response()
+        response = self.response_serializer_class(order).data
+        return Response(response)

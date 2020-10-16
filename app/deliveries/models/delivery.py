@@ -5,6 +5,8 @@ from core.common_models import Common
 from deliveries.common_models import CommonScheduleDelivery
 
 
+# TODO maybe add invoice
+# TODO maybe add status
 class Delivery(Amountable, CommonScheduleDelivery, Common):
     """
     NOTE: Schedule / Delivery uses the same pattern such Package / Subscription.
@@ -64,6 +66,7 @@ class Delivery(Amountable, CommonScheduleDelivery, Common):
     class Meta:
         verbose_name = "delivery"
         verbose_name_plural = "deliveries"
+        ordering = ["-pickup_date"]
 
     @property
     def pretty_pickup_message(self) -> str:

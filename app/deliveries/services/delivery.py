@@ -4,12 +4,12 @@ from typing import Tuple
 from django.conf import settings
 from django.utils.timezone import localtime
 
-from rest_framework import serializers
-
 from deliveries.models import Delivery
 from deliveries.utils import get_dropoff_day, get_pickup_day, get_pickup_start_end
 from deliveries.validators import DeliveryValidator
 from users.models import Client
+
+DEFAULT_AMOUNT = 0
 
 
 class DeliveryService:
@@ -51,6 +51,7 @@ class DeliveryService:
             pickup_date=self._pickup_date,
             pickup_start=self._pickup_start,
             pickup_end=self._pickup_end,
+            amount=DEFAULT_AMOUNT,
             **dropoff_info,
             **extra_kwargs,
         )
@@ -77,6 +78,7 @@ class DeliveryService:
                 "pickup_date": self._pickup_date,
                 "pickup_start": self._pickup_start,
                 "pickup_end": self._pickup_end,
+                "amount": DEFAULT_AMOUNT,
                 **dropoff_info,
                 **extra_defaults,
             },
@@ -97,6 +99,9 @@ class DeliveryService:
         delivery.save()
 
         return delivery
+
+    def validate(self):
+        self._validator_service.validate()
 
     @property
     def _pickup_start_end_auto_complete(self) -> Tuple[time, time]:

@@ -77,7 +77,7 @@ class SubscriptionService:
         invoice_service = InvoiceService(self._client)
 
         with atomic():
-            invoice = invoice_service.get_or_create(package.price)
+            invoice = invoice_service.get_or_create(package.price, Invoice.SUBSCRIPTION)
 
             # here we creating or receiving subscription container
             # and in later steps we will bind it with invoice

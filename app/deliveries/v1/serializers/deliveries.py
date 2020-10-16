@@ -2,7 +2,7 @@ from rest_framework import serializers
 from rest_framework.generics import get_object_or_404
 
 from deliveries.models import Delivery
-from deliveries.validators import DeliveryValidator
+from deliveries.services.delivery import DeliveryService
 from locations.models import Address
 
 
@@ -39,9 +39,10 @@ class DeliverySerializer(serializers.ModelSerializer):
         return value
 
     def validate(self, attrs: dict):
+        client = self.context["request"].user.client
         pickup_date = attrs["pickup_date"]
 
-        validator = DeliveryValidator(pickup_date=pickup_date)
-        validator.validate()
+        service = DeliveryService(client=client, pickup_date=pickup_date)
+        service.validate()
 
         return attrs
