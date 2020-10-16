@@ -10,7 +10,8 @@ class PhoneViewSet(PreventDeletionOfMainAttributeMixin, SetMainAttributeMixin, M
     """
 
     serializer_class = PhoneSerializer
-    attribute_name = "main_phone"
+    main_attribute = "main_phone"
 
     def get_queryset(self):
-        return self.request.user.client.phone_list.all()
+        client = self.request.user.client
+        return client.phone_list.all()

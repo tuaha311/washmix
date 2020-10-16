@@ -1,7 +1,4 @@
-from typing import Optional
-
 from rest_framework.request import Request
-from stripe import PaymentMethod
 
 from billing.models import Invoice
 from billing.stripe_helper import StripeHelper

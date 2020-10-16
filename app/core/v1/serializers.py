@@ -8,4 +8,6 @@ class PhoneSerializer(serializers.ModelSerializer):
         model = Phone
         exclude = [
             "client",
+            "created",
+            "changed",
         ]

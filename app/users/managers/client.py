@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import IntegrityError, models, transaction
 
@@ -22,7 +23,9 @@ class ClientManager(models.Manager):
                 user = User.objects.create_user(email, password, is_active=True, **extra_kwargs)
 
                 client = self.create(user=user, stripe_id=stripe_id)
-                phone = Phone.objects.create(client=client, number=clean_number,)
+                phone = Phone.objects.create(
+                    client=client, number=clean_number, title=settings.MAIN_TITLE
+                )
 
                 client.main_phone = phone
                 client.save()

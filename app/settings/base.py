@@ -185,6 +185,8 @@ BASKET_ACTION_MAP = {
 }
 BASKET_ACTION_CHOICES = list(BASKET_ACTION_MAP.items())
 
+MAIN_TITLE = "Main"
+
 
 ##########################
 # DELIVERY HANDLING INFO #

@@ -6,7 +6,7 @@ from billing.models.transaction import Transaction
 from core.behaviors import Stripeable
 from core.common_models import Common
 from core.utils import get_dollars
-from legacy.enums import Crease, Detergents, Starch
+from users.choices import Crease, Detergents, Starch
 from users.managers import ClientManager
 
 
@@ -63,24 +63,28 @@ class Client(Stripeable, Common):
 
     # Preferences
     detergents = models.CharField(
-        max_length=50,
-        choices=[(item, item.value) for item in Detergents],
-        null=True,
+        max_length=20,
+        choices=Detergents.CHOICES,
+        blank=True,
     )
     starch = models.CharField(
-        max_length=50,
-        choices=[(item, item.value) for item in Starch],
-        null=True,
+        max_length=20,
+        verbose_name="starch",
+        choices=Starch.CHOICES,
+        blank=True,
     )
     no_crease = models.CharField(
-        max_length=50,
-        choices=[(item, item.value) for item in Crease],
-        null=True,
+        max_length=20,
+        verbose_name="no crease",
+        choices=Crease.CHOICES,
+        blank=True,
     )
     fabric_softener = models.BooleanField(
+        verbose_name="fabric softener",
         default=False,
     )
     fix_tears = models.BooleanField(
+        verbose_name="fix tears, rips",
         default=False,
     )
     is_auto_billing = models.BooleanField(

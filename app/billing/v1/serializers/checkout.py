@@ -1,3 +1,5 @@
+from django.conf import settings
+
 from rest_framework import serializers
 
 from api.fields import InvoiceField
@@ -21,7 +23,7 @@ class WelcomeCheckoutUserSerializer(serializers.ModelSerializer):
 
 class WelcomeCheckoutAddressSerializer(serializers.ModelSerializer):
     zip_code = serializers.SlugRelatedField(slug_field="value", queryset=ZipCode.objects.all())
-    title = serializers.CharField(default="Main", required=False)
+    title = serializers.CharField(default=settings.MAIN_TITLE, required=False)
 
     class Meta:
         model = Address

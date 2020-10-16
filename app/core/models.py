@@ -17,6 +17,10 @@ class Phone(Common):
         on_delete=models.CASCADE,
     )
 
+    title = models.CharField(
+        verbose_name="title of address",
+        max_length=80,
+    )
     number = models.CharField(
         verbose_name="number",
         max_length=20,
