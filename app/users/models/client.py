@@ -5,6 +5,7 @@ from django.db.models import Sum
 from billing.models.transaction import Transaction
 from core.behaviors import Stripeable
 from core.common_models import Common
+from core.utils import get_dollars
 from legacy.enums import Crease, Detergents, Starch
 from users.managers import ClientManager
 
@@ -124,10 +125,14 @@ class Client(Stripeable, Common):
         debit_transactions = self.transaction_list.filter(kind=Transaction.DEBIT)
         credit_transactions = self.transaction_list.filter(kind=Transaction.CREDIT)
 
-        debit_total = debit_transactions.aggregate(total=Sum('amount'))['total'] or 0
-        credit_total = credit_transactions.aggregate(total=Sum('amount'))['total'] or 0
+        debit_total = debit_transactions.aggregate(total=Sum("amount"))["total"] or 0
+        credit_total = credit_transactions.aggregate(total=Sum("amount"))["total"] or 0
 
         return debit_total - credit_total
+    
+    @property
+    def dollar_balance(self):
+        return get_dollars(self, "balance")
 
     def __str__(self):
         return self.email

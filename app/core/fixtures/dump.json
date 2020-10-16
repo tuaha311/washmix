@@ -1476,7 +1476,7 @@
       "title": "Main",
       "address_line_1": "Amerika",
       "address_line_2": "Boston 1",
-      "has_doormen": false
+      "has_doorman": false
     }
   },
   {
@@ -1490,7 +1490,7 @@
       "title": "Main",
       "address_line_1": "Amerika",
       "address_line_2": "Boston 2",
-      "has_doormen": false
+      "has_doorman": false
     }
   },
   {
@@ -1504,7 +1504,7 @@
       "title": "Main",
       "address_line_1": "Amerika",
       "address_line_2": "Boston 3",
-      "has_doormen": false
+      "has_doorman": false
     }
   },
   {
@@ -1518,7 +1518,7 @@
       "title": "Main",
       "address_line_1": "Amerika",
       "address_line_2": "Boston 4",
-      "has_doormen": false
+      "has_doorman": false
     }
   },
   {

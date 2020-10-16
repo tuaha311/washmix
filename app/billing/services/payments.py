@@ -1,5 +1,7 @@
 import logging
-from typing import Optional, Union
+from typing import Optional, Tuple, Union
+
+from django.db.transaction import atomic
 
 from stripe import PaymentIntent, PaymentMethod, SetupIntent
 from stripe.error import StripeError
@@ -58,12 +60,11 @@ class PaymentService:
         web hook event from Stripe to confirm and finish payment flow.
         """
 
-        invoice_amount = self._invoice.amount
-        balance_amount = self._client.balance
+        with atomic():
+            paid_amount, unpaid_amount = self._charge_prepaid_balance()
 
-        if balance_amount > 0:
-
-            self._charge_prepaid_balance()
+            if unpaid_amount:
+                self._charge_card()
 
     def confirm(self, payment: PaymentMethod) -> Optional[Transaction]:
         """
@@ -87,10 +88,10 @@ class PaymentService:
 
         return transaction
 
-    def _charge_prepaid_balance(self):
-        pass
+    def _charge_prepaid_balance(self) -> Tuple[int, int]:
+        amount = self._invoice.amount
 
-    def _charge_card(self):
+    def _charge_card(self, amount: int):
         card_service = CardService(self._client, self._invoice)
 
         for item in self._client.card_list.all():
@@ -98,9 +99,7 @@ class PaymentService:
             # and we are stopping at first successful attempt
             try:
                 payment = self._stripe_helper.create_payment_intent(
-                    payment_method_id=item.stripe_id,
-                    amount=self._invoice.amount,
-                    invoice=self._invoice,
+                    payment_method_id=item.stripe_id, amount=amount, invoice=self._invoice,
                 )
 
                 card_service.update_main_card(self._client, item)
