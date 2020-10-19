@@ -5,8 +5,6 @@ from billing.models import Invoice
 from billing.services.invoice import InvoiceService
 from billing.services.payments import PaymentService
 from deliveries.models import Delivery
-from deliveries.services.delivery import DeliveryService
-from deliveries.services.discount import DeliveryDiscountService
 from orders.models import Basket, Order
 from users.models import Client
 

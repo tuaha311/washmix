@@ -45,8 +45,8 @@ class BasketView(GenericAPIView):
         client = request.user.client
 
         service = BasketService(client)
-        basket = service.basket
+        basket_container = service.container
 
-        response = self.response_serializer_class(basket).data
+        response = self.response_serializer_class(basket_container).data
 
         return Response(response)

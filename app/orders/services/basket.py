@@ -4,6 +4,7 @@ from django.db.transaction import atomic
 
 from rest_framework import serializers
 
+from orders.containers.basket import BasketContainer
 from orders.models import Basket, Price, Quantity
 from users.models import Client
 
@@ -75,6 +76,16 @@ class BasketService:
     def basket(self) -> Basket:
         basket, _ = Basket.objects.get_or_create(client=self._client, order__isnull=True,)
         return basket
+
+    @property
+    def container(self) -> BasketContainer:
+        client = self._client
+        subscription = client.subscription
+
+        basket = self.basket
+        container = BasketContainer(subscription, basket)
+
+        return container
 
     def _get_or_create_quantity(self, price: Price) -> Quantity:
         quantity, _ = Quantity.objects.get_or_create(

@@ -5,7 +5,6 @@ from django.conf import settings
 from core.utils import get_dollars
 from orders.models import Quantity, Service
 from subscriptions.models import Subscription
-from users.models import Client
 
 
 class QuantityContainer:
@@ -16,8 +15,7 @@ class QuantityContainer:
         {"attribute_name": "wash_fold", "title": "Wash & Folds",},
     ]
 
-    def __init__(self, client: Client, subscription: Subscription, quantity: Quantity):
-        self._client = client
+    def __init__(self, subscription: Subscription, quantity: Quantity):
         self._subscription = subscription
         self._quantity = quantity
 
@@ -32,7 +30,7 @@ class QuantityContainer:
 
     @property
     def discount(self) -> int:
-        return self.get_discount()
+        return self._get_discount()
 
     @property
     def dollar_discount(self) -> float:
@@ -49,27 +47,27 @@ class QuantityContainer:
     def dollar_amount_with_discount(self) -> float:
         return get_dollars(self, "amount_with_discount")
 
-    def get_discount(self) -> int:
+    def _get_discount(self) -> int:
         """
         Returns discount amount for Service based on Service category.
         """
 
         quantity = self._quantity
         service = quantity.price.service
-        service_map = self.service_map
+        service_map = self._service_map
         subscription = self._subscription
 
         try:
             attribute_name = service_map[service]
             subscription_discount_for_service = getattr(subscription, attribute_name)
-            discount = quantity.amount * subscription_discount_for_service / settings.PERCENTAGE
+            discount = self.amount * subscription_discount_for_service / settings.PERCENTAGE
         except (KeyError, AttributeError):
             discount = settings.DEFAULT_ZERO_DISCOUNT
         finally:
             return discount
 
     @property
-    def service_map(self) -> Dict[Service, str]:
+    def _service_map(self) -> Dict[Service, str]:
         """
         Using this you can retrieve discount's attribute name of `Subscription` model.
 
