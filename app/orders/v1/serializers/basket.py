@@ -2,6 +2,7 @@ from django.conf import settings
 
 from rest_framework import serializers
 
+from api.v1_0.serializers.common import CommonAmountWithDiscountSerializer
 from orders.models import Basket, Price, Quantity
 from orders.services.basket import BasketService
 
@@ -23,7 +24,7 @@ class ChangeItemSerializer(serializers.Serializer):
         return attrs
 
 
-class QuantitySerializer(serializers.ModelSerializer):
+class QuantitySerializer(CommonAmountWithDiscountSerializer, serializers.ModelSerializer):
     id = serializers.IntegerField(source="price.id")
     service = serializers.CharField(source="price.service.title")
     item = serializers.CharField(source="price.item.title")
@@ -44,7 +45,7 @@ class QuantitySerializer(serializers.ModelSerializer):
         ]
 
 
-class BasketSerializer(serializers.ModelSerializer):
+class BasketSerializer(CommonAmountWithDiscountSerializer, serializers.ModelSerializer):
     item_list = QuantitySerializer(many=True, source="quantity_list")
 
     class Meta:
