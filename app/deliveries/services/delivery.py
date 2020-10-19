@@ -9,8 +9,6 @@ from deliveries.utils import get_dropoff_day, get_pickup_day, get_pickup_start_e
 from deliveries.validators import DeliveryValidator
 from users.models import Client
 
-DEFAULT_AMOUNT = 0
-
 
 class DeliveryService:
     def __init__(
@@ -46,12 +44,15 @@ class DeliveryService:
         address = self._client.main_address
         extra_kwargs.setdefault("address", address)
 
+        is_rush = extra_kwargs.get("is_rush", False)
+        amount = self._calculate_price(is_rush)
+
         instance = Delivery.objects.create(
             client=self._client,
             pickup_date=self._pickup_date,
             pickup_start=self._pickup_start,
             pickup_end=self._pickup_end,
-            amount=DEFAULT_AMOUNT,
+            amount=amount,
             **dropoff_info,
             **extra_kwargs,
         )
@@ -71,6 +72,9 @@ class DeliveryService:
         address = self._client.main_address
         extra_query.setdefault("address", address)
 
+        is_rush = extra_defaults.get("is_rush", False)
+        amount = self._calculate_price(is_rush)
+
         instance, created = Delivery.objects.get_or_create(
             client=self._client,
             **extra_query,
@@ -78,7 +82,7 @@ class DeliveryService:
                 "pickup_date": self._pickup_date,
                 "pickup_start": self._pickup_start,
                 "pickup_end": self._pickup_end,
-                "amount": DEFAULT_AMOUNT,
+                "amount": amount,
                 **dropoff_info,
                 **extra_defaults,
             },
@@ -99,6 +103,15 @@ class DeliveryService:
         delivery.save()
 
         return delivery
+
+    def _calculate_price(self, is_rush):
+        default_price = settings.DELIVERY_PRICE
+        rush_price = settings.RUSH_DELIVERY_PRICE
+
+        if is_rush:
+            return default_price + rush_price
+
+        return default_price
 
     def validate(self):
         self._validator_service.validate()

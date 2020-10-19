@@ -5,7 +5,6 @@ from django.db.transaction import atomic
 from rest_framework import serializers
 
 from orders.models import Basket, Price, Quantity
-from orders.services.discount import DiscountService
 from users.models import Client
 
 DEFAULT_COUNT = 0
@@ -25,7 +24,6 @@ class BasketService:
 
     def __init__(self, client: Client):
         self._client = client
-        self._discount_service = DiscountService(client)
 
     def validate(self, price: Price, count: int, action: str):
         quantity = self._get_or_create_quantity(price)

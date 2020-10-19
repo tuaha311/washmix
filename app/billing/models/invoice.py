@@ -6,10 +6,11 @@ from django.db.models import ObjectDoesNotExist
 from billing.choices import Purpose
 from core.behaviors import Amountable, Discountable
 from core.common_models import Common
+from core.mixins import CalculatedAmountWithDiscount
 from core.utils import get_dollars
 
 
-class Invoice(Amountable, Discountable, Common):
+class Invoice(CalculatedAmountWithDiscount, Amountable, Discountable, Common):
     """
     Invoice that we generated for buying package or order.
 

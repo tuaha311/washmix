@@ -5,6 +5,8 @@ from billing.models import Invoice
 from billing.services.invoice import InvoiceService
 from billing.services.payments import PaymentService
 from deliveries.models import Delivery
+from deliveries.services.delivery import DeliveryService
+from deliveries.services.discount import DeliveryDiscountService
 from orders.models import Basket, Order
 from users.models import Client
 
@@ -20,11 +22,15 @@ class OrderService:
         self._client = client
 
     def checkout(self, basket: Basket, delivery: Delivery):
-        invoice_service = InvoiceService(self._client)
+        client = self._client
+        subscription = client.subscription
+        invoice_service = InvoiceService(client)
+        delivery_discount_service = DeliveryDiscountService(client, subscription)
 
         with atomic():
             total_amount = sum([basket.amount, delivery.amount])
             total_discount = sum([basket.discount, delivery.discount])
+
             invoice = invoice_service.get_or_create(
                 amount=total_amount, discount=total_discount, purpose=Purpose.ORDER,
             )

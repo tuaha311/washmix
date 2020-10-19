@@ -1,13 +1,9 @@
 from core.utils import get_dollars
 
 
-class DiscountMixin:
+class CalculatedAmountWithDiscount:
     amount: int
     discount: int
-
-    @property
-    def dollar_discount(self) -> float:
-        return get_dollars(self, "discount")
 
     @property
     def amount_with_discount(self) -> int:
@@ -19,3 +15,9 @@ class DiscountMixin:
     @property
     def dollar_amount_with_discount(self) -> float:
         return get_dollars(self, "amount_with_discount")
+
+
+class CalculatedDiscountMixin:
+    @property
+    def dollar_discount(self) -> float:
+        return get_dollars(self, "discount")

@@ -1,14 +1,12 @@
 from django.db import models
 
-from core.behaviors import Amountable
 from core.common_models import Common
-from core.mixins import DiscountMixin
 from deliveries.common_models import CommonScheduleDelivery
 
 
 # TODO maybe add invoice
 # TODO maybe add status
-class Delivery(DiscountMixin, Amountable, CommonScheduleDelivery, Common):
+class Delivery(CommonScheduleDelivery, Common):
     """
     NOTE: Schedule / Delivery uses the same pattern such Package / Subscription.
 
@@ -74,9 +72,3 @@ class Delivery(DiscountMixin, Amountable, CommonScheduleDelivery, Common):
         pretty_date = self.pickup_date.strftime("%d %B")
 
         return pretty_date
-
-    @property
-    def discount(self) -> int:
-        from orders.utils import get_discount_for_delivery
-
-        return 100

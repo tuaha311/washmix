@@ -8,22 +8,22 @@ class InvoiceService:
     def __init__(self, client: Client):
         self._client = client
 
-    def get_or_create(self, amount: int, purpose: str):
+    def get_or_create(
+        self, amount: int, purpose: str, discount: int = settings.DEFAULT_ZERO_DISCOUNT
+    ):
         # invoice without transaction by default not paid
         # and we are looking for them
         invoice = self._client.invoice_list.filter(transaction__isnull=True, purpose=purpose).last()
 
         if not invoice:
             invoice = Invoice.objects.create(
-                amount=amount,
-                discount=settings.DEFAULT_DISCOUNT,
-                client=self._client,
-                purpose=purpose,
+                amount=amount, discount=discount, client=self._client, purpose=purpose,
             )
 
         else:
             invoice.amount = amount
-            invoice.discount = settings.DEFAULT_DISCOUNT
+            invoice.discount = discount
+            invoice.discount = settings.DEFAULT_ZERO_DISCOUNT
             invoice.save()
 
         return invoice
