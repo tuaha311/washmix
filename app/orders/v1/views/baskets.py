@@ -21,9 +21,9 @@ class ChangeItemView(GenericAPIView):
 
         service = BasketService(client)
         method = getattr(service, f"{action}_item")
-        basket = method(price, count)
+        basket_container = method(price, count)
 
-        response = self.response_serializer_class(basket).data
+        response = self.response_serializer_class(basket_container).data
 
         return Response(response)
 

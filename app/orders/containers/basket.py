@@ -42,12 +42,18 @@ class BasketContainer:
     def dollar_amount_with_discount(self) -> float:
         return get_dollars(self, "amount_with_discount")
 
-    def _calculate_sum(self, item_attribute_name: str) -> int:
+    @property
+    def quantity_container_list(self):
         basket = self._basket
         subscription = self._subscription
 
         quantity_list = basket.quantity_list.all()
         quantity_container_list = [QuantityContainer(subscription, item) for item in quantity_list]
+
+        return quantity_container_list
+
+    def _calculate_sum(self, item_attribute_name: str) -> int:
+        quantity_container_list = self.quantity_container_list
 
         amount = [getattr(item, item_attribute_name) for item in quantity_container_list]
 

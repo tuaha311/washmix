@@ -19,6 +19,15 @@ class QuantityContainer:
         self._subscription = subscription
         self._quantity = quantity
 
+    def __getattr__(self, item):
+        """
+        This method invoked only when we can't find attribute name in itself.
+        Method works as a fallback.
+        """
+
+        quantity = self._quantity
+        return getattr(quantity, item)
+
     @property
     def amount(self) -> int:
         quantity = self._quantity

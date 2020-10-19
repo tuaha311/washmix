@@ -35,7 +35,7 @@ class BasketService:
                 code="cant_perform_item_remove",
             )
 
-    def add_item(self, price: Price, count: int) -> Basket:
+    def add_item(self, price: Price, count: int) -> BasketContainer:
         """
         Adds item to basket.
         """
@@ -46,9 +46,9 @@ class BasketService:
             quantity.count = F("count") + count
             quantity.save()
 
-        return self.basket
+        return self.container
 
-    def remove_item(self, price: Price, count: int) -> Basket:
+    def remove_item(self, price: Price, count: int) -> BasketContainer:
         """
         Removes item to basket.
         """
@@ -62,7 +62,7 @@ class BasketService:
             if quantity.count == DEFAULT_COUNT:
                 quantity.delete()
 
-        return self.basket
+        return self.container
 
     def clear_all(self):
         """
