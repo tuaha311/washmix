@@ -1,5 +1,6 @@
 from django.db.transaction import atomic
 
+from billing.choices import Purpose
 from billing.models import Invoice
 from billing.services.invoice import InvoiceService
 from billing.services.payments import PaymentService
@@ -13,20 +14,20 @@ class OrderService:
     This service is responsible for TOTAL handling of order:
         - Basket info
         - Delivery info
-        - Extras info
     """
 
-    def __init__(self, client: Client, delivery: Delivery):
+    def __init__(self, client: Client):
         self._client = client
-        self._delivery = delivery
 
-    def checkout(self, basket: Basket):
+    def checkout(self, basket: Basket, delivery: Delivery):
         invoice_service = InvoiceService(self._client)
-        delivery = self._delivery
 
         with atomic():
             total_amount = sum([basket.amount, delivery.amount])
-            invoice = invoice_service.get_or_create(total_amount, Invoice.ORDER)
+            total_discount = sum([basket.discount, delivery.discount])
+            invoice = invoice_service.get_or_create(
+                amount=total_amount, discount=total_discount, purpose=Purpose.ORDER,
+            )
 
             order = Order.objects.create(
                 client=self._client, delivery=delivery, invoice=invoice, basket=basket,

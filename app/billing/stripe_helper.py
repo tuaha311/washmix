@@ -1,11 +1,10 @@
 from typing import List
 
-from django.conf import settings
-
 import stripe
 from stripe.api_resources.payment_method import PaymentMethod
 from stripe.error import InvalidRequestError
 
+from billing.choices import Purpose
 from billing.models import Invoice
 from users.models import Client
 
@@ -69,7 +68,7 @@ class StripeHelper:
         invoice: Invoice,
         currency: str = DEFAULT_CURRENCY,
         payment_method_id: str = None,
-        purpose: str = Invoice.SUBSCRIPTION,
+        purpose: str = Purpose.SUBSCRIPTION,
     ):
         """
         Use this method to immediately charge saved card on customer.

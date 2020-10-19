@@ -7,6 +7,7 @@ import stripe
 from rest_framework.request import Request
 from rest_framework.status import HTTP_200_OK, HTTP_403_FORBIDDEN
 
+from billing.choices import Purpose
 from billing.models import Invoice
 from users.models import Client
 
@@ -48,6 +49,6 @@ class StripeWebhookService:
 
     def parse(self) -> Tuple[stripe.PaymentMethod, Client, Invoice, str]:
         client = Client.objects.get(stripe_id=self._payment.customer)
-        purpose = getattr(self._payment.metadata, "purpose", Invoice.SUBSCRIPTION)
+        purpose = getattr(self._payment.metadata, "purpose", Purpose.SUBSCRIPTION)
 
         return self._payment, client, self._invoice, purpose

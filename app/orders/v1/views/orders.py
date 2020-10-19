@@ -1,19 +1,14 @@
 from django.db.transaction import atomic
 
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
 
 from orders.services.order import OrderService
 from orders.v1.serializers.orders import OrderCheckoutSerializer, OrderSerializer
 
 
-class OrderViewSet(ModelViewSet):
-    """
-    Methods to manipulate with `Order` entity
-    """
-
+class OrderListView(ListAPIView):
     serializer_class = OrderSerializer
 
     def get_queryset(self):
@@ -42,10 +37,10 @@ class OrderCheckoutView(GenericAPIView):
         delivery = serializer.validated_data["delivery"]
         basket = serializer.validated_data["basket"]
 
-        order_service = OrderService(client, delivery)
+        order_service = OrderService(client)
 
         with atomic():
-            order, invoice = order_service.checkout(basket)
+            order, invoice = order_service.checkout(basket, delivery)
             order_service.charge(invoice)
 
         response = self.response_serializer_class(order).data

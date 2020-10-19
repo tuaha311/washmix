@@ -1,3 +1,4 @@
+from deliveries.models import Delivery
 from orders.models import Quantity
 from orders.services.discount import DiscountService
 
@@ -11,3 +12,7 @@ def get_discount_for_quantity(quantity: Quantity):
     discount = service.get_discount_for_service(quantity, subscription)
 
     return discount
+
+
+def get_discount_for_delivery(delivery: Delivery):
+    pass

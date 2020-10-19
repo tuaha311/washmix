@@ -8,7 +8,6 @@ from billing.v1.views import cards
 from core.v1 import views as core_views
 from deliveries.v1.views import deliveries, schedules
 from locations.v1.views import addresses, locations, zip_codes
-from orders.v1.views import orders
 from subscriptions.v1.views import packages
 from users.v1.views import customers, profile
 
@@ -41,7 +40,6 @@ sms_urls = (
 router = SimpleRouter(trailing_slash=True)
 router.register("addresses", addresses.AddressViewSet, basename="addresses")
 router.register("phones", core_views.PhoneViewSet, basename="phones")
-router.register("orders", orders.OrderViewSet, basename="orders")
 router.register("cards", cards.CardViewSet, basename="cards")
 router.register("deliveries", deliveries.DeliveryViewSet, basename="deliveries")
 router.register("schedules", schedules.ScheduleViewSet, basename="schedules")

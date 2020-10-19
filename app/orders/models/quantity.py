@@ -1,10 +1,11 @@
 from django.db import models
 
 from core.common_models import Common
+from core.mixins import DiscountMixin
 from core.utils import get_dollars
 
 
-class Quantity(Common):
+class Quantity(DiscountMixin, Common):
     """
     **Intermediate** model that handles all stuff related to
     storing more than 1 item in basket.
@@ -55,23 +56,3 @@ class Quantity(Common):
         from orders.utils import get_discount_for_quantity
 
         return get_discount_for_quantity(self)
-
-    @property
-    def dollar_discount(self) -> float:
-        return get_dollars(self, "discount")
-
-    @property
-    def amount_with_discount(self) -> int:
-        amount = self.amount
-        discount = self.discount
-
-        return amount - discount
-
-    @property
-    def dollar_amount_with_discount(self) -> float:
-        return get_dollars(self, "amount_with_discount")
-
-
-
-
-

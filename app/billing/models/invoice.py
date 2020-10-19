@@ -3,6 +3,7 @@ from functools import partial
 from django.db import models
 from django.db.models import ObjectDoesNotExist
 
+from billing.choices import Purpose
 from core.behaviors import Amountable, Discountable
 from core.common_models import Common
 from core.utils import get_dollars
@@ -16,16 +17,6 @@ class Invoice(Amountable, Discountable, Common):
         - orders.Order
         - billing.Package
     """
-
-    SUBSCRIPTION = "subscription"
-    ORDER = "order"
-    DELIVERY = "delivery"
-    PURPOSE_MAP = {
-        SUBSCRIPTION: "Subscription purchase",
-        ORDER: "Order processing payment",
-        DELIVERY: "Payment for delivery",
-    }
-    PURPOSE_CHOICES = list(PURPOSE_MAP.items())
 
     # here we store link on client, because we create
     # invoice as first step at Welcome scenario and
@@ -60,8 +51,8 @@ class Invoice(Amountable, Discountable, Common):
     purpose = models.CharField(
         max_length=20,
         verbose_name="purpose of this invoice",
-        default=SUBSCRIPTION,
-        choices=PURPOSE_CHOICES,
+        default=Purpose.SUBSCRIPTION,
+        choices=Purpose.CHOICES,
     )
 
     class Meta:

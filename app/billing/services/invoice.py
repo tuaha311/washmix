@@ -15,7 +15,10 @@ class InvoiceService:
 
         if not invoice:
             invoice = Invoice.objects.create(
-                amount=amount, discount=settings.DEFAULT_DISCOUNT, client=self._client,
+                amount=amount,
+                discount=settings.DEFAULT_DISCOUNT,
+                client=self._client,
+                purpose=purpose,
             )
 
         else:

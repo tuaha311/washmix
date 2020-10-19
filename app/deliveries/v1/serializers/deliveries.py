@@ -21,6 +21,12 @@ class DeliverySerializer(serializers.ModelSerializer):
             "is_rush",
             "comment",
             "schedule",
+            "amount",
+            "dollar_amount",
+            "discount",
+            "dollar_discount",
+            "amount_with_discount",
+            "dollar_amount_with_discount",
         ]
         extra_kwargs = {
             "pickup_date": {"required": True},
