@@ -2,12 +2,13 @@ from typing import Dict
 
 from django.conf import settings
 
-from core.utils import get_dollars
+from core.containers import BaseAmountContainer
 from orders.models import Quantity, Service
 from subscriptions.models import Subscription
 
 
-class QuantityContainer:
+class QuantityContainer(BaseAmountContainer):
+    proxy_to_object = "_quantity"
     service_list = [
         {"attribute_name": "dry_clean", "title": "Dry Cleaning",},
         {"attribute_name": "laundry", "title": "Laundry",},
@@ -19,31 +20,14 @@ class QuantityContainer:
         self._subscription = subscription
         self._quantity = quantity
 
-    def __getattr__(self, item):
-        """
-        This method invoked only when we can't find attribute name in itself.
-        Method works as a fallback.
-        """
-
-        quantity = self._quantity
-        return getattr(quantity, item)
-
     @property
     def amount(self) -> int:
         quantity = self._quantity
         return quantity.price.amount * quantity.count
 
     @property
-    def dollar_amount(self) -> float:
-        return get_dollars(self, "amount")
-
-    @property
     def discount(self) -> int:
         return self._get_discount()
-
-    @property
-    def dollar_discount(self) -> float:
-        return get_dollars(self, "discount")
 
     @property
     def amount_with_discount(self) -> int:
@@ -51,10 +35,6 @@ class QuantityContainer:
         discount = self.discount
 
         return amount - discount
-
-    @property
-    def dollar_amount_with_discount(self) -> float:
-        return get_dollars(self, "amount_with_discount")
 
     def _get_discount(self) -> int:
         """

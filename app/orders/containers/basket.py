@@ -1,46 +1,28 @@
+from core.containers import BaseAmountContainer
 from core.utils import get_dollars
 from orders.containers.quantity import QuantityContainer
 from orders.models import Basket
 from subscriptions.models import Subscription
 
 
-class BasketContainer:
+class BasketContainer(BaseAmountContainer):
+    proxy_to_object = "_basket"
+
     def __init__(self, subscription: Subscription, basket: Basket):
         self._subscription = subscription
         self._basket = basket
-
-    def __getattr__(self, item):
-        """
-        This method invoked only when we can't find attribute name in itself.
-        Method works as a fallback.
-        """
-
-        basket = self._basket
-        return getattr(basket, item)
 
     @property
     def amount(self) -> int:
         return self._calculate_sum("amount")
 
     @property
-    def dollar_amount(self) -> float:
-        return get_dollars(self, "amount")
-
-    @property
     def discount(self) -> int:
         return self._calculate_sum("discount")
 
     @property
-    def dollar_discount(self) -> float:
-        return get_dollars(self, "discount")
-
-    @property
     def amount_with_discount(self) -> int:
         return self._calculate_sum("amount_with_discount")
-
-    @property
-    def dollar_amount_with_discount(self) -> float:
-        return get_dollars(self, "amount_with_discount")
 
     @property
     def quantity_container_list(self):
