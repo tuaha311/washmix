@@ -8,7 +8,6 @@ from subscriptions.choices import Package
 # PAYC
 #
 def test_payc_small_load():
-    client = MagicMock()
     subscription = MagicMock()
     subscription.name = Package.PAYC
     delivery = MagicMock()
@@ -21,12 +20,11 @@ def test_payc_small_load():
 
     for amount, result in amount_list:
         basket.amount = amount
-        container = DeliveryContainer(client, subscription, delivery, basket)
+        container = DeliveryContainer(subscription, delivery, basket)
         assert container.amount == result
 
 
 def test_payc_medium_load():
-    client = MagicMock()
     subscription = MagicMock()
     subscription.name = Package.PAYC
     delivery = MagicMock()
@@ -35,12 +33,11 @@ def test_payc_medium_load():
 
     for amount, result in amount_list:
         basket.amount = amount
-        container = DeliveryContainer(client, subscription, delivery, basket)
+        container = DeliveryContainer(subscription, delivery, basket)
         assert container.amount == result
 
 
 def test_payc_free():
-    client = MagicMock()
     subscription = MagicMock()
     subscription.name = Package.PAYC
     delivery = MagicMock()
@@ -52,7 +49,7 @@ def test_payc_free():
 
     for amount, result in amount_list:
         basket.amount = amount
-        container = DeliveryContainer(client, subscription, delivery, basket)
+        container = DeliveryContainer(subscription, delivery, basket)
         assert container.amount == result
 
 
@@ -60,7 +57,6 @@ def test_payc_free():
 # GOLD
 #
 def test_gold_small_load():
-    client = MagicMock()
     subscription = MagicMock()
     subscription.name = Package.GOLD
     delivery = MagicMock()
@@ -69,12 +65,11 @@ def test_gold_small_load():
 
     for amount, result in amount_list:
         basket.amount = amount
-        container = DeliveryContainer(client, subscription, delivery, basket)
+        container = DeliveryContainer(subscription, delivery, basket)
         assert container.amount == result
 
 
 def test_gold_medium_load():
-    client = MagicMock()
     subscription = MagicMock()
     subscription.name = Package.GOLD
     delivery = MagicMock()
@@ -83,12 +78,11 @@ def test_gold_medium_load():
 
     for amount, result in amount_list:
         basket.amount = amount
-        container = DeliveryContainer(client, subscription, delivery, basket)
+        container = DeliveryContainer(subscription, delivery, basket)
         assert container.amount == result
 
 
 def test_gold_free():
-    client = MagicMock()
     subscription = MagicMock()
     subscription.name = Package.GOLD
     delivery = MagicMock()
@@ -100,7 +94,7 @@ def test_gold_free():
 
     for amount, result in amount_list:
         basket.amount = amount
-        container = DeliveryContainer(client, subscription, delivery, basket)
+        container = DeliveryContainer(subscription, delivery, basket)
         assert container.amount == result
 
 
@@ -108,7 +102,6 @@ def test_gold_free():
 # PLATINUM
 #
 def test_platinum_small_load():
-    client = MagicMock()
     subscription = MagicMock()
     subscription.name = Package.PLATINUM
     delivery = MagicMock()
@@ -117,12 +110,11 @@ def test_platinum_small_load():
 
     for amount, result in amount_list:
         basket.amount = amount
-        container = DeliveryContainer(client, subscription, delivery, basket)
+        container = DeliveryContainer(subscription, delivery, basket)
         assert container.amount == result
 
 
 def test_platinum_medium_load():
-    client = MagicMock()
     subscription = MagicMock()
     subscription.name = Package.PLATINUM
     delivery = MagicMock()
@@ -131,12 +123,11 @@ def test_platinum_medium_load():
 
     for amount, result in amount_list:
         basket.amount = amount
-        container = DeliveryContainer(client, subscription, delivery, basket)
+        container = DeliveryContainer(subscription, delivery, basket)
         assert container.amount == result
 
 
 def test_platinum_free():
-    client = MagicMock()
     subscription = MagicMock()
     subscription.name = Package.PLATINUM
     delivery = MagicMock()
@@ -148,5 +139,5 @@ def test_platinum_free():
 
     for amount, result in amount_list:
         basket.amount = amount
-        container = DeliveryContainer(client, subscription, delivery, basket)
+        container = DeliveryContainer(subscription, delivery, basket)
         assert container.amount == result

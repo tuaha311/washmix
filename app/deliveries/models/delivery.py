@@ -4,7 +4,6 @@ from core.common_models import Common
 from deliveries.common_models import CommonScheduleDelivery
 
 
-# TODO maybe add invoice
 # TODO maybe add status
 class Delivery(CommonScheduleDelivery, Common):
     """

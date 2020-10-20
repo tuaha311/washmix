@@ -4,7 +4,9 @@ from billing.choices import Purpose
 from billing.models import Invoice
 from billing.services.invoice import InvoiceService
 from billing.services.payments import PaymentService
+from deliveries.containers import DeliveryContainer
 from deliveries.models import Delivery
+from orders.containers.basket import BasketContainer
 from orders.models import Basket, Order
 from users.models import Client
 
@@ -23,11 +25,12 @@ class OrderService:
         client = self._client
         subscription = client.subscription
         invoice_service = InvoiceService(client)
-        delivery_discount_service = DeliveryDiscountService(client, subscription)
+        basket_container = BasketContainer(subscription, basket)
+        delivery_container = DeliveryContainer(subscription, delivery, basket_container)
 
         with atomic():
-            total_amount = sum([basket.amount, delivery.amount])
-            total_discount = sum([basket.discount, delivery.discount])
+            total_amount = sum([basket_container.amount, delivery_container.amount])
+            total_discount = sum([basket_container.discount, delivery_container.discount])
 
             invoice = invoice_service.get_or_create(
                 amount=total_amount, discount=total_discount, purpose=Purpose.ORDER,

@@ -5,10 +5,6 @@ from deliveries.models import Delivery
 from orders.containers.basket import BasketContainer
 from subscriptions.choices import Package
 from subscriptions.models import Subscription
-from users.models import Client
-
-PAYC_FREE_DELIVERY_THRESHOLD = 4900
-GOLD_PLATINUM_FREE_DELIVERY_THRESHOLD = 3900
 
 
 class DeliveryContainer(BaseAmountContainer):
@@ -19,21 +15,21 @@ class DeliveryContainer(BaseAmountContainer):
     proxy_to_object = "_delivery"
     price_map = {
         Package.PAYC: {
-            "free_threshold": PAYC_FREE_DELIVERY_THRESHOLD,
+            "free_threshold": settings.PAYC_FREE_DELIVERY_THRESHOLD,
             "price_list": [
                 {"min": 0, "max": 2999, "price": 1990,},
                 {"min": 3000, "max": 4899, "price": 990,},
             ],
         },
         Package.GOLD: {
-            "free_threshold": GOLD_PLATINUM_FREE_DELIVERY_THRESHOLD,
+            "free_threshold": settings.GOLD_PLATINUM_FREE_DELIVERY_THRESHOLD,
             "price_list": [
                 {"min": 0, "max": 2499, "price": 1498,},
                 {"min": 2600, "max": 3899, "price": 990,},
             ],
         },
         Package.PLATINUM: {
-            "free_threshold": GOLD_PLATINUM_FREE_DELIVERY_THRESHOLD,
+            "free_threshold": settings.GOLD_PLATINUM_FREE_DELIVERY_THRESHOLD,
             "price_list": [
                 {"min": 0, "max": 2499, "price": 1498,},
                 {"min": 2600, "max": 3899, "price": 990,},
@@ -42,13 +38,8 @@ class DeliveryContainer(BaseAmountContainer):
     }
 
     def __init__(
-        self,
-        client: Client,
-        subscription: Subscription,
-        delivery: Delivery,
-        basket: BasketContainer,
+        self, subscription: Subscription, delivery: Delivery, basket: BasketContainer,
     ):
-        self._client = client
         self._subscription = subscription
         self._delivery = delivery
         self._basket = basket
@@ -73,11 +64,16 @@ class DeliveryContainer(BaseAmountContainer):
                 return price
 
     @property
-    def discount(self) -> int:
-        pass
+    def is_free(self):
+        amount = self.amount
+        return amount == settings.FREE_DELIVERY_PRICE
 
     @property
-    def amount_with_discount(self) -> int:
+    def discount(self):
+        return settings.FREE_DELIVERY_PRICE
+
+    @property
+    def amount_with_discount(self):
         amount = self.amount
         discount = self.discount
 

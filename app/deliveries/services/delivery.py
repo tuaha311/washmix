@@ -1,7 +1,6 @@
 from datetime import date, time
 from typing import Tuple
 
-from django.conf import settings
 from django.utils.timezone import localtime
 
 from deliveries.models import Delivery
@@ -44,15 +43,13 @@ class DeliveryService:
         address = self._client.main_address
         extra_kwargs.setdefault("address", address)
 
-        is_rush = extra_kwargs.get("is_rush", False)
-        amount = self._calculate_price(is_rush)
+        extra_kwargs.get("is_rush", False)
 
         instance = Delivery.objects.create(
             client=self._client,
             pickup_date=self._pickup_date,
             pickup_start=self._pickup_start,
             pickup_end=self._pickup_end,
-            amount=amount,
             **dropoff_info,
             **extra_kwargs,
         )
@@ -72,8 +69,7 @@ class DeliveryService:
         address = self._client.main_address
         extra_query.setdefault("address", address)
 
-        is_rush = extra_defaults.get("is_rush", False)
-        amount = self._calculate_price(is_rush)
+        extra_defaults.get("is_rush", False)
 
         instance, created = Delivery.objects.get_or_create(
             client=self._client,
@@ -82,7 +78,6 @@ class DeliveryService:
                 "pickup_date": self._pickup_date,
                 "pickup_start": self._pickup_start,
                 "pickup_end": self._pickup_end,
-                "amount": amount,
                 **dropoff_info,
                 **extra_defaults,
             },
@@ -103,15 +98,6 @@ class DeliveryService:
         delivery.save()
 
         return delivery
-
-    def _calculate_price(self, is_rush):
-        default_price = settings.DELIVERY_PRICE
-        rush_price = settings.RUSH_DELIVERY_PRICE
-
-        if is_rush:
-            return default_price + rush_price
-
-        return default_price
 
     def validate(self):
         self._validator_service.validate()
