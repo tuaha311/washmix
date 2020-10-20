@@ -71,10 +71,3 @@ class DeliveryContainer(BaseAmountContainer):
     @property
     def discount(self):
         return settings.FREE_DELIVERY_PRICE
-
-    @property
-    def amount_with_discount(self):
-        amount = self.amount
-        discount = self.discount
-
-        return amount - discount

@@ -29,13 +29,6 @@ class QuantityContainer(BaseAmountContainer):
     def discount(self) -> int:
         return self._get_discount()
 
-    @property
-    def amount_with_discount(self) -> int:
-        amount = self.amount
-        discount = self.discount
-
-        return amount - discount
-
     def _get_discount(self) -> int:
         """
         Returns discount amount for Service based on Service category.

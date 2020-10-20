@@ -89,7 +89,7 @@ REMINDER_TIME = 15
 
 
 LANGUAGE_CODE = "en-AU"
-TIME_ZONE = "US/Pacific"
+TIME_ZONE = "America/Los_Angeles"
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
