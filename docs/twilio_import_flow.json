@@ -82,11 +82,10 @@
       "type": "make-http-request",
       "transitions": [
         {
-          "next": "Send-checkout-text",
+          "next": "Handle-server-response",
           "event": "success"
         },
         {
-          "next": "Send-no-match-found",
           "event": "failed"
         }
       ],
@@ -114,14 +113,14 @@
       ],
       "properties": {
         "offset": {
-          "x": -310,
-          "y": 1060
+          "x": -550,
+          "y": 1290
         },
         "service": "{{trigger.message.InstanceSid}}",
         "channel": "{{trigger.message.ChannelSid}}",
         "from": "{{flow.channel.address}}",
         "to": "{{contact.channel.address}}",
-        "body": "Thank you for requesting a pickup. You’re scheduled for {{widgets.Proxy-request.parsed.message}} . Please have your bag out. If any questions call\nus back"
+        "body": "Thank you for requesting a pickup. You’re scheduled for {{widgets.Proxy-request.parsed.message}} . Please have your bag out. If any questions call us back"
       }
     },
     {
@@ -137,14 +136,79 @@
       ],
       "properties": {
         "offset": {
-          "x": 153,
-          "y": 1046
+          "x": 740,
+          "y": 1130
         },
         "service": "{{trigger.message.InstanceSid}}",
         "channel": "{{trigger.message.ChannelSid}}",
         "from": "{{flow.channel.address}}",
         "to": "{{contact.channel.address}}",
         "body": "Thank you for your pickup request. Unfortunately, we can’t locate\nyou in our database. But not to worry, we will be in touch soon"
+      }
+    },
+    {
+      "name": "Handle-server-response",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "Send-checkout-text",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to success",
+              "arguments": [
+                "{{widgets.Proxy-request.parsed.event}}"
+              ],
+              "type": "equal_to",
+              "value": "success"
+            }
+          ]
+        },
+        {
+          "next": "Send-to-Flex",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to fail",
+              "arguments": [
+                "{{widgets.Proxy-request.parsed.event}}"
+              ],
+              "type": "equal_to",
+              "value": "fail"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.Proxy-request.parsed.event}}",
+        "offset": {
+          "x": 60,
+          "y": 970
+        }
+      }
+    },
+    {
+      "name": "Send-to-Flex",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 530,
+          "y": 1490
+        }
       }
     }
   ],
