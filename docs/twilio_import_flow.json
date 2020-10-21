@@ -1,5 +1,5 @@
 {
-  "description": "Proxy to Backend",
+  "description": "Proxy with Flex",
   "states": [
     {
       "name": "Trigger",
@@ -96,7 +96,7 @@
         },
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
-        "body": "{\"message\": \"{{trigger.message.Body}}\", \"phone\": \"{{trigger.message.From}}\"}",
+        "body": "{\"message\": \"{{trigger.message.Body}}\", \"phone\": \"{{trigger.message.ChannelAttributes.from}}\"}",
         "url": "https://washmix.evrone.app/api/v1.0/sms/twilio_webhook/"
       }
     },
@@ -136,8 +136,8 @@
       ],
       "properties": {
         "offset": {
-          "x": 740,
-          "y": 1130
+          "x": 730,
+          "y": 1240
         },
         "service": "{{trigger.message.InstanceSid}}",
         "channel": "{{trigger.message.ChannelSid}}",
@@ -168,7 +168,7 @@
           ]
         },
         {
-          "next": "Send-to-Flex",
+          "next": "Agent-connected",
           "event": "match",
           "conditions": [
             {
@@ -206,9 +206,35 @@
       ],
       "properties": {
         "offset": {
-          "x": 530,
-          "y": 1490
+          "x": 300,
+          "y": 1750
+        },
+        "workflow": "WW480e7e81aee26aa37378a0a6705c3344",
+        "channel": "TC26544bc251241b67bfa9d3239f0f07f2"
+      }
+    },
+    {
+      "name": "Agent-connected",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "Send-to-Flex",
+          "event": "sent"
+        },
+        {
+          "event": "failed"
         }
+      ],
+      "properties": {
+        "offset": {
+          "x": 310,
+          "y": 1400
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "to": "{{contact.channel.address}}",
+        "body": "Dear client soon operator will connect to help you."
       }
     }
   ],
