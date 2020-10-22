@@ -12,6 +12,7 @@ class Delivery(CommonScheduleDelivery, Common):
     Delivery to / from our Clients.
     """
 
+    # DEPRECATED
     client = models.ForeignKey(
         "users.Client",
         verbose_name="client",
@@ -33,6 +34,7 @@ class Delivery(CommonScheduleDelivery, Common):
         on_delete=models.SET_NULL,
         null=True,
     )
+    # DEPRECATED
     schedule = models.ForeignKey(
         "deliveries.Schedule",
         verbose_name="recurring schedule of delivery",

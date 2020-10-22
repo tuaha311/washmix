@@ -98,6 +98,9 @@ class Client(Stripeable, Common):
         verbose_name = "client"
         verbose_name_plural = "clients"
 
+    #
+    # user proxy fields
+    #
     @property
     def email(self):
         return self.user.email
@@ -120,6 +123,9 @@ class Client(Stripeable, Common):
         self.user.last_name = value
         self.user.save()
 
+    #
+    # properties
+    #
     @property
     def full_name(self):
         return f"{self.first_name} {self.last_name}"

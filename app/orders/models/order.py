@@ -1,6 +1,7 @@
 from django.db import models
 
 from core.common_models import Common
+from orders.choices import Status
 
 
 # TODO maybe add status
@@ -43,6 +44,20 @@ class Order(Common):
         verbose_name="delivery",
         on_delete=models.SET_NULL,
         null=True,
+    )
+    request = models.OneToOneField(
+        "deliveries.Request",
+        verbose_name="request",
+        related_name="order",
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+
+    status = models.CharField(
+        max_length=20,
+        verbose_name="status of order",
+        choices=Status.CHOICES,
+        default=Status.ACCEPTED,
     )
 
     class Meta:

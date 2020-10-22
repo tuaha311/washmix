@@ -1,3 +1,5 @@
+from typing import Tuple
+
 from django.conf import settings
 
 from core.containers import BaseAmountContainer
@@ -16,22 +18,34 @@ class DeliveryContainer(BaseAmountContainer):
     price_map = {
         Package.PAYC: {
             "price_list": [
+                # 0 - 2999 price 19.90$
                 {"min": 0, "max": 2999, "price": 1990,},
+                # 3000 - 4899 price 9.90$
                 {"min": 3000, "max": 4899, "price": 990,},
+                # 4900 - infinity price 9.90$
+                {"min": 4900, "max": float("inf"), "price": 990,},
             ],
             "discount_from": settings.PAYC_FREE_DELIVERY_FROM,
         },
         Package.GOLD: {
             "price_list": [
+                # 0 - 2499 price 14.98$
                 {"min": 0, "max": 2499, "price": 1498,},
-                {"min": 2600, "max": 3899, "price": 990,},
+                # 2500 - 3899 price 9.90$
+                {"min": 2500, "max": 3899, "price": 990,},
+                # 3900 - infinity price 9.90$
+                {"min": 3900, "max": float("inf"), "price": 990,},
             ],
             "discount_from": settings.GOLD_PLATINUM_FREE_DELIVERY_FROM,
         },
         Package.PLATINUM: {
             "price_list": [
+                # 0 - 2499 price 14.98$
                 {"min": 0, "max": 2499, "price": 1498,},
-                {"min": 2600, "max": 3899, "price": 990,},
+                # 2500 - 3899 price 9.90$
+                {"min": 2500, "max": 3899, "price": 990,},
+                # 3900 - infinity price 9.90$
+                {"min": 3900, "max": float("inf"), "price": 990,},
             ],
             "discount_from": settings.GOLD_PLATINUM_FREE_DELIVERY_FROM,
         },
@@ -46,10 +60,25 @@ class DeliveryContainer(BaseAmountContainer):
 
     @property
     def amount(self) -> int:
+        amount, _ = self._get_amount_discount()
+        return amount
+
+    @property
+    def discount(self) -> int:
+        _, discount = self._get_amount_discount()
+        return discount
+
+    @property
+    def is_free(self) -> bool:
+        return self.amount == self.discount
+
+    def _get_amount_discount(self) -> Tuple[int, int]:
         subscription = self._subscription
         basket = self._basket
         price_map = self.price_map[subscription.name]
         price_list = price_map["price_list"]
+        discount_from = price_map["discount_from"]
+        discount = settings.DEFAULT_ZERO_DISCOUNT
 
         for item in price_list:
             min_value = item["min"]
@@ -59,13 +88,7 @@ class DeliveryContainer(BaseAmountContainer):
             if min_value <= basket.amount <= max_value:
                 amount = price
 
-        return amount
+        if basket.amount >= discount_from:
+            discount = amount
 
-    @property
-    def is_free(self):
-        amount = self.amount
-        return amount == settings.FREE_DELIVERY_PRICE
-
-    @property
-    def discount(self):
-        return settings.FREE_DELIVERY_PRICE
+        return amount, discount
