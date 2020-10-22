@@ -20,7 +20,7 @@ class Phone(Common):
     )
 
     title = models.CharField(
-        verbose_name="title of address",
+        verbose_name="title of phone",
         max_length=80,
     )
     number = models.CharField(

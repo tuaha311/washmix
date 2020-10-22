@@ -7,6 +7,7 @@ from core.utils import get_clean_number
 from deliveries.models import Delivery
 from deliveries.services.delivery import DeliveryService
 from deliveries.utils import get_pickup_day
+from users.choices import Kind
 from users.models import Client, Customer
 
 
@@ -53,7 +54,7 @@ class TwilioFlexService:
         try:
             Phone.objects.get(number=self._phone)
         except Phone.DoesNotExist:
-            Customer.objects.get_or_create(phone=self._phone, defaults={"kind": Customer.POSSIBLE,})
+            Customer.objects.get_or_create(phone=self._phone, defaults={"kind": Kind.POSSIBLE,})
 
             raise serializers.ValidationError(detail="Client not found.", code="client_not_found")
 

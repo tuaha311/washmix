@@ -3,6 +3,7 @@ from django.db import models
 from django.utils.timezone import localdate
 
 from core.common_models import Common
+from users.choices import Position
 
 
 class Employee(Common):
@@ -22,16 +23,6 @@ class Employee(Common):
     Driver mostly uses a WashMix Driver's App to deliver and pickup orders.
     """
 
-    LAUNDRESS = "laundress"
-    DRIVER = "driver"
-    MANAGER = "manager"
-    POSITION_MAP = {
-        DRIVER: "Driver",
-        LAUNDRESS: "Laundress",
-        MANAGER: "Manager",
-    }
-    POSITION_CHOICES = list(POSITION_MAP.items())
-
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -41,8 +32,8 @@ class Employee(Common):
     position = models.CharField(
         verbose_name="position of employee",
         max_length=20,
-        default=LAUNDRESS,
-        choices=POSITION_CHOICES,
+        choices=Position.CHOICES,
+        default=Position.LAUNDRESS,
     )
     SSN = models.CharField(
         verbose_name="social security number",

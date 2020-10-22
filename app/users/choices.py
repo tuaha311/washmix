@@ -27,3 +27,25 @@ class Detergents:
         HYPO_ALLERGENIC: "Hypo-Allergenic",
     }
     CHOICES = list(MAP.items())
+
+
+class Position:
+    LAUNDRESS = "laundress"
+    DRIVER = "driver"
+    MANAGER = "manager"
+    MAP = {
+        DRIVER: "Driver",
+        LAUNDRESS: "Laundress",
+        MANAGER: "Manager",
+    }
+    CHOICES = list(MAP.items())
+
+
+class Kind:
+    INTERESTED = "interested"
+    POSSIBLE = "possible"
+    MAP = {
+        INTERESTED: "Who interested in our services in future",
+        POSSIBLE: ("Who uses only SMS orders and " "maybe will use web-application in future"),
+    }
+    CHOICES = list(MAP.items())

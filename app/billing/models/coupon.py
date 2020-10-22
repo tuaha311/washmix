@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.timezone import localtime
 
+from billing.choices import DiscountBy
 from core.common_models import Common
 from legacy.enums import CouponType
 
@@ -12,14 +13,6 @@ class Coupon(Common):
     Coupon (also called "Promocode") that we provide to our clients.
     Coupon can give some discount on our services.
     """
-
-    PERCENTAGE = "percentage"
-    AMOUNT = "amount"
-    DISCOUNT_BY_MAP = {
-        PERCENTAGE: "Discount by percentage",
-        AMOUNT: "Discount by amount",
-    }
-    DISCOUNT_BY_CHOICES = list(DISCOUNT_BY_MAP.items())
 
     code = models.CharField(
         verbose_name="code",
@@ -33,8 +26,8 @@ class Coupon(Common):
     )
     discount_by = models.CharField(
         max_length=10,
-        choices=DISCOUNT_BY_CHOICES,
-        default=AMOUNT,
+        choices=DiscountBy.CHOICES,
+        default=DiscountBy.AMOUNT,
     )
     value_off = models.BigIntegerField(
         verbose_name="value of discount",

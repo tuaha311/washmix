@@ -2,7 +2,7 @@ from django.conf import settings
 from django.db import models
 from django.db.models import Sum
 
-from billing.models.transaction import Transaction
+from billing.choices import Kind
 from core.behaviors import Stripeable
 from core.common_models import Common
 from core.utils import get_dollars
@@ -134,8 +134,8 @@ class Client(Stripeable, Common):
 
     @property
     def balance(self):
-        debit_transactions = self.transaction_list.filter(kind=Transaction.DEBIT)
-        credit_transactions = self.transaction_list.filter(kind=Transaction.CREDIT)
+        debit_transactions = self.transaction_list.filter(kind=Kind.DEBIT)
+        credit_transactions = self.transaction_list.filter(kind=Kind.CREDIT)
 
         debit_total = debit_transactions.aggregate(total=Sum("amount"))["total"] or 0
         credit_total = credit_transactions.aggregate(total=Sum("amount"))["total"] or 0
