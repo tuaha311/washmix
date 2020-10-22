@@ -12,6 +12,8 @@ from core.utils import get_dollars
 
 class Invoice(CalculatedAmountWithDiscount, Amountable, Discountable, Common):
     """
+    Service-side and Client-side entity.
+
     Invoice that we generated for buying package or order.
 
     Most of time, we use `object_id` to point on tables:

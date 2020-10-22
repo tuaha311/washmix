@@ -6,6 +6,8 @@ from core.validators import validate_phone
 
 class Customer(Common):
     """
+    Service-side entity.
+
     OFFLINE-ONLY customer. They can't login or use our web application.
     We gather information about them to use in future.
 

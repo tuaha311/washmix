@@ -5,6 +5,8 @@ from core.common_models import Common
 
 class City(Common):
     """
+    Service-side entity.
+
     City that we support.
     Only at this cities we can pickup or deliver.
     """
@@ -29,6 +31,8 @@ class City(Common):
 
 class ZipCode(Common):
     """
+    Service-side entity.
+
     Zip codes of supported addresses where our laundry works.
     Only at this zip codes we can pickup or deliver.
     """
@@ -49,6 +53,8 @@ class ZipCode(Common):
 
 class Address(Common):
     """
+    Client-side entity.
+
     Addresses of our clients.
     """
 

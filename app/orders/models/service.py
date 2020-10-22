@@ -5,6 +5,8 @@ from core.common_models import Common
 
 class Service(Common):
     """
+    Service-side entity.
+
     Service that our laundry provide.
 
     For example:

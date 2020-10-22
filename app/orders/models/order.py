@@ -4,9 +4,10 @@ from core.common_models import Common
 from orders.choices import Status
 
 
-# TODO maybe add status
 class Order(Common):
     """
+    Employee-side and Client-side entity.
+
     Central point of system - where we processing orders and storing all info
     related to the order.
     """

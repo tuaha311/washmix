@@ -74,7 +74,8 @@ class SubscriptionService:
         """
 
         package = package
-        invoice_service = InvoiceService(self._client)
+        client = self._client
+        invoice_service = InvoiceService(client)
 
         with atomic():
             invoice = invoice_service.get_or_create(package.price, Purpose.SUBSCRIPTION)
@@ -88,6 +89,7 @@ class SubscriptionService:
 
             subscription = Subscription.objects.fill_subscription(package, instance)
             subscription.invoice = invoice
+            subscription.client = client
             subscription.save()
 
         return invoice

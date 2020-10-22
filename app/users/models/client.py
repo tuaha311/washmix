@@ -12,6 +12,8 @@ from users.managers import ClientManager
 
 class Client(Stripeable, Common):
     """
+    Client-side entity.
+
     ONLINE-ONLY clients of application. They use our web-application to
     make orders and request deliveries. Our main targeted audience.
 
@@ -28,7 +30,7 @@ class Client(Stripeable, Common):
     subscription = models.OneToOneField(
         "subscriptions.Subscription",
         verbose_name="subscription of service",
-        related_name="client",
+        related_name="+",
         on_delete=models.CASCADE,
         null=True,
     )

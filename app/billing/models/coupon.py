@@ -7,6 +7,8 @@ from legacy.enums import CouponType
 
 class Coupon(Common):
     """
+    Client-side entity.
+
     Coupon (also called "Promocode") that we provide to our clients.
     Coupon can give some discount on our services.
     """

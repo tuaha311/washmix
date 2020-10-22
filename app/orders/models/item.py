@@ -5,6 +5,8 @@ from core.common_models import Common
 
 class Item(Common):
     """
+    Employee-side entity.
+
     Items of our client that we can handle.
 
     For example:

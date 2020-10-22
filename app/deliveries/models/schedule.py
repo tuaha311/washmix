@@ -3,11 +3,13 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 from core.common_models import Common
-from deliveries.common_models import CommonScheduleDelivery
+from deliveries.common_models import CommonDeliveries
 
 
-class Schedule(CommonScheduleDelivery, Common):
+class Schedule(CommonDeliveries, Common):
     """
+    Client-side entity.
+
     NOTE: Schedule / Delivery uses the same pattern such Package / Subscription.
 
     It is templates of scheduled deliveries.

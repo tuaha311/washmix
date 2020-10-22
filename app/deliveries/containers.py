@@ -25,7 +25,6 @@ class DeliveryContainer(BaseAmountContainer):
                 # 4900 - infinity price 9.90$
                 {"min": 4900, "max": float("inf"), "price": 990,},
             ],
-            "discount_from": settings.PAYC_FREE_DELIVERY_FROM,
         },
         Package.GOLD: {
             "price_list": [
@@ -36,7 +35,6 @@ class DeliveryContainer(BaseAmountContainer):
                 # 3900 - infinity price 9.90$
                 {"min": 3900, "max": float("inf"), "price": 990,},
             ],
-            "discount_from": settings.GOLD_PLATINUM_FREE_DELIVERY_FROM,
         },
         Package.PLATINUM: {
             "price_list": [
@@ -47,7 +45,6 @@ class DeliveryContainer(BaseAmountContainer):
                 # 3900 - infinity price 9.90$
                 {"min": 3900, "max": float("inf"), "price": 990,},
             ],
-            "discount_from": settings.GOLD_PLATINUM_FREE_DELIVERY_FROM,
         },
     }
 
@@ -77,7 +74,7 @@ class DeliveryContainer(BaseAmountContainer):
         basket = self._basket
         price_map = self.price_map[subscription.name]
         price_list = price_map["price_list"]
-        discount_from = price_map["discount_from"]
+        discount_from = subscription.delivery_free_from
         discount = settings.DEFAULT_ZERO_DISCOUNT
 
         for item in price_list:

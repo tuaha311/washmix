@@ -5,6 +5,8 @@ from core.common_models import Common
 
 class Quantity(Common):
     """
+    Service-side entity.
+
     **Intermediate** model that handles all stuff related to
     storing more than 1 item in basket.
 

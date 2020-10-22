@@ -2,9 +2,14 @@ from django.db import models
 
 from core.common_models import Common
 from deliveries.choices import Kind, Status
+from deliveries.common_models import CommonDeliveries
 
 
-class Request(Common):
+class Request(CommonDeliveries, Common):
+    """
+    Client-side entity.
+    """
+
     client = models.ForeignKey(
         "users.Client",
         verbose_name="client",
@@ -26,7 +31,7 @@ class Request(Common):
     schedule = models.ForeignKey(
         "deliveries.Schedule",
         verbose_name="recurring schedule of delivery",
-        related_name="delivery_list",
+        related_name="request_list",
         on_delete=models.SET_NULL,
         null=True
     )

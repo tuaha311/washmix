@@ -6,6 +6,8 @@ from core.common_models import Common
 
 class Card(Stripeable, Common):
     """
+    Client-side entity.
+
     Credit or debit card.
     We doesn't store anything related to card credentials - only Stripe ID.
     """

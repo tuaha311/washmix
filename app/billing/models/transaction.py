@@ -7,6 +7,8 @@ from core.common_models import Common
 
 class Transaction(Amountable, Stripeable, Common):
     """
+    Service-side and Client-side entity.
+
     Basic kind of billing operation - we can add money (i.e. "debit"),
     or remove money (i.e. "credit").
     After aggregation stuff we will receive a balance of account.

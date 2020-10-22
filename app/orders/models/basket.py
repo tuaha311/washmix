@@ -5,6 +5,8 @@ from core.common_models import Common
 
 class Basket(Common):
     """
+    Employee-side and Client-side entity.
+
     Basket for your shopping.
     Basket is about items storing.
 

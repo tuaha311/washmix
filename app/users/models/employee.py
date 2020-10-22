@@ -7,6 +7,8 @@ from core.common_models import Common
 
 class Employee(Common):
     """
+    Service-side entity.
+
     Employee of laundry who processing orders or who delivers
     orders to clients.
 

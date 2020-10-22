@@ -7,6 +7,8 @@ from orders.models import Order
 
 class Phone(Common):
     """
+    Client-side entity.
+
     Phone number of our clients.
     """
 
