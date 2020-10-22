@@ -1,10 +1,10 @@
 from django.db import models
 
 from core.common_models import Common
-from deliveries.common_models import CommonDeliveries
+from deliveries.common_models import CommonScheduleRequest
 
 
-class Request(CommonDeliveries, Common):
+class Request(CommonScheduleRequest, Common):
     """
     Client-side entity.
 
@@ -25,6 +25,12 @@ class Request(CommonDeliveries, Common):
         verbose_name="client",
         on_delete=models.CASCADE,
         related_name="request_list",
+    )
+    address = models.ForeignKey(
+        "locations.Address",
+        verbose_name="address to pickup and dropoff",
+        related_name="request_list",
+        on_delete=models.CASCADE,
     )
     pickup = models.OneToOneField(
         "deliveries.Delivery",

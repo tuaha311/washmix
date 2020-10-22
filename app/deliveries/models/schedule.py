@@ -3,10 +3,10 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 from core.common_models import Common
-from deliveries.common_models import CommonDeliveries
+from deliveries.common_models import CommonScheduleRequest
 
 
-class Schedule(CommonDeliveries, Common):
+class Schedule(CommonScheduleRequest, Common):
     """
     Client-side entity.
 
@@ -24,6 +24,13 @@ class Schedule(CommonDeliveries, Common):
         related_name="schedule_list",
         on_delete=models.CASCADE,
     )
+    address = models.ForeignKey(
+        "locations.Address",
+        verbose_name="address to pickup and dropoff",
+        related_name="schedule_list",
+        on_delete=models.CASCADE,
+    )
+
     days = ArrayField(
         base_field=models.PositiveSmallIntegerField(
             verbose_name="day of week",

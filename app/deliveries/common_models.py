@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class CommonDeliveries(models.Model):
+class CommonScheduleRequest(models.Model):
     # usual fields
     comment = models.TextField(
         verbose_name="comment",
