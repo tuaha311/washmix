@@ -47,6 +47,10 @@ class DeliveryService:
 
         instance = Delivery.objects.create(
             client=self._client,
+            date=self._pickup_date,
+            start=self._pickup_start,
+            end=self._pickup_end,
+            # DEPRECATED
             pickup_date=self._pickup_date,
             pickup_start=self._pickup_start,
             pickup_end=self._pickup_end,
@@ -75,6 +79,10 @@ class DeliveryService:
             client=self._client,
             **extra_query,
             defaults={
+                "date": self._pickup_date,
+                "start": self._pickup_start,
+                "end": self._pickup_end,
+                # DEPRECATED
                 "pickup_date": self._pickup_date,
                 "pickup_start": self._pickup_start,
                 "pickup_end": self._pickup_end,
