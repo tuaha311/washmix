@@ -28,7 +28,7 @@ class Order(Common):
         "billing.Invoice",
         verbose_name="invoice",
         related_name="order",
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
     )
     basket = models.OneToOneField(
         "orders.Basket",

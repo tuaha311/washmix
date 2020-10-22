@@ -34,7 +34,7 @@ class Subscription(CommonPackageSubscription, Common):
         "billing.Invoice",
         verbose_name="invoice",
         related_name="subscription",
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
     )
 
     objects = SubscriptionManager()
