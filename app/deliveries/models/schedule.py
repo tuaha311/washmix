@@ -10,7 +10,7 @@ class Schedule(CommonDeliveries, Common):
     """
     Client-side entity.
 
-    NOTE: Schedule / Delivery uses the same pattern such Package / Subscription.
+    NOTE: Schedule / Request uses the same pattern such Package / Subscription.
 
     It is templates of scheduled deliveries.
     We are using this to create concrete instances of Schedule called Delivery.

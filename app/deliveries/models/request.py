@@ -1,13 +1,23 @@
 from django.db import models
 
 from core.common_models import Common
-from deliveries.choices import Kind, Status
 from deliveries.common_models import CommonDeliveries
 
 
 class Request(CommonDeliveries, Common):
     """
     Client-side entity.
+
+    NOTE: Request / Schedule uses the same pattern such Package / Subscription.
+
+    Request for pickup and dropoff from our Client.
+    It can be made via dashboard or via SMS to Twilio Flex.
+
+    When we receive date for pickup delivery date and interval, we are calculating
+    dropoff date and dropoff interval based on our business rules.
+
+    At incoming Request we are creating 2 Delivery records - one for pickup,
+    one for dropoff.
     """
 
     client = models.ForeignKey(
@@ -30,7 +40,7 @@ class Request(CommonDeliveries, Common):
     )
     schedule = models.ForeignKey(
         "deliveries.Schedule",
-        verbose_name="recurring schedule of delivery",
+        verbose_name="recurring schedule for request",
         related_name="request_list",
         on_delete=models.SET_NULL,
         null=True

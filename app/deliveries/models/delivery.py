@@ -9,17 +9,32 @@ class Delivery(CommonDeliveries, Common):
     """
     Employee-side entity.
 
-    NOTE: Schedule / Delivery uses the same pattern such Package / Subscription.
+    Concrete delivery to / from our Clients.
+    This entity visible only to employees and back-office.
+    Drivers see a feed with new Deliveries and can take it for execution.
 
-    Delivery to / from our Clients.
+    Also, Drivers can filter a feed by:
+        - Pickup or Dropoff
+        - Date
+        - Address
     """
 
     employee = models.ForeignKey(
         "users.Employee",
+        verbose_name="employee that handles this delivery",
         on_delete=models.SET_NULL,
         related_name="delivery_list",
         null=True,
         blank=True,
+    )
+    # usually, 1 Request creates 2 Delivery:
+    #   - for pickup
+    #   - for dropoff
+    request = models.ForeignKey(
+        "deliveries.Request",
+        verbose_name="original request from our client",
+        related_name="delivery_list",
+        on_delete=models.CASCADE,
     )
     # can be null only after address removing
     address = models.ForeignKey(
