@@ -6,6 +6,8 @@ from core.common_models import Common
 
 class Price(Amountable, Common):
     """
+    Service-side entity.
+
     **Intermediate** model that holds a logic of pricing
     between item and service.
 

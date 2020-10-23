@@ -6,6 +6,7 @@ from django.db.transaction import atomic
 
 from stripe import PaymentMethod
 
+from billing.choices import Purpose
 from billing.models import Invoice
 from billing.services.card import CardService
 from billing.services.invoice import InvoiceService
@@ -73,10 +74,11 @@ class SubscriptionService:
         """
 
         package = package
-        invoice_service = InvoiceService(self._client)
+        client = self._client
+        invoice_service = InvoiceService(client)
 
         with atomic():
-            invoice = invoice_service.get_or_create(package.price, Invoice.SUBSCRIPTION)
+            invoice = invoice_service.get_or_create(package.price, Purpose.SUBSCRIPTION)
 
             # here we creating or receiving subscription container
             # and in later steps we will bind it with invoice
@@ -87,6 +89,7 @@ class SubscriptionService:
 
             subscription = Subscription.objects.fill_subscription(package, instance)
             subscription.invoice = invoice
+            subscription.client = client
             subscription.save()
 
         return invoice

@@ -17,6 +17,8 @@ class SubscriptionManager(models.Manager):
 
 class Subscription(CommonPackageSubscription, Common):
     """
+    Client-side entity.
+
     NOTE: Package / Subscription uses the same pattern such Schedule / Delivery.
 
     Concrete instance of Package.
@@ -24,7 +26,12 @@ class Subscription(CommonPackageSubscription, Common):
     per user conditions of Package.
     """
 
-    # TODO возможно, стоит сюда перенести связь client
+    client = models.ForeignKey(
+        "users.Client",
+        verbose_name="client",
+        on_delete=models.CASCADE,
+        related_name="subscription_list",
+    )
     name = models.CharField(
         verbose_name="name",
         max_length=20,
@@ -34,7 +41,7 @@ class Subscription(CommonPackageSubscription, Common):
         "billing.Invoice",
         verbose_name="invoice",
         related_name="subscription",
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
     )
 
     objects = SubscriptionManager()

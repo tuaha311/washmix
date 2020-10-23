@@ -3,12 +3,14 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 from core.common_models import Common
-from deliveries.common_models import CommonScheduleDelivery
+from deliveries.common_models import CommonScheduleRequest
 
 
-class Schedule(CommonScheduleDelivery, Common):
+class Schedule(CommonScheduleRequest, Common):
     """
-    NOTE: Schedule / Delivery uses the same pattern such Package / Subscription.
+    Client-side entity.
+
+    NOTE: Schedule / Request uses the same pattern such Package / Subscription.
 
     It is templates of scheduled deliveries.
     We are using this to create concrete instances of Schedule called Delivery.
@@ -22,6 +24,13 @@ class Schedule(CommonScheduleDelivery, Common):
         related_name="schedule_list",
         on_delete=models.CASCADE,
     )
+    address = models.ForeignKey(
+        "locations.Address",
+        verbose_name="address to pickup and dropoff",
+        related_name="schedule_list",
+        on_delete=models.CASCADE,
+    )
+
     days = ArrayField(
         base_field=models.PositiveSmallIntegerField(
             verbose_name="day of week",

@@ -1,12 +1,10 @@
-from django.utils.timezone import localtime
-
 from rest_framework import serializers
 
 from core.models import Phone
 from core.utils import get_clean_number
-from deliveries.models import Delivery
-from deliveries.services.delivery import DeliveryService
-from deliveries.utils import get_pickup_day
+from deliveries.models import Request
+from deliveries.services.requests import RequestService
+from users.choices import Kind
 from users.models import Client, Customer
 
 
@@ -15,7 +13,7 @@ class TwilioFlexService:
         self._message = message
         self._phone = get_clean_number(phone)
 
-    def create_delivery(self) -> Delivery:
+    def create_delivery(self) -> Request:
         """
         Method, that creates Delivery request when client sent an SMS to our
         number with Twilio Studio.
@@ -23,26 +21,15 @@ class TwilioFlexService:
 
         self._validate_address()
 
-        pickup_info = self._pickup_info
         address = self._client.main_address
 
-        service = DeliveryService(client=self._client, **pickup_info,)
+        service = RequestService(client=self._client)
 
         return service.create(address=address)
 
     def validate_or_save(self):
         self._validate_or_save_phone()
         self._validate_address()
-
-    @property
-    def _pickup_info(self) -> dict:
-        now = localtime()
-
-        pickup_date = get_pickup_day(now)
-
-        return {
-            "pickup_date": pickup_date,
-        }
 
     @property
     def _client(self) -> Client:
@@ -53,7 +40,7 @@ class TwilioFlexService:
         try:
             Phone.objects.get(number=self._phone)
         except Phone.DoesNotExist:
-            Customer.objects.get_or_create(phone=self._phone, defaults={"kind": Customer.POSSIBLE,})
+            Customer.objects.get_or_create(phone=self._phone, defaults={"kind": Kind.POSSIBLE,})
 
             raise serializers.ValidationError(detail="Client not found.", code="client_not_found")
 

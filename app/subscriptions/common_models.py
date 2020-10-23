@@ -25,6 +25,9 @@ class CommonPackageSubscription(Priceable, models.Model):
         help_text="in percents",
         validators=[MinValueValidator(1), MaxValueValidator(100)],
     )
+    delivery_free_from = models.IntegerField(
+        verbose_name="free delivery starts from",
+    )
     has_delivery = models.BooleanField(
         verbose_name="has a free delivery",
     )

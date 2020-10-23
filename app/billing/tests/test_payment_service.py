@@ -12,8 +12,8 @@ def test_charge_when_balance_greater_that_invoice(
     client = MagicMock()
     client.balance = 30000
     invoice = MagicMock()
-    invoice.amount = 19900
-    paid_amount = invoice.amount
+    invoice.amount_with_discount = 19900
+    paid_amount = invoice.amount_with_discount
 
     service = PaymentService(client, invoice)
     service.charge()
@@ -38,9 +38,9 @@ def test_charge_when_balance_lower_that_invoice(
     card.stripe_id = "spam"
     client.card_list.all.return_value = [card]
     invoice = MagicMock()
-    invoice.amount = 19900
+    invoice.amount_with_discount = 19900
     paid_amount = client.balance
-    unpaid_amount = invoice.amount - client.balance
+    unpaid_amount = invoice.amount_with_discount - client.balance
 
     service = PaymentService(client, invoice)
     service.charge()

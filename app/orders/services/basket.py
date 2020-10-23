@@ -4,8 +4,8 @@ from django.db.transaction import atomic
 
 from rest_framework import serializers
 
+from orders.containers.basket import BasketContainer
 from orders.models import Basket, Price, Quantity
-from orders.services.discount import DiscountService
 from users.models import Client
 
 DEFAULT_COUNT = 0
@@ -25,7 +25,6 @@ class BasketService:
 
     def __init__(self, client: Client):
         self._client = client
-        self._discount_service = DiscountService(client)
 
     def validate(self, price: Price, count: int, action: str):
         quantity = self._get_or_create_quantity(price)
@@ -36,7 +35,7 @@ class BasketService:
                 code="cant_perform_item_remove",
             )
 
-    def add_item(self, price: Price, count: int) -> Basket:
+    def add_item(self, price: Price, count: int) -> BasketContainer:
         """
         Adds item to basket.
         """
@@ -47,9 +46,9 @@ class BasketService:
             quantity.count = F("count") + count
             quantity.save()
 
-        return self.basket
+        return self.container
 
-    def remove_item(self, price: Price, count: int) -> Basket:
+    def remove_item(self, price: Price, count: int) -> BasketContainer:
         """
         Removes item to basket.
         """
@@ -63,7 +62,7 @@ class BasketService:
             if quantity.count == DEFAULT_COUNT:
                 quantity.delete()
 
-        return self.basket
+        return self.container
 
     def clear_all(self):
         """
@@ -77,6 +76,16 @@ class BasketService:
     def basket(self) -> Basket:
         basket, _ = Basket.objects.get_or_create(client=self._client, order__isnull=True,)
         return basket
+
+    @property
+    def container(self) -> BasketContainer:
+        client = self._client
+        subscription = client.subscription
+
+        basket = self.basket
+        container = BasketContainer(subscription, basket)
+
+        return container
 
     def _get_or_create_quantity(self, price: Price) -> Quantity:
         quantity, _ = Quantity.objects.get_or_create(

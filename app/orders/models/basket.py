@@ -1,11 +1,12 @@
 from django.db import models
 
 from core.common_models import Common
-from core.utils import get_dollars
 
 
 class Basket(Common):
     """
+    Employee-side and Client-side entity.
+
     Basket for your shopping.
     Basket is about items storing.
 
@@ -28,39 +29,15 @@ class Basket(Common):
         related_name="basket_list",
         through="orders.Quantity",
     )
+    # invoice created at the moment of Order creation
+    invoice = models.OneToOneField(
+        "billing.Invoice",
+        verbose_name="invoice for basket",
+        related_name="basket",
+        on_delete=models.PROTECT,
+        null=True,
+    )
 
     class Meta:
         verbose_name = "basket"
         verbose_name_plural = "baskets"
-
-    @property
-    def amount(self) -> int:
-        return self._calculate_sum("amount")
-
-    @property
-    def dollar_amount(self) -> float:
-        return get_dollars(self, "amount")
-
-    @property
-    def discount(self) -> int:
-        return self._calculate_sum("discount")
-
-    @property
-    def dollar_discount(self) -> float:
-        return get_dollars(self, "discount")
-
-    @property
-    def amount_with_discount(self) -> int:
-        return self._calculate_sum("amount_with_discount")
-
-    @property
-    def dollar_amount_with_discount(self) -> float:
-        return get_dollars(self, "amount_with_discount")
-
-    def _calculate_sum(self, item_attribute_name: str) -> int:
-        quantity_list = self.quantity_list.all()
-        amount = [getattr(item, item_attribute_name) for item in quantity_list]
-
-        return sum(amount)
-
-

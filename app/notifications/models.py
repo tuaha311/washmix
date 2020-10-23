@@ -4,6 +4,10 @@ from core.common_models import Common
 
 
 class Notification(Common):
+    """
+    Service-side entity.
+    """
+
     client = models.ForeignKey(
         "users.Client",
         verbose_name="client",

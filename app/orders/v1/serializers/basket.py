@@ -44,8 +44,8 @@ class QuantitySerializer(serializers.ModelSerializer):
         ]
 
 
-class BasketSerializer(serializers.ModelSerializer):
-    item_list = QuantitySerializer(many=True, source="quantity_list")
+class BasketSerializer(CommonAmountWithDiscountSerializer, serializers.ModelSerializer):
+    item_list = QuantitySerializer(many=True, source="quantity_container_list")
 
     class Meta:
         model = Basket

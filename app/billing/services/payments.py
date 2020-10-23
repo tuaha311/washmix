@@ -45,7 +45,7 @@ class PaymentService:
             intent = self._stripe_helper.create_setup_intent()
         else:
             intent = self._stripe_helper.create_payment_intent(
-                amount=self._invoice.amount, invoice=self._invoice
+                amount=self._invoice.amount_with_discount, invoice=self._invoice
             )
 
         return intent
@@ -63,6 +63,8 @@ class PaymentService:
         with atomic():
             paid_amount, unpaid_amount = self._charge_prepaid_balance()
 
+            # if Client doesn't have enough prepaid balance - we should charge
+            # their card
             if unpaid_amount > 0:
                 self._charge_card(unpaid_amount)
 
@@ -90,18 +92,24 @@ class PaymentService:
 
     def _calculate_paid_and_unpaid(self) -> Tuple[int, int]:
         invoice = self._invoice
-        amount = invoice.amount
+        amount_with_discount = invoice.amount_with_discount
         client = self._client
         balance = client.balance
         paid_amount = 0
-        unpaid_amount = amount
+        unpaid_amount = amount_with_discount
 
-        if balance >= amount:
-            paid_amount = amount
+        # if prepaid balance enough to pay full price - we will
+        # use this money for invoice payment.
+        if balance >= amount_with_discount:
+            paid_amount = amount_with_discount
             unpaid_amount = 0
-        elif 0 < balance < amount:
+
+        # but if our prepaid balance is lower that invoice amount -
+        # we charge all of prepaid balance and rest of unpaid invoice amount
+        # we should charge it from card
+        elif 0 < balance < amount_with_discount:
             paid_amount = balance
-            unpaid_amount = amount - balance
+            unpaid_amount = amount_with_discount - balance
 
         return paid_amount, unpaid_amount
 

@@ -3,29 +3,23 @@ from functools import partial
 from django.db import models
 from django.db.models import ObjectDoesNotExist
 
+from billing.choices import Purpose
 from core.behaviors import Amountable, Discountable
 from core.common_models import Common
+from core.mixins import CalculatedAmountWithDiscount
 from core.utils import get_dollars
 
 
-class Invoice(Amountable, Discountable, Common):
+class Invoice(CalculatedAmountWithDiscount, Amountable, Discountable, Common):
     """
+    Service-side and Client-side entity.
+
     Invoice that we generated for buying package or order.
 
     Most of time, we use `object_id` to point on tables:
         - orders.Order
         - billing.Package
     """
-
-    SUBSCRIPTION = "subscription"
-    ORDER = "order"
-    DELIVERY = "delivery"
-    PURPOSE_MAP = {
-        SUBSCRIPTION: "Subscription purchase",
-        ORDER: "Order processing payment",
-        DELIVERY: "Payment for delivery",
-    }
-    PURPOSE_CHOICES = list(PURPOSE_MAP.items())
 
     # here we store link on client, because we create
     # invoice as first step at Welcome scenario and
@@ -53,6 +47,7 @@ class Invoice(Amountable, Discountable, Common):
         on_delete=models.SET_NULL,
         null=True,
     )
+
     is_save_card = models.BooleanField(
         verbose_name="should we save the card",
         default=True,
@@ -60,8 +55,8 @@ class Invoice(Amountable, Discountable, Common):
     purpose = models.CharField(
         max_length=20,
         verbose_name="purpose of this invoice",
-        default=SUBSCRIPTION,
-        choices=PURPOSE_CHOICES,
+        default=Purpose.SUBSCRIPTION,
+        choices=Purpose.CHOICES,
     )
 
     class Meta:
@@ -92,6 +87,6 @@ class Invoice(Amountable, Discountable, Common):
         except ObjectDoesNotExist:
             return False
 
-        return transaction.amount >= self.amount
+        return transaction.amount >= self.amount_with_discount
 
     dollar_basic = property(partial(get_dollars, attribute_name="basic"))

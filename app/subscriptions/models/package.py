@@ -7,6 +7,8 @@ from subscriptions.common_models import CommonPackageSubscription
 
 class Package(CommonPackageSubscription, Common):
     """
+    Service-side entity.
+
     NOTE: Package / Subscription uses the same pattern such Schedule / Delivery.
 
     Main Packages that we offer to clients.

@@ -2,7 +2,7 @@ from django.conf import settings
 from django.db import models
 from django.db.models import Sum
 
-from billing.models.transaction import Transaction
+from billing.choices import Kind
 from core.behaviors import Stripeable
 from core.common_models import Common
 from core.utils import get_dollars
@@ -12,6 +12,8 @@ from users.managers import ClientManager
 
 class Client(Stripeable, Common):
     """
+    Client-side entity.
+
     ONLINE-ONLY clients of application. They use our web-application to
     make orders and request deliveries. Our main targeted audience.
 
@@ -28,7 +30,7 @@ class Client(Stripeable, Common):
     subscription = models.OneToOneField(
         "subscriptions.Subscription",
         verbose_name="subscription of service",
-        related_name="client",
+        related_name="+",
         on_delete=models.CASCADE,
         null=True,
     )
@@ -98,6 +100,9 @@ class Client(Stripeable, Common):
         verbose_name = "client"
         verbose_name_plural = "clients"
 
+    #
+    # user proxy fields
+    #
     @property
     def email(self):
         return self.user.email
@@ -120,14 +125,17 @@ class Client(Stripeable, Common):
         self.user.last_name = value
         self.user.save()
 
+    #
+    # properties
+    #
     @property
     def full_name(self):
         return f"{self.first_name} {self.last_name}"
 
     @property
     def balance(self):
-        debit_transactions = self.transaction_list.filter(kind=Transaction.DEBIT)
-        credit_transactions = self.transaction_list.filter(kind=Transaction.CREDIT)
+        debit_transactions = self.transaction_list.filter(kind=Kind.DEBIT)
+        credit_transactions = self.transaction_list.filter(kind=Kind.CREDIT)
 
         debit_total = debit_transactions.aggregate(total=Sum("amount"))["total"] or 0
         credit_total = credit_transactions.aggregate(total=Sum("amount"))["total"] or 0

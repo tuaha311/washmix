@@ -2,6 +2,7 @@ from functools import partial
 
 from django.db.transaction import atomic
 
+from billing.choices import Kind, Provider
 from billing.models import Invoice, Transaction
 from users.models import Client
 
@@ -12,7 +13,7 @@ def create_transaction(
     amount: int,
     kind: str,
     source=None,
-    provider=Transaction.STRIPE,
+    provider=Provider.STRIPE,
     stripe_id: str = None,
 ) -> Transaction:
     """
@@ -35,8 +36,8 @@ def create_transaction(
     return transaction
 
 
-create_debit = partial(create_transaction, kind=Transaction.DEBIT)
-create_credit = partial(create_transaction, kind=Transaction.CREDIT)
+create_debit = partial(create_transaction, kind=Kind.DEBIT)
+create_credit = partial(create_transaction, kind=Kind.CREDIT, provider=Provider.WASHMIX)
 
 
 def create_credit_back(client: Client, amount: int) -> Transaction:
@@ -48,7 +49,7 @@ def create_credit_back(client: Client, amount: int) -> Transaction:
     with atomic():
         invoice = Invoice.objects.create(client=client, amount=amount,)
         transaction = create_debit(
-            client=client, invoice=invoice, amount=amount, provider=Transaction.CREDIT_BACK,
+            client=client, invoice=invoice, amount=amount, provider=Provider.CREDIT_BACK,
         )
 
     return transaction

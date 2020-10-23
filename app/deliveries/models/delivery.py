@@ -1,75 +1,95 @@
 from django.db import models
 
-from core.behaviors import Amountable
 from core.common_models import Common
-from deliveries.common_models import CommonScheduleDelivery
+from deliveries.choices import Kind, Status
 
 
-# TODO maybe add invoice
-# TODO maybe add status
-class Delivery(Amountable, CommonScheduleDelivery, Common):
+class Delivery(Common):
     """
-    NOTE: Schedule / Delivery uses the same pattern such Package / Subscription.
+    Employee-side entity.
 
-    Delivery to / from our Clients.
+    Concrete delivery to / from our Clients.
+    This entity visible only to employees and back-office.
+    Drivers see a feed with new Deliveries and can take it for execution.
+
+    Also, Drivers can filter a feed by:
+        - Pickup or Dropoff
+        - Date
+        - Address
     """
 
-    client = models.ForeignKey(
-        "users.Client",
-        verbose_name="client",
-        related_name="delivery_list",
-        on_delete=models.CASCADE,
-    )
     employee = models.ForeignKey(
         "users.Employee",
+        verbose_name="employee that handles this delivery",
         on_delete=models.SET_NULL,
         related_name="delivery_list",
         null=True,
         blank=True,
     )
-    # can be null only after address removing
-    address = models.ForeignKey(
-        "locations.Address",
-        verbose_name="address to pickup and dropoff",
+    request = models.ForeignKey(
+        "deliveries.Request",
+        verbose_name="request",
         related_name="delivery_list",
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
+    )
+    # invoice created at the moment of Order creation
+    invoice = models.OneToOneField(
+        "billing.Invoice",
+        verbose_name="invoice for delivery",
+        related_name="delivery",
+        on_delete=models.PROTECT,
         null=True,
     )
-    schedule = models.ForeignKey(
-        "deliveries.Schedule",
-        verbose_name="recurring schedule of delivery",
-        related_name="delivery_list",
-        on_delete=models.SET_NULL,
-        null=True
-    )
 
-    # fields about date and intervals
-    pickup_date = models.DateField(
-        verbose_name="date for pickup",
+    kind = models.CharField(
+        max_length=10,
+        verbose_name="kind of delivery",
+        choices=Kind.CHOICES,
+        default=Kind.PICKUP,
     )
-    pickup_start = models.TimeField(
-        verbose_name="start of pickup interval"
+    status = models.CharField(
+        max_length=20,
+        verbose_name="current status",
+        choices=Status.CHOICES,
+        default=Status.ACCEPTED,
     )
-    pickup_end = models.TimeField(
-        verbose_name="end of pickup interval"
+    date = models.DateField(
+        verbose_name="date for delivery",
     )
-    dropoff_date = models.DateField(
-        verbose_name="date for dropoff",
+    start = models.TimeField(
+        verbose_name="start of delivery interval"
     )
-    dropoff_start = models.TimeField(
-        verbose_name="start of dropoff interval"
-    )
-    dropoff_end = models.TimeField(
-        verbose_name="end of dropoff interval"
+    end = models.TimeField(
+        verbose_name="end of delivery interval"
     )
 
     class Meta:
         verbose_name = "delivery"
         verbose_name_plural = "deliveries"
-        ordering = ["-pickup_date"]
+        ordering = ["-date"]
+        # for 1 Request we allow 2 Deliveries:
+        #   - Pickup
+        #   - Dropoff
+        unique_together = ["request", "kind",]
 
     @property
     def pretty_pickup_message(self) -> str:
-        pretty_date = self.pickup_date.strftime("%d %B")
+        pretty_date = self.date.strftime("%d %B")
 
         return pretty_date
+
+    @property
+    def address(self):
+        return self.request.address
+
+    @property
+    def client(self):
+        return self.request.client
+
+    @property
+    def is_rush(self):
+        return self.request.is_rush
+
+    @property
+    def comment(self):
+        return self.request.comment

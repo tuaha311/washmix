@@ -1,11 +1,12 @@
 from django.db import models
 
 from core.common_models import Common
-from core.utils import get_dollars
 
 
 class Quantity(Common):
     """
+    Service-side entity.
+
     **Intermediate** model that handles all stuff related to
     storing more than 1 item in basket.
 
@@ -40,38 +41,3 @@ class Quantity(Common):
     def __str__(self):
         price = self.price
         return f"{price.service} on {price.item} x {self.count} qty."
-
-    @property
-    def amount(self) -> int:
-        return self.price.amount * self.count
-
-    @property
-    def dollar_amount(self) -> float:
-        return get_dollars(self, "amount")
-
-    @property
-    def discount(self) -> int:
-        # unfortunately, here we are doing inline import to prevent circular import
-        from orders.utils import get_discount_for_quantity
-
-        return get_discount_for_quantity(self)
-
-    @property
-    def dollar_discount(self) -> float:
-        return get_dollars(self, "discount")
-
-    @property
-    def amount_with_discount(self) -> int:
-        amount = self.amount
-        discount = self.discount
-
-        return amount - discount
-
-    @property
-    def dollar_amount_with_discount(self) -> float:
-        return get_dollars(self, "amount_with_discount")
-
-
-
-
-

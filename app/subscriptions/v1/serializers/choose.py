@@ -4,11 +4,11 @@ from billing.models import Invoice
 from subscriptions.models import Package
 
 
-class ChooseSerializer(serializers.Serializer):
+class SubscriptionChooseSerializer(serializers.Serializer):
     package = serializers.SlugRelatedField(slug_field="name", queryset=Package.objects.all(),)
 
 
-class ChooseResponseSerializer(serializers.ModelSerializer):
+class SubscriptionChooseResponseSerializer(serializers.ModelSerializer):
     subscription = serializers.SlugRelatedField(read_only=True, slug_field="name")
 
     class Meta:

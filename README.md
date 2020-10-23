@@ -163,3 +163,9 @@ python manage.py loaddata dump.json
 ## Notes
 For weekday storing in database and when working in codebase we are using integers starting from 1 (Mon) to 7 (Sun).
 In Python code you can use `.isoweekday` method for access to this value.
+
+## Twilio
+Attributes for `Sent to Flex` widget that copied from YouTube:
+```python
+{"name": "{{trigger.message.ChannelAttributes.from}}", "channelType": "{{trigger.message.ChannelAttributes.channel_type}}", "channelSid": "{{trigger.message.ChannelSid}}"}
+```
