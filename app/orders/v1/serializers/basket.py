@@ -24,7 +24,7 @@ class ChangeItemSerializer(serializers.Serializer):
         return attrs
 
 
-class QuantitySerializer(serializers.ModelSerializer):
+class QuantitySerializer(CommonAmountWithDiscountSerializer, serializers.ModelSerializer):
     id = serializers.IntegerField(source="price.id")
     service = serializers.CharField(source="price.service.title")
     item = serializers.CharField(source="price.item.title")
