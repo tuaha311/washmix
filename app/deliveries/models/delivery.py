@@ -26,6 +26,12 @@ class Delivery(Common):
         null=True,
         blank=True,
     )
+    request = models.ForeignKey(
+        "deliveries.Request",
+        verbose_name="request",
+        related_name="delivery_list",
+        on_delete=models.CASCADE,
+    )
     # invoice created at the moment of Order creation
     invoice = models.OneToOneField(
         "billing.Invoice",
@@ -61,6 +67,10 @@ class Delivery(Common):
         verbose_name = "delivery"
         verbose_name_plural = "deliveries"
         ordering = ["-date"]
+        # for 1 Request we allow 2 Deliveries:
+        #   - Pickup
+        #   - Dropoff
+        unique_together = ["request", "kind",]
 
     @property
     def pretty_pickup_message(self) -> str:

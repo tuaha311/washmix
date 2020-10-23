@@ -1,6 +1,7 @@
 from django.db import models
 
 from core.common_models import Common
+from deliveries.choices import Kind
 from deliveries.common_models import CommonScheduleRequest
 
 
@@ -32,18 +33,6 @@ class Request(CommonScheduleRequest, Common):
         related_name="request_list",
         on_delete=models.CASCADE,
     )
-    pickup = models.OneToOneField(
-        "deliveries.Delivery",
-        verbose_name="pickup delivery",
-        related_name="+",
-        on_delete=models.PROTECT,
-    )
-    dropoff = models.OneToOneField(
-        "deliveries.Delivery",
-        verbose_name="dropoff delivery",
-        related_name="+",
-        on_delete=models.PROTECT,
-    )
     schedule = models.ForeignKey(
         "deliveries.Schedule",
         verbose_name="recurring schedule for request",
@@ -59,6 +48,15 @@ class Request(CommonScheduleRequest, Common):
     #
     # pickup proxy fields
     #
+    @property
+    def pickup(self):
+        return self.delivery_list.get(kind=Kind.PICKUP)
+
+    @pickup.setter
+    def pickup(self, value):
+        self.pickup = value
+        self.save()
+
     @property
     def pickup_date(self):
         return self.pickup.date
@@ -89,6 +87,15 @@ class Request(CommonScheduleRequest, Common):
     #
     # dropoff proxy fields
     #
+    @property
+    def dropoff(self):
+        return self.delivery_list.get(kind=Kind.DROPOFF)
+
+    @dropoff.setter
+    def dropoff(self, value):
+        self.dropoff = value
+        self.save()
+
     @property
     def dropoff_date(self):
         return self.dropoff.date

@@ -20,38 +20,29 @@ class Order(Common):
     )
     employee = models.ForeignKey(
         "users.Employee",
-        verbose_name="employee that handles this order",
+        verbose_name="employee who handles this order",
         on_delete=models.SET_NULL,
         related_name="order_list",
         null=True,
         blank=True,
+    )
+    basket = models.OneToOneField(
+        "orders.Basket",
+        verbose_name="basket",
+        related_name="order",
+        on_delete=models.PROTECT,
+    )
+    request = models.OneToOneField(
+        "deliveries.Request",
+        verbose_name="request",
+        related_name="order",
+        on_delete=models.PROTECT,
     )
     invoice = models.OneToOneField(
         "billing.Invoice",
         verbose_name="invoice",
         related_name="order",
         on_delete=models.PROTECT,
-    )
-    basket = models.OneToOneField(
-        "orders.Basket",
-        verbose_name="basket",
-        related_name="order",
-        on_delete=models.CASCADE,
-        null=True,
-    )
-    # can be null only after delivery removing
-    delivery = models.ForeignKey(
-        "deliveries.Delivery",
-        verbose_name="delivery",
-        on_delete=models.SET_NULL,
-        null=True,
-    )
-    request = models.OneToOneField(
-        "deliveries.Request",
-        verbose_name="request",
-        related_name="order",
-        on_delete=models.SET_NULL,
-        null=True,
     )
 
     status = models.CharField(

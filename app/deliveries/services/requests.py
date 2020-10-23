@@ -49,18 +49,15 @@ class RequestService:
         extra_kwargs.setdefault("is_rush", False)
 
         with atomic():
-            dropoff = Delivery.objects.create(
-                kind=Kind.DROPOFF, status=Status.ACCEPTED, **dropoff_info,
+            request = Request.objects.create(client=self._client, **extra_kwargs,)
+            Delivery.objects.create(
+                request=request, kind=Kind.DROPOFF, status=Status.ACCEPTED, **dropoff_info,
             )
-            pickup = Delivery.objects.create(
-                kind=Kind.PICKUP, status=Status.ACCEPTED, **pickup_info,
-            )
-
-            instance = Request.objects.create(
-                client=self._client, pickup=pickup, dropoff=dropoff, **extra_kwargs,
+            Delivery.objects.create(
+                request=request, kind=Kind.PICKUP, status=Status.ACCEPTED, **pickup_info,
             )
 
-        return instance
+        return request
 
     def get_or_create(self, extra_query: dict, extra_defaults: dict) -> Tuple[Request, bool]:
         """
@@ -78,21 +75,16 @@ class RequestService:
         extra_defaults.setdefault("address", address)
         extra_defaults.setdefault("is_rush", False)
 
-        instance, created = Request.objects.get_or_create(
-            client=self._client,
-            **extra_query,
-            defaults={
-                "date": self._pickup_date,
-                "start": self._pickup_start,
-                "end": self._pickup_end,
-                # DEPRECATED
-                "pickup_date": self._pickup_date,
-                "pickup_start": self._pickup_start,
-                "pickup_end": self._pickup_end,
-                **dropoff_info,
-                **extra_defaults,
-            },
-        )
+        with atomic():
+            dropoff, _ = Delivery.objects.get_or_create(
+                kind=Kind.DROPOFF, status=Status.ACCEPTED, **dropoff_info,
+            )
+            pickup, _ = Delivery.objects.get_or_create(
+                kind=Kind.PICKUP, status=Status.ACCEPTED, **pickup_info,
+            )
+            instance, created = Request.objects.get_or_create(
+                client=self._client, **extra_query, defaults={**extra_defaults,},
+            )
 
         return instance, created
 

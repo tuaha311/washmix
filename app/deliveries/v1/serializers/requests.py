@@ -41,9 +41,11 @@ class RequestSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs: dict):
         client = self.context["request"].user.client
-        pickup_date = attrs["pickup_date"]
 
-        service = RequestService(client=client, pickup_date=pickup_date)
-        service.validate()
+        if "pickup_date" in attrs:
+            pickup_date = attrs["pickup_date"]
+
+            service = RequestService(client=client, pickup_date=pickup_date)
+            service.validate()
 
         return attrs

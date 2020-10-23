@@ -8,7 +8,7 @@ from periodiq import cron
 
 from core.utils import add_to_execution_cache, exists_in_execution_cache
 from deliveries.models import Schedule
-from deliveries.services.delivery import DeliveryService
+from deliveries.services.requests import RequestService
 
 logger = logging.getLogger(__name__)
 
@@ -38,13 +38,13 @@ def create_recurring_delivery_every_day():
 
         logger.info(f"Start of handling schedule # {schedule.pk}")
 
-        service = DeliveryService(client=client)
-        delivery, _ = service.get_or_create(
+        service = RequestService(client=client)
+        request, _ = service.get_or_create(
             extra_query={"schedule": schedule, "address": address},
             extra_defaults={"comment": schedule.comment, "is_rush": schedule.is_rush,},
         )
 
         add_to_execution_cache(key)
 
-        logger.info(f"Created delivery # {delivery.pk}")
+        logger.info(f"Created delivery # {request.pk}")
         logger.info(f"End of handling schedule # {schedule.pk}")
