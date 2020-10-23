@@ -7,7 +7,7 @@ from django.utils.timezone import localtime
 from deliveries.choices import Kind, Status
 from deliveries.models import Delivery, Request
 from deliveries.utils import get_dropoff_day, get_pickup_day, get_pickup_start_end
-from deliveries.validators import DeliveryValidator
+from deliveries.validators import RequestValidator
 from users.models import Client
 
 
@@ -30,7 +30,7 @@ class RequestService:
         self._pickup_date = pickup_date
         self._pickup_start = pickup_start
         self._pickup_end = pickup_end
-        self._validator_service = DeliveryValidator(pickup_date, pickup_start, pickup_end)
+        self._validator_service = RequestValidator(pickup_date, pickup_start, pickup_end)
 
     def create(self, **extra_kwargs) -> Request:
         """
@@ -51,10 +51,10 @@ class RequestService:
         with atomic():
             request = Request.objects.create(client=self._client, **extra_kwargs,)
             Delivery.objects.create(
-                request=request, kind=Kind.DROPOFF, status=Status.ACCEPTED, **dropoff_info,
+                request=request, kind=Kind.PICKUP, status=Status.ACCEPTED, **pickup_info,
             )
             Delivery.objects.create(
-                request=request, kind=Kind.PICKUP, status=Status.ACCEPTED, **pickup_info,
+                request=request, kind=Kind.DROPOFF, status=Status.ACCEPTED, **dropoff_info,
             )
 
         return request
@@ -76,11 +76,11 @@ class RequestService:
         extra_defaults.setdefault("is_rush", False)
 
         with atomic():
-            dropoff, _ = Delivery.objects.get_or_create(
-                kind=Kind.DROPOFF, status=Status.ACCEPTED, **dropoff_info,
-            )
             pickup, _ = Delivery.objects.get_or_create(
                 kind=Kind.PICKUP, status=Status.ACCEPTED, **pickup_info,
+            )
+            dropoff, _ = Delivery.objects.get_or_create(
+                kind=Kind.DROPOFF, status=Status.ACCEPTED, **dropoff_info,
             )
             instance, created = Request.objects.get_or_create(
                 client=self._client, **extra_query, defaults={**extra_defaults,},
@@ -88,19 +88,20 @@ class RequestService:
 
         return instance, created
 
-    def recalculate(self, delivery: Request) -> Request:
+    def recalculate(self, request: Request) -> Request:
         """
         This method helps to recalculate dropoff info on update
         field `pickup_date`.
         """
 
         dropoff_info = self._dropoff_info
+        dropoff = request.dropoff
 
         for key, value in dropoff_info.items():
-            setattr(delivery, key, value)
-        delivery.save()
+            setattr(dropoff, key, value)
+        dropoff.save()
 
-        return delivery
+        return request
 
     def validate(self):
         self._validator_service.validate()

@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.functional import cached_property
 
 from core.common_models import Common
 from deliveries.choices import Kind
@@ -9,8 +10,6 @@ class Request(CommonScheduleRequest, Common):
     """
     Client-side entity.
 
-    NOTE: Request / Schedule uses the same pattern such Package / Subscription.
-
     Request for pickup and dropoff from our Client.
     It can be made via dashboard or via SMS to Twilio Flex.
 
@@ -19,6 +18,28 @@ class Request(CommonScheduleRequest, Common):
 
     At incoming Request we are creating 2 Delivery records - one for pickup,
     one for dropoff.
+
+    With proxy @property fields we are hiding `pickup` and `dropoff` from frontend -
+    we are changing them like usual properties for frontend. In reality they are
+    a separate objects (Delivery) and we show them in Drivers feed.
+
+    NOTE: Request / Schedule uses the same pattern such Package / Subscription.
+    NOTE: Be careful with proxy @property - save a ref to object before changing.
+    Example without ref:
+    > self.pickup.date = datetime(2020, 10, 20)
+    > self.pickup.save()
+    > self.pickup.date
+    > datetime(2020, 10, 10)
+
+    Doesn't work because every time when we call `self.pickup` it returns another object:
+    > id(self.pickup) == id(self.pickup)
+    > False
+
+    Alternative:
+    > pickup = self.pickup
+    > pickup.date = datetime(2020, 10, 20)
+    > pickup.save()
+    Works because we saved a ref to original object.
     """
 
     client = models.ForeignKey(
@@ -48,14 +69,10 @@ class Request(CommonScheduleRequest, Common):
     #
     # pickup proxy fields
     #
+
     @property
     def pickup(self):
         return self.delivery_list.get(kind=Kind.PICKUP)
-
-    @pickup.setter
-    def pickup(self, value):
-        self.pickup = value
-        self.save()
 
     @property
     def pickup_date(self):
@@ -63,8 +80,9 @@ class Request(CommonScheduleRequest, Common):
 
     @pickup_date.setter
     def pickup_date(self, value):
-        self.pickup.date = value
-        self.pickup.save()
+        pickup = self.pickup
+        pickup.date = value
+        pickup.save()
 
     @property
     def pickup_start(self):
@@ -72,8 +90,9 @@ class Request(CommonScheduleRequest, Common):
 
     @pickup_start.setter
     def pickup_start(self, value):
-        self.pickup.start = value
-        self.pickup.save()
+        pickup = self.pickup
+        pickup.start = value
+        pickup.save()
 
     @property
     def pickup_end(self):
@@ -81,46 +100,26 @@ class Request(CommonScheduleRequest, Common):
 
     @pickup_end.setter
     def pickup_end(self, value):
-        self.pickup.end = value
-        self.pickup.save()
+        pickup = self.pickup
+        pickup.end = value
+        pickup.save()
 
     #
     # dropoff proxy fields
     #
+
     @property
     def dropoff(self):
         return self.delivery_list.get(kind=Kind.DROPOFF)
-
-    @dropoff.setter
-    def dropoff(self, value):
-        self.dropoff = value
-        self.save()
 
     @property
     def dropoff_date(self):
         return self.dropoff.date
 
-    @dropoff_date.setter
-    def dropoff_date(self, value):
-        self.dropoff.date = value
-        self.dropoff.save()
-
     @property
     def dropoff_start(self):
         return self.dropoff.start
 
-    @dropoff_start.setter
-    def dropoff_start(self, value):
-        self.dropoff.start = value
-        self.dropoff.save()
-
     @property
     def dropoff_end(self):
         return self.dropoff.end
-
-    @dropoff_end.setter
-    def dropoff_end(self, value):
-        self.dropoff.end = value
-        self.dropoff.save()
-
-

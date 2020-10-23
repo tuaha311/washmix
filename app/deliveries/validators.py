@@ -9,7 +9,7 @@ from rest_framework import serializers
 from deliveries.utils import get_dropoff_day, get_pickup_day, get_pickup_start_end
 
 
-class DeliveryValidator:
+class RequestValidator:
     def __init__(
         self, pickup_date: date = None, pickup_start: time = None, pickup_end: time = None,
     ):
