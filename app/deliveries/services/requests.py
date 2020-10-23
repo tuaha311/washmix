@@ -76,17 +76,17 @@ class RequestService:
         extra_defaults.setdefault("is_rush", False)
 
         with atomic():
-            pickup, _ = Delivery.objects.get_or_create(
-                kind=Kind.PICKUP, status=Status.ACCEPTED, **pickup_info,
+            request, created = Request.objects.get_or_create(
+                client=self._client, **extra_query, defaults=extra_defaults,
             )
-            dropoff, _ = Delivery.objects.get_or_create(
-                kind=Kind.DROPOFF, status=Status.ACCEPTED, **dropoff_info,
+            Delivery.objects.get_or_create(
+                request=request, kind=Kind.PICKUP, status=Status.ACCEPTED, defaults=pickup_info,
             )
-            instance, created = Request.objects.get_or_create(
-                client=self._client, **extra_query, defaults={**extra_defaults,},
+            Delivery.objects.get_or_create(
+                request=request, kind=Kind.DROPOFF, status=Status.ACCEPTED, defaults=dropoff_info,
             )
 
-        return instance, created
+        return request, created
 
     def recalculate(self, request: Request) -> Request:
         """
