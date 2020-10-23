@@ -37,7 +37,7 @@ def create_transaction(
 
 
 create_debit = partial(create_transaction, kind=Kind.DEBIT)
-create_credit = partial(create_transaction, kind=Kind.CREDIT)
+create_credit = partial(create_transaction, kind=Kind.CREDIT, provider=Provider.WASHMIX)
 
 
 def create_credit_back(client: Client, amount: int) -> Transaction:

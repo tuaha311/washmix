@@ -3,12 +3,15 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from subscriptions.services.subscription import SubscriptionService
-from subscriptions.v1.serializers.choose import ChooseResponseSerializer, ChooseSerializer
+from subscriptions.v1.serializers.choose import (
+    SubscriptionChooseResponseSerializer,
+    SubscriptionChooseSerializer,
+)
 
 
-class ChooseView(GenericAPIView):
-    serializer_class = ChooseSerializer
-    response_serializer_class = ChooseResponseSerializer
+class SubscriptionChooseView(GenericAPIView):
+    serializer_class = SubscriptionChooseSerializer
+    response_serializer_class = SubscriptionChooseResponseSerializer
 
     def post(self, request: Request, *args, **kwargs):
         package_serializer = self.serializer_class(data=request.data, context={"request": request})

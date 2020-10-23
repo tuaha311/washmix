@@ -1,6 +1,6 @@
 from unittest.mock import MagicMock
 
-from deliveries.containers import DeliveryContainer
+from deliveries.containers import RequestContainer
 from subscriptions.choices import Package
 
 
@@ -14,14 +14,14 @@ def test_payc_small_load():
     delivery = MagicMock()
     basket = MagicMock()
     amount_list = [
-        [0, 1990, 0],
-        [1500, 1990, 0],
-        [2999, 1990, 0],
+        [0, 995, 0],
+        [1500, 995, 0],
+        [2999, 995, 0],
     ]
 
     for basket_amount, delivery_amount, delivery_discount in amount_list:
         basket.amount = basket_amount
-        container = DeliveryContainer(subscription, delivery, basket)
+        container = RequestContainer(subscription, delivery, basket)
         assert container.amount == delivery_amount
         assert container.discount == delivery_discount
 
@@ -33,14 +33,14 @@ def test_payc_medium_load():
     delivery = MagicMock()
     basket = MagicMock()
     amount_list = [
-        [3000, 990, 0],
-        [4000, 990, 0],
-        [4899, 990, 0],
+        [3000, 495, 0],
+        [4000, 495, 0],
+        [4899, 495, 0],
     ]
 
     for basket_amount, delivery_amount, delivery_discount in amount_list:
         basket.amount = basket_amount
-        container = DeliveryContainer(subscription, delivery, basket)
+        container = RequestContainer(subscription, delivery, basket)
         assert container.amount == delivery_amount
         assert container.discount == delivery_discount
 
@@ -52,13 +52,13 @@ def test_payc_free():
     delivery = MagicMock()
     basket = MagicMock()
     amount_list = [
-        [4900, 990, 990],
-        [5500, 990, 990],
+        [4900, 495, 495],
+        [5500, 495, 495],
     ]
 
     for basket_amount, delivery_amount, delivery_discount in amount_list:
         basket.amount = basket_amount
-        container = DeliveryContainer(subscription, delivery, basket)
+        container = RequestContainer(subscription, delivery, basket)
         assert container.amount == delivery_amount
         assert container.discount == delivery_discount
 
@@ -73,14 +73,14 @@ def test_gold_small_load():
     delivery = MagicMock()
     basket = MagicMock()
     amount_list = [
-        [0, 1498, 0],
-        [1250, 1498, 0],
-        [2499, 1498, 0],
+        [0, 749, 0],
+        [1250, 749, 0],
+        [2499, 749, 0],
     ]
 
     for basket_amount, delivery_amount, delivery_discount in amount_list:
         basket.amount = basket_amount
-        container = DeliveryContainer(subscription, delivery, basket)
+        container = RequestContainer(subscription, delivery, basket)
         assert container.amount == delivery_amount
         assert container.discount == delivery_discount
 
@@ -92,14 +92,14 @@ def test_gold_medium_load():
     delivery = MagicMock()
     basket = MagicMock()
     amount_list = [
-        [2600, 990, 0],
-        [3300, 990, 0],
-        [3899, 990, 0],
+        [2600, 495, 0],
+        [3300, 495, 0],
+        [3899, 495, 0],
     ]
 
     for basket_amount, delivery_amount, delivery_discount in amount_list:
         basket.amount = basket_amount
-        container = DeliveryContainer(subscription, delivery, basket)
+        container = RequestContainer(subscription, delivery, basket)
         assert container.amount == delivery_amount
         assert container.discount == delivery_discount
 
@@ -111,13 +111,13 @@ def test_gold_free():
     delivery = MagicMock()
     basket = MagicMock()
     amount_list = [
-        [3900, 990, 990],
-        [4500, 990, 990],
+        [3900, 495, 495],
+        [4500, 495, 495],
     ]
 
     for basket_amount, delivery_amount, delivery_discount in amount_list:
         basket.amount = basket_amount
-        container = DeliveryContainer(subscription, delivery, basket)
+        container = RequestContainer(subscription, delivery, basket)
         assert container.amount == delivery_amount
         assert container.discount == delivery_discount
 
@@ -132,14 +132,14 @@ def test_platinum_small_load():
     delivery = MagicMock()
     basket = MagicMock()
     amount_list = [
-        [0, 1498, 0],
-        [1250, 1498, 0],
-        [2499, 1498, 0],
+        [0, 749, 0],
+        [1250, 749, 0],
+        [2499, 749, 0],
     ]
 
     for basket_amount, delivery_amount, delivery_discount in amount_list:
         basket.amount = basket_amount
-        container = DeliveryContainer(subscription, delivery, basket)
+        container = RequestContainer(subscription, delivery, basket)
         assert container.amount == delivery_amount
         assert container.discount == delivery_discount
 
@@ -151,14 +151,14 @@ def test_platinum_medium_load():
     delivery = MagicMock()
     basket = MagicMock()
     amount_list = [
-        [2600, 990, 0],
-        [3300, 990, 0],
-        [3899, 990, 0],
+        [2600, 495, 0],
+        [3300, 495, 0],
+        [3899, 495, 0],
     ]
 
     for basket_amount, delivery_amount, delivery_discount in amount_list:
         basket.amount = basket_amount
-        container = DeliveryContainer(subscription, delivery, basket)
+        container = RequestContainer(subscription, delivery, basket)
         assert container.amount == delivery_amount
         assert container.discount == delivery_discount
 
@@ -170,12 +170,12 @@ def test_platinum_free():
     delivery = MagicMock()
     basket = MagicMock()
     amount_list = [
-        [3900, 990, 990],
-        [4500, 990, 990],
+        [3900, 495, 495],
+        [4500, 495, 495],
     ]
 
     for basket_amount, delivery_amount, delivery_discount in amount_list:
         basket.amount = basket_amount
-        container = DeliveryContainer(subscription, delivery, basket)
+        container = RequestContainer(subscription, delivery, basket)
         assert container.amount == delivery_amount
         assert container.discount == delivery_discount

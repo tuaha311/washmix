@@ -1,10 +1,10 @@
 class Purpose:
     SUBSCRIPTION = "subscription"
-    ORDER = "order"
+    BASKET = "basket"
     DELIVERY = "delivery"
     MAP = {
         SUBSCRIPTION: "Subscription purchase",
-        ORDER: "Order processing payment",
+        BASKET: "Order processing payment",
         DELIVERY: "Payment for delivery",
     }
     CHOICES = list(MAP.items())

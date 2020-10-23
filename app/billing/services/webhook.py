@@ -45,6 +45,9 @@ class StripeWebhookService:
         except ObjectDoesNotExist:
             return False
 
+        if self._invoice.is_paid:
+            return False
+
         return True
 
     def parse(self) -> Tuple[stripe.PaymentMethod, Client, Invoice, str]:

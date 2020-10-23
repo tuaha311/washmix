@@ -69,7 +69,7 @@ class StripeWebhookView(GenericAPIView):
             if purpose == Purpose.SUBSCRIPTION:
                 subscription_service.set_subscription(invoice)
 
-            elif purpose == Purpose.ORDER:
+            elif purpose == Purpose.BASKET:
                 order_service.process()
 
         return Response({}, status=HTTP_200_OK)

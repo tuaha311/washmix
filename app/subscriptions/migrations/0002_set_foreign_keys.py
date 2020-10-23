@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
     dependencies = [
         ("users", "0001_initial"),
         ("subscriptions", "0001_initial"),
-        ("billing", "0002_auto_20201021_2150"),
+        ("billing", "0002_set_foreign_keys"),
     ]
 
     operations = [

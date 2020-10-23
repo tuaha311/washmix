@@ -63,6 +63,8 @@ class PaymentService:
         with atomic():
             paid_amount, unpaid_amount = self._charge_prepaid_balance()
 
+            # if Client doesn't have enough prepaid balance - we should charge
+            # their card
             if unpaid_amount > 0:
                 self._charge_card(unpaid_amount)
 
@@ -96,9 +98,15 @@ class PaymentService:
         paid_amount = 0
         unpaid_amount = amount_with_discount
 
+        # if prepaid balance enough to pay full price - we will
+        # use this money for invoice payment.
         if balance >= amount_with_discount:
             paid_amount = amount_with_discount
             unpaid_amount = 0
+
+        # but if our prepaid balance is lower that invoice amount -
+        # we charge all of prepaid balance and rest of unpaid invoice amount
+        # we should charge it from card
         elif 0 < balance < amount_with_discount:
             paid_amount = balance
             unpaid_amount = amount_with_discount - balance

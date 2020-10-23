@@ -68,7 +68,6 @@ class Request(CommonScheduleRequest, Common):
     #
     # pickup proxy fields
     #
-
     @property
     def pickup(self):
         return self.delivery_list.get(kind=Kind.PICKUP)
@@ -103,10 +102,19 @@ class Request(CommonScheduleRequest, Common):
         pickup.end = value
         pickup.save()
 
+    @property
+    def pickup_invoice(self):
+        return self.pickup.invoice
+
+    @pickup_invoice.setter
+    def pickup_invoice(self, value):
+        pickup = self.pickup
+        pickup.invoice = value
+        pickup.save()
+
     #
     # dropoff proxy fields
     #
-
     @property
     def dropoff(self):
         return self.delivery_list.get(kind=Kind.DROPOFF)
@@ -122,3 +130,13 @@ class Request(CommonScheduleRequest, Common):
     @property
     def dropoff_end(self):
         return self.dropoff.end
+
+    @property
+    def dropoff_invoice(self):
+        return self.dropoff.invoice
+
+    @dropoff_invoice.setter
+    def dropoff_invoice(self, value):
+        dropoff = self.dropoff
+        dropoff.invoice = value
+        dropoff.save()

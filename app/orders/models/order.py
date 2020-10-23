@@ -38,11 +38,10 @@ class Order(Common):
         related_name="order",
         on_delete=models.PROTECT,
     )
-    invoice = models.OneToOneField(
+    invoice_list = models.ManyToManyField(
         "billing.Invoice",
-        verbose_name="invoice",
-        related_name="order",
-        on_delete=models.PROTECT,
+        verbose_name="invoice list",
+        related_name="order_list",
     )
 
     status = models.CharField(
@@ -55,11 +54,4 @@ class Order(Common):
     class Meta:
         verbose_name = "order"
         verbose_name_plural = "orders"
-
-    @property
-    def amount(self):
-        return self.basket.amount
-
-    @property
-    def dollar_amount(self):
-        return self.basket.dollar_amount
+        unique_together = ["basket", "request",]

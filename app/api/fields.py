@@ -26,8 +26,8 @@ class InvoiceField(BaseClientField):
         return default_validators
 
 
-class DeliveryField(BaseClientField):
-    attribute_name = "delivery_list"
+class RequestField(BaseClientField):
+    attribute_name = "request_list"
 
 
 class BasketField(BaseClientField):

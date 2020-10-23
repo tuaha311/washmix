@@ -1,5 +1,4 @@
 from core.containers import BaseAmountContainer
-from core.utils import get_dollars
 from orders.containers.quantity import QuantityContainer
 from orders.models import Basket
 from subscriptions.models import Subscription
@@ -19,10 +18,6 @@ class BasketContainer(BaseAmountContainer):
     @property
     def discount(self) -> int:
         return self._calculate_sum("discount")
-
-    @property
-    def amount_with_discount(self) -> int:
-        return self._calculate_sum("amount_with_discount")
 
     @property
     def quantity_container_list(self):

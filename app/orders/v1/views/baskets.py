@@ -6,7 +6,7 @@ from orders.services.basket import BasketService
 from orders.v1.serializers.basket import BasketSerializer, ChangeItemSerializer
 
 
-class ChangeItemView(GenericAPIView):
+class BasketChangeItemView(GenericAPIView):
     serializer_class = ChangeItemSerializer
     response_serializer_class = BasketSerializer
 
@@ -28,7 +28,7 @@ class ChangeItemView(GenericAPIView):
         return Response(response)
 
 
-class ClearView(GenericAPIView):
+class BasketClearView(GenericAPIView):
     def post(self, request: Request, *args, **kwargs):
         client = request.user.client
 

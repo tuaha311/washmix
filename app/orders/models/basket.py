@@ -29,6 +29,14 @@ class Basket(Common):
         related_name="basket_list",
         through="orders.Quantity",
     )
+    # invoice created at the moment of Order creation
+    invoice = models.OneToOneField(
+        "billing.Invoice",
+        verbose_name="invoice for basket",
+        related_name="basket",
+        on_delete=models.PROTECT,
+        null=True,
+    )
 
     class Meta:
         verbose_name = "basket"

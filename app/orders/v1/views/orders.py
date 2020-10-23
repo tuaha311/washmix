@@ -4,6 +4,7 @@ from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 
+from orders.containers.order import OrderContainer
 from orders.services.order import OrderService
 from orders.v1.serializers.orders import OrderCheckoutSerializer, OrderSerializer
 
@@ -13,7 +14,9 @@ class OrderListView(ListAPIView):
 
     def get_queryset(self):
         client = self.request.user.client
-        return client.order_list.all()
+        order_list = client.order_list.all()
+
+        return [OrderContainer(item) for item in order_list]
 
 
 class OrderRepeatView(GenericAPIView):
@@ -34,14 +37,17 @@ class OrderCheckoutView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
 
         client = request.user.client
-        delivery = serializer.validated_data["delivery"]
+        request = serializer.validated_data["request"]
         basket = serializer.validated_data["basket"]
 
         order_service = OrderService(client)
 
         with atomic():
-            order, invoice = order_service.checkout(basket, delivery)
-            order_service.charge(invoice)
+            order, invoice_list = order_service.checkout(basket, request)
 
-        response = self.response_serializer_class(order).data
+            for invoice in invoice_list:
+                order_service.charge(invoice)
+
+        order_container = order_service.container
+        response = self.response_serializer_class(order_container).data
         return Response(response)

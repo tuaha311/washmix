@@ -87,6 +87,6 @@ class Invoice(CalculatedAmountWithDiscount, Amountable, Discountable, Common):
         except ObjectDoesNotExist:
             return False
 
-        return transaction.amount >= self.amount
+        return transaction.amount >= self.amount_with_discount
 
     dollar_basic = property(partial(get_dollars, attribute_name="basic"))
