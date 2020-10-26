@@ -1,6 +1,8 @@
+from django.conf import settings
 from django.db.models import Sum
 
 from core.containers import BaseAmountContainer
+from core.utils import get_dollars
 from orders.containers.basket import BasketContainer
 from orders.models import Order
 
@@ -27,7 +29,7 @@ class OrderContainer(BaseAmountContainer):
         order = self._order
         invoice_list = order.invoice_list.all()
 
-        amount = invoice_list.aggregate(total=Sum("amount")) or 0
+        amount = invoice_list.aggregate(total=Sum("amount"))["total"] or 0
 
         return amount
 
@@ -36,6 +38,16 @@ class OrderContainer(BaseAmountContainer):
         order = self._order
         invoice_list = order.invoice_list.all()
 
-        amount = invoice_list.aggregate(total=Sum("discount")) or 0
+        amount = invoice_list.aggregate(total=Sum("discount"))["total"] or 0
 
         return amount
+
+    @property
+    def credit_back(self) -> int:
+        amount_with_discount = self.amount_with_discount
+
+        return amount_with_discount * settings.CREDIT_BACK_PERCENTAGE / 100
+
+    @property
+    def dollar_credit_back(self) -> float:
+        return get_dollars(self, "credit_back")

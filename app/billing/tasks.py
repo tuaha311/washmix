@@ -9,6 +9,7 @@ from periodiq import cron
 
 from billing.utils import create_credit_back
 from core.utils import add_to_execution_cache, exists_in_execution_cache
+from orders.containers.order import OrderContainer
 from users.models import Client
 
 logger = logging.getLogger(__name__)
@@ -43,14 +44,19 @@ def accrue_credit_back_every_3_month():
         logger.info(f"Start of accruing credit back for client {client.email}")
 
         order_list = client.order_list.filter(created__gte=moment_of_3_month_ago)
-        amount = sum(item.amount for item in order_list)
+        order_container_list = [OrderContainer(item) for item in order_list]
+        order_total_amount = sum(item.amount_with_discount for item in order_container_list)
 
-        if amount == 0:
+        if order_total_amount == 0:
             continue
 
-        create_credit_back(client, amount)
+        credit_back_amount = order_total_amount * settings.CREDIT_BACK_PERCENTAGE / 100
+
+        create_credit_back(client, credit_back_amount)
 
         add_to_execution_cache(key)
 
-        logger.info(f"Credit back amount in cents {amount} for {client.email} was accrued")
+        logger.info(
+            f"Credit back amount in cents {credit_back_amount} for {client.email} was accrued"
+        )
         logger.info(f"End of accruing credit back for client {client.email}")

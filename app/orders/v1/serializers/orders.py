@@ -1,22 +1,35 @@
 from rest_framework import serializers
 
 from api.fields import BasketField, RequestField
+from api.v1_0.serializers.common import CommonAmountWithDiscountSerializer
 from deliveries.v1.serializers.requests import RequestSerializer
 from orders.models import Order
 from orders.v1.serializers.basket import BasketSerializer
 
 
-class OrderSerializer(serializers.ModelSerializer):
+class OrderSerializer(CommonAmountWithDiscountSerializer, serializers.ModelSerializer):
     basket = BasketSerializer()
     request = RequestSerializer()
+    credit_back = serializers.ReadOnlyField()
+    dollar_credit_back = serializers.ReadOnlyField()
 
     class Meta:
         model = Order
-        exclude = [
-            "created",
-            "changed",
-            "client",
-            "employee",
+        fields = [
+            "id",
+            "basket",
+            "request",
+            "invoice_list",
+            "status",
+            "pretty_status",
+            "credit_back",
+            "dollar_credit_back",
+            "amount",
+            "dollar_amount",
+            "discount",
+            "dollar_discount",
+            "amount_with_discount",
+            "dollar_amount_with_discount",
         ]
 
 

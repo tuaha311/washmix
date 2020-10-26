@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 
 from core.common_models import Common
@@ -55,3 +56,7 @@ class Order(Common):
         verbose_name = "order"
         verbose_name_plural = "orders"
         unique_together = ["basket", "request",]
+
+    @property
+    def pretty_status(self):
+        return self.get_status_display()
