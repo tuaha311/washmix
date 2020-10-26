@@ -35,6 +35,11 @@ class Customer(Common):
         max_length=20,
         blank=True,
     )
+    address = models.CharField(
+        verbose_name="address",
+        max_length=250,
+        blank=True,
+    )
     kind = models.CharField(
         verbose_name="kind",
         max_length=20,
