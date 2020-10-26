@@ -1,5 +1,30 @@
 # Release Notes
 
+## v1.6 (26.10.2020)
+* Added `v1` views, serializer per application
+* `URLconf`'s now moved into applications
+* Rename `ChekoutView` to more semantic:
+  - `OrderCheckoutView`
+  - `SubscriptionCheckoutView`
+  - `WelcomeCheckoutView`
+* `StripeWebhookView`
+* Added `Request` model
+* Added `RequestService`
+* Added amount calculation containers:
+  - `BaseAmountContainer`
+  - `OrderContainer`
+  - `BasketContainer`
+  - `QuantityContainer`
+  - `RequestContainer`
+* Added prepaid balance charging logic
+* Added concrete `.charge` method implementation for:
+  - `PaymentService`
+  - `SubscriptionService`
+  - `OrderService`
+* Update Twilio Flex Flow JSON
+* Update Model Architecture doc
+
+
 ## v1.5 (09.10.2020)
 * Added more phone validation
 * Added exception handling in body for Twilio
