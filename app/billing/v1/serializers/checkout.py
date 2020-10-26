@@ -21,6 +21,12 @@ class WelcomeCheckoutUserSerializer(serializers.ModelSerializer):
         ]
 
 
+class WelcomeCheckoutBillingAddressSerializer(serializers.Serializer):
+    zip_code = serializers.CharField(max_length=10)
+    address_line_1 = serializers.CharField(max_length=250)
+    address_line_2 = serializers.CharField(max_length=250, allow_blank=True, required=False)
+
+
 class WelcomeCheckoutAddressSerializer(serializers.ModelSerializer):
     zip_code = serializers.SlugRelatedField(slug_field="value", queryset=ZipCode.objects.all())
     title = serializers.CharField(default=settings.MAIN_TITLE, required=False)
@@ -35,7 +41,7 @@ class WelcomeCheckoutAddressSerializer(serializers.ModelSerializer):
 class WelcomeCheckoutSerializer(serializers.Serializer):
     user = WelcomeCheckoutUserSerializer()
     address = WelcomeCheckoutAddressSerializer()
-    billing_address = WelcomeCheckoutAddressSerializer()
+    billing_address = WelcomeCheckoutBillingAddressSerializer()
     # at this moment client doesn't have an payment methods
     # 1. welcome scenario (no payment method)
     invoice = InvoiceField()
@@ -44,4 +50,4 @@ class WelcomeCheckoutSerializer(serializers.Serializer):
 class WelcomeCheckoutResponseSerializer(serializers.Serializer):
     user = WelcomeCheckoutUserSerializer()
     address = WelcomeCheckoutAddressSerializer()
-    billing_address = WelcomeCheckoutAddressSerializer()
+    billing_address = WelcomeCheckoutBillingAddressSerializer()

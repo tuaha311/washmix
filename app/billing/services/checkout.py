@@ -45,15 +45,14 @@ class WelcomeCheckoutService:
     def create_main_address(self, address: dict) -> Address:
         return self._create_address(address, "main_address")
 
-    def create_billing_address(self, raw_billing_address: dict, is_same_address: bool) -> Address:
-        if is_same_address:
-            billing_address = self._client.main_address
-            self._client.main_billing_address = billing_address
-            self._client.save()
-        else:
-            billing_address = self._create_address(raw_billing_address, "main_billing_address")
+    def create_billing_address(self, raw_billing_address: dict) -> dict:
+        client = self._client
 
-        return billing_address
+        client.billing_address = raw_billing_address
+
+        client.save()
+
+        return client.billing_address
 
     def _create_address(self, address: dict, attribute: str):
         serializer = WelcomeCheckoutAddressSerializer(data=address)

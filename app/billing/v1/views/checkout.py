@@ -25,7 +25,6 @@ class WelcomeCheckoutView(GenericAPIView):
         user = serializer.validated_data["user"]
         raw_address = serializer.validated_data["address"]
         raw_billing_address = serializer.validated_data["billing_address"]
-        is_same_address = raw_address == raw_billing_address
 
         client = request.user.client
         checkout_service = WelcomeCheckoutService(client, request, invoice)
@@ -37,9 +36,7 @@ class WelcomeCheckoutView(GenericAPIView):
 
             user = checkout_service.fill_profile(user)
             address = checkout_service.create_main_address(raw_address)
-            billing_address = checkout_service.create_billing_address(
-                raw_billing_address, is_same_address
-            )
+            billing_address = checkout_service.create_billing_address(raw_billing_address)
             checkout_service.charge()
 
             subscription_service.set_subscription(invoice)

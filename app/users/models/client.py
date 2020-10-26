@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.db.models import Sum
 
@@ -55,12 +56,9 @@ class Client(Stripeable, Common):
         on_delete=models.SET_NULL,
         null=True,
     )
-    main_billing_address = models.OneToOneField(
-        "locations.Address",
-        verbose_name="main billing address",
-        related_name="+",
-        on_delete=models.SET_NULL,
-        null=True,
+    billing_address = JSONField(
+        verbose_name="billing address",
+        default=dict,
     )
 
     # Preferences

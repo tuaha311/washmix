@@ -75,11 +75,13 @@ class Address(Common):
         verbose_name="title of address",
         max_length=80,
     )
-    address_line_1 = models.TextField(
+    address_line_1 = models.CharField(
         verbose_name="address line 1",
+        max_length=250,
     )
-    address_line_2 = models.TextField(
+    address_line_2 = models.CharField(
         verbose_name="address line 2",
+        max_length=250,
         blank=True,
     )
     has_doorman = models.BooleanField(
