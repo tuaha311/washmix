@@ -8,8 +8,8 @@ from billing.api.views import cards, invoices
 from core.api import views as core_views
 from deliveries.api.views import requests, schedules
 from locations.api.views import addresses, locations, zip_codes
-from subscriptions.v1.views import packages
-from users.v1.views import customers, profile
+from subscriptions.api.views import packages
+from users.api.views import customers, profile
 
 app_name = "client"
 token_urls = (

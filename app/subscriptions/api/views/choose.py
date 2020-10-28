@@ -2,11 +2,11 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from subscriptions.services.subscription import SubscriptionService
-from subscriptions.v1.serializers.choose import (
+from subscriptions.api.serializers.choose import (
     SubscriptionChooseResponseSerializer,
     SubscriptionChooseSerializer,
 )
+from subscriptions.services.subscription import SubscriptionService
 
 
 class SubscriptionChooseView(GenericAPIView):

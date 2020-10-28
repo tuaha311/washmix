@@ -4,8 +4,8 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 
+from subscriptions.api.serializers.checkout import SubscriptionCheckoutSerializer
 from subscriptions.services.subscription import SubscriptionService
-from subscriptions.v1.serializers.checkout import SubscriptionCheckoutSerializer
 
 
 class SubscriptionCheckoutView(GenericAPIView):

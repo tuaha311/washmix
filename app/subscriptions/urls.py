@@ -1,6 +1,6 @@
 from django.urls import path
 
-from subscriptions.v1.views import checkout, choose
+from subscriptions.api.views import checkout, choose
 
 urlpatterns = [
     # 1. please, choose a subscription - we will return Invoice.id and attach subscription to Invoice,
