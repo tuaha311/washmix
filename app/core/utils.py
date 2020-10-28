@@ -76,3 +76,18 @@ def exists_in_execution_cache(key: str) -> bool:
 
 def add_to_execution_cache(key: str, expiration_time: int = settings.REDIS_DEFAULT_EXPIRATION_TIME):
     return settings.REDIS_CLIENT.set(key, 1, ex=expiration_time)
+
+
+def recursive_getattr(object_, name: str, default=None):
+    parts = name.split(".")
+
+    first_element = parts[0]
+    rest = parts[1:]
+
+    new_name = ".".join(rest)
+    new_object = getattr(object_, first_element, default)
+
+    if not new_name:
+        return new_object
+
+    return recursive_getattr(new_object, new_name, default)

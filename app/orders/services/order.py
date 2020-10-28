@@ -73,6 +73,8 @@ class OrderService:
                 client=self._client, subscription=subscription, status=Status.ACCEPTED,
             )
 
+        self._order = order
+
         return order, invoice_list
 
     def charge(self, invoice: Invoice):
@@ -87,10 +89,12 @@ class OrderService:
         payment_service.charge()
 
     @property
-    def container(self):
+    def container(self) -> OrderContainer:
         order = self._order
 
-        assert order, "Call .checkout before accessing to .container property"
+        assert (
+            order
+        ), "Call .checkout or .checkout_subscription before accessing to .container property"
 
         container = OrderContainer(order)
 

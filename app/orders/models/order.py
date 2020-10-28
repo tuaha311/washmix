@@ -1,6 +1,7 @@
 from django.db import models
 
 from core.common_models import Common
+from core.utils import recursive_getattr
 from orders.choices import Status
 
 
@@ -74,7 +75,11 @@ class Order(Common):
         result = []
 
         for item in relations_with_invoice:
-            obj = getattr(self, item)
+            obj = recursive_getattr(self, item)
+
+            if not obj:
+                continue
+
             invoice = obj.invoice
             result.append(invoice)
 

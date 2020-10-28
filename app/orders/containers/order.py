@@ -27,18 +27,18 @@ class OrderContainer(BaseAmountContainer):
     @property
     def amount(self) -> int:
         order = self._order
-        invoice_list = order.invoice_list.all()
+        invoice_list = order.invoice_list
 
-        amount = invoice_list.aggregate(total=Sum("amount"))["total"] or 0
+        amount = sum(item.amount for item in invoice_list)
 
         return amount
 
     @property
     def discount(self) -> int:
         order = self._order
-        invoice_list = order.invoice_list.all()
+        invoice_list = order.invoice_list
 
-        amount = invoice_list.aggregate(total=Sum("discount"))["total"] or 0
+        amount = sum(item.discount for item in invoice_list)
 
         return amount
 

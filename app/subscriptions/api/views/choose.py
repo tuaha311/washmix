@@ -27,9 +27,10 @@ class SubscriptionChooseView(GenericAPIView):
         order_service = OrderService(client)
 
         with atomic():
-            subscription = subscription_service.clone(package)
-            order = order_service.checkout_subscription(subscription)
+            subscription = subscription_service.fill_from_package(package)
+            order_service.checkout_subscription(subscription)
+            order_container = order_service.container
 
-        response = self.response_serializer_class(order).data
+        response = self.response_serializer_class(order_container).data
 
         return Response(response)

@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 
-class CommonAmountWithDiscountSerializer(serializers.Serializer):
+class CommonContainerSerializer(serializers.Serializer):
     amount = serializers.ReadOnlyField()
     dollar_amount = serializers.ReadOnlyField()
     discount = serializers.ReadOnlyField()

@@ -65,15 +65,6 @@ class Invoice(CalculatedAmountWithDiscount, Amountable, Discountable, Common):
         return all(required_fields)
 
     @property
-    def basic(self) -> int:
-        try:
-            subscription = self.subscription
-        except ObjectDoesNotExist:
-            return 0
-
-        return subscription.price
-
-    @property
     def is_paid(self):
         try:
             transaction = self.transaction
@@ -81,5 +72,3 @@ class Invoice(CalculatedAmountWithDiscount, Amountable, Discountable, Common):
             return False
 
         return transaction.amount >= self.amount_with_discount
-
-    dollar_basic = property(partial(get_dollars, attribute_name="basic"))

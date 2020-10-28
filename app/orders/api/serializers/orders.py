@@ -1,13 +1,13 @@
 from rest_framework import serializers
 
-from api.client.serializers.common import CommonAmountWithDiscountSerializer
+from api.client.serializers.common import CommonContainerSerializer
 from api.fields import BasketField, RequestField
 from deliveries.api.serializers.requests import RequestSerializer
 from orders.api.serializers.basket import BasketSerializer
 from orders.models import Order
 
 
-class OrderSerializer(CommonAmountWithDiscountSerializer, serializers.ModelSerializer):
+class OrderSerializer(CommonContainerSerializer, serializers.ModelSerializer):
     basket = BasketSerializer()
     request = RequestSerializer()
     credit_back = serializers.ReadOnlyField()
