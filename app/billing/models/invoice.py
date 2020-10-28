@@ -32,14 +32,6 @@ class Invoice(CalculatedAmountWithDiscount, Amountable, Discountable, Common):
         on_delete=models.CASCADE,
         related_name="invoice_list",
     )
-    coupon = models.ForeignKey(
-        "billing.Coupon",
-        verbose_name="coupon",
-        related_name="invoice_list",
-        on_delete=models.SET_NULL,
-        blank=True,
-        null=True,
-    )
     card = models.ForeignKey(
         "billing.Card",
         verbose_name="card",
@@ -48,6 +40,7 @@ class Invoice(CalculatedAmountWithDiscount, Amountable, Discountable, Common):
         null=True,
     )
 
+    # TODO maybe we move this into Order
     is_save_card = models.BooleanField(
         verbose_name="should we save the card",
         default=True,

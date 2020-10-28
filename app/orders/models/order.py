@@ -31,17 +31,29 @@ class Order(Common):
         verbose_name="basket",
         related_name="order",
         on_delete=models.PROTECT,
+        null=True,
     )
     request = models.OneToOneField(
         "deliveries.Request",
         verbose_name="request",
         related_name="order",
         on_delete=models.PROTECT,
+        null=True,
     )
-    invoice_list = models.ManyToManyField(
-        "billing.Invoice",
-        verbose_name="invoice list",
-        related_name="order_list",
+    subscription = models.OneToOneField(
+        "subscriptions.Subscription",
+        verbose_name="subscription",
+        related_name="order",
+        on_delete=models.PROTECT,
+        null=True,
+    )
+    coupon = models.ForeignKey(
+        "billing.Coupon",
+        verbose_name="coupon",
+        related_name="invoice_list",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
     )
 
     status = models.CharField(
@@ -55,6 +67,18 @@ class Order(Common):
         verbose_name = "order"
         verbose_name_plural = "orders"
         unique_together = ["basket", "request",]
+
+    @property
+    def invoice_list(self):
+        relations_with_invoice = ["basket", "subscription", "request.pickup", "request.dropoff",]
+        result = []
+
+        for item in relations_with_invoice:
+            obj = getattr(self, item)
+            invoice = obj.invoice
+            result.append(invoice)
+
+        return result
 
     @property
     def pretty_status(self):
