@@ -1,7 +1,7 @@
 from rest_framework.generics import ListAPIView
 
+from locations.api.serializers.zip_codes import ZipCodeSerializer
 from locations.models import ZipCode
-from locations.v1.serializers.zip_codes import ZipCodeSerializer
 
 
 class ZipCodeListView(ListAPIView):

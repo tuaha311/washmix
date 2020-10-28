@@ -4,9 +4,9 @@ from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 
+from orders.api.serializers.orders import OrderCheckoutSerializer, OrderSerializer
 from orders.containers.order import OrderContainer
 from orders.services.order import OrderService
-from orders.v1.serializers.orders import OrderCheckoutSerializer, OrderSerializer
 
 
 class OrderListView(ListAPIView):

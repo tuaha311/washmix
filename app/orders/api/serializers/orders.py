@@ -3,8 +3,8 @@ from rest_framework import serializers
 from api.client.serializers.common import CommonAmountWithDiscountSerializer
 from api.fields import BasketField, RequestField
 from deliveries.api.serializers.requests import RequestSerializer
+from orders.api.serializers.basket import BasketSerializer
 from orders.models import Order
-from orders.v1.serializers.basket import BasketSerializer
 
 
 class OrderSerializer(CommonAmountWithDiscountSerializer, serializers.ModelSerializer):
