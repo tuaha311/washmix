@@ -19,7 +19,7 @@ def test_payc_subscription(atomic_mock):
 
     service = SubscriptionService(client)
 
-    service.set_subscription(invoice)
+    service.finalize(invoice)
 
     assert client.subscription.name == settings.PAYC
 
@@ -38,6 +38,6 @@ def test_gold_platinum_subscription(atomic_mock):
         subscription.name = item
         service = SubscriptionService(client)
 
-        service.set_subscription(invoice)
+        service.finalize(invoice)
 
         assert client.subscription is None

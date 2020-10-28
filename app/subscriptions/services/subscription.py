@@ -11,6 +11,8 @@ from billing.models import Invoice
 from billing.services.card import CardService
 from billing.services.invoice import InvoiceService
 from billing.services.payments import PaymentService
+from orders.models import Order
+from subscriptions.containers import SubscriptionContainer
 from subscriptions.models import Package, Subscription
 from users.models import Client
 
@@ -25,6 +27,28 @@ class SubscriptionService:
 
     def __init__(self, client: Client):
         self._client = client
+        self._subscription = None
+
+    def clone(self, package: Package) -> Subscription:
+        """
+        Method helps to clone subscription based on package.
+        It copies all fields from package to subscription.
+        """
+
+        package = package
+        client = self._client
+
+        try:
+            instance = invoice.subscription
+        except ObjectDoesNotExist:
+            instance = Subscription()
+
+        subscription = Subscription.objects.fill_subscription(package, instance)
+        subscription.save()
+
+        self._subscription = subscription
+
+        return subscription
 
     def charge(self, invoice: Invoice) -> Optional[PaymentMethod]:
         """
@@ -45,7 +69,7 @@ class SubscriptionService:
 
         payment_service.charge()
 
-    def set_subscription(self, invoice: Invoice) -> Optional[Subscription]:
+    def finalize(self, invoice: Invoice) -> Optional[Subscription]:
         """
         Final method that sets subscription on client after payment (checkout).
         """
@@ -67,29 +91,12 @@ class SubscriptionService:
 
         return subscription
 
-    def clone_from_package(self, package: Package):
-        """
-        Method helps to clone subscription based on package.
-        It copies all fields from package to subscription.
-        """
+    @property
+    def container(self):
+        subscription = self._subscription
 
-        package = package
-        client = self._client
-        invoice_service = InvoiceService(client)
+        assert subscription, "Call .checkout before accessing to .container property"
 
-        with atomic():
-            invoice = invoice_service.get_or_create(package.price, Purpose.SUBSCRIPTION)
+        container = SubscriptionContainer(subscription)
 
-            # here we creating or receiving subscription container
-            # and in later steps we will bind it with invoice
-            try:
-                instance = invoice.subscription
-            except ObjectDoesNotExist:
-                instance = Subscription()
-
-            subscription = Subscription.objects.fill_subscription(package, instance)
-            subscription.invoice = invoice
-            subscription.client = client
-            subscription.save()
-
-        return invoice
+        return container

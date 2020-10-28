@@ -37,11 +37,13 @@ class Subscription(CommonPackageSubscription, Common):
         max_length=20,
         choices=settings.PACKAGE_NAME_CHOICES,
     )
+    # invoice created at the moment of Order creation
     invoice = models.OneToOneField(
         "billing.Invoice",
         verbose_name="invoice",
         related_name="subscription",
         on_delete=models.PROTECT,
+        null=True,
     )
 
     objects = SubscriptionManager()

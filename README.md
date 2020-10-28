@@ -148,6 +148,17 @@ In most places, we provide convenient property for amount in dollars.
 For example, if we have field `price` in model `Foo`, than we have a property 
 called `dollar_price`.
 
+At the moment, we have 3 models that responsible for invoicing:
+  - `Subscription`, we charge user for active subscription
+  - `Basket`, we charge for items in WashMix laundry
+  - `Delivery`, charge for logistics costs
+  
+Corresponding to models, we have a wrapper around this models called `containers`:
+  - `SubscriptionContainer`
+  - `BasketContainer`
+  - `QuantityContainer`
+  - `RequestContainer`
+  - `OrderContainer`
 
 ## About initial data (fixtures)
 1. To create dump of database in JSON format

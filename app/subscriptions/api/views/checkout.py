@@ -22,6 +22,6 @@ class SubscriptionCheckoutView(GenericAPIView):
 
         with atomic():
             subscription_service.charge(invoice)
-            subscription_service.set_subscription(invoice)
+            subscription_service.finalize(invoice)
 
         return Response(request.data)

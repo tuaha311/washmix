@@ -1,7 +1,10 @@
+from django.db.transaction import atomic
+
 from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 
+from orders.services.order import OrderService
 from subscriptions.api.serializers.choose import (
     SubscriptionChooseResponseSerializer,
     SubscriptionChooseSerializer,
@@ -20,9 +23,13 @@ class SubscriptionChooseView(GenericAPIView):
         client = request.user.client
         package = package_serializer.validated_data["package"]
 
-        service = SubscriptionService(client)
-        invoice = service.clone_from_package(package)
+        subscription_service = SubscriptionService(client)
+        order_service = OrderService(client)
 
-        response = self.response_serializer_class(invoice).data
+        with atomic():
+            subscription = subscription_service.clone(package)
+            order = order_service.checkout_subscription(subscription)
+
+        response = self.response_serializer_class(order).data
 
         return Response(response)

@@ -39,7 +39,7 @@ class WelcomeCheckoutView(GenericAPIView):
             billing_address = checkout_service.create_billing_address(raw_billing_address)
             checkout_service.charge()
 
-            subscription_service.set_subscription(invoice)
+            subscription_service.finalize(invoice)
 
         response_body = {
             "user": user,

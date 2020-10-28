@@ -13,6 +13,8 @@ from orders.choices import Status
 from orders.containers.basket import BasketContainer
 from orders.containers.order import OrderContainer
 from orders.models import Basket, Order
+from subscriptions.containers import SubscriptionContainer
+from subscriptions.models import Subscription
 from users.models import Client
 
 
@@ -49,9 +51,27 @@ class OrderService:
             order = Order.objects.create(
                 client=self._client, request=request, basket=basket, status=Status.ACCEPTED,
             )
-            order.invoice_list.set(invoice_list)
 
         self._order = order
+
+        return order, invoice_list
+
+    def checkout_subscription(self, subscription: Subscription):
+        client = self._client
+        invoice_service = InvoiceService(client)
+        subscription_container = SubscriptionContainer(subscription)
+
+        with atomic():
+            subscription_invoice = self._create_subscription_invoice(
+                subscription=subscription,
+                subscription_container=subscription_container,
+                invoice_service=invoice_service,
+            )
+            invoice_list = [subscription_invoice]
+
+            order = Order.objects.create(
+                client=self._client, subscription=subscription, status=Status.ACCEPTED,
+            )
 
         return order, invoice_list
 
@@ -79,8 +99,6 @@ class OrderService:
     def _create_basket_invoice(
         self, basket: Basket, basket_container: BasketContainer, invoice_service: InvoiceService
     ) -> List[Invoice]:
-        invoice_list = []
-
         basket_invoice = invoice_service.create(
             amount=basket_container.amount,
             discount=basket_container.discount,
@@ -89,9 +107,7 @@ class OrderService:
         basket.invoice = basket_invoice
         basket.save()
 
-        invoice_list.append(basket_invoice)
-
-        return invoice_list
+        return [basket_invoice]
 
     def _create_delivery_invoice(
         self, request: Request, request_container: RequestContainer, invoice_service: InvoiceService
@@ -116,5 +132,22 @@ class OrderService:
 
         return invoice_list
 
-    def process(self):
+    def _create_subscription_invoice(
+        self,
+        subscription: Subscription,
+        subscription_container: SubscriptionContainer,
+        invoice_service: InvoiceService,
+    ) -> List[Invoice]:
+        subscription_invoice = invoice_service.create(
+            amount=subscription_container.amount,
+            discount=subscription_container.discount,
+            purpose=Purpose.SUBSCRIPTION,
+        )
+
+        subscription.invoice = subscription_invoice
+        subscription.save()
+
+        return [subscription_invoice]
+
+    def finalize(self):
         pass
