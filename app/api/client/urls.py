@@ -3,7 +3,7 @@ from django.urls import include, path
 from rest_framework.routers import SimpleRouter
 from rest_framework_simplejwt.views import TokenRefreshSlidingView, TokenVerifyView
 
-from api.client.views import auth, services, trigger, twilio
+from api.client.views import auth, checkout, prepare, services, trigger, twilio
 from billing.api.views import cards, invoices
 from core.api import views as core_views
 from deliveries.api.views import requests, schedules
@@ -36,6 +36,12 @@ sms_urls = (
     "sms",
 )
 
+welcome_urls = (
+    [path("prepare/", prepare.WelcomePrepareView.as_view(), name="prepare"),],
+    [path("checkout/", checkout.WelcomeCheckoutView.as_view(), name="checkout"),],
+    "welcome",
+)
+
 
 router = SimpleRouter(trailing_slash=True)
 router.register("addresses", addresses.AddressViewSet, basename="addresses")
@@ -49,6 +55,7 @@ urlpatterns = [
     path("profile/", profile.ProfileView.as_view(), name="profile"),
     path("zip_codes/", zip_codes.ZipCodeListView.as_view(), name="zip-code-list"),
     path("sms/", include(sms_urls)),
+    path("welcome/", include(welcome_urls)),
     path("trigger/", trigger.TriggerView.as_view(), name="trigger"),
     path("billing/", include("billing.urls")),
     path("subscription/", include("subscriptions.urls")),

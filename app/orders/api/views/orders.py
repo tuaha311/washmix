@@ -19,6 +19,10 @@ class OrderListView(ListAPIView):
         return [OrderContainer(item) for item in order_list]
 
 
+class OrderPrepareView(GenericAPIView):
+    pass
+
+
 class OrderRepeatView(GenericAPIView):
     """
     View for repeating order.
