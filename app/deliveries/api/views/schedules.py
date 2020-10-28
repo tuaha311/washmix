@@ -1,7 +1,7 @@
 from rest_framework.serializers import Serializer
 from rest_framework.viewsets import ModelViewSet
 
-from deliveries.v1.serializers.schedule import ScheduleSerializer
+from deliveries.api.serializers.schedule import ScheduleSerializer
 
 
 class ScheduleViewSet(ModelViewSet):

@@ -1,8 +1,8 @@
 from rest_framework.serializers import Serializer
 from rest_framework.viewsets import ModelViewSet
 
+from deliveries.api.serializers.requests import RequestSerializer
 from deliveries.services.requests import RequestService
-from deliveries.v1.serializers.requests import RequestSerializer
 
 
 class RequestViewSet(ModelViewSet):
