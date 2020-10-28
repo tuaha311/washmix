@@ -1,6 +1,6 @@
 from rest_framework.request import Request
 
-from billing.api.serializers.checkout import (
+from api.client.serializers.checkout import (
     WelcomeCheckoutAddressSerializer,
     WelcomeCheckoutUserSerializer,
 )
