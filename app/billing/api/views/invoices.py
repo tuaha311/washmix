@@ -1,6 +1,6 @@
 from rest_framework.generics import ListAPIView
 
-from billing.v1.serializers.invoices import InvoiceSerializer
+from billing.api.serializers.invoices import InvoiceSerializer
 
 
 class InvoiceListView(ListAPIView):

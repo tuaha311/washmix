@@ -1,11 +1,11 @@
 from rest_framework.request import Request
 
-from billing.models import Invoice
-from billing.stripe_helper import StripeHelper
-from billing.v1.serializers.checkout import (
+from billing.api.serializers.checkout import (
     WelcomeCheckoutAddressSerializer,
     WelcomeCheckoutUserSerializer,
 )
+from billing.models import Invoice
+from billing.stripe_helper import StripeHelper
 from core.services.main_attribute import MainAttributeService
 from locations.models import Address
 from subscriptions.services.subscription import SubscriptionService

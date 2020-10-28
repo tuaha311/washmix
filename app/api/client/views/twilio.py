@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
 from rest_framework.status import HTTP_200_OK
 
-from api.v1_0.serializers.twilio import TwilioFlexWebhookSerializer
+from api.client.serializers.twilio import TwilioFlexWebhookSerializer
 from core.utils import get_clean_number
 from deliveries.services.twilio import TwilioFlexService
 

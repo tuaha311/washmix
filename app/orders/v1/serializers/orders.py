@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
+from api.client.serializers.common import CommonAmountWithDiscountSerializer
 from api.fields import BasketField, RequestField
-from api.v1_0.serializers.common import CommonAmountWithDiscountSerializer
 from deliveries.v1.serializers.requests import RequestSerializer
 from orders.models import Order
 from orders.v1.serializers.basket import BasketSerializer

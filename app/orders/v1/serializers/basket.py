@@ -2,7 +2,7 @@ from django.conf import settings
 
 from rest_framework import serializers
 
-from api.v1_0.serializers.common import CommonAmountWithDiscountSerializer
+from api.client.serializers.common import CommonAmountWithDiscountSerializer
 from orders.models import Basket, Price, Quantity
 from orders.services.basket import BasketService
 

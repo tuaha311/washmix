@@ -8,12 +8,12 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK
 
+from billing.api.serializers import payments
 from billing.choices import Purpose
 from billing.models import Invoice
 from billing.services.invoice import InvoiceService
 from billing.services.payments import PaymentService
 from billing.services.webhook import StripeWebhookService
-from billing.v1.serializers import payments
 from orders.services.order import OrderService
 from subscriptions.services.subscription import SubscriptionService
 

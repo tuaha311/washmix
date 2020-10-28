@@ -7,8 +7,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainSlidingView
 
-from api.v1_0.serializers import auth
-from core.models import Phone
+from api.client.serializers import auth
 from core.services.signup import SignupService
 from core.utils import get_clean_number
 

@@ -1,6 +1,6 @@
 from django.urls import path
 
-from billing.v1.views import checkout, coupons, payments
+from billing.api.views import checkout, coupons, payments
 
 urlpatterns = [
     # billing via Stripe related methods:

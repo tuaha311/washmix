@@ -4,12 +4,12 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from billing.services.card import CardService
-from billing.services.checkout import WelcomeCheckoutService
-from billing.v1.serializers.checkout import (
+from billing.api.serializers.checkout import (
     WelcomeCheckoutResponseSerializer,
     WelcomeCheckoutSerializer,
 )
+from billing.services.card import CardService
+from billing.services.checkout import WelcomeCheckoutService
 from subscriptions.services.subscription import SubscriptionService
 
 

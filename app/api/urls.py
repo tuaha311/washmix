@@ -4,5 +4,6 @@ from api import views
 
 urlpatterns = [
     path("health/", views.HealthView.as_view(), name="health"),
-    path("v1.0/", include("api.v1_0.urls")),
+    path("v1.0/", include("api.client.urls")),
+    path("client/", include("api.client.urls")),
 ]

@@ -3,15 +3,15 @@ from django.urls import include, path
 from rest_framework.routers import SimpleRouter
 from rest_framework_simplejwt.views import TokenRefreshSlidingView, TokenVerifyView
 
-from api.v1_0.views import auth, services, trigger, twilio
-from billing.v1.views import cards, invoices
+from api.client.views import auth, services, trigger, twilio
+from billing.api.views import cards, invoices
 from core.v1 import views as core_views
 from deliveries.v1.views import requests, schedules
 from locations.v1.views import addresses, locations, zip_codes
 from subscriptions.v1.views import packages
 from users.v1.views import customers, profile
 
-app_name = "v1_0"
+app_name = "client"
 token_urls = (
     [
         path("refresh/", TokenRefreshSlidingView.as_view(), name="refresh"),
