@@ -10,7 +10,6 @@ from rest_framework.status import HTTP_200_OK
 
 from billing.api.serializers import payments
 from billing.choices import Purpose
-from billing.models import Invoice
 from billing.services.invoice import InvoiceService
 from billing.services.payments import PaymentService
 from billing.services.webhook import StripeWebhookService

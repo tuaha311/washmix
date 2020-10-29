@@ -1,6 +1,5 @@
 from typing import Tuple
 
-from django.conf import settings
 from django.db.transaction import atomic
 
 from rest_framework.request import Request
