@@ -46,20 +46,23 @@ class OrderService:
         request_container = RequestContainer(subscription, request, basket_container)
 
         with atomic():
+            order = Order.objects.create(
+                client=self._client, request=request, basket=basket, status=Status.UNPAID,
+            )
             basket_invoices = self._create_basket_invoice(
-                basket=basket, basket_container=basket_container, invoice_service=invoice_service,
+                order=order,
+                basket=basket,
+                basket_container=basket_container,
+                invoice_service=invoice_service,
             )
             delivery_invoices = self._create_delivery_invoice(
+                order=order,
                 request=request,
                 request_container=request_container,
                 invoice_service=invoice_service,
             )
 
             invoice_list = [*basket_invoices, *delivery_invoices]
-
-            order = Order.objects.create(
-                client=self._client, request=request, basket=basket, status=Status.UNPAID,
-            )
 
         self._order = order
 
@@ -76,16 +79,16 @@ class OrderService:
         subscription_container = SubscriptionContainer(subscription)
 
         with atomic():
+            order = Order.objects.create(
+                client=self._client, subscription=subscription, status=Status.UNPAID,
+            )
             subscription_invoice = self._create_subscription_invoice(
+                order=order,
                 subscription=subscription,
                 subscription_container=subscription_container,
                 invoice_service=invoice_service,
             )
             invoice_list = [subscription_invoice]
-
-            order = Order.objects.create(
-                client=self._client, subscription=subscription, status=Status.UNPAID,
-            )
 
         self._order = order
 
@@ -125,9 +128,14 @@ class OrderService:
         return container
 
     def _create_basket_invoice(
-        self, basket: Basket, basket_container: BasketContainer, invoice_service: InvoiceService
+        self,
+        order: Order,
+        basket: Basket,
+        basket_container: BasketContainer,
+        invoice_service: InvoiceService,
     ) -> List[Invoice]:
         basket_invoice = invoice_service.create(
+            order=Order,
             amount=basket_container.amount,
             discount=basket_container.discount,
             purpose=Purpose.BASKET,
@@ -138,7 +146,11 @@ class OrderService:
         return [basket_invoice]
 
     def _create_delivery_invoice(
-        self, request: Request, request_container: RequestContainer, invoice_service: InvoiceService
+        self,
+        order: Order,
+        request: Request,
+        request_container: RequestContainer,
+        invoice_service: InvoiceService,
     ) -> List[Invoice]:
         # we have 2 kind - Pickup, Dropoff
         # and for every of Delivery we create an invoice
@@ -147,6 +159,7 @@ class OrderService:
 
         for kind in kind_of_deliveries:
             delivery_invoice = invoice_service.create(
+                order=order,
                 amount=request_container.amount,
                 discount=request_container.discount,
                 purpose=Purpose.DELIVERY,
@@ -162,11 +175,13 @@ class OrderService:
 
     def _create_subscription_invoice(
         self,
+        order: Order,
         subscription: Subscription,
         subscription_container: SubscriptionContainer,
         invoice_service: InvoiceService,
     ) -> List[Invoice]:
         subscription_invoice = invoice_service.create(
+            order=order,
             amount=subscription_container.amount,
             discount=subscription_container.discount,
             purpose=Purpose.SUBSCRIPTION,

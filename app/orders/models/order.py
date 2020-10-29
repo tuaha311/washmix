@@ -1,7 +1,6 @@
 from django.db import models
 
 from core.common_models import Common
-from core.utils import recursive_getattr
 from orders.choices import Status
 
 
@@ -72,22 +71,6 @@ class Order(Common):
         verbose_name = "order"
         verbose_name_plural = "orders"
         unique_together = ["basket", "request",]
-
-    @property
-    def invoice_list(self):
-        relations_with_invoice = ["basket", "subscription", "request.pickup", "request.dropoff",]
-        result = []
-
-        for item in relations_with_invoice:
-            obj = recursive_getattr(self, item)
-
-            if not obj:
-                continue
-
-            invoice = obj.invoice
-            result.append(invoice)
-
-        return result
 
     @property
     def pretty_status(self):

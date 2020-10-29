@@ -1,5 +1,3 @@
-from functools import partial
-
 from django.db import models
 from django.db.models import ObjectDoesNotExist
 
@@ -7,7 +5,6 @@ from billing.choices import Purpose
 from core.behaviors import Amountable, Discountable
 from core.common_models import Common
 from core.mixins import CalculatedAmountWithDiscount
-from core.utils import get_dollars
 
 
 class Invoice(CalculatedAmountWithDiscount, Amountable, Discountable, Common):
@@ -30,6 +27,12 @@ class Invoice(CalculatedAmountWithDiscount, Amountable, Discountable, Common):
         "users.Client",
         verbose_name="client",
         on_delete=models.CASCADE,
+        related_name="invoice_list",
+    )
+    order = models.ForeignKey(
+        "orders.Order",
+        verbose_name="order",
+        on_delete=models.PROTECT,
         related_name="invoice_list",
     )
     card = models.ForeignKey(

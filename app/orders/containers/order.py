@@ -27,7 +27,7 @@ class OrderContainer(BaseAmountContainer):
     @property
     def amount(self) -> int:
         order = self._order
-        invoice_list = order.invoice_list
+        invoice_list = order.invoice_list.all()
 
         amount = sum(item.amount for item in invoice_list)
 
