@@ -1,8 +1,11 @@
+from typing import Optional
+
 from django.conf import settings
 from django.db.models import Sum
 
 from core.containers import BaseAmountContainer
 from core.utils import get_dollars
+from deliveries.containers import RequestContainer
 from orders.containers.basket import BasketContainer
 from orders.models import Order
 
@@ -14,15 +17,34 @@ class OrderContainer(BaseAmountContainer):
         self._order = order
 
     @property
-    def basket(self):
+    def basket(self) -> Optional[BasketContainer]:
         order = self._order
         client = order.client
         subscription = client.subscription
         basket = order.basket
 
+        if not basket:
+            return None
+
         container = BasketContainer(subscription, basket)
 
         return container
+
+    @property
+    def request(self) -> Optional[RequestContainer]:
+        order = self._order
+        client = order.client
+        subscription = client.subscription
+        request = order.request
+        basket = order.basket
+
+        if not request or not basket:
+            return None
+
+        basket_container = BasketContainer(subscription, basket)
+        request_container = RequestContainer(subscription, request, basket_container)
+
+        return request_container
 
     @property
     def amount(self) -> int:

@@ -8,10 +8,11 @@ from orders.models import Order
 
 
 class OrderSerializer(CommonContainerSerializer, serializers.ModelSerializer):
-    basket = BasketSerializer()
-    request = RequestSerializer()
+    basket = BasketSerializer(allow_null=True)
+    request = RequestSerializer(allow_null=True)
     credit_back = serializers.ReadOnlyField()
     dollar_credit_back = serializers.ReadOnlyField()
+    subscription = serializers.SlugRelatedField(slug_field="name", read_only=True)
 
     class Meta:
         model = Order
@@ -19,6 +20,7 @@ class OrderSerializer(CommonContainerSerializer, serializers.ModelSerializer):
             "id",
             "basket",
             "request",
+            "subscription",
             "invoice_list",
             "status",
             "pretty_status",
@@ -35,8 +37,8 @@ class OrderSerializer(CommonContainerSerializer, serializers.ModelSerializer):
 
 
 class OrderCheckoutSerializer(serializers.Serializer):
-    request = RequestField()
-    basket = BasketField()
+    basket = BasketField(allow_null=True)
+    request = RequestField(allow_null=True)
 
     def validate(self, attrs):
         request = attrs["request"]
