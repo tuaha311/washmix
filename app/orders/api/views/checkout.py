@@ -1,5 +1,3 @@
-from django.db.transaction import atomic
-
 from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -21,13 +19,7 @@ class OrderCheckoutView(GenericAPIView):
         basket = serializer.validated_data["basket"]
 
         order_service = OrderService(client)
+        order_container = order_service.checkout(basket, request)
 
-        with atomic():
-            order, invoice_list = order_service.checkout(basket, request)
-
-            for invoice in invoice_list:
-                order_service.charge(invoice)
-
-        order_container = order_service.container
         response = self.response_serializer_class(order_container).data
         return Response(response)

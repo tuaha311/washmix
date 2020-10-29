@@ -29,7 +29,16 @@ class OrderService:
         self._client = client
         self._order = None
 
-    def checkout(self, basket: Basket, request: Request) -> Tuple[Order, List[Invoice]]:
+    def checkout(self, basket: Basket, request: Request):
+        with atomic():
+            order, invoice_list = self.prepare_basket_request(basket, request)
+
+            for invoice in invoice_list:
+                self.charge(invoice)
+
+    def prepare_basket_request(
+        self, basket: Basket, request: Request
+    ) -> Tuple[Order, List[Invoice]]:
         client = self._client
         subscription = client.subscription
         invoice_service = InvoiceService(client)

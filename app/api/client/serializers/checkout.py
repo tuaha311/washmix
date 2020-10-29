@@ -2,7 +2,7 @@ from django.conf import settings
 
 from rest_framework import serializers
 
-from api.fields import InvoiceField
+from api.fields import OrderField
 from locations.models import Address, ZipCode
 from users.models import Client
 
@@ -44,7 +44,7 @@ class WelcomeCheckoutSerializer(serializers.Serializer):
     billing_address = WelcomeCheckoutBillingAddressSerializer()
     # at this moment client doesn't have an payment methods
     # 1. welcome scenario (no payment method)
-    invoice = InvoiceField()
+    order = OrderField()
 
 
 class WelcomeCheckoutResponseSerializer(serializers.Serializer):

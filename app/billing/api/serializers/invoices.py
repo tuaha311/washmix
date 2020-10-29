@@ -10,7 +10,6 @@ class InvoiceSerializer(serializers.ModelSerializer):
             "id",
             "coupon",
             "card",
-            "is_save_card",
             "purpose",
             "is_paid",
             "amount",

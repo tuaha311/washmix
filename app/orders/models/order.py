@@ -63,6 +63,10 @@ class Order(Common):
         choices=Status.CHOICES,
         default=Status.UNPAID,
     )
+    is_save_card = models.BooleanField(
+        verbose_name="should we save the card",
+        default=True,
+    )
 
     class Meta:
         verbose_name = "order"

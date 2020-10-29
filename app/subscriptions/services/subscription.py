@@ -63,9 +63,17 @@ class SubscriptionService:
         return subscription
 
     def checkout(self, order: Order):
+        payment = None
+        subscription = order.subscription
+
+        if not order.is_save_card:
+            return payment
+
+        if subscription.name == settings.PAYC:
+            self.finalize(order)
+
         for invoice in order.invoice_list:
-            subscription_service.charge(invoice)
-            subscription_service.finalize(invoice)
+            self.charge(invoice)
 
     def charge(self, invoice: Invoice) -> Optional[PaymentMethod]:
         """
@@ -86,22 +94,17 @@ class SubscriptionService:
 
         payment_service.charge()
 
-    def finalize(self, invoice: Invoice) -> Optional[Subscription]:
+    def finalize(self, order: Order) -> Optional[Subscription]:
         """
         Final method that sets subscription on client after payment (checkout).
         """
 
-        subscription = invoice.subscription
-
-        # if invoice not paid - we can handle only PAYC subscription
-        # if invoice paid - we can handle anything
-        if not invoice.is_paid and subscription.name != settings.PAYC:
-            return None
+        subscription = order.subscription
 
         with atomic():
-            if invoice.is_save_card:
-                invoice.card = self._client.main_card
-                invoice.save()
+            if order.is_save_card:
+                order.card = self._client.main_card
+                order.save()
 
             self._client.subscription = subscription
             self._client.save()
