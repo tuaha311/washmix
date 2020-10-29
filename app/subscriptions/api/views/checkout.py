@@ -15,13 +15,14 @@ class SubscriptionCheckoutView(GenericAPIView):
         serializer = self.serializer_class(data=request.data, context={"request": request})
         serializer.is_valid(raise_exception=True)
 
-        invoice = serializer.validated_data["invoice"]
+        order = serializer.validated_data["order"]
 
         client = request.user.client
         subscription_service = SubscriptionService(client)
 
         with atomic():
-            subscription_service.charge(invoice)
-            subscription_service.finalize(invoice)
+            for invoice in order.invoice_list:
+                subscription_service.charge(invoice)
+                subscription_service.finalize(invoice)
 
         return Response(request.data)

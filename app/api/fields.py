@@ -16,18 +16,21 @@ class BaseClientField(serializers.PrimaryKeyRelatedField):
 
 class InvoiceField(BaseClientField):
     attribute_name = "invoice_list"
-    extra_validators = [validate_paid_invoice]
 
     def get_validators(self):
         default_validators = super().get_validators()
 
-        default_validators.extend(self.extra_validators)
+        default_validators.append(validate_paid_invoice)
 
         return default_validators
 
 
 class RequestField(BaseClientField):
     attribute_name = "request_list"
+
+
+class OrderField(BaseClientField):
+    attribute_name = "order_list"
 
 
 class BasketField(BaseClientField):

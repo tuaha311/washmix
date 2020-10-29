@@ -49,7 +49,7 @@ class OrderService:
             invoice_list = [*basket_invoices, *delivery_invoices]
 
             order = Order.objects.create(
-                client=self._client, request=request, basket=basket, status=Status.ACCEPTED,
+                client=self._client, request=request, basket=basket, status=Status.UNPAID,
             )
 
         self._order = order
@@ -57,6 +57,11 @@ class OrderService:
         return order, invoice_list
 
     def checkout_subscription(self, subscription: Subscription):
+        """
+        Method that creates Order with Invoice.
+        As next stage we are waiting for payment.
+        """
+
         client = self._client
         invoice_service = InvoiceService(client)
         subscription_container = SubscriptionContainer(subscription)
@@ -70,7 +75,7 @@ class OrderService:
             invoice_list = [subscription_invoice]
 
             order = Order.objects.create(
-                client=self._client, subscription=subscription, status=Status.ACCEPTED,
+                client=self._client, subscription=subscription, status=Status.UNPAID,
             )
 
         self._order = order

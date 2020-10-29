@@ -61,7 +61,7 @@ class Order(Common):
         max_length=20,
         verbose_name="status of order",
         choices=Status.CHOICES,
-        default=Status.ACCEPTED,
+        default=Status.UNPAID,
     )
 
     class Meta:

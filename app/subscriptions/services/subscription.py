@@ -34,10 +34,7 @@ class SubscriptionService:
         package = package
         client = self._client
 
-        try:
-            subscription = Subscription.objects.get(client=client, order__isnull=True)
-        except Subscription.DoesNotExist:
-            subscription = Subscription(client=client)
+        subscription = Subscription(client=client)
 
         subscription = Subscription.objects.fill_subscription(package, subscription)
         subscription.save()
