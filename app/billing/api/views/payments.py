@@ -57,6 +57,7 @@ class StripeWebhookView(GenericAPIView):
             return Response(body, status=status)
 
         payment, client, invoice, purpose = webhook_service.parse()
+        order = invoice.order
 
         payment_service = PaymentService(client, invoice)
         subscription_service = SubscriptionService(client)
@@ -67,9 +68,9 @@ class StripeWebhookView(GenericAPIView):
             payment_service.confirm(payment)
 
             if purpose == Purpose.SUBSCRIPTION:
-                subscription_service.finalize(invoice)
+                subscription_service.finalize(order)
 
             elif purpose == Purpose.BASKET:
-                order_service.finalize()
+                order_service.finalize(order)
 
         return Response({}, status=HTTP_200_OK)

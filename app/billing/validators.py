@@ -2,11 +2,21 @@ from rest_framework import serializers
 
 from billing.models import Invoice
 from billing.stripe_helper import StripeHelper
+from orders.models import Order
 from users.models import Client
 
 
-def validate_client_can_pay(invoice: Invoice):
-    client = invoice.client
+def validate_saved_cards(order: Order):
+    client = order.client
+
+    if client.card_list.count() == 0:
+        raise serializers.ValidationError(
+            detail="You have no active card.", code="no_card",
+        )
+
+
+def validate_client_can_pay(order: Order):
+    client = order.client
 
     stripe_helper = StripeHelper(client)
 

@@ -1,6 +1,6 @@
 from django.conf import settings
+from django.db.models import Sum
 
-from billing.services.coupon import CouponService
 from core.containers import BaseAmountContainer
 from core.utils import get_dollars
 from orders.containers.basket import BasketContainer
@@ -29,18 +29,18 @@ class OrderContainer(BaseAmountContainer):
         order = self._order
         invoice_list = order.invoice_list.all()
 
-        amount = sum(item.amount for item in invoice_list)
+        amount = invoice_list.aggregate(total=Sum("amount"))["total"] or 0
 
         return amount
 
     @property
-    def discount(self) -> float:
+    def discount(self) -> int:
         order = self._order
-        amount = self.amount
-        coupon = order.coupon
-        coupon_service = CouponService(amount, coupon)
+        invoice_list = order.invoice_list.all()
 
-        return coupon_service.apply_coupon()
+        amount = invoice_list.aggregate(total=Sum("discount"))["total"] or 0
+
+        return amount
 
     @property
     def credit_back(self) -> int:

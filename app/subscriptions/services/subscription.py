@@ -8,6 +8,7 @@ from stripe import PaymentMethod
 from billing.models import Invoice
 from billing.services.card import CardService
 from billing.services.payments import PaymentService
+from orders.choices import Status
 from orders.containers.order import OrderContainer
 from orders.models import Order
 from orders.services.order import OrderService
@@ -65,6 +66,7 @@ class SubscriptionService:
     def checkout(self, order: Order):
         payment = None
         subscription = order.subscription
+        invoice_list = order.invoice_list.all()
 
         if not order.is_save_card:
             return payment
@@ -72,7 +74,7 @@ class SubscriptionService:
         if subscription.name == settings.PAYC:
             self.finalize(order)
 
-        for invoice in order.invoice_list:
+        for invoice in invoice_list:
             self.charge(invoice)
 
     def charge(self, invoice: Invoice) -> Optional[PaymentMethod]:
@@ -102,6 +104,8 @@ class SubscriptionService:
         subscription = order.subscription
 
         with atomic():
+            order.status = Status.PAID
+
             if order.is_save_card:
                 order.card = self._client.main_card
                 order.save()

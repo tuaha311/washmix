@@ -4,6 +4,7 @@ from django.db.transaction import atomic
 
 from billing.choices import Purpose
 from billing.models import Coupon, Invoice
+from billing.services.coupon import CouponService
 from billing.services.invoice import InvoiceService
 from billing.services.payments import PaymentService
 from deliveries.choices import Kind
@@ -95,12 +96,20 @@ class OrderService:
         return order, invoice_list
 
     def apply_coupon(self, order: Order, coupon: Coupon):
+        invoice_list = order.invoice_list.all()
+
         order.coupon = coupon
         order.save()
 
         # when we link Coupon with Order
         # discount calculated dynamically on the fly inside OrderContainer
         self._order = order
+
+        for invoice in invoice_list:
+            amount = invoice.amount
+            coupon_service = CouponService(amount, coupon)
+            invoice.discount = coupon_service.apply_coupon()
+            invoice.save()
 
         return self.container
 
@@ -114,6 +123,16 @@ class OrderService:
 
         payment_service = PaymentService(self._client, invoice)
         payment_service.charge()
+
+    def finalize(self, order: Order) -> Order:
+        with atomic():
+            order.status = Status.PAID
+
+            if order.is_save_card:
+                order.card = self._client.main_card
+                order.save()
+
+        return order
 
     @property
     def container(self) -> OrderContainer:
@@ -135,7 +154,7 @@ class OrderService:
         invoice_service: InvoiceService,
     ) -> List[Invoice]:
         basket_invoice = invoice_service.create(
-            order=Order,
+            order=order,
             amount=basket_container.amount,
             discount=basket_container.discount,
             purpose=Purpose.BASKET,
@@ -191,6 +210,3 @@ class OrderService:
         subscription.save()
 
         return [subscription_invoice]
-
-    def finalize(self):
-        pass
