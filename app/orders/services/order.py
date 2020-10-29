@@ -3,7 +3,7 @@ from typing import List, Tuple
 from django.db.transaction import atomic
 
 from billing.choices import Purpose
-from billing.models import Invoice
+from billing.models import Coupon, Invoice
 from billing.services.invoice import InvoiceService
 from billing.services.payments import PaymentService
 from deliveries.choices import Kind
@@ -81,6 +81,16 @@ class OrderService:
         self._order = order
 
         return order, invoice_list
+
+    def apply_coupon(self, order: Order, coupon: Coupon):
+        order.coupon = coupon
+        order.save()
+
+        # when we link Coupon with Order
+        # discount calculated dynamically on the fly inside OrderContainer
+        self._order = order
+
+        return self.container
 
     def charge(self, invoice: Invoice):
         """

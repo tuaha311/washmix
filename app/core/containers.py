@@ -17,7 +17,7 @@ class BaseAmountContainer:
 
     @property
     @abstractmethod
-    def discount(self) -> int:
+    def discount(self) -> float:
         pass
 
     @property
@@ -25,7 +25,7 @@ class BaseAmountContainer:
         return get_dollars(self, "discount")
 
     @property
-    def amount_with_discount(self) -> int:
+    def amount_with_discount(self) -> float:
         amount = self.amount
         discount = self.discount
 

@@ -1,34 +1,36 @@
-from billing.models import Coupon, Invoice
+from django.conf import settings
+
+from billing.models import Coupon
 
 PERCENTAGE = 100
 
 
 class CouponService:
-    def __init__(self, invoice: Invoice, coupon: Coupon):
-        self._invoice = invoice
+    def __init__(self, amount: int, coupon: Coupon):
+        self._amount = amount
         self._coupon = coupon
 
     def apply_coupon(self):
+        if not self._coupon:
+            return settings.DEFAULT_ZERO_DISCOUNT
+
         coupon_handler = getattr(self, f"_apply_by_{self._coupon.discount_by}")
-        amount, discount = coupon_handler()
+        discount = coupon_handler()
 
-        self._invoice.coupon = self._coupon
-        self._invoice.amount = amount
-        self._invoice.discount = discount
-        self._invoice.save()
+        return discount
 
-        return self._invoice
-
-    def _apply_by_amount(self) -> tuple:
-        amount = self._invoice.basic
+    def _apply_by_amount(self) -> float:
+        amount = self._amount
         discount = self._coupon.value_off
-        new_amount = amount - discount
 
-        return new_amount, discount
+        # discount can't be bigger that amount
+        if discount > amount:
+            return amount
 
-    def _apply_by_percentage(self) -> tuple:
-        amount = self._invoice.basic
+        return discount
+
+    def _apply_by_percentage(self) -> float:
+        amount = self._amount
         discount = amount * self._coupon.value_off / PERCENTAGE
-        new_amount = amount - discount
 
-        return new_amount, discount
+        return discount
