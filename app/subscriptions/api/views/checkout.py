@@ -1,5 +1,3 @@
-from django.db.transaction import atomic
-
 from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -18,11 +16,8 @@ class SubscriptionCheckoutView(GenericAPIView):
         order = serializer.validated_data["order"]
 
         client = request.user.client
-        subscription_service = SubscriptionService(client)
 
-        with atomic():
-            for invoice in order.invoice_list:
-                subscription_service.charge(invoice)
-                subscription_service.finalize(invoice)
+        subscription_service = SubscriptionService(client)
+        subscription_service.checkout(order)
 
         return Response(request.data)

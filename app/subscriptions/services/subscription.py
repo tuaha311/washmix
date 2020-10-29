@@ -8,6 +8,9 @@ from stripe import PaymentMethod
 from billing.models import Invoice
 from billing.services.card import CardService
 from billing.services.payments import PaymentService
+from orders.containers.order import OrderContainer
+from orders.models import Order
+from orders.services.order import OrderService
 from subscriptions.containers import SubscriptionContainer
 from subscriptions.models import Package, Subscription
 from users.models import Client
@@ -24,6 +27,22 @@ class SubscriptionService:
     def __init__(self, client: Client):
         self._client = client
         self._subscription = None
+
+    def choose(self, package: Package) -> OrderContainer:
+        """
+        Fills Subscription based on Package and creates Order.
+        Also, wraps Order in OrderContainer.
+        """
+
+        client = self._client
+        order_service = OrderService(client)
+
+        with atomic():
+            subscription = self.fill_from_package(package)
+            order_service.prepare_subscription(subscription)
+            order_container = order_service.container
+
+        return order_container
 
     def fill_from_package(self, package: Package) -> Subscription:
         """
@@ -42,6 +61,11 @@ class SubscriptionService:
         self._subscription = subscription
 
         return subscription
+
+    def checkout(self, order: Order):
+        for invoice in order.invoice_list:
+            subscription_service.charge(invoice)
+            subscription_service.finalize(invoice)
 
     def charge(self, invoice: Invoice) -> Optional[PaymentMethod]:
         """

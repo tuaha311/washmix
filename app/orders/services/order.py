@@ -56,7 +56,7 @@ class OrderService:
 
         return order, invoice_list
 
-    def checkout_subscription(self, subscription: Subscription):
+    def prepare_subscription(self, subscription: Subscription):
         """
         Method that creates Order with Invoice.
         As next stage we are waiting for payment.
@@ -99,7 +99,7 @@ class OrderService:
 
         assert (
             order
-        ), "Call .checkout or .checkout_subscription before accessing to .container property"
+        ), "Call .checkout or .prepare_subscription before accessing to .container property"
 
         container = OrderContainer(order)
 
