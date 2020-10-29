@@ -30,16 +30,19 @@ class OrderService:
         self._client = client
         self._order = None
 
-    def checkout(self, basket: Basket, request: Request):
-        with atomic():
-            order, invoice_list = self.prepare_basket_request(basket, request)
+    def choose(self, basket: Basket, request: Request):
+        self.prepare_basket_request(basket, request)
 
+        return self.container
+
+    def checkout(self, order: Order):
+        invoice_list = order.invoice_list.all()
+
+        with atomic():
             for invoice in invoice_list:
                 self.charge(invoice)
 
-    def prepare_basket_request(
-        self, basket: Basket, request: Request
-    ) -> Tuple[Order, List[Invoice]]:
+    def prepare_basket_request(self, basket: Basket, request: Request) -> Order:
         client = self._client
         subscription = client.subscription
         invoice_service = InvoiceService(client)
@@ -50,26 +53,24 @@ class OrderService:
             order = Order.objects.create(
                 client=self._client, request=request, basket=basket, status=Status.UNPAID,
             )
-            basket_invoices = self._create_basket_invoice(
+            self._create_basket_invoice(
                 order=order,
                 basket=basket,
                 basket_container=basket_container,
                 invoice_service=invoice_service,
             )
-            delivery_invoices = self._create_delivery_invoice(
+            self._create_delivery_invoice(
                 order=order,
                 request=request,
                 request_container=request_container,
                 invoice_service=invoice_service,
             )
 
-            invoice_list = [*basket_invoices, *delivery_invoices]
-
         self._order = order
 
-        return order, invoice_list
+        return order
 
-    def prepare_subscription(self, subscription: Subscription):
+    def prepare_subscription(self, subscription: Subscription) -> Order:
         """
         Method that creates Order with Invoice.
         As next stage we are waiting for payment.
@@ -83,17 +84,16 @@ class OrderService:
             order = Order.objects.create(
                 client=self._client, subscription=subscription, status=Status.UNPAID,
             )
-            subscription_invoice = self._create_subscription_invoice(
+            self._create_subscription_invoice(
                 order=order,
                 subscription=subscription,
                 subscription_container=subscription_container,
                 invoice_service=invoice_service,
             )
-            invoice_list = [subscription_invoice]
 
         self._order = order
 
-        return order, invoice_list
+        return order
 
     def apply_coupon(self, order: Order, coupon: Coupon):
         invoice_list = order.invoice_list.all()

@@ -126,7 +126,7 @@ class PaymentService:
         return paid_amount, unpaid_amount
 
     def _charge_card(self, amount: int):
-        card_service = CardService(self._client, self._invoice)
+        card_service = CardService(self._client)
 
         for item in self._client.card_list.all():
             # we are trying to charge the card list of client

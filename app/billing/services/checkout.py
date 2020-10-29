@@ -30,11 +30,12 @@ class WelcomeService:
     ) -> Tuple[Address, dict]:
         client = self._client
         order = self._order
-        card_service = CardService(client, order)
+        card_service = CardService(client)
         subscription_service = SubscriptionService(client)
 
         with atomic():
-            card_service.save_card_list()
+            if order.is_save_card:
+                card_service.save_card_list()
 
             self.fill_profile(user)
             address = self.create_main_address(raw_address)

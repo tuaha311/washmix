@@ -39,43 +39,22 @@ class SubscriptionService:
         order_service = OrderService(client)
 
         with atomic():
-            subscription = self.fill_from_package(package)
+            subscription = self._fill_from_package(package)
             order_service.prepare_subscription(subscription)
             order_container = order_service.container
 
         return order_container
 
-    def fill_from_package(self, package: Package) -> Subscription:
-        """
-        Method helps to fill subscription based on package.
-        It copies all fields from package to subscription.
-        """
-
-        package = package
-        client = self._client
-
-        subscription = Subscription(client=client)
-
-        subscription = Subscription.objects.fill_subscription(package, subscription)
-        subscription.save()
-
-        self._subscription = subscription
-
-        return subscription
-
     def checkout(self, order: Order):
-        payment = None
         subscription = order.subscription
         invoice_list = order.invoice_list.all()
 
-        if not order.is_save_card:
-            return payment
+        with atomic():
+            if subscription.name == settings.PAYC:
+                self.finalize(order)
 
-        if subscription.name == settings.PAYC:
-            self.finalize(order)
-
-        for invoice in invoice_list:
-            self.charge(invoice)
+            for invoice in invoice_list:
+                self.charge(invoice)
 
     def charge(self, invoice: Invoice) -> Optional[PaymentMethod]:
         """
@@ -84,7 +63,7 @@ class SubscriptionService:
         """
 
         payment_service = PaymentService(self._client, invoice)
-        card_service = CardService(self._client, invoice)
+        card_service = CardService(self._client)
 
         subscription = invoice.subscription
         payment = None
@@ -124,3 +103,21 @@ class SubscriptionService:
         container = SubscriptionContainer(subscription)
 
         return container
+
+    def _fill_from_package(self, package: Package) -> Subscription:
+        """
+        Method helps to fill subscription based on package.
+        It copies all fields from package to subscription.
+        """
+
+        package = package
+        client = self._client
+
+        subscription = Subscription(client=client)
+
+        subscription = Subscription.objects.fill_subscription(package, subscription)
+        subscription.save()
+
+        self._subscription = subscription
+
+        return subscription

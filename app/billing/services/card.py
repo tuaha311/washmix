@@ -15,18 +15,14 @@ class CardService:
         - Update main card
     """
 
-    def __init__(self, client: Client, invoice: Invoice):
+    def __init__(self, client: Client):
         self._client = client
-        self._invoice = invoice
         self._stripe_helper = StripeHelper(client)
 
     def save_card_list(self) -> Optional[List[Card]]:
         """
         Save card list for user.
         """
-
-        if not self._invoice.is_save_card:
-            return None
 
         # we are saving all cards received from Stripe
         # in most cases it is only 1 card.
