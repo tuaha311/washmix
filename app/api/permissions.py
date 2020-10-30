@@ -1,4 +1,4 @@
-from rest_framework.permissions import BasePermission, IsAuthenticated
+from rest_framework.permissions import BasePermission, IsAdminUser, IsAuthenticated
 
 
 class BaseAttributePermission(BasePermission):
@@ -23,3 +23,4 @@ class IsEmployee(BaseAttributePermission):
 
 
 default_permissions_for_employee = [IsAuthenticated, IsEmployee]
+default_permissions_for_admin = [IsAuthenticated, IsAdminUser]

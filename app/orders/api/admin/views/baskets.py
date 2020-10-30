@@ -2,6 +2,7 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 
+from api.permissions import default_permissions_for_admin
 from orders.api.admin.serializers.basket import BasketSerializer, ChangeItemSerializer
 from orders.services.basket import BasketService
 
@@ -9,6 +10,7 @@ from orders.services.basket import BasketService
 class BasketChangeItemView(GenericAPIView):
     serializer_class = ChangeItemSerializer
     response_serializer_class = BasketSerializer
+    permission_classes = default_permissions_for_admin
 
     def post(self, request: Request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data, context={"request": request})
@@ -29,6 +31,8 @@ class BasketChangeItemView(GenericAPIView):
 
 
 class BasketClearView(GenericAPIView):
+    permission_classes = default_permissions_for_admin
+
     def post(self, request: Request, *args, **kwargs):
         client = request.user.client
 
@@ -40,6 +44,7 @@ class BasketClearView(GenericAPIView):
 
 class BasketView(GenericAPIView):
     response_serializer_class = BasketSerializer
+    permission_classes = default_permissions_for_admin
 
     def get(self, request: Request, *args, **kwargs):
         client = request.user.client

@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models import ObjectDoesNotExist
+from django.db.models import Sum
 
 from billing.choices import Purpose
 from core.behaviors import Amountable, Discountable
@@ -64,9 +64,6 @@ class Invoice(CalculatedAmountWithDiscount, Amountable, Discountable, Common):
 
     @property
     def is_paid(self):
-        try:
-            transaction = self.transaction
-        except ObjectDoesNotExist:
-            return False
+        total_amount = self.transaction_list.aggregate(total=Sum('amount'))['total'] or 0
 
-        return transaction.amount >= self.amount_with_discount
+        return total_amount >= self.amount_with_discount
