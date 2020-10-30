@@ -12,7 +12,6 @@ from orders.choices import Status
 from orders.containers.order import OrderContainer
 from orders.models import Order
 from orders.services.order import OrderService
-from subscriptions.containers import SubscriptionContainer
 from subscriptions.models import Package, Subscription
 from users.models import Client
 
@@ -31,17 +30,27 @@ class SubscriptionService:
 
     def choose(self, package: Package) -> OrderContainer:
         """
-        Fills Subscription based on Package and creates Order.
-        Also, wraps Order in OrderContainer.
+        Based on chosen Package fills Subscription.
         """
 
         client = self._client
-        order_service = OrderService(client)
 
+        # TODO refactor
         with atomic():
-            subscription = self._fill_from_package(package)
-            order_service.prepare_subscription(subscription)
+            subscription, _ = Subscription.objects.get_or_create(
+                client=client, invoice__isnull=True, defaults=package.as_dict,
+            )
+            order, _ = Order.objects.get_or_create(
+                client=client,
+                subscription=subscription,
+                defaults={"status": Status.UNPAID, "is_save_card": True,},
+            )
+
+            order_service = OrderService(client, order)
             order_container = order_service.container
+
+            subscription = Subscription.objects.fill_subscription(package, subscription)
+            subscription.save()
 
         return order_container
 
@@ -91,33 +100,5 @@ class SubscriptionService:
 
             self._client.subscription = subscription
             self._client.save()
-
-        return subscription
-
-    @property
-    def container(self):
-        subscription = self._subscription
-
-        assert subscription, "Call .checkout before accessing to .container property"
-
-        container = SubscriptionContainer(subscription)
-
-        return container
-
-    def _fill_from_package(self, package: Package) -> Subscription:
-        """
-        Method helps to fill subscription based on package.
-        It copies all fields from package to subscription.
-        """
-
-        package = package
-        client = self._client
-
-        subscription = Subscription(client=client)
-
-        subscription = Subscription.objects.fill_subscription(package, subscription)
-        subscription.save()
-
-        self._subscription = subscription
 
         return subscription

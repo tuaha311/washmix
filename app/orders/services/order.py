@@ -26,9 +26,9 @@ class OrderService:
         - Delivery info
     """
 
-    def __init__(self, client: Client):
+    def __init__(self, client: Client, order=None):
         self._client = client
-        self._order = None
+        self._order = order
 
     def choose(self, basket: Basket, request: Request):
         self.prepare_basket_request(basket, request)

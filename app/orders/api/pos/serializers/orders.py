@@ -24,6 +24,7 @@ class OrderSerializer(CommonContainerSerializer, serializers.ModelSerializer):
             "invoice_list",
             "status",
             "pretty_status",
+            "note",
             "is_save_card",
             "credit_back",
             "dollar_credit_back",

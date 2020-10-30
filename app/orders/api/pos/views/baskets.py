@@ -3,13 +3,14 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from api.permissions import default_permissions_for_admin
-from orders.api.pos.serializers.basket import BasketSerializer, ChangeItemSerializer
+from orders.api.pos.serializers.basket import BasketChangeItemSerializer
+from orders.api.pos.serializers.orders import OrderSerializer
 from orders.services.basket import BasketService
 
 
 class BasketChangeItemView(GenericAPIView):
-    serializer_class = ChangeItemSerializer
-    response_serializer_class = BasketSerializer
+    serializer_class = BasketChangeItemSerializer
+    response_serializer_class = OrderSerializer
     permission_classes = default_permissions_for_admin
 
     def post(self, request: Request, *args, **kwargs):
@@ -23,9 +24,9 @@ class BasketChangeItemView(GenericAPIView):
 
         service = BasketService(client)
         method = getattr(service, f"{action}_item")
-        basket_container = method(price, count)
+        order_container = method(price, count)
 
-        response = self.response_serializer_class(basket_container).data
+        response = self.response_serializer_class(order_container).data
 
         return Response(response)
 
@@ -43,15 +44,15 @@ class BasketClearView(GenericAPIView):
 
 
 class BasketView(GenericAPIView):
-    response_serializer_class = BasketSerializer
+    response_serializer_class = OrderSerializer
     permission_classes = default_permissions_for_admin
 
     def get(self, request: Request, *args, **kwargs):
         client = request.user.client
 
         service = BasketService(client)
-        basket_container = service.container
+        order_container = service.container
 
-        response = self.response_serializer_class(basket_container).data
+        response = self.response_serializer_class(order_container).data
 
         return Response(response)

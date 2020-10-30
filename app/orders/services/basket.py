@@ -5,7 +5,9 @@ from django.db.transaction import atomic
 from rest_framework import serializers
 
 from orders.containers.basket import BasketContainer
-from orders.models import Basket, Price, Quantity
+from orders.containers.order import OrderContainer
+from orders.models import Basket, Order, Price, Quantity
+from orders.services.order import OrderService
 from users.models import Client
 
 DEFAULT_COUNT = 0
@@ -35,27 +37,25 @@ class BasketService:
                 code="cant_perform_item_remove",
             )
 
-    def add_item(self, price: Price, count: int) -> BasketContainer:
+    def add_item(self, price: Price, count: int) -> OrderContainer:
         """
         Adds item to basket.
         """
 
         with atomic():
             quantity = self._get_or_create_quantity(price)
-
             quantity.count = F("count") + count
             quantity.save()
 
         return self.container
 
-    def remove_item(self, price: Price, count: int) -> BasketContainer:
+    def remove_item(self, price: Price, count: int) -> OrderContainer:
         """
-        Removes item to basket.
+        Removes item from basket.
         """
 
         with atomic():
             quantity = self._get_or_create_quantity(price)
-
             quantity.count = F("count") - count
             quantity.save()
 
@@ -74,21 +74,25 @@ class BasketService:
 
     @property
     def basket(self) -> Basket:
-        basket, _ = Basket.objects.get_or_create(client=self._client, order__isnull=True,)
+        client = self._client
+        basket, _ = Basket.objects.get_or_create(client=client, invoice__isnull=True)
         return basket
 
     @property
-    def container(self) -> BasketContainer:
+    def container(self) -> OrderContainer:
         client = self._client
-        subscription = client.subscription
-
         basket = self.basket
-        container = BasketContainer(subscription, basket)
 
-        return container
+        order, _ = Order.objects.get_or_create(client=client, basket=basket)
+
+        order_service = OrderService(self._client, order)
+        order_container = order_service.container
+
+        return order_container
 
     def _get_or_create_quantity(self, price: Price) -> Quantity:
         quantity, _ = Quantity.objects.get_or_create(
             basket=self.basket, price=price, defaults={"count": DEFAULT_COUNT,},
         )
+
         return quantity

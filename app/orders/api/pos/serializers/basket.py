@@ -7,7 +7,7 @@ from orders.models import Basket, Price, Quantity
 from orders.services.basket import BasketService
 
 
-class ChangeItemSerializer(serializers.Serializer):
+class BasketChangeItemSerializer(serializers.Serializer):
     price = serializers.PrimaryKeyRelatedField(queryset=Price.objects.all())
     count = serializers.IntegerField()
     action = serializers.ChoiceField(choices=settings.BASKET_ACTION_CHOICES)

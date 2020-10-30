@@ -41,3 +41,13 @@ class Package(CommonPackageSubscription, Common):
 
     def __str__(self):
         return f"{self.get_name_display()} - {self.dollar_price} $"
+
+    @property
+    def as_dict(self):
+        system_fields = ["_state", "id", "created", "changed"]
+        raw_dict = self.__dict__
+
+        result = {key: value for key, value in raw_dict.items()
+                  if key not in system_fields}
+
+        return result
