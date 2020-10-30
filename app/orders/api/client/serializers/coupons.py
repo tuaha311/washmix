@@ -3,8 +3,8 @@ from django.conf import settings
 from rest_framework import serializers
 
 from api.client.serializers.common import CommonContainerSerializer
-from api.fields import InvoiceField, OrderField
-from billing.models import Coupon, Invoice
+from api.fields import OrderField
+from billing.models import Coupon
 from orders.models import Order
 
 

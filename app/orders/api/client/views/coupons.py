@@ -2,7 +2,7 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from orders.api.admin.serializers.coupons import (
+from orders.api.client.serializers.coupons import (
     ApplyCouponResponseSerializer,
     ApplyCouponSerializer,
 )
