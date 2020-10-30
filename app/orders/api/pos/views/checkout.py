@@ -3,7 +3,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from api.permissions import default_permissions_for_admin
-from orders.api.admin.serializers.orders import OrderCheckoutSerializer, OrderSerializer
+from orders.api.pos.serializers.orders import OrderCheckoutSerializer, OrderSerializer
 from orders.services.order import OrderService
 
 

@@ -29,7 +29,7 @@ ingress:
       paths: 
         - /openapi
         - /api
-        - /admin
+        - /pos
         - /media
         - /assets
   tls: []

@@ -23,7 +23,7 @@ class PriceSerializer(serializers.ModelSerializer):
 
 class ServiceSerializer(serializers.ModelSerializer):
     # we show at landing page only certain items
-    # some items accessible via admin panel
+    # some items accessible via pos panel
     item_list = PriceSerializer(many=True, read_only=True, source="visible_price_list",)
 
     class Meta:

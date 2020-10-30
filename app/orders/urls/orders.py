@@ -1,7 +1,7 @@
 from django.urls import path
 
-from orders.api.admin.views import checkout, orders
 from orders.api.client.views import coupons
+from orders.api.pos.views import checkout, orders
 
 urlpatterns = [
     path("", orders.OrderListView.as_view(), name="list"),

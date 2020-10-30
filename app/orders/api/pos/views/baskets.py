@@ -3,7 +3,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from api.permissions import default_permissions_for_admin
-from orders.api.admin.serializers.basket import BasketSerializer, ChangeItemSerializer
+from orders.api.pos.serializers.basket import BasketSerializer, ChangeItemSerializer
 from orders.services.basket import BasketService
 
 
