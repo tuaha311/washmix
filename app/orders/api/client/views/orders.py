@@ -2,7 +2,7 @@ from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from orders.api.serializers.orders import OrderSerializer
+from orders.api.admin.serializers.orders import OrderSerializer
 from orders.containers.order import OrderContainer
 
 

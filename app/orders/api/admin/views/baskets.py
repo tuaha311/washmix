@@ -2,7 +2,7 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from orders.api.serializers.basket import BasketSerializer, ChangeItemSerializer
+from orders.api.admin.serializers.basket import BasketSerializer, ChangeItemSerializer
 from orders.services.basket import BasketService
 
 
