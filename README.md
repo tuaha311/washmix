@@ -177,6 +177,16 @@ In Python code you can use `.isoweekday` method for access to this value.
 
 ## Twilio
 Attributes for `Sent to Flex` widget that copied from YouTube:
-```python
+```json
 {"name": "{{trigger.message.ChannelAttributes.from}}", "channelType": "{{trigger.message.ChannelAttributes.channel_type}}", "channelSid": "{{trigger.message.ChannelSid}}"}
+```
+
+Valid body for working with Twilio Flex Proxy Service
+```json
+{"message": "{{trigger.message.Body}}", "phone": "{{trigger.message.ChannelAttributes.from}}"}
+```
+
+Valid body for working with Twilio Studio
+```json
+{"message": "{{trigger.message.Body}}", "phone": "{{trigger.message.From}}"}
 ```
