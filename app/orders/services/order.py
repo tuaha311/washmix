@@ -79,7 +79,7 @@ class OrderService:
                 order=order,
                 amount=request_container.amount,
                 discount=request_container.discount,
-                purpose=Purpose.DELIVERY,
+                purpose=kind,
             )
             invoice_attribute_name = f"{kind}_invoice"
             setattr(request, invoice_attribute_name, delivery_invoice)

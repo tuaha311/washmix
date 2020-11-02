@@ -19,7 +19,8 @@ class InvoiceService:
         invoice, _ = Invoice.objects.update_or_create(
             client=self._client,
             order=order,
-            defaults={"amount": amount, "discount": discount, "purpose": purpose,},
+            purpose=purpose,
+            defaults={"amount": amount, "discount": discount},
         )
 
         return invoice

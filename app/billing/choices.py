@@ -1,11 +1,13 @@
 class Purpose:
     SUBSCRIPTION = "subscription"
     BASKET = "basket"
-    DELIVERY = "delivery"
+    PICKUP = "pickup"
+    DROPOFF = "dropoff"
     MAP = {
         SUBSCRIPTION: "Subscription purchase",
         BASKET: "Order processing payment",
-        DELIVERY: "Payment for delivery",
+        PICKUP: "Pickup delivery",
+        DROPOFF: "Dropoff delivery",
     }
     CHOICES = list(MAP.items())
 
