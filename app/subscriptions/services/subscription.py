@@ -34,17 +34,17 @@ class SubscriptionService:
         based on Package attributes.
         """
 
-        order_service = self._get_order_service(package)
-        order = order_service.order
-
         with atomic():
             subscription = self._get_or_create_subscription(package)
+            order_service = self._get_order_service(subscription)
+            order = order_service.order
+
             subscription = Subscription.objects.fill_subscription(package, subscription)
             subscription.save()
 
             order_service.create_subscription_invoice(order, subscription)
 
-        return self.get_container(package)
+        return self.get_container(subscription)
 
     def checkout(self, order: Order):
         """
@@ -100,15 +100,14 @@ class SubscriptionService:
 
         return subscription
 
-    def get_container(self, package: Package):
-        order_service = self._get_order_service(package)
+    def get_container(self, subscription: Subscription):
+        order_service = self._get_order_service(subscription)
         order_container = order_service.get_container()
 
         return order_container
 
-    def _get_order_service(self, package: Package):
+    def _get_order_service(self, subscription: Subscription):
         client = self._client
-        subscription = self._get_or_create_subscription(package)
 
         # we are looking for last order, that was created for subscription
         # and wasn't paid
