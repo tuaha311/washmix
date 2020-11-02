@@ -44,10 +44,10 @@ class Package(CommonPackageSubscription, Common):
 
     @property
     def as_dict(self):
-        system_fields = ["_state", "id", "created", "changed"]
+        exclude_fields = ["_state", "id", "created", "changed", "description",]
         raw_dict = self.__dict__
 
         result = {key: value for key, value in raw_dict.items()
-                  if key not in system_fields}
+                  if key not in exclude_fields}
 
         return result

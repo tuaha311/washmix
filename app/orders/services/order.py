@@ -30,12 +30,11 @@ class OrderService:
         self._client = client
         self._order = order
 
-    def choose(self, basket: Basket, request: Request):
-        self.prepare_basket_request(basket, request)
-
-        return self.container
-
     def checkout(self, order: Order):
+        """
+        Method to charge all invoices of order.
+        """
+
         invoice_list = order.invoice_list.all()
 
         with atomic():
@@ -95,7 +94,7 @@ class OrderService:
 
         return order
 
-    def apply_coupon(self, order: Order, coupon: Coupon):
+    def apply_coupon(self, order: Order, coupon: Coupon) -> OrderContainer:
         invoice_list = order.invoice_list.all()
 
         order.coupon = coupon
@@ -111,7 +110,7 @@ class OrderService:
             invoice.discount = coupon_service.apply_coupon()
             invoice.save()
 
-        return self.container
+        return self.get_container()
 
     def charge(self, invoice: Invoice):
         """
@@ -134,8 +133,7 @@ class OrderService:
 
         return order
 
-    @property
-    def container(self) -> OrderContainer:
+    def get_container(self) -> OrderContainer:
         order = self._order
 
         assert (

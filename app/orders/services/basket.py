@@ -4,7 +4,6 @@ from django.db.transaction import atomic
 
 from rest_framework import serializers
 
-from orders.containers.basket import BasketContainer
 from orders.containers.order import OrderContainer
 from orders.models import Basket, Order, Price, Quantity
 from orders.services.order import OrderService
@@ -39,7 +38,7 @@ class BasketService:
 
     def add_item(self, price: Price, count: int) -> OrderContainer:
         """
-        Adds item to basket.
+        Action for basket, adds item to basket.
         """
 
         with atomic():
@@ -47,11 +46,11 @@ class BasketService:
             quantity.count = F("count") + count
             quantity.save()
 
-        return self.container
+        return self.get_container()
 
     def remove_item(self, price: Price, count: int) -> OrderContainer:
         """
-        Removes item from basket.
+        Action for basket, removes item from basket.
         """
 
         with atomic():
@@ -62,33 +61,15 @@ class BasketService:
             if quantity.count == DEFAULT_COUNT:
                 quantity.delete()
 
-        return self.container
+        return self.get_container()
 
     def clear_all(self):
         """
-        Clears basket. Removes all items from basket.
+        Action for basket, removes all items from basket.
         """
 
         self.basket.item_list.set([])
         self.basket.save()
-
-    @property
-    def basket(self) -> Basket:
-        client = self._client
-        basket, _ = Basket.objects.get_or_create(client=client, invoice__isnull=True)
-        return basket
-
-    @property
-    def container(self) -> OrderContainer:
-        client = self._client
-        basket = self.basket
-
-        order, _ = Order.objects.get_or_create(client=client, basket=basket)
-
-        order_service = OrderService(self._client, order)
-        order_container = order_service.container
-
-        return order_container
 
     def _get_or_create_quantity(self, price: Price) -> Quantity:
         quantity, _ = Quantity.objects.get_or_create(
@@ -96,3 +77,20 @@ class BasketService:
         )
 
         return quantity
+
+    @property
+    def basket(self) -> Basket:
+        client = self._client
+        basket, _ = Basket.objects.get_or_create(client=client, invoice__isnull=True)
+        return basket
+
+    def get_container(self) -> OrderContainer:
+        client = self._client
+        basket = self.basket
+
+        order, _ = Order.objects.get_or_create(client=client, basket=basket)
+
+        order_service = OrderService(client, order)
+        order_container = order_service.get_container()
+
+        return order_container

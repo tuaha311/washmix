@@ -30,31 +30,23 @@ class SubscriptionService:
 
     def choose(self, package: Package) -> OrderContainer:
         """
-        Based on chosen Package fills Subscription.
+        Action for Subscription, clones all properties of Subscription
+        based on Package attributes.
         """
 
-        client = self._client
-
-        # TODO refactor
         with atomic():
-            subscription, _ = Subscription.objects.get_or_create(
-                client=client, invoice__isnull=True, defaults=package.as_dict,
-            )
-            order, _ = Order.objects.get_or_create(
-                client=client,
-                subscription=subscription,
-                defaults={"status": Status.UNPAID, "is_save_card": True,},
-            )
-
-            order_service = OrderService(client, order)
-            order_container = order_service.container
-
+            subscription = self._get_or_create_subscription(package)
             subscription = Subscription.objects.fill_subscription(package, subscription)
             subscription.save()
 
-        return order_container
+        return self.get_container(package)
 
     def checkout(self, order: Order):
+        """
+        Method to charge all invoices of order.
+        Has additional handling for PAYC packages.
+        """
+
         subscription = order.subscription
         invoice_list = order.invoice_list.all()
 
@@ -102,3 +94,26 @@ class SubscriptionService:
             self._client.save()
 
         return subscription
+
+    def _get_or_create_subscription(self, package: Package):
+        client = self._client
+
+        subscription, _ = Subscription.objects.get_or_create(
+            client=client, invoice__isnull=True, defaults=package.as_dict,
+        )
+
+        return subscription
+
+    def get_container(self, package: Package):
+        client = self._client
+        subscription = self._get_or_create_subscription(package)
+
+        order, _ = Order.objects.get_or_create(
+            client=client,
+            subscription=subscription,
+            defaults={"status": Status.UNPAID, "is_save_card": True,},
+        )
+        order_service = OrderService(client, order)
+        order_container = order_service.get_container()
+
+        return order_container

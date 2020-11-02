@@ -36,15 +36,15 @@ class WelcomeService:
             if order.is_save_card:
                 card_service.save_card_list()
 
-            self.fill_profile(user)
-            address = self.create_main_address(raw_address)
-            billing_address = self.create_billing_address(raw_billing_address)
+            self._fill_profile(user)
+            address = self._create_main_address(raw_address)
+            billing_address = self._create_billing_address(raw_billing_address)
 
             subscription_service.checkout(order)
 
         return address, billing_address
 
-    def fill_profile(self, user: dict) -> Client:
+    def _fill_profile(self, user: dict) -> Client:
         serializer = WelcomeCheckoutUserSerializer(self._client, data=user, partial=True)
 
         serializer.is_valid()
@@ -52,10 +52,10 @@ class WelcomeService:
 
         return self._client
 
-    def create_main_address(self, raw_address: dict) -> Address:
+    def _create_main_address(self, raw_address: dict) -> Address:
         return self._create_address(raw_address, "main_address")
 
-    def create_billing_address(self, raw_billing_address: dict) -> dict:
+    def _create_billing_address(self, raw_billing_address: dict) -> dict:
         client = self._client
 
         client.billing_address = raw_billing_address
