@@ -8,8 +8,8 @@ class InvoiceSerializer(serializers.ModelSerializer):
         model = Invoice
         fields = [
             "id",
-            "coupon",
             "card",
+            "order",
             "purpose",
             "is_paid",
             "amount",
