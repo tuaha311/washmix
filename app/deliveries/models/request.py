@@ -65,6 +65,12 @@ class Request(CommonScheduleRequest, Common):
         verbose_name = "request"
         verbose_name_plural = "requests"
 
+    @property
+    def pretty_pickup_message(self) -> str:
+        pretty_date = self.pickup.strftime("%d %B")
+
+        return pretty_date
+
     #
     # pickup proxy fields
     #

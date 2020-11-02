@@ -73,12 +73,6 @@ class Delivery(Common):
         unique_together = ["request", "kind",]
 
     @property
-    def pretty_pickup_message(self) -> str:
-        pretty_date = self.date.strftime("%d %B")
-
-        return pretty_date
-
-    @property
     def address(self):
         return self.request.address
 

@@ -43,8 +43,8 @@ class TwilioFlexWebhookView(GenericAPIView):
         # `event` and `code` fields of response body.
         try:
             service.validate_or_save()
-            delivery = service.create_delivery()
-            message = delivery.pretty_pickup_message
+            request = service.create_request()
+            message = request.pretty_pickup_message
             body = {
                 "message": message,
                 "event": settings.TWILIO_SUCCESS,
