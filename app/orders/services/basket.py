@@ -41,7 +41,7 @@ class BasketService:
         Action for basket, adds item to basket.
         """
 
-        order_service = self._get_order_service()
+        order_service = self.get_order_service()
         order = order_service.order
         basket = self.basket
 
@@ -59,7 +59,7 @@ class BasketService:
         Action for basket, removes item from basket.
         """
 
-        order_service = self._get_order_service()
+        order_service = self.get_order_service()
         order = order_service.order
         basket = self.basket
 
@@ -80,7 +80,7 @@ class BasketService:
         Action for basket, removes all items from basket.
         """
 
-        order_service = self._get_order_service()
+        order_service = self.get_order_service()
         order = order_service.order
         basket = self.basket
 
@@ -90,20 +90,15 @@ class BasketService:
 
             order_service.create_basket_invoice(order, basket)
 
+        return self.get_container()
+
     def get_container(self) -> OrderContainer:
-        order_service = self._get_order_service()
+        order_service = self.get_order_service()
         order_container = order_service.get_container()
 
         return order_container
 
-    def _get_or_create_quantity(self, price: Price) -> Quantity:
-        quantity, _ = Quantity.objects.get_or_create(
-            basket=self.basket, price=price, defaults={"count": DEFAULT_COUNT,},
-        )
-
-        return quantity
-
-    def _get_order_service(self) -> OrderService:
+    def get_order_service(self) -> OrderService:
         client = self._client
         basket = self.basket
 
@@ -113,6 +108,13 @@ class BasketService:
         order_service = OrderService(client, order)
 
         return order_service
+
+    def _get_or_create_quantity(self, price: Price) -> Quantity:
+        quantity, _ = Quantity.objects.get_or_create(
+            basket=self.basket, price=price, defaults={"count": DEFAULT_COUNT,},
+        )
+
+        return quantity
 
     @property
     def basket(self) -> Basket:

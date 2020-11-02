@@ -12,16 +12,15 @@ class OrderCheckoutView(GenericAPIView):
     response_serializer_class = OrderSerializer
     permission_classes = default_permissions_for_admin
 
-    def post(self, request: Request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data, context={"request": request})
+    def post(self, drf_request: Request, *args, **kwargs):
+        serializer = self.serializer_class(data=drf_request.data, context={"request": drf_request})
         serializer.is_valid(raise_exception=True)
 
-        client = request.user.client
-        request = serializer.validated_data["request"]
-        basket = serializer.validated_data["basket"]
+        client = drf_request.user.client
+        order = serializer.validated_data["order"]
 
         order_service = OrderService(client)
-        order_container = order_service.checkout(basket, request)
+        order_container = order_service.checkout(order)
 
         response = self.response_serializer_class(order_container).data
         return Response(response)

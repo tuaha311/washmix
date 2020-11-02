@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from api.client.serializers.common import CommonContainerSerializer
-from api.fields import BasketField, RequestField
+from api.fields import OrderField
 from deliveries.api.client.serializers.requests import RequestSerializer
 from orders.api.pos.serializers.basket import BasketSerializer
 from orders.models import Order
@@ -38,16 +38,4 @@ class OrderSerializer(CommonContainerSerializer, serializers.ModelSerializer):
 
 
 class OrderCheckoutSerializer(serializers.Serializer):
-    basket = BasketField(allow_null=True)
-    request = RequestField(allow_null=True)
-
-    def validate(self, attrs):
-        request = attrs["request"]
-        basket = attrs["basket"]
-
-        if Order.objects.filter(basket=basket, request=request).exists():
-            raise serializers.ValidationError(
-                detail="Order already accepted", code="order_already_accepted",
-            )
-
-        return attrs
+    order = OrderField()

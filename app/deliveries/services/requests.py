@@ -8,6 +8,10 @@ from deliveries.choices import Kind, Status
 from deliveries.models import Delivery, Request
 from deliveries.utils import get_dropoff_day, get_pickup_day, get_pickup_start_end
 from deliveries.validators import RequestValidator
+from orders.containers.order import OrderContainer
+from orders.models import Basket, Order, Price, Quantity
+from orders.services.basket import BasketService
+from orders.services.order import OrderService
 from users.models import Client
 
 
@@ -32,8 +36,18 @@ class RequestService:
         self._pickup_end = pickup_end
         self._validator_service = RequestValidator(pickup_date, pickup_start, pickup_end)
 
-    def choose(self, request: Request):
-        pass
+    def choose(self, request: Request) -> OrderContainer:
+        with atomic():
+            order_service = self._get_order_service()
+            order = order_service.order
+            basket = order.basket
+
+            order.request = request
+            order.save()
+
+            order_service.create_delivery_invoice(order, basket, request)
+
+        return order_service.get_container()
 
     def create(self, **extra_kwargs) -> Request:
         """
@@ -108,6 +122,14 @@ class RequestService:
 
     def validate(self):
         self._validator_service.validate()
+
+    def _get_order_service(self) -> OrderService:
+        client = self._client
+        basket_service = BasketService(client)
+
+        order_service = basket_service.get_order_service()
+
+        return order_service
 
     @property
     def _pickup_start_end_auto_complete(self) -> Tuple[time, time]:

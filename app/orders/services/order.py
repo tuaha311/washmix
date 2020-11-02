@@ -30,12 +30,11 @@ class OrderService:
         self._client = client
         self._order = order
 
-    def checkout(self, order: Order, request: Request):
+    def checkout(self, order: Order):
         """
         Method to charge all invoices of order.
         """
 
-        order = Order
         invoice_list = order.invoice_list.all()
 
         with atomic():
