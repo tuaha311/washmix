@@ -9,15 +9,17 @@ class InvoiceService:
     def __init__(self, client: Client):
         self._client = client
 
-    def create(
+    def update_or_create(
         self,
         order: Order,
         amount: int,
         purpose: str,
         discount: int = settings.DEFAULT_ZERO_DISCOUNT,
     ):
-        invoice = Invoice.objects.create(
-            client=self._client, order=order, amount=amount, discount=discount, purpose=purpose,
+        invoice, _ = Invoice.objects.update_or_create(
+            client=self._client,
+            order=order,
+            defaults={"amount": amount, "discount": discount, "purpose": purpose,},
         )
 
         return invoice

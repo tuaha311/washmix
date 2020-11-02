@@ -41,10 +41,14 @@ class BasketService:
         Action for basket, adds item to basket.
         """
 
+        order_service = self._get_order_service()
+
         with atomic():
             quantity = self._get_or_create_quantity(price)
             quantity.count = F("count") + count
             quantity.save()
+
+            order_service.prepare_basket_request_invoices()
 
         return self.get_container()
 
@@ -52,6 +56,8 @@ class BasketService:
         """
         Action for basket, removes item from basket.
         """
+
+        order_service = self._get_order_service()
 
         with atomic():
             quantity = self._get_or_create_quantity(price)
@@ -61,6 +67,8 @@ class BasketService:
             if quantity.count == DEFAULT_COUNT:
                 quantity.delete()
 
+            order_service.prepare_basket_request_invoices()
+
         return self.get_container()
 
     def clear_all(self):
@@ -68,8 +76,19 @@ class BasketService:
         Action for basket, removes all items from basket.
         """
 
-        self.basket.item_list.set([])
-        self.basket.save()
+        order_service = self._get_order_service()
+
+        with atomic():
+            self.basket.item_list.set([])
+            self.basket.save()
+
+            order_service.prepare_basket_request_invoices()
+
+    def get_container(self) -> OrderContainer:
+        order_service = self._get_order_service()
+        order_container = order_service.get_container()
+
+        return order_container
 
     def _get_or_create_quantity(self, price: Price) -> Quantity:
         quantity, _ = Quantity.objects.get_or_create(
@@ -78,19 +97,21 @@ class BasketService:
 
         return quantity
 
-    @property
-    def basket(self) -> Basket:
-        client = self._client
-        basket, _ = Basket.objects.get_or_create(client=client, invoice__isnull=True)
-        return basket
-
-    def get_container(self) -> OrderContainer:
+    def _get_order_service(self) -> OrderService:
         client = self._client
         basket = self.basket
 
         order, _ = Order.objects.get_or_create(client=client, basket=basket)
-
         order_service = OrderService(client, order)
-        order_container = order_service.get_container()
 
-        return order_container
+        return order_service
+
+    @property
+    def basket(self) -> Basket:
+        client = self._client
+
+        basket, _ = Basket.objects.get_or_create(
+            client=client, invoice__transaction_list__isnull=True, defaults={"invoice": None,}
+        )
+
+        return basket

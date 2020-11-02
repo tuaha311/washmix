@@ -34,10 +34,15 @@ class SubscriptionService:
         based on Package attributes.
         """
 
+        order_service = self._get_order_service(package)
+        order = order_service.order
+
         with atomic():
             subscription = self._get_or_create_subscription(package)
             subscription = Subscription.objects.fill_subscription(package, subscription)
             subscription.save()
+
+            order_service.create_subscription_invoice(order, subscription)
 
         return self.get_container(package)
 
@@ -95,25 +100,35 @@ class SubscriptionService:
 
         return subscription
 
-    def _get_or_create_subscription(self, package: Package):
-        client = self._client
-
-        subscription, _ = Subscription.objects.get_or_create(
-            client=client, invoice__isnull=True, defaults=package.as_dict,
-        )
-
-        return subscription
-
     def get_container(self, package: Package):
+        order_service = self._get_order_service(package)
+        order_container = order_service.get_container()
+
+        return order_container
+
+    def _get_order_service(self, package: Package):
         client = self._client
         subscription = self._get_or_create_subscription(package)
 
+        # we are looking for last order, that was created for subscription
+        # and wasn't paid
         order, _ = Order.objects.get_or_create(
             client=client,
             subscription=subscription,
             defaults={"status": Status.UNPAID, "is_save_card": True,},
         )
         order_service = OrderService(client, order)
-        order_container = order_service.get_container()
 
-        return order_container
+        return order_service
+
+    def _get_or_create_subscription(self, package: Package):
+        client = self._client
+
+        # we are looking for last subscription that wasn't attached to the client.
+        subscription, _ = Subscription.objects.get_or_create(
+            client=client,
+            active_client__isnull=True,
+            defaults={"invoice": None, **package.as_dict},
+        )
+
+        return subscription

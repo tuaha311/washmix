@@ -61,7 +61,7 @@ class RequestService:
 
     def get_or_create(self, extra_query: dict, extra_defaults: dict) -> Tuple[Request, bool]:
         """
-        Like default manager's `get_or_create` method but with some changes:
+        Like default manager's `update_or_create` method but with some changes:
             - Added extra validation on date, time, etc.
             - Added auto completion of dropoff info.
         """

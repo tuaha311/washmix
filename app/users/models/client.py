@@ -31,7 +31,7 @@ class Client(Stripeable, Common):
     subscription = models.OneToOneField(
         "subscriptions.Subscription",
         verbose_name="subscription of service",
-        related_name="+",
+        related_name="active_client",
         on_delete=models.CASCADE,
         null=True,
     )

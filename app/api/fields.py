@@ -33,5 +33,9 @@ class OrderField(BaseClientField):
     attribute_name = "order_list"
 
 
+class SubscriptionField(BaseClientField):
+    attribute_name = "subscription_list"
+
+
 class BasketField(BaseClientField):
     attribute_name = "basket_list"

@@ -1,13 +1,10 @@
 from rest_framework import serializers
 
-from billing.models import Invoice
 from billing.stripe_helper import StripeHelper
-from orders.models import Order
-from users.models import Client
 
 
-def validate_saved_cards(order: Order):
-    client = order.client
+def validate_saved_cards(instance):
+    client = instance.client
 
     if client.card_list.count() == 0:
         raise serializers.ValidationError(
@@ -15,8 +12,8 @@ def validate_saved_cards(order: Order):
         )
 
 
-def validate_client_can_pay(order: Order):
-    client = order.client
+def validate_client_can_pay(instance):
+    client = instance.client
 
     stripe_helper = StripeHelper(client)
 
@@ -26,8 +23,8 @@ def validate_client_can_pay(order: Order):
         )
 
 
-def validate_paid_invoice(invoice: Invoice):
-    if invoice.is_paid:
+def validate_paid_invoice(instance):
+    if instance.is_paid:
         raise serializers.ValidationError(
             detail="You already paid this invoice.", code="invoice_already_paid",
         )
