@@ -6,7 +6,7 @@ from rest_framework_simplejwt.views import TokenRefreshSlidingView, TokenVerifyV
 from api.client.views import auth, checkout, prepare, services, trigger, twilio
 from billing.api.views import cards, invoices
 from core.api import views as core_views
-from deliveries.api.views import requests, schedules
+from deliveries.api.client.views import requests, schedules
 from locations.api.views import addresses, locations, zip_codes
 from subscriptions.api.views import packages
 from users.api.views import customers, profile

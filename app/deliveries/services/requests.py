@@ -32,6 +32,9 @@ class RequestService:
         self._pickup_end = pickup_end
         self._validator_service = RequestValidator(pickup_date, pickup_start, pickup_end)
 
+    def choose(self, request: Request):
+        pass
+
     def create(self, **extra_kwargs) -> Request:
         """
         Like default manager's `create` method but with some changes:

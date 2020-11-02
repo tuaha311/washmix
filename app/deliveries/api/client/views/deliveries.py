@@ -1,7 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 
 from api.permissions import default_permissions_for_employee
-from deliveries.api.serializers.deliveries import DeliverySerializer
+from deliveries.api.client.serializers.deliveries import DeliverySerializer
 
 
 class DeliveryViewSet(ModelViewSet):

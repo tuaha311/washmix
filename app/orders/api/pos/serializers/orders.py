@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from api.client.serializers.common import CommonContainerSerializer
 from api.fields import BasketField, RequestField
-from deliveries.api.serializers.requests import RequestSerializer
+from deliveries.api.client.serializers.requests import RequestSerializer
 from orders.api.pos.serializers.basket import BasketSerializer
 from orders.models import Order
 

@@ -14,11 +14,11 @@ class SubscriptionChooseView(GenericAPIView):
     response_serializer_class = SubscriptionChooseResponseSerializer
 
     def post(self, request: Request, *args, **kwargs):
-        package_serializer = self.serializer_class(data=request.data, context={"request": request})
-        package_serializer.is_valid(raise_exception=True)
+        serializer = self.serializer_class(data=request.data, context={"request": request})
+        serializer.is_valid(raise_exception=True)
 
         client = request.user.client
-        package = package_serializer.validated_data["package"]
+        package = serializer.validated_data["package"]
 
         subscription_service = SubscriptionService(client)
         order_container = subscription_service.choose(package)
