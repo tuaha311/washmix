@@ -44,7 +44,7 @@ class SubscriptionService:
 
             order_service.create_subscription_invoice(order, subscription)
 
-        return self.get_container(subscription)
+        return order_service.get_container()
 
     def checkout(self, order: Order):
         """
@@ -99,12 +99,6 @@ class SubscriptionService:
             self._client.save()
 
         return subscription
-
-    def get_container(self, subscription: Subscription):
-        order_service = self._get_order_service(subscription)
-        order_container = order_service.get_container()
-
-        return order_container
 
     def _get_order_service(self, subscription: Subscription):
         client = self._client
