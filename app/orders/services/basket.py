@@ -42,13 +42,15 @@ class BasketService:
         """
 
         order_service = self._get_order_service()
+        order = order_service.order
+        basket = self.basket
 
         with atomic():
             quantity = self._get_or_create_quantity(price)
             quantity.count = F("count") + count
             quantity.save()
 
-            order_service.prepare_basket_request_invoices()
+            order_service.create_basket_invoice(order, basket)
 
         return self.get_container()
 
@@ -58,6 +60,8 @@ class BasketService:
         """
 
         order_service = self._get_order_service()
+        order = order_service.order
+        basket = self.basket
 
         with atomic():
             quantity = self._get_or_create_quantity(price)
@@ -67,7 +71,7 @@ class BasketService:
             if quantity.count == DEFAULT_COUNT:
                 quantity.delete()
 
-            order_service.prepare_basket_request_invoices()
+            order_service.create_basket_invoice(order, basket)
 
         return self.get_container()
 
@@ -77,12 +81,14 @@ class BasketService:
         """
 
         order_service = self._get_order_service()
+        order = order_service.order
+        basket = self.basket
 
         with atomic():
-            self.basket.item_list.set([])
-            self.basket.save()
+            basket.item_list.set([])
+            basket.save()
 
-            order_service.prepare_basket_request_invoices()
+            order_service.create_basket_invoice(order, basket)
 
     def get_container(self) -> OrderContainer:
         order_service = self._get_order_service()
@@ -101,6 +107,8 @@ class BasketService:
         client = self._client
         basket = self.basket
 
+        # we are looking for last order, that was created for basket
+        # and wasn't paid
         order, _ = Order.objects.get_or_create(client=client, basket=basket)
         order_service = OrderService(client, order)
 
@@ -110,6 +118,7 @@ class BasketService:
     def basket(self) -> Basket:
         client = self._client
 
+        # we are looking for last basket, that wasn't paid
         basket, _ = Basket.objects.get_or_create(
             client=client, invoice__transaction_list__isnull=True, defaults={"invoice": None,}
         )
