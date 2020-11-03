@@ -3,18 +3,18 @@ from typing import Tuple
 from django.conf import settings
 
 from core.containers import BaseAmountContainer
-from deliveries.models import Request
+from deliveries.models import Delivery
 from orders.containers.basket import BasketContainer
 from subscriptions.choices import Package
 from subscriptions.models import Subscription
 
 
-class RequestContainer(BaseAmountContainer):
+class DeliveryContainer(BaseAmountContainer):
     """
     Reference to Delivery Fees - https://washmix.evrone.app/terms-of-use
     """
 
-    proxy_to_object = "_request"
+    proxy_to_object = "_delivery"
     price_map = {
         Package.PAYC: {
             "price_list": [
@@ -49,10 +49,10 @@ class RequestContainer(BaseAmountContainer):
     }
 
     def __init__(
-        self, subscription: Subscription, request: Request, basket: BasketContainer,
+        self, subscription: Subscription, delivery: Delivery, basket: BasketContainer,
     ):
         self._subscription = subscription
-        self._request = request
+        self._delivery = delivery
         self._basket = basket
 
     @property

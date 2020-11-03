@@ -5,7 +5,7 @@ from django.db.models import Sum
 
 from core.containers import BaseAmountContainer
 from core.utils import get_dollars
-from deliveries.containers import RequestContainer
+from deliveries.containers.request import RequestContainer
 from orders.containers.basket import BasketContainer
 from orders.models import Order
 

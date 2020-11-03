@@ -8,7 +8,8 @@ from billing.services.coupon import CouponService
 from billing.services.invoice import InvoiceService
 from billing.services.payments import PaymentService
 from deliveries.choices import Kind
-from deliveries.containers import RequestContainer
+from deliveries.containers.delivery import DeliveryContainer
+from deliveries.containers.request import RequestContainer
 from deliveries.models import Request
 from orders.choices import Status
 from orders.containers.basket import BasketContainer
@@ -75,12 +76,16 @@ class OrderService:
         invoice_list = []
 
         for kind in kind_of_deliveries:
+            delivery_container_name = f"{kind}_container"
+            delivery_container = getattr(request_container, delivery_container_name)
+
             delivery_invoice = invoice_service.update_or_create(
                 order=order,
-                amount=request_container.amount,
-                discount=request_container.discount,
+                amount=delivery_container.amount,
+                discount=delivery_container.discount,
                 purpose=kind,
             )
+
             invoice_attribute_name = f"{kind}_invoice"
             setattr(request, invoice_attribute_name, delivery_invoice)
 
