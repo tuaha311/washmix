@@ -9,7 +9,7 @@ class RequestChooseSerializer(serializers.Serializer):
     request = RequestField()
 
 
-class RequestSerializer(CommonContainerSerializer, serializers.ModelSerializer):
+class RequestResponseSerializer(CommonContainerSerializer, serializers.ModelSerializer):
     class Meta:
         model = Request
         fields = [
