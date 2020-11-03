@@ -60,6 +60,7 @@ urlpatterns = [
     path("welcome/", include(welcome_urls)),
     path("trigger/", trigger.TriggerView.as_view(), name="trigger"),
     path("billing/", include("billing.urls")),
+    path("orders/", include("orders.urls.client.orders")),
     path("subscription/", include("subscriptions.urls")),
     path("invoices/", invoices.InvoiceListView.as_view(), name="invoice-list"),
     # default routes has a higher priority under router URLS
