@@ -29,7 +29,7 @@ class Detergents:
     CHOICES = list(MAP.items())
 
 
-class Position:
+class EmployeePosition:
     LAUNDRESS = "laundress"
     DRIVER = "driver"
     MANAGER = "manager"
@@ -41,11 +41,13 @@ class Position:
     CHOICES = list(MAP.items())
 
 
-class Kind:
+class CustomerKind:
     INTERESTED = "interested"
     POSSIBLE = "possible"
+    STORAGE = "storage"
     MAP = {
         INTERESTED: "Who interested in our services in future",
         POSSIBLE: ("Who uses only SMS orders and " "maybe will use web-application in future"),
+        STORAGE: "Who interested in garment storage in our warehouse",
     }
     CHOICES = list(MAP.items())

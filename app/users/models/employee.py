@@ -3,7 +3,7 @@ from django.db import models
 from django.utils.timezone import localdate
 
 from core.common_models import Common
-from users.choices import Position
+from users.choices import EmployeePosition
 
 
 class Employee(Common):
@@ -32,8 +32,8 @@ class Employee(Common):
     position = models.CharField(
         verbose_name="position of employee",
         max_length=20,
-        choices=Position.CHOICES,
-        default=Position.LAUNDRESS,
+        choices=EmployeePosition.CHOICES,
+        default=EmployeePosition.LAUNDRESS,
     )
     SSN = models.CharField(
         verbose_name="social security number",

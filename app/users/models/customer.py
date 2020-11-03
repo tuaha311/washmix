@@ -2,7 +2,7 @@ from django.db import models
 
 from core.common_models import Common
 from core.validators import validate_phone
-from users.choices import Kind
+from users.choices import CustomerKind
 
 
 class Customer(Common):
@@ -43,7 +43,7 @@ class Customer(Common):
     kind = models.CharField(
         verbose_name="kind",
         max_length=20,
-        choices=Kind.CHOICES,
+        choices=CustomerKind.CHOICES,
     )
 
     class Meta:
