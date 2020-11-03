@@ -6,6 +6,7 @@ from django.db.transaction import atomic
 from stripe import PaymentIntent, PaymentMethod, SetupIntent
 from stripe.error import StripeError
 
+from billing.choices import Purpose
 from billing.models import Invoice, Transaction
 from billing.services.card import CardService
 from billing.stripe_helper import StripeHelper
@@ -90,29 +91,6 @@ class PaymentService:
 
         return transaction
 
-    def _calculate_paid_and_unpaid(self) -> Tuple[int, int]:
-        invoice = self._invoice
-        amount_with_discount = invoice.amount_with_discount
-        client = self._client
-        balance = client.balance
-        paid_amount = 0
-        unpaid_amount = amount_with_discount
-
-        # if prepaid balance enough to pay full price - we will
-        # use this money for invoice payment.
-        if balance >= amount_with_discount:
-            paid_amount = amount_with_discount
-            unpaid_amount = 0
-
-        # but if our prepaid balance is lower that invoice amount -
-        # we charge all of prepaid balance and rest of unpaid invoice amount
-        # we should charge it from card
-        elif 0 < balance < amount_with_discount:
-            paid_amount = balance
-            unpaid_amount = amount_with_discount - balance
-
-        return paid_amount, unpaid_amount
-
     def _charge_prepaid_balance(self):
         client = self._client
         invoice = self._invoice
@@ -143,3 +121,32 @@ class PaymentService:
             except StripeError as err:
                 logger.error(err)
                 continue
+
+    def _calculate_paid_and_unpaid(self) -> Tuple[int, int]:
+        invoice = self._invoice
+        amount_with_discount = invoice.amount_with_discount
+        client = self._client
+        balance = client.balance
+        paid_amount = 0
+        unpaid_amount = amount_with_discount
+
+        # for subscription we are always charging card
+        # without charging prepaid balance
+        if invoice.purpose == Purpose.SUBSCRIPTION:
+            paid_amount = 0
+            return paid_amount, unpaid_amount
+
+        # if prepaid balance enough to pay full price - we will
+        # use this money for invoice payment.
+        if balance >= amount_with_discount:
+            paid_amount = amount_with_discount
+            unpaid_amount = 0
+
+        # but if our prepaid balance is lower that invoice amount -
+        # we charge all of prepaid balance and rest of unpaid invoice amount
+        # we should charge it from card
+        elif 0 < balance < amount_with_discount:
+            paid_amount = balance
+            unpaid_amount = amount_with_discount - balance
+
+        return paid_amount, unpaid_amount
