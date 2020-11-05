@@ -6,7 +6,10 @@ from subscriptions.models import Package
 
 
 class SubscriptionChooseSerializer(serializers.Serializer):
-    package = serializers.SlugRelatedField(slug_field="name", queryset=Package.objects.all(),)
+    package = serializers.SlugRelatedField(
+        slug_field="name",
+        queryset=Package.objects.all(),
+    )
 
 
 class SubscriptionChooseResponseSerializer(CommonContainerSerializer, serializers.ModelSerializer):

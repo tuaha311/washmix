@@ -33,3 +33,6 @@ class Phone(Common):
     class Meta:
         verbose_name = "phone"
         verbose_name_plural = "phones"
+
+    def __str__(self):
+        return self.number

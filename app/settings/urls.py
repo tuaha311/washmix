@@ -12,7 +12,11 @@ from api.generators import WashMixSchemaGenerator
 urlpatterns = []
 
 schema_view = get_schema_view(
-    openapi.Info(title="WashMix", default_version="v1.0", description="WashMix REST API",),
+    openapi.Info(
+        title="WashMix",
+        default_version="v1.0",
+        description="WashMix REST API",
+    ),
     public=True,
     permission_classes=(),
     generator_class=WashMixSchemaGenerator,
@@ -21,7 +25,11 @@ schema_view = get_schema_view(
 
 local_patterns = [
     # OpenAPI docs
-    path("openapi/", schema_view.without_ui(cache_timeout=0), name="openapi-schema",),
+    path(
+        "openapi/",
+        schema_view.without_ui(cache_timeout=0),
+        name="openapi-schema",
+    ),
     # Static files serving
     *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
     *static(settings.STATIC_URL, document_root=settings.STATIC_ROOT),

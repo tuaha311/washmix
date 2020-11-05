@@ -1,5 +1,6 @@
 [tool.black]
 line-length = 100
+target-version = ['py37']
 exclude = '''
 (
   \.eggs
@@ -82,10 +83,11 @@ drf-yasg = "^1.17.1"
 netaddr = "^0.8.0"
 pytest-django = "^3.10.0"
 periodiq = "^0.12.1"
+djangoql = "^0.14.2"
 
 
 [tool.poetry.dev-dependencies]
-black = "^20"
+black = "~20.8b"
 isort = "^5.4.2"
 Faker = "1.0.0"
 fabric3 = "^1.14.post1"

@@ -20,7 +20,8 @@ class ApplyCouponSerializer(serializers.Serializer):
 
         if order.subscription.name == settings.PAYC:
             raise serializers.ValidationError(
-                detail="You cannot apply coupon to PAYC.", code="no_coupon_for_payc",
+                detail="You cannot apply coupon to PAYC.",
+                code="no_coupon_for_payc",
             )
 
         return value

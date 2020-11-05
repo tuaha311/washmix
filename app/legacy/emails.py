@@ -79,7 +79,10 @@ class WMEmailControllerSendGrid(object):
 
         return {
             "personalizations": [
-                {"to": email_data["to"], "dynamic_template_data": email_data["email_data"],}
+                {
+                    "to": email_data["to"],
+                    "dynamic_template_data": email_data["email_data"],
+                }
             ],
             "from": {"email": "washmix@example.com", "name": "Washmix"},
             "reply_to": {"email": "washmix@example.com", "name": "Washmix"},

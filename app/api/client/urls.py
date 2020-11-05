@@ -24,15 +24,25 @@ auth_urls = (
     [
         path("login/", auth.LoginView.as_view(), name="obtain"),
         path("signup/", auth.SignupView.as_view(), name="signup"),
-        path("forgot_password/", auth.ForgotPasswordView.as_view(), name="forgot-password",),
-        path("reset_new_password/", auth.SetNewPasswordView.as_view(), name="reset-new-password",),
+        path(
+            "forgot_password/",
+            auth.ForgotPasswordView.as_view(),
+            name="forgot-password",
+        ),
+        path(
+            "reset_new_password/",
+            auth.SetNewPasswordView.as_view(),
+            name="reset-new-password",
+        ),
     ],
     "auth",
 )
 
 
 sms_urls = (
-    [path("twilio_webhook/", twilio.TwilioFlexWebhookView.as_view(), name="flex-webhook"),],
+    [
+        path("twilio_webhook/", twilio.TwilioFlexWebhookView.as_view(), name="flex-webhook"),
+    ],
     "sms",
 )
 

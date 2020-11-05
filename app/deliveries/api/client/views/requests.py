@@ -18,7 +18,10 @@ class RequestViewSet(ModelViewSet):
         pickup_date = serializer.validated_data["pickup_date"]
         address = serializer.validated_data["address"]
 
-        service = RequestService(client=client, pickup_date=pickup_date,)
+        service = RequestService(
+            client=client,
+            pickup_date=pickup_date,
+        )
         request = service.create(address=address)
 
         serializer.instance = request

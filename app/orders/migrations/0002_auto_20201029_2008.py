@@ -104,6 +104,12 @@ class Migration(migrations.Migration):
                 verbose_name="items in basket",
             ),
         ),
-        migrations.AlterUniqueTogether(name="price", unique_together={("service", "item")},),
-        migrations.AlterUniqueTogether(name="order", unique_together={("basket", "request")},),
+        migrations.AlterUniqueTogether(
+            name="price",
+            unique_together={("service", "item")},
+        ),
+        migrations.AlterUniqueTogether(
+            name="order",
+            unique_together={("basket", "request")},
+        ),
     ]

@@ -70,7 +70,10 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={"verbose_name": "customer", "verbose_name_plural": "customers",},
+            options={
+                "verbose_name": "customer",
+                "verbose_name_plural": "customers",
+            },
         ),
         migrations.CreateModel(
             name="Employee",
@@ -126,7 +129,10 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={"verbose_name": "employee", "verbose_name_plural": "employees",},
+            options={
+                "verbose_name": "employee",
+                "verbose_name_plural": "employees",
+            },
         ),
         migrations.CreateModel(
             name="Client",
@@ -248,6 +254,9 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={"verbose_name": "client", "verbose_name_plural": "clients",},
+            options={
+                "verbose_name": "client",
+                "verbose_name_plural": "clients",
+            },
         ),
     ]

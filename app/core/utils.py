@@ -26,26 +26,30 @@ def get_clean_number(raw_number: str):
     # provide phone in international format - should start with `+` sign
     if not raw_number.startswith("+"):
         raise serializers.ValidationError(
-            detail="Provide number in international format.", code="provide_international_format",
+            detail="Provide number in international format.",
+            code="provide_international_format",
         )
 
     try:
         parsed = phonenumbers.parse(raw_number.strip(), settings.DEFAULT_PHONE_REGION)
     except phonenumbers.NumberParseException:
         raise serializers.ValidationError(
-            detail="Invalid phone format.", code="invalid_phone_format",
+            detail="Invalid phone format.",
+            code="invalid_phone_format",
         )
 
     if not phonenumbers.is_possible_number(parsed):
         raise serializers.ValidationError(
-            detail="Invalid phone region.", code="invalid_phone_region",
+            detail="Invalid phone region.",
+            code="invalid_phone_region",
         )
 
     # extra check for matching country code
     phone_country_code = parsed.country_code
     if phone_country_code not in settings.ALLOWED_COUNTRY_CODES:
         raise serializers.ValidationError(
-            detail="Invalid country region.", code="invalid_country_region",
+            detail="Invalid country region.",
+            code="invalid_country_region",
         )
 
     clean_number = phonenumbers.format_number(parsed, settings.DEFAULT_PHONE_FORMAT)

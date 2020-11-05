@@ -42,6 +42,7 @@ THIRD_PARTY_APPS = [
     "swap_user",
     "swap_user.named_email",
     "drf_yasg",
+    "djangoql",
 ]
 
 LOCAL_APPS = [
@@ -107,9 +108,16 @@ WSGI_APPLICATION = "settings.wsgi.application"
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
-    "handlers": {"null": {"class": "logging.NullHandler",},},
+    "handlers": {
+        "null": {
+            "class": "logging.NullHandler",
+        },
+    },
     # disable drf_yasg warning stuff
-    "loggers": {"drf_yasg": {"handlers": ["null"]}, "inspectors": {"handlers": ["null"]},},
+    "loggers": {
+        "drf_yasg": {"handlers": ["null"]},
+        "inspectors": {"handlers": ["null"]},
+    },
 }
 
 
@@ -284,8 +292,12 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.IsAuthenticated",
         "api.permissions.IsClient",
     ],
-    "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer",],
-    "DEFAULT_PARSER_CLASSES": ["rest_framework.parsers.JSONParser",],
+    "DEFAULT_RENDERER_CLASSES": [
+        "rest_framework.renderers.JSONRenderer",
+    ],
+    "DEFAULT_PARSER_CLASSES": [
+        "rest_framework.parsers.JSONParser",
+    ],
 }
 
 ####################################
@@ -348,7 +360,9 @@ DJOSER = {
     "USER_CREATE_PASSWORD_RETYPE": False,
     "PASSWORD_RESET_CONFIRM_RETYPE": False,
     "TOKEN_MODEL": None,
-    "EMAIL": {"password_reset": "core.emails.PasswordResetEmail",},
+    "EMAIL": {
+        "password_reset": "core.emails.PasswordResetEmail",
+    },
 }
 
 
@@ -401,7 +415,11 @@ REDIS_HOST = env.str("REDIS_HOST", "localhost")
 REDIS_PORT = env.str("REDIS_PORT", "6379")
 REDIS_DB = 0
 REDIS_URL = f"{REDIS_HOST}:{REDIS_PORT}"
-REDIS_CLIENT = StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB,)
+REDIS_CLIENT = StrictRedis(
+    host=REDIS_HOST,
+    port=REDIS_PORT,
+    db=REDIS_DB,
+)
 REDIS_DEFAULT_EXPIRATION_TIME = 60 * 60 * 23
 
 
@@ -450,7 +468,10 @@ EMAIL_EVENT_INFO = {
         "subject": "Welcome to Washmix!",
         "from_email": "hello@washmix.com",
     },
-    FORGOT_PASSWORD: {"subject": "Password Reset", "from_email": "security@washmix.com",},
+    FORGOT_PASSWORD: {
+        "subject": "Password Reset",
+        "from_email": "security@washmix.com",
+    },
 }
 
 

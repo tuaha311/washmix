@@ -41,7 +41,10 @@ class TwilioFlexService:
             Phone.objects.get(number=self._phone)
         except Phone.DoesNotExist:
             Customer.objects.get_or_create(
-                phone=self._phone, defaults={"kind": CustomerKind.POSSIBLE,}
+                phone=self._phone,
+                defaults={
+                    "kind": CustomerKind.POSSIBLE,
+                },
             )
 
             raise serializers.ValidationError(detail="Client not found.", code="client_not_found")
@@ -53,5 +56,6 @@ class TwilioFlexService:
         # we can't handle pickup request
         if not client.main_address:
             raise serializers.ValidationError(
-                detail="Client doesn't have an address.", code="no_pickup_address",
+                detail="Client doesn't have an address.",
+                code="no_pickup_address",
             )

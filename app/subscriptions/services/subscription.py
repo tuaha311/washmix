@@ -108,7 +108,10 @@ class SubscriptionService:
         order, _ = Order.objects.get_or_create(
             client=client,
             subscription=subscription,
-            defaults={"status": Status.UNPAID, "is_save_card": True,},
+            defaults={
+                "status": Status.UNPAID,
+                "is_save_card": True,
+            },
         )
         order_service = OrderService(client, order)
 

@@ -47,9 +47,15 @@ def create_credit_back(client: Client, amount: int) -> Transaction:
     """
 
     with atomic():
-        invoice = Invoice.objects.create(client=client, amount=amount,)
+        invoice = Invoice.objects.create(
+            client=client,
+            amount=amount,
+        )
         transaction = create_debit(
-            client=client, invoice=invoice, amount=amount, provider=Provider.CREDIT_BACK,
+            client=client,
+            invoice=invoice,
+            amount=amount,
+            provider=Provider.CREDIT_BACK,
         )
 
     return transaction

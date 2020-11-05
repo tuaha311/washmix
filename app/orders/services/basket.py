@@ -111,7 +111,11 @@ class BasketService:
 
     def _get_or_create_quantity(self, price: Price) -> Quantity:
         quantity, _ = Quantity.objects.get_or_create(
-            basket=self.basket, price=price, defaults={"count": DEFAULT_COUNT,},
+            basket=self.basket,
+            price=price,
+            defaults={
+                "count": DEFAULT_COUNT,
+            },
         )
 
         return quantity
@@ -122,7 +126,11 @@ class BasketService:
 
         # we are looking for last basket, that wasn't paid
         basket, _ = Basket.objects.get_or_create(
-            client=client, invoice__transaction_list__isnull=True, defaults={"invoice": None,}
+            client=client,
+            invoice__transaction_list__isnull=True,
+            defaults={
+                "invoice": None,
+            },
         )
 
         return basket

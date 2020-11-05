@@ -90,5 +90,8 @@ class Migration(migrations.Migration):
                 verbose_name="request",
             ),
         ),
-        migrations.AlterUniqueTogether(name="delivery", unique_together={("request", "kind")},),
+        migrations.AlterUniqueTogether(
+            name="delivery",
+            unique_together={("request", "kind")},
+        ),
     ]

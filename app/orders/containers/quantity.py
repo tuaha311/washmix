@@ -10,10 +10,22 @@ from subscriptions.models import Subscription
 class QuantityContainer(BaseAmountContainer):
     proxy_to_object = "_quantity"
     service_list = [
-        {"attribute_name": "dry_clean", "title": "Dry Cleaning",},
-        {"attribute_name": "laundry", "title": "Laundry",},
-        {"attribute_name": "alterations", "title": "Alterations & Repair",},
-        {"attribute_name": "wash_fold", "title": "Wash & Folds",},
+        {
+            "attribute_name": "dry_clean",
+            "title": "Dry Cleaning",
+        },
+        {
+            "attribute_name": "laundry",
+            "title": "Laundry",
+        },
+        {
+            "attribute_name": "alterations",
+            "title": "Alterations & Repair",
+        },
+        {
+            "attribute_name": "wash_fold",
+            "title": "Wash & Folds",
+        },
     ]
 
     def __init__(self, subscription: Subscription, quantity: Quantity):

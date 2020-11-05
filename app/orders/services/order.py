@@ -42,7 +42,11 @@ class OrderService:
             for invoice in invoice_list:
                 self.charge(invoice)
 
-    def create_basket_invoice(self, order: Order, basket: Basket,) -> List[Invoice]:
+    def create_basket_invoice(
+        self,
+        order: Order,
+        basket: Basket,
+    ) -> List[Invoice]:
         client = self._client
         subscription = client.subscription
         invoice_service = InvoiceService(client)
@@ -62,7 +66,10 @@ class OrderService:
         return [basket_invoice]
 
     def create_delivery_invoice(
-        self, order: Order, basket: Basket, request: Request,
+        self,
+        order: Order,
+        basket: Basket,
+        request: Request,
     ) -> List[Invoice]:
         client = self._client
         subscription = client.subscription
@@ -98,7 +105,9 @@ class OrderService:
         return invoice_list
 
     def create_subscription_invoice(
-        self, order: Order, subscription: Subscription,
+        self,
+        order: Order,
+        subscription: Subscription,
     ) -> List[Invoice]:
         client = self._client
         invoice_service = InvoiceService(client)

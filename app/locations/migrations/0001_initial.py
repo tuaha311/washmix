@@ -38,7 +38,10 @@ class Migration(migrations.Migration):
                     models.BooleanField(default=False, verbose_name="is doorman at this address"),
                 ),
             ],
-            options={"verbose_name": "address", "verbose_name_plural": "addresses",},
+            options={
+                "verbose_name": "address",
+                "verbose_name_plural": "addresses",
+            },
         ),
         migrations.CreateModel(
             name="ZipCode",
@@ -59,7 +62,10 @@ class Migration(migrations.Migration):
                 ),
                 ("value", models.CharField(max_length=20, unique=True, verbose_name="value")),
             ],
-            options={"verbose_name": "zip code", "verbose_name_plural": "zip codes",},
+            options={
+                "verbose_name": "zip code",
+                "verbose_name_plural": "zip codes",
+            },
         ),
         migrations.CreateModel(
             name="City",
@@ -84,6 +90,9 @@ class Migration(migrations.Migration):
                     models.ManyToManyField(related_name="city_list", to="locations.ZipCode"),
                 ),
             ],
-            options={"verbose_name": "city", "verbose_name_plural": "cities",},
+            options={
+                "verbose_name": "city",
+                "verbose_name_plural": "cities",
+            },
         ),
     ]

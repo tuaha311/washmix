@@ -41,7 +41,10 @@ def create_recurring_request_every_day():
         service = RequestService(client=client)
         request, _ = service.get_or_create(
             extra_query={"schedule": schedule, "address": address},
-            extra_defaults={"comment": schedule.comment, "is_rush": schedule.is_rush,},
+            extra_defaults={
+                "comment": schedule.comment,
+                "is_rush": schedule.is_rush,
+            },
         )
 
         add_to_execution_cache(key)

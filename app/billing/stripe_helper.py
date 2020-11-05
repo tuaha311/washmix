@@ -35,7 +35,8 @@ class StripeHelper:
             customer = stripe.Customer.retrieve(self._client.stripe_id)
         except InvalidRequestError:
             customer = stripe.Customer.create(
-                email=self._client.email, metadata={"id": self._client.id},
+                email=self._client.email,
+                metadata={"id": self._client.id},
             )
 
         return customer
@@ -46,7 +47,10 @@ class StripeHelper:
         Use this method to retrieve a PaymentMethod for Client.
         """
 
-        payment_method = stripe.PaymentMethod.list(customer=self.customer.id, type=CARD,).data
+        payment_method = stripe.PaymentMethod.list(
+            customer=self.customer.id,
+            type=CARD,
+        ).data
 
         return payment_method
 
@@ -58,7 +62,10 @@ class StripeHelper:
         Reference - https://stripe.com/docs/api/setup_intents/create
         """
 
-        setup_intent = stripe.SetupIntent.create(customer=self.customer.id, usage=SESSION_USAGE,)
+        setup_intent = stripe.SetupIntent.create(
+            customer=self.customer.id,
+            usage=SESSION_USAGE,
+        )
 
         return setup_intent
 
@@ -103,7 +110,12 @@ class StripeHelper:
         """
 
         payment_method = stripe.PaymentMethod.create(
-            card={"number": number, "exp_month": exp_month, "exp_year": exp_year, "cvc": cvc,},
+            card={
+                "number": number,
+                "exp_month": exp_month,
+                "exp_year": exp_year,
+                "cvc": cvc,
+            },
             type="card",
             customer=self.customer.id,
         )

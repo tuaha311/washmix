@@ -48,6 +48,8 @@ def test_charge_when_balance_lower_that_invoice(
     atomic_mock.assert_called_once()
     create_credit_mock.assert_called_once_with(client=client, invoice=invoice, amount=paid_amount)
     stripe_instance_mock.create_payment_intent.assert_called_once_with(
-        payment_method_id=card.stripe_id, amount=unpaid_amount, invoice=invoice,
+        payment_method_id=card.stripe_id,
+        amount=unpaid_amount,
+        invoice=invoice,
     )
     card_service_mock.assert_called_once()

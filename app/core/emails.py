@@ -24,7 +24,9 @@ class SendGridEmail(BaseEmailMessage):
         context = super().get_context_data(**kwargs)
 
         context.update(
-            {"protocol": self.protocol,}
+            {
+                "protocol": self.protocol,
+            }
         )
 
         return context

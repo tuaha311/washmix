@@ -29,6 +29,9 @@ class Migration(migrations.Migration):
                 ),
                 ("message", models.TextField(verbose_name="message")),
             ],
-            options={"verbose_name": "notification", "verbose_name_plural": "notifications",},
+            options={
+                "verbose_name": "notification",
+                "verbose_name_plural": "notifications",
+            },
         ),
     ]

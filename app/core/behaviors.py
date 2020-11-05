@@ -12,7 +12,11 @@ class Stripeable(models.Model):
     """
 
     stripe_id = models.CharField(
-        verbose_name="Stripe ID", max_length=100, blank=True, null=True, unique=True,
+        verbose_name="Stripe ID",
+        max_length=100,
+        blank=True,
+        null=True,
+        unique=True,
     )
 
     class Meta:

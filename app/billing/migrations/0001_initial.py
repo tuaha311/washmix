@@ -49,7 +49,10 @@ class Migration(migrations.Migration):
                 ),
                 ("is_active", models.BooleanField(default=True, verbose_name="card is active")),
             ],
-            options={"verbose_name": "card", "verbose_name_plural": "cards",},
+            options={
+                "verbose_name": "card",
+                "verbose_name_plural": "cards",
+            },
         ),
         migrations.CreateModel(
             name="Coupon",
@@ -122,7 +125,10 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={"verbose_name": "coupon", "verbose_name_plural": "coupons",},
+            options={
+                "verbose_name": "coupon",
+                "verbose_name_plural": "coupons",
+            },
         ),
         migrations.CreateModel(
             name="Invoice",
@@ -157,7 +163,10 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={"verbose_name": "invoice", "verbose_name_plural": "invoices",},
+            options={
+                "verbose_name": "invoice",
+                "verbose_name_plural": "invoices",
+            },
             bases=(core.mixins.CalculatedAmountWithDiscount, models.Model),
         ),
         migrations.CreateModel(
@@ -212,6 +221,9 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={"verbose_name": "transaction", "verbose_name_plural": "transactions",},
+            options={
+                "verbose_name": "transaction",
+                "verbose_name_plural": "transactions",
+            },
         ),
     ]

@@ -29,7 +29,10 @@ class Migration(migrations.Migration):
                     models.DateTimeField(auto_now=True, verbose_name="last changed date and time"),
                 ),
             ],
-            options={"verbose_name": "basket", "verbose_name_plural": "baskets",},
+            options={
+                "verbose_name": "basket",
+                "verbose_name_plural": "baskets",
+            },
         ),
         migrations.CreateModel(
             name="Item",
@@ -60,7 +63,10 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={"verbose_name": "item", "verbose_name_plural": "items",},
+            options={
+                "verbose_name": "item",
+                "verbose_name_plural": "items",
+            },
         ),
         migrations.CreateModel(
             name="Price",
@@ -109,7 +115,10 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={"verbose_name": "price", "verbose_name_plural": "prices",},
+            options={
+                "verbose_name": "price",
+                "verbose_name_plural": "prices",
+            },
         ),
         migrations.CreateModel(
             name="Service",
@@ -143,7 +152,10 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={"verbose_name": "service", "verbose_name_plural": "services",},
+            options={
+                "verbose_name": "service",
+                "verbose_name_plural": "services",
+            },
         ),
         migrations.CreateModel(
             name="Quantity",
@@ -183,7 +195,10 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={"verbose_name": "quantity", "verbose_name_plural": "quantity",},
+            options={
+                "verbose_name": "quantity",
+                "verbose_name_plural": "quantity",
+            },
         ),
         migrations.AddField(
             model_name="price",
@@ -241,6 +256,9 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={"verbose_name": "order", "verbose_name_plural": "orders",},
+            options={
+                "verbose_name": "order",
+                "verbose_name_plural": "orders",
+            },
         ),
     ]

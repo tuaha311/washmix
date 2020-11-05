@@ -1,6 +1,5 @@
 from django.contrib.auth import get_user_model
 
-import phonenumbers
 from rest_framework import serializers
 
 from core.models import Phone
@@ -19,7 +18,8 @@ class SignupSerializer(serializers.Serializer):
 
         if User.objects.filter(email=email).exists():
             raise serializers.ValidationError(
-                detail="Invalid credentials.", code="invalid_auth_credentials",
+                detail="Invalid credentials.",
+                code="invalid_auth_credentials",
             )
 
         return value
@@ -29,7 +29,8 @@ class SignupSerializer(serializers.Serializer):
 
         if Phone.objects.filter(number=number).exists():
             raise serializers.ValidationError(
-                detail="Invalid credentials.", code="invalid_auth_credentials",
+                detail="Invalid credentials.",
+                code="invalid_auth_credentials",
             )
 
         return value

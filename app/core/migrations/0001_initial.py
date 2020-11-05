@@ -40,6 +40,9 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={"verbose_name": "phone", "verbose_name_plural": "phones",},
+            options={
+                "verbose_name": "phone",
+                "verbose_name_plural": "phones",
+            },
         ),
     ]

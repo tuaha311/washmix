@@ -29,7 +29,9 @@ class MessageClient(object):
 
     def send_message(self, body, to):
         self.twilio_client.messages.create(
-            body=body, to=to, from_=self.twilio_number,
+            body=body,
+            to=to,
+            from_=self.twilio_number,
         )
 
 

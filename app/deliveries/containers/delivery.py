@@ -19,37 +19,76 @@ class DeliveryContainer(BaseAmountContainer):
         Package.PAYC: {
             "price_list": [
                 # 0 - 2999 price 19.90$
-                {"min": 0, "max": 2999, "price": 995,},
+                {
+                    "min": 0,
+                    "max": 2999,
+                    "price": 995,
+                },
                 # 3000 - 4899 price 9.90$
-                {"min": 3000, "max": 4899, "price": 495,},
+                {
+                    "min": 3000,
+                    "max": 4899,
+                    "price": 495,
+                },
                 # 4900 - infinity price 9.90$
-                {"min": 4900, "max": float("inf"), "price": 495,},
+                {
+                    "min": 4900,
+                    "max": float("inf"),
+                    "price": 495,
+                },
             ],
         },
         Package.GOLD: {
             "price_list": [
                 # 0 - 2499 price 14.98$
-                {"min": 0, "max": 2499, "price": 749,},
+                {
+                    "min": 0,
+                    "max": 2499,
+                    "price": 749,
+                },
                 # 2500 - 3899 price 9.90$
-                {"min": 2500, "max": 3899, "price": 495,},
+                {
+                    "min": 2500,
+                    "max": 3899,
+                    "price": 495,
+                },
                 # 3900 - infinity price 9.90$
-                {"min": 3900, "max": float("inf"), "price": 495,},
+                {
+                    "min": 3900,
+                    "max": float("inf"),
+                    "price": 495,
+                },
             ],
         },
         Package.PLATINUM: {
             "price_list": [
                 # 0 - 2499 price 14.98$
-                {"min": 0, "max": 2499, "price": 749,},
+                {
+                    "min": 0,
+                    "max": 2499,
+                    "price": 749,
+                },
                 # 2500 - 3899 price 9.90$
-                {"min": 2500, "max": 3899, "price": 495,},
+                {
+                    "min": 2500,
+                    "max": 3899,
+                    "price": 495,
+                },
                 # 3900 - infinity price 9.90$
-                {"min": 3900, "max": float("inf"), "price": 495,},
+                {
+                    "min": 3900,
+                    "max": float("inf"),
+                    "price": 495,
+                },
             ],
         },
     }
 
     def __init__(
-        self, subscription: Subscription, delivery: Delivery, basket: BasketContainer,
+        self,
+        subscription: Subscription,
+        delivery: Delivery,
+        basket: BasketContainer,
     ):
         self._subscription = subscription
         self._delivery = delivery

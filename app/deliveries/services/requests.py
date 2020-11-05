@@ -66,12 +66,21 @@ class RequestService:
         extra_kwargs.setdefault("is_rush", False)
 
         with atomic():
-            request = Request.objects.create(client=self._client, **extra_kwargs,)
-            Delivery.objects.create(
-                request=request, kind=Kind.PICKUP, status=Status.ACCEPTED, **pickup_info,
+            request = Request.objects.create(
+                client=self._client,
+                **extra_kwargs,
             )
             Delivery.objects.create(
-                request=request, kind=Kind.DROPOFF, status=Status.ACCEPTED, **dropoff_info,
+                request=request,
+                kind=Kind.PICKUP,
+                status=Status.ACCEPTED,
+                **pickup_info,
+            )
+            Delivery.objects.create(
+                request=request,
+                kind=Kind.DROPOFF,
+                status=Status.ACCEPTED,
+                **dropoff_info,
             )
 
         return request
@@ -94,13 +103,21 @@ class RequestService:
 
         with atomic():
             request, created = Request.objects.get_or_create(
-                client=self._client, **extra_query, defaults=extra_defaults,
+                client=self._client,
+                **extra_query,
+                defaults=extra_defaults,
             )
             Delivery.objects.get_or_create(
-                request=request, kind=Kind.PICKUP, status=Status.ACCEPTED, defaults=pickup_info,
+                request=request,
+                kind=Kind.PICKUP,
+                status=Status.ACCEPTED,
+                defaults=pickup_info,
             )
             Delivery.objects.get_or_create(
-                request=request, kind=Kind.DROPOFF, status=Status.ACCEPTED, defaults=dropoff_info,
+                request=request,
+                kind=Kind.DROPOFF,
+                status=Status.ACCEPTED,
+                defaults=dropoff_info,
             )
 
         return request, created

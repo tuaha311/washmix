@@ -19,7 +19,11 @@ def send_email(email: str, event: str, full_name: str = ""):
     sender.send(
         recipient_list=[email],
         event=event,
-        context={"email": email, "full_name": email, "washmix": email_context,},
+        context={
+            "email": email,
+            "full_name": email,
+            "washmix": email_context,
+        },
     )
 
     logger.info(f"Sent to email {email}")
@@ -29,7 +33,10 @@ def send_email(email: str, event: str, full_name: str = ""):
 def raw_send_email(to: list, html_content: str, subject: str, from_email: str):
     sender = SendGridSender()
     sender.raw_send(
-        recipient_list=to, html_content=html_content, subject=subject, from_email=from_email,
+        recipient_list=to,
+        html_content=html_content,
+        subject=subject,
+        from_email=from_email,
     )
 
     logger.info(f"Raw sent to emails {to}")

@@ -98,7 +98,9 @@ class PaymentService:
 
         if paid_amount > 0:
             create_credit(
-                client=client, invoice=invoice, amount=paid_amount,
+                client=client,
+                invoice=invoice,
+                amount=paid_amount,
             )
 
         return paid_amount, unpaid_amount
@@ -111,7 +113,9 @@ class PaymentService:
             # and we are stopping at first successful attempt
             try:
                 payment = self._stripe_helper.create_payment_intent(
-                    payment_method_id=item.stripe_id, amount=amount, invoice=self._invoice,
+                    payment_method_id=item.stripe_id,
+                    amount=amount,
+                    invoice=self._invoice,
                 )
 
                 card_service.update_main_card(self._client, item)

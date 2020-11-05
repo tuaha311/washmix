@@ -8,7 +8,8 @@ def validate_saved_cards(instance):
 
     if client.card_list.count() == 0:
         raise serializers.ValidationError(
-            detail="You have no active card.", code="no_card",
+            detail="You have no active card.",
+            code="no_card",
         )
 
 
@@ -19,12 +20,14 @@ def validate_client_can_pay(instance):
 
     if not stripe_helper.payment_method_list:
         raise serializers.ValidationError(
-            detail="You have no active payment methods.", code="no_payment_methods",
+            detail="You have no active payment methods.",
+            code="no_payment_methods",
         )
 
 
 def validate_paid_invoice(instance):
     if instance.is_paid:
         raise serializers.ValidationError(
-            detail="You already paid this invoice.", code="invoice_already_paid",
+            detail="You already paid this invoice.",
+            code="invoice_already_paid",
         )

@@ -11,7 +11,10 @@ from deliveries.utils import get_dropoff_day, get_pickup_day, get_pickup_start_e
 
 class RequestValidator:
     def __init__(
-        self, pickup_date: date = None, pickup_start: time = None, pickup_end: time = None,
+        self,
+        pickup_date: date = None,
+        pickup_start: time = None,
+        pickup_end: time = None,
     ):
         self._pickup_date = pickup_date
         self._pickup_start = pickup_start
@@ -19,7 +22,8 @@ class RequestValidator:
 
         if self._pickup_date.isoweekday() in settings.NON_WORKING_ISO_WEEKENDS:
             raise serializers.ValidationError(
-                detail="Pickup day can't be at weekends.", code="cant_pickup_at_weekends",
+                detail="Pickup day can't be at weekends.",
+                code="cant_pickup_at_weekends",
             )
 
     def validate(self):
@@ -57,14 +61,16 @@ class RequestValidator:
         # we doesn't work at weekends - because we are chilling
         if self._pickup_date.isoweekday() in settings.NON_WORKING_ISO_WEEKENDS:
             raise serializers.ValidationError(
-                detail="Delivery doesn't work at weekends.", code="pickup_date_is_weekends",
+                detail="Delivery doesn't work at weekends.",
+                code="pickup_date_is_weekends",
             )
 
         # we can't handle pickup date which is passed (in past)
         now = localtime()
         if now.date() > self._pickup_date:
             raise serializers.ValidationError(
-                detail="Delivery can't handle passed date.", code="pickup_date_is_passed",
+                detail="Delivery can't handle passed date.",
+                code="pickup_date_is_passed",
             )
 
     def _validate_time(self):
@@ -96,5 +102,6 @@ class RequestValidator:
     def _validate_common(self):
         if self._pickup_start >= self._pickup_end:
             raise serializers.ValidationError(
-                detail="Start time can't be earlier than end.", code="start_earlier_than_end",
+                detail="Start time can't be earlier than end.",
+                code="start_earlier_than_end",
             )

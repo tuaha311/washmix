@@ -83,7 +83,10 @@ class Migration(migrations.Migration):
                     models.BooleanField(default=False, verbose_name="is a rush / urgent delivery"),
                 ),
             ],
-            options={"verbose_name": "request", "verbose_name_plural": "requests",},
+            options={
+                "verbose_name": "request",
+                "verbose_name_plural": "requests",
+            },
         ),
         migrations.CreateModel(
             name="Schedule",
@@ -139,6 +142,9 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={"verbose_name": "schedule", "verbose_name_plural": "schedules",},
+            options={
+                "verbose_name": "schedule",
+                "verbose_name_plural": "schedules",
+            },
         ),
     ]

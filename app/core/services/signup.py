@@ -16,7 +16,9 @@ class SignupService:
             full_name = client.full_name
 
             send_email.send(
-                email=client.email, event=settings.SIGNUP, full_name=full_name,
+                email=client.email,
+                event=settings.SIGNUP,
+                full_name=full_name,
             )
 
             stripe_helper = StripeHelper(client)

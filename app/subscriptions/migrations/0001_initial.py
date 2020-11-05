@@ -104,7 +104,10 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={"verbose_name": "package", "verbose_name_plural": "packages",},
+            options={
+                "verbose_name": "package",
+                "verbose_name_plural": "packages",
+            },
         ),
         migrations.CreateModel(
             name="Subscription",
@@ -192,6 +195,9 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={"verbose_name": "subscription", "verbose_name_plural": "subscriptions",},
+            options={
+                "verbose_name": "subscription",
+                "verbose_name_plural": "subscriptions",
+            },
         ),
     ]

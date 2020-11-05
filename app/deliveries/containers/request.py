@@ -13,7 +13,10 @@ class RequestContainer(BaseAmountContainer):
     proxy_to_object = "_request"
 
     def __init__(
-        self, subscription: Subscription, request: Request, basket: BasketContainer,
+        self,
+        subscription: Subscription,
+        request: Request,
+        basket: BasketContainer,
     ):
         self._subscription = subscription
         self._request = request
