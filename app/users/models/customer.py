@@ -30,6 +30,11 @@ class Customer(Common):
         null=True,
         validators=[validate_phone],
     )
+    full_name = models.CharField(
+        verbose_name="full name",
+        max_length=100,
+        blank=True,
+    )
     zip_code = models.CharField(
         verbose_name="zip code",
         max_length=20,
@@ -43,6 +48,7 @@ class Customer(Common):
     kind = models.CharField(
         verbose_name="kind",
         max_length=20,
+        default=CustomerKind.INTERESTED,
         choices=CustomerKind.CHOICES,
     )
 

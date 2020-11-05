@@ -28,6 +28,7 @@ ingress:
     - host: washmix.evrone.app
       paths: 
         - /openapi
+        - /admin
         - /api
         - /pos
         - /media
