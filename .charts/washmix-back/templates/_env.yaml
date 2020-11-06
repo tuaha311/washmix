@@ -51,9 +51,9 @@
       name: {{ .Values.app.secret }}
       key: sentry_dsn
 - name: TWILIO_ACCOUNT_SID
-  value: "test2"
+  value: "ACbf80c76b4090b3e28a13b673dac753c2"
 - name: TWILIO_AUTH_TOKEN
-  value: "test3"
+  value: "63a2e3fb37b3b816ccb266c25e60f4b1"
 - name: TWILIO_NUMBER
   value: "test4"
 {{ end }}

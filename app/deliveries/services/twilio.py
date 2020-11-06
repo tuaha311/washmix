@@ -1,4 +1,7 @@
+from django.conf import settings
+
 from rest_framework import serializers
+from twilio.rest import Client as TwilioClient
 
 from core.models import Phone
 from core.utils import get_clean_number
@@ -9,9 +12,10 @@ from users.models import Client, Customer
 
 
 class TwilioFlexService:
-    def __init__(self, message: str, phone: str) -> None:
+    def __init__(self, message: str = None, phone: str = None) -> None:
         self._message = message
         self._phone = get_clean_number(phone)
+        self._twilio_client = TwilioClient(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
 
     def create_request(self) -> Request:
         """
@@ -21,9 +25,9 @@ class TwilioFlexService:
 
         self._validate_address()
 
-        address = self._client.main_address
+        address = self.client.main_address
 
-        service = RequestService(client=self._client)
+        service = RequestService(client=self.client)
 
         return service.create(address=address)
 
@@ -32,9 +36,15 @@ class TwilioFlexService:
         self._validate_address()
 
     @property
-    def _client(self) -> Client:
+    def client(self) -> Client:
         phone = Phone.objects.get(number=self._phone)
         return phone.client
+
+    def is_workers_online(self, sid: str):
+        workspace = self._twilio_client.taskrouter.v1.workspaces.get(sid)
+        workers = workspace.workers.list(available=True)
+
+        return bool(workers)
 
     def _validate_or_save_phone(self):
         try:
@@ -50,7 +60,7 @@ class TwilioFlexService:
             raise serializers.ValidationError(detail="Client not found.", code="client_not_found")
 
     def _validate_address(self):
-        client = self._client
+        client = self.client
 
         # if client doesn't have an address
         # we can't handle pickup request

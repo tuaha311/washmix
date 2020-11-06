@@ -59,7 +59,7 @@ dramatiq = {version = "^1.9", extras = ["redis", "watch"]}
 
 # money
 stripe = "^2.12"
-twilio = "6.19.2"
+twilio = "^6"
 
 # seo
 django-robots = "3.1.0"

@@ -8,12 +8,14 @@ from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
 from rest_framework.status import HTTP_200_OK
 
-from api.client.serializers.twilio import TwilioFlexWebhookSerializer
-from core.utils import get_clean_number
+from api.client.serializers.twilio import (
+    TwilioFlexDeliveryWebhookSerializer,
+    TwilioFlexOnlineWorkersWebhookSerializer,
+)
 from deliveries.services.twilio import TwilioFlexService
 
 
-class TwilioFlexWebhookView(GenericAPIView):
+class TwilioFlexDeliveryWebhookView(GenericAPIView):
     """
     Twilio `Make HTTP Request` widget status logic:
     - 200 or 204 (success)
@@ -23,15 +25,14 @@ class TwilioFlexWebhookView(GenericAPIView):
 
     permission_classes = [AllowAny]
     parser_classes = [FormParser, JSONParser]
-    serializer_class = TwilioFlexWebhookSerializer
+    serializer_class = TwilioFlexDeliveryWebhookSerializer
 
     def post(self, request: Request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data, context={"request": request})
         serializer.is_valid(raise_exception=True)
 
         message = serializer.validated_data["message"]
-        raw_phone = serializer.validated_data["phone"]
-        phone = get_clean_number(raw_phone)
+        phone = serializer.validated_data["phone"]
 
         service = TwilioFlexService(message, phone)
 
@@ -57,5 +58,30 @@ class TwilioFlexWebhookView(GenericAPIView):
                 "event": settings.TWILIO_FAIL,
                 "code": error_detail.code,
             }
+
+        return Response(data=body, status=HTTP_200_OK)
+
+
+class TwilioFlexOnlineWorkersWebhookView(GenericAPIView):
+    """
+    Twilio `Make HTTP Request` widget status logic:
+    - 200 or 204 (success)
+    - 3xx (redirect)
+    - 4xx or 5xx (fail)
+    """
+
+    permission_classes = [AllowAny]
+    parser_classes = [FormParser, JSONParser]
+    serializer_class = TwilioFlexOnlineWorkersWebhookSerializer
+
+    def post(self, request: Request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data, context={"request": request})
+        serializer.is_valid(raise_exception=True)
+
+        sid = serializer.validated_data["sid"]
+
+        service = TwilioFlexService()
+        is_workers_online = service.is_workers_online(sid)
+        body = {"online": is_workers_online}
 
         return Response(data=body, status=HTTP_200_OK)

@@ -41,7 +41,10 @@ auth_urls = (
 
 sms_urls = (
     [
-        path("twilio_webhook/", twilio.TwilioFlexWebhookView.as_view(), name="flex-webhook"),
+        path("delivery/", twilio.TwilioFlexDeliveryWebhookView.as_view(), name="delivery"),
+        path(
+            "online_workers/", twilio.TwilioFlexOnlineWorkersWebhookView.as_view(), name="workers"
+        ),
     ],
     "sms",
 )

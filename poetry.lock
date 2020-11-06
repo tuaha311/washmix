@@ -733,14 +733,6 @@ optional = false
 python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
 
 [[package]]
-name = "pysocks"
-version = "1.7.1"
-description = "A Python SOCKS client module. See https://github.com/Anorov/PySocks for more information."
-category = "main"
-optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-
-[[package]]
 name = "pytest"
 version = "5.4.3"
 description = "pytest: simple powerful testing with Python"
@@ -1052,7 +1044,7 @@ python-versions = "*"
 
 [[package]]
 name = "twilio"
-version = "6.19.2"
+version = "6.47.0"
 description = "Twilio API client and TwiML generator"
 category = "main"
 optional = false
@@ -1060,7 +1052,6 @@ python-versions = "*"
 
 [package.dependencies]
 PyJWT = ">=1.4.2"
-pysocks = {version = "*", markers = "python_version >= \"3.0\""}
 pytz = "*"
 requests = {version = ">=2.0.0", markers = "python_version >= \"3.0\""}
 six = "*"
@@ -1143,7 +1134,7 @@ testing = ["jaraco.itertools", "func-timeout"]
 [metadata]
 lock-version = "1.1"
 python-versions = "~3.7"
-content-hash = "62ff3e5cc4aa16af14daa937222b72d6327c484b69510d00016584fc4b3b665b"
+content-hash = "55a1c17e3fc2963b2e79727946420008522a52b1a28865f4c26cc7b057adba2b"
 
 [metadata.files]
 appdirs = [
@@ -1567,11 +1558,6 @@ pyparsing = [
     {file = "pyparsing-2.4.7-py2.py3-none-any.whl", hash = "sha256:ef9d7589ef3c200abe66653d3f1ab1033c3c419ae9b9bdb1240a85b024efc88b"},
     {file = "pyparsing-2.4.7.tar.gz", hash = "sha256:c203ec8783bf771a155b207279b9bccb8dea02d8f0c9e5f8ead507bc3246ecc1"},
 ]
-pysocks = [
-    {file = "PySocks-1.7.1-py27-none-any.whl", hash = "sha256:08e69f092cc6dbe92a0fdd16eeb9b9ffbc13cadfe5ca4c7bd92ffb078b293299"},
-    {file = "PySocks-1.7.1-py3-none-any.whl", hash = "sha256:2725bd0a9925919b9b51739eea5f9e2bae91e83288108a9ad338b2e3a4435ee5"},
-    {file = "PySocks-1.7.1.tar.gz", hash = "sha256:3f8804571ebe159c380ac6de37643bb4685970655d3bba243530d6558b799aa0"},
-]
 pytest = [
     {file = "pytest-5.4.3-py3-none-any.whl", hash = "sha256:5c0db86b698e8f170ba4582a492248919255fcd4c79b1ee64ace34301fb589a1"},
     {file = "pytest-5.4.3.tar.gz", hash = "sha256:7979331bfcba207414f5e1263b5a0f8f521d0f457318836a7355531ed1a4c7d8"},
@@ -1721,8 +1707,7 @@ toml = [
     {file = "toml-0.10.1.tar.gz", hash = "sha256:926b612be1e5ce0634a2ca03470f95169cf16f939018233a670519cb4ac58b0f"},
 ]
 twilio = [
-    {file = "twilio-6.19.2-py2.py3-none-any.whl", hash = "sha256:372db8745c923c59ba9c48e44d359e81029bc6be0a6dffd1f1d299406691b1f2"},
-    {file = "twilio-6.19.2.tar.gz", hash = "sha256:c8844de8e1b3e653d970e9f13925de148d13dd78d865a07c91833fd74135e8a4"},
+    {file = "twilio-6.47.0.tar.gz", hash = "sha256:effb4d6e9e9a9069065fbe21dea844597376ae6d6333626f14b05ba6b35bbb22"},
 ]
 typed-ast = [
     {file = "typed_ast-1.4.1-cp35-cp35m-manylinux1_i686.whl", hash = "sha256:73d785a950fc82dd2a25897d525d003f6378d1cb23ab305578394694202a58c3"},

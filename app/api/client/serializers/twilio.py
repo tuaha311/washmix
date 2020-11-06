@@ -164,7 +164,7 @@ Raw webhook data example:
 """
 
 
-class TwilioFlexWebhookSerializer(serializers.Serializer):
+class TwilioFlexDeliveryWebhookSerializer(serializers.Serializer):
     """
     Request data from Twilio Flex Widget.
     Pretty form:
@@ -179,3 +179,11 @@ class TwilioFlexWebhookSerializer(serializers.Serializer):
 
     message = serializers.CharField()
     phone = serializers.CharField()
+
+
+class TwilioFlexOnlineWorkersWebhookSerializer(serializers.Serializer):
+    """
+    Request data from Twilio Flex Widget.
+    """
+
+    sid = serializers.CharField()
