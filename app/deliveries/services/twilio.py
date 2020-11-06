@@ -13,9 +13,12 @@ from users.models import Client, Customer
 
 class TwilioFlexService:
     def __init__(self, message: str = None, phone: str = None) -> None:
-        self._message = message
-        self._phone = get_clean_number(phone)
         self._twilio_client = TwilioClient(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
+        self._message = message
+
+        if phone:
+            phone = get_clean_number(phone)
+        self._phone = phone
 
     def create_request(self) -> Request:
         """
