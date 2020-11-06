@@ -1,18 +1,1 @@
 {% extends "admin/base.html" %}
-{% load i18n admin_urls %}
-{% block userlinks %}
-    {% if site_url %}
-                <a href="{{ site_url }}">{% trans 'View site' %}</a> /
-                {% endif %}
-                {% if user.is_active and user.is_staff %}
-                    {% url 'django-admindocs-docroot' as docsroot %}
-                    {% if docsroot %}
-                        <a href="{{ docsroot }}">{% trans 'Documentation' %}</a> /
-                    {% endif %}
-                {% endif %}
-                {% if user.has_usable_password %}
-                <a href="{% url 'pos:password_change' %}">{% trans 'Change password' %}</a> /
-                {% endif %}
-                <a href="{% url 'pos:password_reset' %}">{%  trans 'Reset Password' %}</a> /
-                <a href="{% url 'pos:logout' %}">{% trans 'Log out' %}</a>
-{% endblock %}
