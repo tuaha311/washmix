@@ -1,5 +1,34 @@
 # Release Notes
 
+## v1.7 (09.11.2020)
+* Client.billing_address changed from `ForeignKey` to `JSONField`
+* Added `Customer.address`, `Customer.full_name` fields
+* Added `credit_back`, `dollar_credit_back` on OrderContainer
+* Added REST API permissions:
+  - `IsClient`
+  - `IsEmployee`
+* URL namespace changes:
+  - `client` added
+  - `driver` added
+  - `pos` added
+  - `v1.0` removed
+* Added `Order.coupon`, `Order.subscription`
+* Changed implementation of services:
+  - `SubscriptionService`
+  - `OrderService`
+  - `CouponService`
+  - `BasketService`
+* Migrations regenerated
+* `api` subpackage reorganization
+* Added new endpoint `/pos/requests/choose/`
+* Update Twilio Flex integration
+* Added new Customer kind - `STORAGE`
+* Added new containers:
+  - `DeliveryContainer`
+  - `RequestContainer`
+* Added `TwilioFlexOnlineWorkersWebhookView`
+
+
 ## v1.6 (26.10.2020)
 * Added `v1` views, serializer per application
 * `URLconf`'s now moved into applications
