@@ -27,6 +27,7 @@
   - `DeliveryContainer`
   - `RequestContainer`
 * Added `TwilioFlexOnlineWorkersWebhookView`
+* Added new templates for admin
 
 
 ## v1.6 (26.10.2020)
