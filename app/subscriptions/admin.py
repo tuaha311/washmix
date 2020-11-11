@@ -1,7 +1,7 @@
 from django.contrib import admin
 
-from subscriptions.models import Package, Subscription
+from subscriptions.models import Package
 
-models = [Subscription, Package]
+models = [Package]
 for item in models:
     admin.site.register(item)

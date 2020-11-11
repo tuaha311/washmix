@@ -26,16 +26,15 @@ ALLOWED_HOSTS = ["*"]
 
 SECRET_KEY = env.str("SECRET_KEY")
 
-DJANGO_APPS = [
+INSTALLED_APPS = [
+    # django
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-]
-
-THIRD_PARTY_APPS = [
+    # third party
     "rest_framework",
     "djoser",
     "social_django",
@@ -43,10 +42,7 @@ THIRD_PARTY_APPS = [
     "swap_user.named_email",
     "drf_yasg",
     "djangoql",
-]
-
-LOCAL_APPS = [
-    "core",
+    # local
     "orders",
     "users",
     "billing",
@@ -54,9 +50,9 @@ LOCAL_APPS = [
     "notifications",
     "deliveries",
     "subscriptions",
+    # inside core app we are unregistering some models
+    "core",
 ]
-
-INSTALLED_APPS = LOCAL_APPS + THIRD_PARTY_APPS + DJANGO_APPS
 
 
 DATABASES = {

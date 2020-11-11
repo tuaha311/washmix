@@ -1,8 +1,9 @@
 from django.contrib import admin
+from django.contrib.admin.sites import NotRegistered
+from django.contrib.auth.models import Group, Permission
 
 from djangoql.admin import DjangoQLSearchMixin
-
-from core.models import Phone
+from social_django.models import Association, Nonce, UserSocialAuth
 
 admin.site.site_header = "Washmix"
 admin.site.site_title = "washmix.com"
@@ -13,6 +14,13 @@ class DefaultAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
     pass
 
 
-models = [[Phone, DefaultAdmin]]
-for item in models:
+registered_models = []
+for item in registered_models:
     admin.site.register(*item)
+
+unregistered_models = [Group, Permission, Association, Nonce, UserSocialAuth]
+for item in unregistered_models:
+    try:
+        admin.site.unregister(item)
+    except NotRegistered:
+        continue
