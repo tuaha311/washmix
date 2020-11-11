@@ -6,11 +6,7 @@ from orders.models import Basket, Item, Order, Price, Service
 
 class OrderAdmin(DefaultAdmin):
     class Media:
-        js = (
-            "https://washmix.evrone.app/admin-static/static/js/main.a621e94d.chunk.js",
-            "https://washmix.evrone.app/admin-static/static/js/runtime-main.64509596.js",
-            "https://washmix.evrone.app/admin-static/static/js/2.a9eced89.chunk.js",
-        )
+        js = ("https://washmix.evrone.app/admin-static/static/js/main.js",)
 
 
 models = [
