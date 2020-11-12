@@ -85,6 +85,7 @@ pytest-django = "^3.10.0"
 periodiq = "^0.12.1"
 djangoql = "^0.14.2"
 redis = "^3.5.3"
+django-jet = "^1.0.8"
 
 
 [tool.poetry.dev-dependencies]

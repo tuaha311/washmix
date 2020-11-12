@@ -205,6 +205,17 @@ python-versions = ">=3.5"
 Django = ">=2.2"
 
 [[package]]
+name = "django-jet"
+version = "1.0.8"
+description = "Modern template for Django admin interface with improved functionality"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+Django = "*"
+
+[[package]]
 name = "django-robots"
 version = "3.1.0"
 description = "Robots exclusion application for Django, complementing Sitemaps."
@@ -1134,7 +1145,7 @@ testing = ["jaraco.itertools", "func-timeout"]
 [metadata]
 lock-version = "1.1"
 python-versions = "~3.7"
-content-hash = "55a1c17e3fc2963b2e79727946420008522a52b1a28865f4c26cc7b057adba2b"
+content-hash = "f41538598ed8f5aa981218911fbb4a1eef73937810da7102e55f7adb96ccecd5"
 
 [metadata.files]
 appdirs = [
@@ -1258,6 +1269,9 @@ django = [
 django-filter = [
     {file = "django-filter-2.3.0.tar.gz", hash = "sha256:11e63dd759835d9ba7a763926ffb2662cf8a6dcb4c7971a95064de34dbc7e5af"},
     {file = "django_filter-2.3.0-py3-none-any.whl", hash = "sha256:616848eab6fc50193a1b3730140c49b60c57a3eda1f7fc57fa8505ac156c6c75"},
+]
+django-jet = [
+    {file = "django-jet-1.0.8.tar.gz", hash = "sha256:f521dc0873023afa198d2b57687e0593ee62022bd50fa59506dfce69b101cd9e"},
 ]
 django-robots = [
     {file = "django-robots-3.1.0.tar.gz", hash = "sha256:59baa054fc38751f1d6a38e873e0a7e431b646b5ee757534544da05c3873a213"},

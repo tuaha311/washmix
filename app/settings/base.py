@@ -27,13 +27,6 @@ ALLOWED_HOSTS = ["*"]
 SECRET_KEY = env.str("SECRET_KEY")
 
 INSTALLED_APPS = [
-    # django
-    "django.contrib.admin",
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
-    "django.contrib.staticfiles",
     # third party
     "rest_framework",
     "djoser",
@@ -42,6 +35,16 @@ INSTALLED_APPS = [
     "swap_user.named_email",
     "drf_yasg",
     "djangoql",
+    # django-jet has custom admin theme and should
+    # be at higher place than django.contrib.admin
+    "jet",
+    # django
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
     # local
     "orders",
     "users",
@@ -51,6 +54,8 @@ INSTALLED_APPS = [
     "deliveries",
     "subscriptions",
     # inside core app we are unregistering some models
+    # it should be lower that other apps to be last application and apply
+    # last changes for admin
     "core",
 ]
 
@@ -476,3 +481,10 @@ EMAIL_EVENT_INFO = {
 ####################
 
 SWAP_USER = {"EMAIL_USER_ABSTRACT_BASE_CLASS": "swap_user.models.email.AbstractNamedEmailUser"}
+
+
+##############
+# DJANGO-JET #
+##############
+
+JET_SIDE_MENU_COMPACT = True
