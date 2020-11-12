@@ -1,6 +1,6 @@
 from unittest.mock import MagicMock
 
-from deliveries.containers import RequestContainer
+from deliveries.containers.delivery import DeliveryContainer
 from subscriptions.choices import Package
 
 
@@ -21,7 +21,7 @@ def test_payc_small_load():
 
     for basket_amount, delivery_amount, delivery_discount in amount_list:
         basket.amount = basket_amount
-        container = RequestContainer(subscription, delivery, basket)
+        container = DeliveryContainer(subscription, delivery, basket)
         assert container.amount == delivery_amount
         assert container.discount == delivery_discount
 
@@ -40,7 +40,7 @@ def test_payc_medium_load():
 
     for basket_amount, delivery_amount, delivery_discount in amount_list:
         basket.amount = basket_amount
-        container = RequestContainer(subscription, delivery, basket)
+        container = DeliveryContainer(subscription, delivery, basket)
         assert container.amount == delivery_amount
         assert container.discount == delivery_discount
 
@@ -58,7 +58,7 @@ def test_payc_free():
 
     for basket_amount, delivery_amount, delivery_discount in amount_list:
         basket.amount = basket_amount
-        container = RequestContainer(subscription, delivery, basket)
+        container = DeliveryContainer(subscription, delivery, basket)
         assert container.amount == delivery_amount
         assert container.discount == delivery_discount
 
@@ -80,7 +80,7 @@ def test_gold_small_load():
 
     for basket_amount, delivery_amount, delivery_discount in amount_list:
         basket.amount = basket_amount
-        container = RequestContainer(subscription, delivery, basket)
+        container = DeliveryContainer(subscription, delivery, basket)
         assert container.amount == delivery_amount
         assert container.discount == delivery_discount
 
@@ -99,7 +99,7 @@ def test_gold_medium_load():
 
     for basket_amount, delivery_amount, delivery_discount in amount_list:
         basket.amount = basket_amount
-        container = RequestContainer(subscription, delivery, basket)
+        container = DeliveryContainer(subscription, delivery, basket)
         assert container.amount == delivery_amount
         assert container.discount == delivery_discount
 
@@ -117,7 +117,7 @@ def test_gold_free():
 
     for basket_amount, delivery_amount, delivery_discount in amount_list:
         basket.amount = basket_amount
-        container = RequestContainer(subscription, delivery, basket)
+        container = DeliveryContainer(subscription, delivery, basket)
         assert container.amount == delivery_amount
         assert container.discount == delivery_discount
 
@@ -139,7 +139,7 @@ def test_platinum_small_load():
 
     for basket_amount, delivery_amount, delivery_discount in amount_list:
         basket.amount = basket_amount
-        container = RequestContainer(subscription, delivery, basket)
+        container = DeliveryContainer(subscription, delivery, basket)
         assert container.amount == delivery_amount
         assert container.discount == delivery_discount
 
@@ -158,7 +158,7 @@ def test_platinum_medium_load():
 
     for basket_amount, delivery_amount, delivery_discount in amount_list:
         basket.amount = basket_amount
-        container = RequestContainer(subscription, delivery, basket)
+        container = DeliveryContainer(subscription, delivery, basket)
         assert container.amount == delivery_amount
         assert container.discount == delivery_discount
 
@@ -176,6 +176,6 @@ def test_platinum_free():
 
     for basket_amount, delivery_amount, delivery_discount in amount_list:
         basket.amount = basket_amount
-        container = RequestContainer(subscription, delivery, basket)
+        container = DeliveryContainer(subscription, delivery, basket)
         assert container.amount == delivery_amount
         assert container.discount == delivery_discount
