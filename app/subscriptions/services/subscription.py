@@ -79,7 +79,7 @@ class SubscriptionService:
             card_service.update_main_card(self._client, card)
             return payment
 
-        payment_service.charge()
+        return payment_service.charge()
 
     def finalize(self, order: Order) -> Optional[Subscription]:
         """
