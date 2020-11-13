@@ -35,7 +35,10 @@ INSTALLED_APPS = [
     "swap_user.to_named_email",
     "drf_yasg",
     "djangoql",
-    # django-jet has custom admin theme and should
+    # `other` app extends `base_site.html` from `django-jet` to
+    # inject React root
+    "other",
+    # `django-jet` has custom admin theme and should
     # be at higher place than django.contrib.admin
     "jet",
     # django
