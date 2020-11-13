@@ -32,7 +32,7 @@ INSTALLED_APPS = [
     "djoser",
     "social_django",
     "swap_user",
-    "swap_user.named_email",
+    "swap_user.to_named_email",
     "drf_yasg",
     "djangoql",
     # django-jet has custom admin theme and should
@@ -160,7 +160,7 @@ EMAIL_HOST_PASSWORD = env.str("SENDGRID_API_KEY", "")
 EMAIL_PORT = 587
 
 
-AUTH_USER_MODEL = "swap_user_named_email.NamedEmailUser"
+AUTH_USER_MODEL = "to_named_email.NamedEmailUser"
 
 
 #####################################
@@ -474,13 +474,6 @@ EMAIL_EVENT_INFO = {
         "from_email": "security@washmix.com",
     },
 }
-
-
-####################
-# DJANGO-SWAP-USER #
-####################
-
-SWAP_USER = {"EMAIL_USER_ABSTRACT_BASE_CLASS": "swap_user.models.email.AbstractNamedEmailUser"}
 
 
 ##############

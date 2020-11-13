@@ -1,6 +1,6 @@
 [
   {
-    "model": "swap_user_named_email.namedemailuser",
+    "model": "to_named_email.namedemailuser",
     "pk": 1,
     "fields": {
       "password": "pbkdf2_sha256$150000$Pq9VdD5eOgnW$Kl/iK9xJAVHd+u5t9d2mcHqs/Ee15IDIC6MqjOtEdWU=",
@@ -16,7 +16,7 @@
     }
   },
   {
-    "model": "swap_user_named_email.namedemailuser",
+    "model": "to_named_email.namedemailuser",
     "pk": 2,
     "fields": {
       "password": "pbkdf2_sha256$150000$GtGvVX8LG7YO$c7sFjR179wE4QC7SsNpIbMIyLE9GUD9/vqzldUu+4Bo=",
@@ -32,7 +32,7 @@
     }
   },
   {
-    "model": "swap_user_named_email.namedemailuser",
+    "model": "to_named_email.namedemailuser",
     "pk": 3,
     "fields": {
       "password": "pbkdf2_sha256$150000$NsS1SlOL6qnU$TAW6sm7S8VSllhLKpIIbm5UdJ6xjQ6xjeFHdXrTOKVw=",
@@ -48,7 +48,7 @@
     }
   },
   {
-    "model": "swap_user_named_email.namedemailuser",
+    "model": "to_named_email.namedemailuser",
     "pk": 4,
     "fields": {
       "password": "pbkdf2_sha256$150000$OdLNprvGdgKM$ekYO6IHcyp6kPFEWxTXiGgvw4r2wM3cDn6dZPKEVhcc=",
@@ -64,7 +64,7 @@
     }
   },
   {
-    "model": "swap_user_named_email.namedemailuser",
+    "model": "to_named_email.namedemailuser",
     "pk": 5,
     "fields": {
       "password": "pbkdf2_sha256$150000$omzdavRTSGop$JcxDkJyv6CKe3wxbyEpekrEMyhUFsa1iQJVB5kgsnlQ=",
