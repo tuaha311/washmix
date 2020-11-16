@@ -379,7 +379,7 @@
                                       text-align: left;
                                     "
                                   >
-                                    Hello{% if full_name %} {{ full_name }}{% endif %}, Welcome to WashMix
+                                    Hello{% if client.full_name %} {{ client.full_name }}{% endif %}, Welcome to WashMix
                                   </td>
                                 </tr>
                                 <tr>
@@ -764,7 +764,7 @@
                                     "
                                   >
                                     This message was sent to
-                                    {{ email }} by WashMix.
+                                    {{ client.email }} by WashMix.
                                   </td>
                                 </tr>
                                 <tr>

@@ -6,8 +6,9 @@ from orders.choices import Status
 from subscriptions.services.subscription import SubscriptionService
 
 
+@patch("subscriptions.services.subscription.send_email")
 @patch("subscriptions.services.subscription.atomic")
-def test_payc_gold_platinum_subscription(atomic_mock):
+def test_payc_gold_platinum_subscription(atomic_mock, send_email_mock):
     client = MagicMock()
     order = MagicMock()
     subscription = MagicMock()
@@ -23,3 +24,5 @@ def test_payc_gold_platinum_subscription(atomic_mock):
 
         assert client.subscription.name == item
         assert order.status == Status.PAID
+
+    send_email_mock.send.assert_called()

@@ -6,6 +6,7 @@ class WashmixEmailContext:
     facebook_url = settings.FACEBOOK_URL
     twitter_url = settings.TWITTER_URL
     domain = settings.DOMAIN
+    phone_number = settings.PHONE_NUMBER
 
 
 email_context = WashmixEmailContext()

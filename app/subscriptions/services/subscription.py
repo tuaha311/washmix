@@ -8,6 +8,7 @@ from stripe import PaymentMethod
 from billing.models import Invoice
 from billing.services.card import CardService
 from billing.services.payments import PaymentService
+from notifications.tasks import send_email
 from orders.choices import Status
 from orders.containers.order import OrderContainer
 from orders.models import Order
@@ -87,6 +88,7 @@ class SubscriptionService:
         """
 
         subscription = order.subscription
+        self._subscription = subscription
 
         with atomic():
             order.status = Status.PAID
@@ -98,7 +100,24 @@ class SubscriptionService:
             self._client.subscription = subscription
             self._client.save()
 
+        self.notify_on_purchase_of_advantage_program()
+
         return subscription
+
+    def notify_on_purchase_of_advantage_program(self):
+        client_id = self._client.id
+        subscription = self._subscription
+
+        if subscription.name not in [settings.GOLD, settings.PLATINUM]:
+            return None
+
+        send_email.send(
+            client_id=client_id,
+            event=settings.PURCHASE_SUBSCRIPTION_GOLD_PLATINUM,
+            extra_context={
+                "subscription_id": subscription.id,
+            },
+        )
 
     def _get_order_service(self, subscription: Subscription):
         client = self._client

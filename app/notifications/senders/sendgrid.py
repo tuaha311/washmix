@@ -14,6 +14,8 @@ class SendGridSender(Sender):
     def raw_send(
         self, from_email: str, recipient_list: list, subject: str, html_content: str
     ) -> None:
+        recipient_list = [To(item) for item in recipient_list]
+
         mail = Mail(
             from_email=from_email,
             to_emails=recipient_list,
@@ -31,7 +33,6 @@ class SendGridSender(Sender):
         template_name = event_info["template_name"]
         from_email = event_info.get("from_email", settings.SENDGRID_FROM_EMAIL)
 
-        recipient_list = [To(item) for item in recipient_list]
         html_content = render_to_string(template_name, context=context)
 
         self.raw_send(

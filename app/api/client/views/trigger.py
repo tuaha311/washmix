@@ -2,7 +2,7 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
-from core.tasks import worker_health
+from notifications.tasks import worker_health
 
 
 class TriggerView(GenericAPIView):

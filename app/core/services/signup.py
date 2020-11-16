@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.db.transaction import atomic
 
 from billing.stripe_helper import StripeHelper
-from core.tasks import send_email
+from notifications.tasks import send_email
 from users.models import Client
 
 User = get_user_model()
@@ -13,12 +13,11 @@ class SignupService:
     def signup(self, email, password, phone) -> Client:
         with atomic():
             client = Client.objects.create_client(email, password, phone)
-            full_name = client.full_name
+            client_id = client.id
 
             send_email.send(
-                email=client.email,
+                client_id=client_id,
                 event=settings.SIGNUP,
-                full_name=full_name,
             )
 
             stripe_helper = StripeHelper(client)

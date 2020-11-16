@@ -3,7 +3,7 @@ from django.conf import settings
 from djoser import email
 from templated_mail.mail import BaseEmailMessage
 
-from core.tasks import raw_send_email
+from notifications.tasks import raw_send_email
 
 
 class SendGridEmail(BaseEmailMessage):

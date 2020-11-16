@@ -183,9 +183,9 @@ PAYC = "payc"
 GOLD = "gold"
 PLATINUM = "platinum"
 PACKAGE_NAME_MAP = {
-    PAYC: "PAYC",
-    GOLD: "GOLD",
-    PLATINUM: "PLATINUM",
+    PAYC: "Pay As You Clean",
+    GOLD: "Gold Account",
+    PLATINUM: "Platinum Account",
 }
 PACKAGE_NAME_CHOICES = list(PACKAGE_NAME_MAP.items())
 
@@ -282,6 +282,7 @@ CREDIT_BACK_PERIOD = 90
 TWITTER_URL = "https://twitter.com/mix_wash/"
 INSTAGRAM_URL = "https://www.instagram.com/washmix/"
 FACEBOOK_URL = "https://www.facebook.com/WASHMIXOriginal/"
+PHONE_NUMBER = "415-993-9724"
 
 
 #########################
@@ -466,6 +467,7 @@ SENDGRID_API_KEY = env.str("SENDGRID_API_KEY", "")
 
 SIGNUP = "signup"
 FORGOT_PASSWORD = "forgot_password"
+PURCHASE_SUBSCRIPTION_GOLD_PLATINUM = "purchase_subscription_gold_platinum"
 EMAIL_EVENT_INFO = {
     SIGNUP: {
         "template_name": "welcome.html",
@@ -475,6 +477,11 @@ EMAIL_EVENT_INFO = {
     FORGOT_PASSWORD: {
         "subject": "Password Reset",
         "from_email": "security@washmix.com",
+    },
+    PURCHASE_SUBSCRIPTION_GOLD_PLATINUM: {
+        "template_name": "purchase_gold_platinum.html",
+        "subject": "Welcome to WashMix AdvantageProgram",
+        "from_email": "advantage@washmix.com",
     },
 }
 
