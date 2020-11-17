@@ -468,6 +468,7 @@ SENDGRID_API_KEY = env.str("SENDGRID_API_KEY", "")
 SIGNUP = "signup"
 FORGOT_PASSWORD = "forgot_password"
 PURCHASE_SUBSCRIPTION_GOLD_PLATINUM = "purchase_subscription_gold_platinum"
+NEW_REQUEST = "new_request"
 EMAIL_EVENT_INFO = {
     SIGNUP: {
         "template_name": "welcome.html",
@@ -480,8 +481,13 @@ EMAIL_EVENT_INFO = {
     },
     PURCHASE_SUBSCRIPTION_GOLD_PLATINUM: {
         "template_name": "purchase_gold_platinum.html",
-        "subject": "Welcome to WashMix AdvantageProgram",
+        "subject": "Welcome to WashMix Advantage Program",
         "from_email": "advantage@washmix.com",
+    },
+    NEW_REQUEST: {
+        "template_name": "new_request.html",
+        "subject": "New Request Pickup",
+        "from_email": "request@washmix.com",
     },
 }
 
