@@ -1,52 +1,28 @@
-<div>
-  Dear {{ client.full_name }}
-  Welcome to ​Washmix.com​ & W​ashMix Advantage Program​™. To log in when visiting our site just click <a href="https://{{ washmix.domain }}/login">L​ogin</a>​ in our website and enter your email address and password.
-</div>
+{% extends "base_email.html" %}
 
-<div>
-  Basic Instruction:
-  - For the first time, please place garments inside a bag and leave outside of your door for pick-up.
-  - NO​ need to separate laundry from Dry Cleaning.
-  - IF​ Wash-&-Fold, please indicate with a note inside your bag. [​Note​: Wash-&-Folds will need to be in a separate bag].
-  - If you have any special delivery request
-  - (i.e. k​ nock on the door, do not ring the bell - OR - delivery and place in the backyard not the front door ...)​ ​Please be sure to write all in the Delivery Instruction section.
-  - You will receive your W​elcome Box™ a​ fter we deliver back your cleaned clothes. PLEASE NOTE​: If in a gated community, we'll need access code to promptly deliver your items.
-</div>
+{% block extra_header %}
+   & W​ashMix Advantage Program​™
+{% endblock %}
 
-<div>
-  Welcome Box™:
-  After receiving your first order, we’ll send back your items with your unique ​Welcome Box™ containing the material and extra laundry and Garment Bags for future usage.
-</div>
+{% block content %}
+  <br>
+  <div>
+    Welcome Box™:
+    <br>
+    After receiving your first order, we’ll send back your items with your unique ​Welcome Box™ containing the material and extra laundry and Garment Bags for future usage.
+  </div>
 
-<div>
-  When you log in to your account, you will be able to do the following:
-  ● View order history
-  ● Make changes to your account & personal detail
-  ● Change your password
-  ● Set your preferences
-</div>
+  <br>
+  <div>
+    WashMix Advantage Program​™:
+    <br>
+    You have signed up for the {{ subscription_container.get_name_display }}​ ​and as of today have ${{ subscription_container.dollar_amount }}​ ​available credit to use. Don’t forget, these credits:
+    <ul>
+      <li>Never Expires</li>
+    </ul>
+  </div>
 
-<div>
-  WashMix Advantage Program​™
-  You have signed up for the {{ subscription_container.get_name_dispay }}​ ​and as of today have ${{ subscription_container.dollar_amount }}​ ​available credit to use. Don’t forget, these credits:
-  - Never Expires
-</div>
-
-<div>
-  Simply use and when you’re done with your available credit, reload your account and continue.
-</div>
-
-<div>
-  SMS [Text]: ​Save this Phone Number {{ washmix.phone_number }}
-  - To schedule your Next Pickup, simply send a request to this number via text
-  - [​Text & Data charges may/will be applied by your service provider]​ - Commands
-  - To Request a Pickup → Text “​Pickup” - Cut Off time
-  - Monday-Saturday
-  - Text sent ​BEFORE 9​ am [​Same-Day Pickup]
-  - Text sent ​AFTER ​9am ​[Next-Day Pickup]
-</div>
-
-<div>
-  If you have any questions about your account or any other matter, please feel free to contact us at ​<a href="mailto:cs@washmix.com">cs@washmix.com</a>.​ OR call us directly at 4​ 15-993-WASH [9724]
-</div>
-
+  <div>
+    Simply use and when you’re done with your available credit, reload your account and continue.
+  </div>
+{% endblock %}
