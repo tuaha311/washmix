@@ -107,6 +107,7 @@ class SubscriptionService:
     def notify_on_purchase_of_advantage_program(self):
         client_id = self._client.id
         subscription = self._subscription
+        subscription_id = subscription.id
 
         if subscription.name not in [settings.GOLD, settings.PLATINUM]:
             return None
@@ -115,7 +116,7 @@ class SubscriptionService:
             client_id=client_id,
             event=settings.PURCHASE_SUBSCRIPTION_GOLD_PLATINUM,
             extra_context={
-                "subscription_id": subscription.id,
+                "subscription_id": subscription_id,
             },
         )
 

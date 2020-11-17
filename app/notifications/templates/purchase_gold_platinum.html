@@ -5,18 +5,24 @@
 {% endblock %}
 
 {% block content %}
-<div>
-  Welcome Box™:
-  After receiving your first order, we’ll send back your items with your unique ​Welcome Box™ containing the material and extra laundry and Garment Bags for future usage.
-</div>
+  <br>
+  <div>
+    Welcome Box™:
+    <br>
+    After receiving your first order, we’ll send back your items with your unique ​Welcome Box™ containing the material and extra laundry and Garment Bags for future usage.
+  </div>
 
-<div>
-  WashMix Advantage Program​™
-  You have signed up for the {{ subscription_container.get_name_dispay }}​ ​and as of today have ${{ subscription_container.dollar_amount }}​ ​available credit to use. Don’t forget, these credits:
-  - Never Expires
-</div>
+  <br>
+  <div>
+    WashMix Advantage Program​™:
+    <br>
+    You have signed up for the {{ subscription_container.get_name_display }}​ ​and as of today have ${{ subscription_container.dollar_amount }}​ ​available credit to use. Don’t forget, these credits:
+    <ul>
+      <li>Never Expires</li>
+    </ul>
+  </div>
 
-<div>
-  Simply use and when you’re done with your available credit, reload your account and continue.
-</div>
+  <div>
+    Simply use and when you’re done with your available credit, reload your account and continue.
+  </div>
 {% endblock %}
