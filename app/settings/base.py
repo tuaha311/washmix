@@ -469,6 +469,7 @@ SIGNUP = "signup"
 FORGOT_PASSWORD = "forgot_password"
 PURCHASE_SUBSCRIPTION_GOLD_PLATINUM = "purchase_subscription_gold_platinum"
 NEW_REQUEST = "new_request"
+NEW_ORDER = "new_order"
 EMAIL_EVENT_INFO = {
     SIGNUP: {
         "template_name": "welcome.html",
@@ -488,6 +489,11 @@ EMAIL_EVENT_INFO = {
         "template_name": "new_request.html",
         "subject": "New Request Pickup",
         "from_email": "request@washmix.com",
+    },
+    NEW_ORDER: {
+        "template_name": "new_order.html",
+        "subject": "New Order",
+        "from_email": "order@washmix.com",
     },
 }
 

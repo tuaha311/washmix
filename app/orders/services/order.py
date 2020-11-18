@@ -1,5 +1,6 @@
 from typing import List
 
+from django.conf import settings
 from django.db.transaction import atomic
 
 from billing.choices import Purpose
@@ -8,9 +9,9 @@ from billing.services.coupon import CouponService
 from billing.services.invoice import InvoiceService
 from billing.services.payments import PaymentService
 from deliveries.choices import Kind
-from deliveries.containers.delivery import DeliveryContainer
 from deliveries.containers.request import RequestContainer
 from deliveries.models import Request
+from notifications.tasks import send_email
 from orders.choices import Status
 from orders.containers.basket import BasketContainer
 from orders.containers.order import OrderContainer
@@ -41,6 +42,10 @@ class OrderService:
         with atomic():
             for invoice in invoice_list:
                 self.charge(invoice)
+
+        self._order = order
+
+        return self.get_container()
 
     def create_basket_invoice(
         self,
@@ -157,6 +162,8 @@ class OrderService:
         payment_service.charge()
 
     def finalize(self, order: Order) -> Order:
+        self._order = order
+
         with atomic():
             order.status = Status.PAID
 
@@ -164,7 +171,21 @@ class OrderService:
                 order.card = self._client.main_card
                 order.save()
 
+        self.notify_on_new_order()
+
         return order
+
+    def notify_on_new_order(self):
+        client_id = self._client.id
+        order_id = self._order.id
+
+        send_email.send(
+            client_id=client_id,
+            event=settings.NEW_ORDER,
+            extra_context={
+                "order_id": order_id,
+            },
+        )
 
     @property
     def order(self):

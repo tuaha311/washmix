@@ -1,0 +1,97 @@
+{% extends "base_email.html" %}
+
+{% block extra_style %}
+  <style>
+    #order-table, #basket-table {
+      width: 100%;
+    }
+
+    #order-table th {
+      width: 25%;
+    }
+
+    #basket-table th {
+      width: 25%;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+  <style>
+
+  </style>
+
+  {% with basket_container=order_container.basket %}
+    <br>
+    <div>
+      Your invoice for Order #{{ order_container.id }}
+    </div>
+
+    <div id="order-wrapper">
+      <table id="order-table">
+        <tr>
+          <th>Billing Information</th>
+          <th>Payment Method</th>
+          <th>Delivery Information</th>
+          <th>Pickup & Delivery Method</th>
+        </tr>
+
+        <tr>
+          <td>
+            <div id="billing-information">
+              <p>{{ client.full_name }}</p>
+              <p>{{ client.pretty_billing_address }}</p>
+            </div>
+          </td>
+          <td>
+            <div id="payment-method">
+              <p>**** {{ client.main_card.last }}</p>
+              <p>{{ client.main_card.expiration_month }}/{{ client.main_card.expiration_year }}</p>
+            </div>
+          </td>
+          <td>
+            <div id="delivery-information">
+              <p>{{ client.full_name }}</p>
+              <p>{{ order_container.request.address.zip_code.value }}</p>
+              <p>{{ order_container.request.address.address_line_1 }}</p>
+              <p>{{ order_container.request.address.address_line_2 }}</p>
+              <p>{{ client.main_phone.number }}</p>
+            </div>
+          </td>
+          <td>
+            <div id="pickup-delivery-method">
+              Door-to-Door Service:
+              {% if order_container.request.is_free %}
+                Free
+              {% else %}
+                ${{ order_container.request.dollar_amount }}
+              {% endif %}
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <br>
+    <div id="basket-wrapper">
+      Basket information
+      <table id="basket-table">
+        <tr>
+          <th>Item</th>
+          <th>Service</th>
+          <th>Quantity</th>
+          <th>Subtotal</th>
+        </tr>
+
+        {% for quantity in basket_container.quantity_container_list %}
+          <tr>
+            <td>{{ quantity.price.item.title }}</td>
+            <td>{{ quantity.price.service.title }}</td>
+            <td>{{ quantity.count }}</td>
+            <td>${{ quantity.dollar_amount }}</td>
+          </tr>
+        {% endfor %}
+      </table>
+    </div>
+  {% endwith %}
+{% endblock %}

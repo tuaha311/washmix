@@ -144,5 +144,11 @@ class Client(Stripeable, Common):
     def dollar_balance(self):
         return get_dollars(self, "balance")
 
+    @property
+    def pretty_billing_address(self):
+        values = self.billing_address.values()
+
+        return ", ".join(values)
+
     def __str__(self):
         return self.email
