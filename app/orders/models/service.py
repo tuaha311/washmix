@@ -33,6 +33,7 @@ class Service(Common):
     class Meta:
         verbose_name = "service"
         verbose_name_plural = "services"
+        ordering = ["title"]
 
     def __str__(self):
         return self.title

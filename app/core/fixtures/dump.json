@@ -1548,7 +1548,7 @@
       "changed": "2020-10-01T01:59:44.234Z",
       "title": "Pants",
       "image": "",
-      "is_visible": true
+      "is_visible": false
     }
   },
   {
@@ -1570,7 +1570,7 @@
       "changed": "2020-10-01T01:59:44.322Z",
       "title": "Polo",
       "image": "",
-      "is_visible": true
+      "is_visible": false
     }
   },
   {
@@ -1581,7 +1581,7 @@
       "changed": "2020-10-01T01:59:44.442Z",
       "title": "Shirt",
       "image": "",
-      "is_visible": true
+      "is_visible": false
     }
   },
   {
@@ -1625,7 +1625,7 @@
       "changed": "2020-10-01T01:59:44.626Z",
       "title": "Shorts",
       "image": "",
-      "is_visible": true
+      "is_visible": false
     }
   },
   {
@@ -1636,7 +1636,7 @@
       "changed": "2020-10-01T01:59:43.608Z",
       "title": "Tuxedo Shirt",
       "image": "",
-      "is_visible": true
+      "is_visible": false
     }
   },
   {
@@ -1733,9 +1733,9 @@
     "fields": {
       "created": "2020-10-01T01:59:44.078Z",
       "changed": "2020-10-01T01:59:44.078Z",
-      "title": "Dress [Grown] [Minimal price $29.95]",
+      "title": "Dress [Gown] [Min price $29.95]",
       "image": "",
-      "is_visible": true
+      "is_visible": false
     }
   },
   {
@@ -1755,7 +1755,7 @@
     "fields": {
       "created": "2020-10-01T01:59:44.200Z",
       "changed": "2020-10-01T01:59:44.200Z",
-      "title": "Jacket [Leather] [Minimal price $49.95]",
+      "title": "Jacket [Leather] [Min price $49.95]",
       "image": "",
       "is_visible": true
     }
@@ -1900,7 +1900,7 @@
       "changed": "2020-10-01T01:59:45.069Z",
       "title": "Tuxedo [2 Pcs]",
       "image": "",
-      "is_visible": true
+      "is_visible": false
     }
   },
   {
@@ -1911,7 +1911,7 @@
       "changed": "2020-10-01T01:59:45.119Z",
       "title": "Tuxedo [3 Pcs]",
       "image": "",
-      "is_visible": true
+      "is_visible": false
     }
   },
   {
@@ -2294,7 +2294,7 @@
     "fields": {
       "created": "2020-10-01T01:59:46.947Z",
       "changed": "2020-10-01T01:59:46.947Z",
-      "title": "Button Replacement [Special] [Minimal Price $9.95]",
+      "title": "Button Replacement [Special] [Min Price $9.95]",
       "image": "",
       "is_visible": false
     }
@@ -2373,7 +2373,7 @@
       "changed": "2020-10-01T01:59:47.270Z",
       "title": "Blazer Taper [Reg]",
       "image": "",
-      "is_visible": true
+      "is_visible": false
     }
   },
   {
@@ -2800,7 +2800,7 @@
     "fields": {
       "created": "2020-10-01T01:59:49.213Z",
       "changed": "2020-10-01T01:59:49.213Z",
-      "title": "Zipper Replaced [Minimal price $20]",
+      "title": "Zipper Replaced [Min price $20]",
       "image": "",
       "is_visible": true
     }
@@ -2811,7 +2811,7 @@
     "fields": {
       "created": "2020-10-01T01:59:49.262Z",
       "changed": "2020-10-01T01:59:49.262Z",
-      "title": "Sleeves Shortened [Minimal Price $25]",
+      "title": "Sleeves Shortened [Min Price $25]",
       "image": "",
       "is_visible": true
     }
@@ -2822,7 +2822,7 @@
     "fields": {
       "created": "2020-10-01T01:59:49.309Z",
       "changed": "2020-10-01T01:59:49.309Z",
-      "title": "Meding [Tears or Misc] [Minimal Price $10]",
+      "title": "Meding [Tears or Misc] [Min Price $10]",
       "image": "",
       "is_visible": true
     }
@@ -3075,7 +3075,7 @@
     "fields": {
       "created": "2020-10-01T01:59:50.420Z",
       "changed": "2020-10-01T01:59:50.420Z",
-      "title": "Clean Only [Minimal price $149.95]",
+      "title": "Clean Only [Min price $149.95]",
       "image": "",
       "is_visible": true
     }
@@ -3086,7 +3086,7 @@
     "fields": {
       "created": "2020-10-01T01:59:50.466Z",
       "changed": "2020-10-01T01:59:50.466Z",
-      "title": "Clean + Preservation [Minimal price $299.95]",
+      "title": "Clean + Preservation [Min price $299.95]",
       "image": "",
       "is_visible": true
     }
@@ -3097,7 +3097,7 @@
     "fields": {
       "created": "2020-10-01T01:59:50.512Z",
       "changed": "2020-10-01T01:59:50.512Z",
-      "title": "Additional Accessories [Minimal price $24.95]",
+      "title": "Additional Accessories [Min price $24.95]",
       "image": "",
       "is_visible": true
     }
@@ -3108,7 +3108,7 @@
     "fields": {
       "created": "2020-10-01T01:59:50.587Z",
       "changed": "2020-10-01T01:59:50.587Z",
-      "title": "Machine Made [Minimal price $99]",
+      "title": "Machine Made [Min price $99]",
       "image": "",
       "is_visible": true
     }
@@ -3119,7 +3119,7 @@
     "fields": {
       "created": "2020-10-01T01:59:50.636Z",
       "changed": "2020-10-01T01:59:50.636Z",
-      "title": "Handmade Rug [Persian/Indian] [Minimal Price $99]",
+      "title": "Handmade Rug [Persian/Indian] [Min Price $99]",
       "image": "",
       "is_visible": true
     }
@@ -3130,7 +3130,7 @@
     "fields": {
       "created": "2020-10-01T01:59:50.685Z",
       "changed": "2020-10-01T01:59:50.685Z",
-      "title": "Cowhide Rug [Minimal Price 99$]",
+      "title": "Cowhide Rug [Min Price 99$]",
       "image": "",
       "is_visible": true
     }
@@ -3700,7 +3700,7 @@
     "fields": {
       "created": "2020-10-01T01:59:45.306Z",
       "changed": "2020-10-01T01:59:45.306Z",
-      "amount": 399,
+      "amount": 3999,
       "service": 3,
       "item": 38,
       "count": 1,
@@ -5167,7 +5167,7 @@
     "fields": {
       "created": "2020-10-01T01:59:50.397Z",
       "changed": "2020-10-01T01:59:50.397Z",
-      "title": "Wedding Growns",
+      "title": "Wedding Gowns",
       "image": ""
     }
   },
@@ -5177,7 +5177,7 @@
     "fields": {
       "created": "2020-10-01T01:59:50.564Z",
       "changed": "2020-10-01T01:59:50.564Z",
-      "title": "Rug Area",
+      "title": "Area Rug",
       "image": ""
     }
   }
