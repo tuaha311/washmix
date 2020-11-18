@@ -438,7 +438,7 @@ DRAMATIQ_BROKER = RedisBroker(url=DRAMATIQ_REDIS_URL)
 
 # define list of modules with tasks
 DRAMATIQ_IMPORT_MODULES = [
-    "core.tasks",
+    "notifications.tasks",
     "billing.tasks",
     "deliveries.tasks",
 ]
