@@ -73,3 +73,7 @@ class Price(Amountable, Common):
     @property
     def pretty_unit(self):
         return self.get_unit_display()
+
+    @property
+    def full_title(self):
+        return f"{self.item.title} [{self.count} {self.pretty_unit}]"
