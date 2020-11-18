@@ -1,6 +1,7 @@
 from datetime import date, time
 from typing import Tuple
 
+from django.conf import settings
 from django.db.transaction import atomic
 from django.utils.timezone import localtime
 
@@ -8,8 +9,8 @@ from deliveries.choices import Kind, Status
 from deliveries.models import Delivery, Request
 from deliveries.utils import get_dropoff_day, get_pickup_day, get_pickup_start_end
 from deliveries.validators import RequestValidator
+from notifications.tasks import send_email
 from orders.containers.order import OrderContainer
-from orders.models import Basket, Order, Price, Quantity
 from orders.services.basket import BasketService
 from orders.services.order import OrderService
 from users.models import Client
@@ -83,6 +84,8 @@ class RequestService:
                 **dropoff_info,
             )
 
+        self.notify_on_new_request()
+
         return request
 
     def get_or_create(self, extra_query: dict, extra_defaults: dict) -> Tuple[Request, bool]:
@@ -136,6 +139,14 @@ class RequestService:
         dropoff.save()
 
         return request
+
+    def notify_on_new_request(self):
+        client_id = self._client.id
+
+        send_email.send(
+            client_id=client_id,
+            event=settings.NEW_REQUEST,
+        )
 
     def validate(self):
         self._validator_service.validate()
