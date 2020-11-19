@@ -2,16 +2,24 @@
 
 {% block extra_style %}
   <style>
-    #order-table, #basket-table {
+    #order-table, #basket-table, #basket-total {
       width: 100%;
     }
 
-    #order-table th {
+    #order-table th, #basket-table th {
       width: 25%;
     }
 
-    #basket-table th {
-      width: 25%;
+    #basket-total th {
+      width: 50%;
+    }
+
+    #discount {
+      color: blue;
+    }
+
+    #balance {
+      color: blueviolet;
     }
   </style>
 {% endblock %}
@@ -22,18 +30,17 @@
   </style>
 
   {% with basket_container=order_container.basket %}
-    <br>
     <div>
-      Your invoice for Order #{{ order_container.id }}
+      <h3>Your invoice for Order #{{ order_container.id }}</h3>
     </div>
 
     <div id="order-wrapper">
       <table id="order-table">
         <tr>
-          <th>Billing Information</th>
-          <th>Payment Method</th>
-          <th>Delivery Information</th>
-          <th>Pickup & Delivery Method</th>
+          <th class="highlight-background">Billing Information</th>
+          <th class="highlight-background">Payment Method</th>
+          <th class="highlight-background">Delivery Information</th>
+          <th class="highlight-background">Pickup & Delivery Method</th>
         </tr>
 
         <tr>
@@ -72,15 +79,14 @@
       </table>
     </div>
 
-    <br>
     <div id="basket-wrapper">
-      Basket information
+      <h3>Basket information</h3>
       <table id="basket-table">
         <tr>
-          <th>Item</th>
-          <th>Service</th>
-          <th>Quantity</th>
-          <th>Subtotal</th>
+          <th class="highlight-background">Item</th>
+          <th class="highlight-background">Service</th>
+          <th class="highlight-background">Quantity</th>
+          <th class="highlight-background">Subtotal</th>
         </tr>
 
         {% for quantity in basket_container.quantity_container_list %}
@@ -91,6 +97,28 @@
             <td>${{ quantity.dollar_amount }}</td>
           </tr>
         {% endfor %}
+      </table>
+
+      <table id="basket-total">
+        <tr>
+          <th>Subtotal</th>
+          <th>${{ order_container.dollar_amount }}</th>
+        </tr>
+
+        <tr>
+          <th id="discount">Discounts [Advantage Program]</th>
+          <th>${{ order_container.dollar_discount }}</th>
+        </tr>
+
+        <tr>
+          <th>Grand Total</th>
+          <th>${{ order_container.dollar_amount_with_discount }}</th>
+        </tr>
+
+        <tr>
+          <th id="balance">Remaining Balance [Advantage Program]</th>
+          <th>${{ client.dollar_balance }}</th>
+        </tr>
       </table>
     </div>
   {% endwith %}

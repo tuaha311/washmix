@@ -4,7 +4,15 @@
     <meta charset="UTF-8">
     <style>
       * {
-        color: black !important;
+        color: black;
+      }
+
+      a {
+        color: blue;
+      }
+
+      .highlight-background {
+        background-color: lightgrey;
       }
     </style>
     {% block extra_style %}
@@ -13,40 +21,15 @@
 
   <body>
     <header>
-      Dear {{ client.full_name }}
-      <br>
-      Welcome to ​<a href="https://{{ washmix.domain }}">Washmix.com​</a>{% block extra_header %}{% endblock %}. To log in when visiting our site just click <a href="https://{{ washmix.domain }}/login">L​ogin</a>​ in our website and enter your email address and password.
+      <h4>Dear {{ client.full_name }}</h4>
+      <p>Welcome to ​<a href="https://{{ washmix.domain }}">Washmix.com​</a>{% block extra_header %}{% endblock %}. To log in when visiting our site just click <a href="https://{{ washmix.domain }}/login">L​ogin</a>​ in our website and enter your email address and password.</p>
     </header>
-
-    <br>
-    <div id="instructions">
-      Basic Instruction:
-      <ul>
-        <li>For the first time, please place garments inside a bag and leave outside of your door for pick-up.</li>
-        <li>NO​ need to separate laundry from Dry Cleaning.</li>
-        <li>IF​ Wash-&-Fold, please indicate with a note inside your bag. [​Note​: Wash-&-Folds will need to be in a separate bag].</li>
-
-        <li>
-          If you have any special delivery request
-          <ul>
-            <li>(i.e. k​ nock on the door, do not ring the bell - OR - delivery and place in the backyard not the front door ...)​. ​Please be sure to write all in the Delivery Instruction section.</li>
-          </ul>
-        </li>
-
-        <li>You will receive your W​elcome Box™ a​ fter we deliver back your cleaned clothes. PLEASE NOTE​: If in a gated community, we'll need access code to promptly deliver your items.</li>
-      </ul>
-    </div>
-
-    <div id="please-note">
-      PLEASE NOTE​: If in a gated community, we'll need access code to promptly deliver your items.
-    </div>
 
     {% block content %}
     {% endblock %}
 
-    <br>
-    <div id="able-to-do">
-      When you log in to your account, you will be able to do the following:
+    <div id="login-able-to-do">
+      <p class="highlight-background">When you log in to your account, you will be able to do the following:</p>
       <ul>
         <li>View order history</li>
         <li>Make changes to your account & personal detail</li>
@@ -56,7 +39,7 @@
     </div>
 
     <div id="sms">
-      SMS [Text]: ​Save this Phone Number {{ washmix.phone_number }}
+      <b>SMS [Text]:</b> ​Save this Phone Number {{ washmix.phone_number }}
       <ul>
         <li>
           To schedule your Next Pickup, simply send a request to this number via text
@@ -66,20 +49,20 @@
         </li>
 
         <li>
-          Commands
+          <b>Commands</b>
           <ul>
-            <li>To Request a Pickup → Text “​Pickup”</li>
+            <li>To Request a Pickup → Text <b>“​Pickup”</b></li>
           </ul>
         </li>
 
         <li>
-          Cut Off time
+          <b>Cut Off time</b>
           <ul>
             <li>
               Monday-Saturday
               <ul>
-                <li>Text sent ​BEFORE 9​ am [​Same-Day Pickup]</li>
-                <li>Text sent ​AFTER ​9am ​[Next-Day Pickup]</li>
+                <li>Text sent ​<b>BEFORE</b> 9​ am <b>[​Same-Day Pickup]</b></li>
+                <li>Text sent ​<b>AFTER</b> ​9am ​<b>[Next-Day Pickup]</b></li>
               </ul>
             </li>
           </ul>
@@ -89,8 +72,8 @@
       </ul>
     </div>
 
-    <footer>
-      If you have any questions about your account or any other matter, please feel free to contact us at ​<a href="mailto:cs@washmix.com">cs@washmix.com</a>.​ OR call us directly at 4​ 15-993-WASH [9724]
+    <footer class="highlight-background">
+      If you have any questions about your account or any other matter, please feel free to contact us at ​<a href="mailto:cs@washmix.com">cs@washmix.com</a>.​ OR call us directly at <b>4​15-993-WASH [9724]</b>
     </footer>
   </body>
 </html>
