@@ -1,24 +1,47 @@
 {% extends "base_email.html" %}
 
 {% block extra_header %}
-   & W​ashMix Advantage Program​™
+   <b>& W​ashMix Advantage Program​™</b>
 {% endblock %}
 
 {% block content %}
   <br>
-  <div>
-    Welcome Box™:
-    <br>
-    After receiving your first order, we’ll send back your items with your unique ​Welcome Box™ containing the material and extra laundry and Garment Bags for future usage.
+  <div id="instructions">
+    <b>Basic Instruction:</b>
+    <ul>
+      <li>For the first time, please place garments inside a bag and leave outside of your door for pick-up.</li>
+      <li><b>NO​</b> need to separate laundry from Dry Cleaning.</li>
+      <li><b>IF​</b> Wash-&-Fold, please indicate with a note inside your bag. [​<b>Note​</b>: Wash-&-Folds will need to be in a separate bag].</li>
+
+      <li>
+        If you have any special delivery request
+        <ul>
+          <li>(i.e. <b>k​nock on the door, do not ring the bell - OR - delivery and place in the backyard not the front door ...</b>)​. ​Please be sure to write all in the Delivery Instruction section.</li>
+        </ul>
+      </li>
+
+      <li>You will receive your <b>W​elcome Box™</b> a​fter we deliver back your cleaned clothes.</li>
+    </ul>
+  </div>
+
+  <div id="please-note">
+    <b>PLEASE NOTE​:</b> If in a gated community, we'll need access code to promptly deliver your items.
   </div>
 
   <br>
   <div>
-    WashMix Advantage Program​™:
+    <b>Welcome Box™:</b>
+    <br>
+    After receiving your first order, we’ll send back your items with your unique ​<b>Welcome Box™</b> containing the material and extra laundry and Garment Bags for future usage.
+  </div>
+
+  <br>
+  <div>
+    <b>WashMix Advantage Program​™:</b>
     <br>
     You have signed up for the {{ subscription_container.get_name_display }}​ ​and as of today have ${{ subscription_container.dollar_amount }}​ ​available credit to use. Don’t forget, these credits:
     <ul>
-      <li>Never Expires</li>
+      <li><b>Never Expires</b></li>
     </ul>
   </div>
 
