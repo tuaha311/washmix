@@ -4,7 +4,15 @@
     <meta charset="UTF-8">
     <style>
       * {
-        color: black !important;
+        color: black;
+      }
+
+      a {
+        color: blue;
+      }
+
+      .highlight-background {
+        background-color: lightgrey;
       }
     </style>
     {% block extra_style %}
@@ -14,16 +22,14 @@
   <body>
     <header>
       <h4>Dear {{ client.full_name }}</h4>
-      <br>
-      Welcome to ​<a href="https://{{ washmix.domain }}">Washmix.com​</a>{% block extra_header %}{% endblock %}. To log in when visiting our site just click <a href="https://{{ washmix.domain }}/login">L​ogin</a>​ in our website and enter your email address and password.
+      <p>Welcome to ​<a href="https://{{ washmix.domain }}">Washmix.com​</a>{% block extra_header %}{% endblock %}. To log in when visiting our site just click <a href="https://{{ washmix.domain }}/login">L​ogin</a>​ in our website and enter your email address and password.</p>
     </header>
 
     {% block content %}
     {% endblock %}
 
-    <br>
     <div id="login-able-to-do">
-      When you log in to your account, you will be able to do the following:
+      <p class="highlight-background">When you log in to your account, you will be able to do the following:</p>
       <ul>
         <li>View order history</li>
         <li>Make changes to your account & personal detail</li>
@@ -66,7 +72,7 @@
       </ul>
     </div>
 
-    <footer>
+    <footer class="highlight-background">
       If you have any questions about your account or any other matter, please feel free to contact us at ​<a href="mailto:cs@washmix.com">cs@washmix.com</a>.​ OR call us directly at <b>4​15-993-WASH [9724]</b>
     </footer>
   </body>
