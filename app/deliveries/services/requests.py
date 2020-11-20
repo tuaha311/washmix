@@ -84,7 +84,7 @@ class RequestService:
                 **dropoff_info,
             )
 
-        self.notify_on_new_request()
+        self._notify_client_on_new_request()
 
         return request
 
@@ -140,16 +140,16 @@ class RequestService:
 
         return request
 
-    def notify_on_new_request(self):
+    def validate(self):
+        self._validator_service.validate()
+
+    def _notify_client_on_new_request(self):
         client_id = self._client.id
 
         send_email.send(
             client_id=client_id,
             event=settings.NEW_REQUEST,
         )
-
-    def validate(self):
-        self._validator_service.validate()
 
     def _get_order_service(self) -> OrderService:
         client = self._client

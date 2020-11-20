@@ -2,7 +2,7 @@ from unittest.mock import MagicMock, patch
 
 from django.conf import settings
 
-from orders.choices import Status
+from orders.choices import PaymentChoices
 from subscriptions.services.subscription import SubscriptionService
 
 
@@ -23,6 +23,6 @@ def test_payc_gold_platinum_subscription(atomic_mock, send_email_mock):
         service.finalize(order)
 
         assert client.subscription.name == item
-        assert order.status == Status.PAID
+        assert order.payment == PaymentChoices.PAID
 
     send_email_mock.send.assert_called()

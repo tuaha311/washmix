@@ -1,7 +1,7 @@
 from django.db import models
 
 from core.common_models import Common
-from orders.choices import Status
+from orders.choices import PaymentChoices, StatusChoices
 
 
 class Order(Common):
@@ -59,8 +59,14 @@ class Order(Common):
     status = models.CharField(
         max_length=20,
         verbose_name="status of order",
-        choices=Status.CHOICES,
-        default=Status.UNPAID,
+        choices=StatusChoices.CHOICES,
+        default=StatusChoices.ACCEPTED,
+    )
+    payment = models.CharField(
+        max_length=20,
+        verbose_name="payment info",
+        choices=PaymentChoices.CHOICES,
+        default=PaymentChoices.UNPAID,
     )
     note = models.TextField(
         verbose_name="note",

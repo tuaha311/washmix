@@ -35,9 +35,6 @@ class StripeWebhookService:
                 self.status = HTTP_403_FORBIDDEN
                 return False
 
-        if self._event.type not in ["payment_intent.succeeded", "charge.succeeded"]:
-            return False
-
         try:
             self._payment = self._event.data.object
             invoice_id = self._payment.metadata.invoice_id

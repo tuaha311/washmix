@@ -464,12 +464,15 @@ TWILIO_PICKUP_CODE = "pickup_scheduled"
 
 SENDGRID_FROM_EMAIL = Email("info@washmix.com")
 SENDGRID_API_KEY = env.str("SENDGRID_API_KEY", "")
+ADMIN_EMAIL_LIST = ["admin@washmix.com"]
 
 SIGNUP = "signup"
 FORGOT_PASSWORD = "forgot_password"
 PURCHASE_SUBSCRIPTION_GOLD_PLATINUM = "purchase_subscription_gold_platinum"
 NEW_REQUEST = "new_request"
 NEW_ORDER = "new_order"
+PAYMENT_FAIL_CLIENT = "payment_fail_client"
+PAYMENT_FAIL_ADMIN = "payment_fail_admin"
 EMAIL_EVENT_INFO = {
     SIGNUP: {
         "template_name": "welcome.html",
@@ -492,8 +495,18 @@ EMAIL_EVENT_INFO = {
     },
     NEW_ORDER: {
         "template_name": "new_order.html",
-        "subject": "New Order",
-        "from_email": "order@washmix.com",
+        "subject": "WashMix Payment Failed",
+        "from_email": "payment@washmix.com",
+    },
+    PAYMENT_FAIL_CLIENT: {
+        "template_name": "payment_fail_client.html",
+        "subject": "WashMix Payment Failed",
+        "from_email": "payment@washmix.com",
+    },
+    PAYMENT_FAIL_ADMIN: {
+        "template_name": "payment_fail_admin.html",
+        "subject": "WashMix Payment Failed",
+        "from_email": "payment@washmix.com",
     },
 }
 
