@@ -195,7 +195,13 @@ class OrderService:
         )
 
     def _notify_client_on_payment_fail(self):
-        pass
+        send_email.send(
+            client_id=client_id,
+            event=settings.NEW_ORDER,
+            extra_context={
+                "order_id": order_id,
+            },
+        )
 
     def _notify_admin_on_payment_fail(self):
         pass
