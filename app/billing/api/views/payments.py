@@ -42,6 +42,8 @@ class CreateIntentView(GenericAPIView):
 
 class StripeWebhookView(GenericAPIView):
     permission_classes = [AllowAny]
+    success_events = ["charge.succeeded"]
+    fail_events = ["charge.failed"]
 
     def post(self, request: Request, *args, **kwargs):
         # we will use Stripe SDK to check validity of event instead
@@ -50,6 +52,8 @@ class StripeWebhookView(GenericAPIView):
         event = stripe.Event.construct_from(raw_payload, stripe.api_key)
         webhook_service = StripeWebhookService(request, event)
 
+        # we check input data on our business requirements
+        # if they are not met - we are terminating processing and returning error
         if not webhook_service.is_valid():
             status = webhook_service.status
             body = webhook_service.body
@@ -63,13 +67,21 @@ class StripeWebhookView(GenericAPIView):
         order_service = OrderService(client)
 
         with atomic():
-            # we are marked our invoice as paid
-            payment_service.confirm(payment)
+            if event.type in self.success_events:
+                # we are marked our invoice as paid
+                payment_service.confirm(payment)
 
-            if purpose == Purpose.SUBSCRIPTION:
-                subscription_service.finalize(order)
+                if purpose == Purpose.SUBSCRIPTION:
+                    subscription_service.finalize(order)
 
-            elif purpose == Purpose.BASKET:
-                order_service.finalize(order)
+                elif purpose == Purpose.BASKET:
+                    order_service.finalize(order)
+
+            elif event.type in self.fail_events:
+                if purpose == Purpose.SUBSCRIPTION:
+                    subscription_service.fail(order)
+
+                elif purpose == Purpose.BASKET:
+                    order_service.fail(order)
 
         return Response({}, status=HTTP_200_OK)

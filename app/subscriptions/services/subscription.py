@@ -9,7 +9,7 @@ from billing.models import Invoice
 from billing.services.card import CardService
 from billing.services.payments import PaymentService
 from notifications.tasks import send_email
-from orders.choices import Status
+from orders.choices import PaymentChoices, StatusChoices
 from orders.containers.order import OrderContainer
 from orders.models import Order
 from orders.services.order import OrderService
@@ -27,7 +27,6 @@ class SubscriptionService:
 
     def __init__(self, client: Client):
         self._client = client
-        self._subscription = None
 
     def choose(self, package: Package) -> OrderContainer:
         """
@@ -88,10 +87,9 @@ class SubscriptionService:
         """
 
         subscription = order.subscription
-        self._subscription = subscription
 
         with atomic():
-            order.status = Status.PAID
+            order.payment = PaymentChoices.PAID
 
             if order.is_save_card:
                 order.card = self._client.main_card
@@ -100,13 +98,18 @@ class SubscriptionService:
             self._client.subscription = subscription
             self._client.save()
 
-        self.notify_on_purchase_of_advantage_program()
+        self._notify_client_on_purchase_of_advantage_program(subscription)
 
         return subscription
 
-    def notify_on_purchase_of_advantage_program(self):
+    def fail(self, order: Order):
+        subscription = order.subscription
+
+        order_service = self._get_order_service(subscription)
+        order_service.fail(order)
+
+    def _notify_client_on_purchase_of_advantage_program(self, subscription: Subscription):
         client_id = self._client.id
-        subscription = self._subscription
         subscription_id = subscription.id
 
         if subscription.name not in [settings.GOLD, settings.PLATINUM]:
@@ -129,7 +132,8 @@ class SubscriptionService:
             client=client,
             subscription=subscription,
             defaults={
-                "status": Status.UNPAID,
+                "status": StatusChoices.ACCEPTED,
+                "payment": PaymentChoices.UNPAID,
                 "is_save_card": True,
             },
         )

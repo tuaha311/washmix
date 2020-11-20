@@ -12,7 +12,7 @@ from deliveries.choices import Kind
 from deliveries.containers.request import RequestContainer
 from deliveries.models import Request
 from notifications.tasks import send_email
-from orders.choices import Status
+from orders.choices import PaymentChoices
 from orders.containers.basket import BasketContainer
 from orders.containers.order import OrderContainer
 from orders.models import Basket, Order
@@ -165,17 +165,24 @@ class OrderService:
         self._order = order
 
         with atomic():
-            order.status = Status.PAID
+            order.payment = PaymentChoices.PAID
 
             if order.is_save_card:
                 order.card = self._client.main_card
                 order.save()
 
-        self.notify_on_new_order()
+        self._notify_client_on_new_order()
 
         return order
 
-    def notify_on_new_order(self):
+    def fail(self, order: Order):
+        order.payment = PaymentChoices.FAIL
+        order.save()
+
+        self._notify_client_on_payment_fail()
+        self._notify_admin_on_payment_fail()
+
+    def _notify_client_on_new_order(self):
         client_id = self._client.id
         order_id = self._order.id
 
@@ -186,6 +193,12 @@ class OrderService:
                 "order_id": order_id,
             },
         )
+
+    def _notify_client_on_payment_fail(self):
+        pass
+
+    def _notify_admin_on_payment_fail(self):
+        pass
 
     @property
     def order(self):
