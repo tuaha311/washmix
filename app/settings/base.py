@@ -282,7 +282,7 @@ CREDIT_BACK_PERIOD = 90
 TWITTER_URL = "https://twitter.com/mix_wash/"
 INSTAGRAM_URL = "https://www.instagram.com/washmix/"
 FACEBOOK_URL = "https://www.facebook.com/WASHMIXOriginal/"
-PHONE_NUMBER = "415-993-9724"
+PHONE_NUMBER = "4​15-993-WASH [9724]"
 
 
 #########################
@@ -506,7 +506,7 @@ EMAIL_EVENT_INFO = {
     PAYMENT_FAIL_ADMIN: {
         "template_name": "payment_fail_admin.html",
         "subject": "WashMix Payment Failed",
-        "from_email": "payment@washmix.com",
+        "from_email": "issue@washmix.com",
     },
 }
 

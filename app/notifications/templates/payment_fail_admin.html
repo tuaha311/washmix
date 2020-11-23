@@ -1,4 +1,4 @@
-{% extends "base_email_with_info.html" %}
+{% extends "base_email.html" %}
 
 {% block extra_style %}
   <style>
@@ -24,10 +24,12 @@
   </style>
 {% endblock %}
 
-{% block content %}
-  <div>
-    <h3>Your invoice for Order #{{ order_container.id }}</h3>
-  </div>
+{% block body %}
+  <div class="divider"></div>
+
+  <h2 class="red centered">PAYMENT FAILED</h2>
+
+  <div class="divider"></div>
 
   {% include "chunks/detailed_order.html" %}
 {% endblock %}

@@ -111,14 +111,16 @@ class SubscriptionService:
     def _notify_client_on_purchase_of_advantage_program(self, subscription: Subscription):
         client_id = self._client.id
         subscription_id = subscription.id
+        recipient_list = [self._client.email]
 
         if subscription.name not in [settings.GOLD, settings.PLATINUM]:
             return None
 
         send_email.send(
-            client_id=client_id,
             event=settings.PURCHASE_SUBSCRIPTION_GOLD_PLATINUM,
+            recipient_list=recipient_list,
             extra_context={
+                "client_id": client_id,
                 "subscription_id": subscription_id,
             },
         )

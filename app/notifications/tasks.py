@@ -5,7 +5,6 @@ import dramatiq
 from notifications.context import email_context
 from notifications.senders.sendgrid import SendGridSender
 from notifications.utils import get_extra_context
-from users.models import Client
 
 logger = logging.getLogger(__name__)
 
@@ -16,9 +15,7 @@ def worker_health():
 
 
 @dramatiq.actor
-def send_email(event: str, client_id: int, extra_context: dict = None):
-    client = Client.objects.get(id=client_id)
-    email = client.email
+def send_email(event: str, recipient_list: list, extra_context: dict = None):
 
     if not extra_context:
         extra_context = {}
@@ -27,16 +24,15 @@ def send_email(event: str, client_id: int, extra_context: dict = None):
     sender = SendGridSender()
 
     sender.send(
-        recipient_list=[client.email],
+        recipient_list=recipient_list,
         event=event,
         context={
-            "client": client,
             "washmix": email_context,
             **extra_context,
         },
     )
 
-    logger.info(f"Sent to email {email}")
+    logger.info(f"Sent email to {recipient_list}")
 
 
 @dramatiq.actor
@@ -49,4 +45,4 @@ def raw_send_email(to: list, html_content: str, subject: str, from_email: str):
         from_email=from_email,
     )
 
-    logger.info(f"Raw sent to emails {to}")
+    logger.info(f"Raw emails sent to {to}")
