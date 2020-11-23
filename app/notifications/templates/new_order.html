@@ -1,9 +1,33 @@
 {% extends "base_email_with_info.html" %}
 
-{% block content %}
-    <div>
-      <h3>Your invoice for Order #{{ order_container.id }}</h3>
-    </div>
+{% block extra_style %}
+  <style>
+    #order-table, #basket-table, #basket-total {
+      width: 100%;
+    }
 
-    {% include "chunks/detailed_order.html" %}
+    #order-table th, #basket-table th {
+      width: 25%;
+    }
+
+    #basket-total th {
+      width: 50%;
+    }
+
+    #discount {
+      color: blue;
+    }
+
+    #balance {
+      color: blueviolet;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+  <div>
+    <h3>Your invoice for Order #{{ order_container.id }}</h3>
+  </div>
+
+  {% include "chunks/detailed_order.html" %}
 {% endblock %}

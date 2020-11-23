@@ -1,27 +1,3 @@
-{% block extra_style %}
-  <style>
-    #order-table, #basket-table, #basket-total {
-      width: 100%;
-    }
-
-    #order-table th, #basket-table th {
-      width: 25%;
-    }
-
-    #basket-total th {
-      width: 50%;
-    }
-
-    #discount {
-      color: blue;
-    }
-
-    #balance {
-      color: blueviolet;
-    }
-  </style>
-{% endblock %}
-
 {% with basket_container=order_container.basket %}
   <div id="order-wrapper">
     <table id="order-table">

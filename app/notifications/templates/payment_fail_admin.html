@@ -2,8 +2,24 @@
 
 {% block extra_style %}
   <style>
-    .red {
-      color: red;
+    #order-table, #basket-table, #basket-total {
+      width: 100%;
+    }
+
+    #order-table th, #basket-table th {
+      width: 25%;
+    }
+
+    #basket-total th {
+      width: 50%;
+    }
+
+    #discount {
+      color: blue;
+    }
+
+    #balance {
+      color: blueviolet;
     }
   </style>
 {% endblock %}
@@ -11,7 +27,7 @@
 {% block body %}
   <div class="divider"></div>
 
-  <h2 class="red">PAYMENT FAILED</h2>
+  <h2 class="red centered">PAYMENT FAILED</h2>
 
   <div class="divider"></div>
 
