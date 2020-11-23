@@ -506,7 +506,7 @@ EMAIL_EVENT_INFO = {
     PAYMENT_FAIL_ADMIN: {
         "template_name": "payment_fail_admin.html",
         "subject": "WashMix Payment Failed",
-        "from_email": "payment@washmix.com",
+        "from_email": "issue@washmix.com",
     },
 }
 

@@ -179,6 +179,8 @@ class OrderService:
         order.payment = PaymentChoices.FAIL
         order.save()
 
+        self._order = order
+
         self._notify_client_on_payment_fail()
         self._notify_admin_on_payment_fail()
 
@@ -200,7 +202,7 @@ class OrderService:
         client_id = self._client.id
         recipient_list = [self._client.email]
 
-        send_email(
+        send_email.send(
             event=settings.PAYMENT_FAIL_CLIENT,
             recipient_list=recipient_list,
             extra_context={
@@ -210,12 +212,15 @@ class OrderService:
 
     def _notify_admin_on_payment_fail(self):
         client_id = self._client.id
+        order_id = self._order.id
+        recipient_list = settings.ADMIN_EMAIL_LIST
 
-        send_email.send(
+        send_email(
             event=settings.PAYMENT_FAIL_ADMIN,
-            recipient_list=settings.ADMIN_EMAIL_LIST,
+            recipient_list=recipient_list,
             extra_context={
                 "client_id": client_id,
+                "order_id": order_id,
             },
         )
 
