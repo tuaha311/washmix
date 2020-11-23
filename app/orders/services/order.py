@@ -215,7 +215,7 @@ class OrderService:
         order_id = self._order.id
         recipient_list = settings.ADMIN_EMAIL_LIST
 
-        send_email(
+        send_email.send(
             event=settings.PAYMENT_FAIL_ADMIN,
             recipient_list=recipient_list,
             extra_context={
