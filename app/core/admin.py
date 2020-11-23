@@ -5,10 +5,6 @@ from django.contrib.auth.models import Group, Permission
 from djangoql.admin import DjangoQLSearchMixin
 from social_django.models import Association, Nonce, UserSocialAuth
 
-admin.site.site_header = "Washmix"
-admin.site.site_title = "washmix.com"
-admin.site.index_title = "Washmix Admin Panel"
-
 
 class DefaultAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
     pass
