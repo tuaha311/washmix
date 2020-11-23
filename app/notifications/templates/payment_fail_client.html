@@ -1,3 +1,9 @@
+{#
+required context:
+  - washmix
+  - client
+#}
+
 {% extends "base_email.html" %}
 
 {% block extra_style %}
@@ -37,7 +43,7 @@
     <p>To update your information:</p>
     <ul>
       <li>
-        Login to your account [​www.WashMix.com​] and proceed to ​“​Billing​”
+        <a href="https://{{ washmix.domain }}/login">L​ogin</a> to your account and proceed to ​“​Billing​”
       </li>
     </ul>
   </div>
