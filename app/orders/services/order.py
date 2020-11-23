@@ -200,7 +200,7 @@ class OrderService:
         client_id = self._client.id
         recipient_list = [self._client.email]
 
-        send_email.send(
+        send_email(
             event=settings.PAYMENT_FAIL_CLIENT,
             recipient_list=recipient_list,
             extra_context={
