@@ -14,10 +14,14 @@ class SignupService:
         with atomic():
             client = Client.objects.create_client(email, password, phone)
             client_id = client.id
+            recipient_list = [client.email]
 
             send_email.send(
-                client_id=client_id,
                 event=settings.SIGNUP,
+                recipient_list=recipient_list,
+                extra_context={
+                    "client_id": client_id,
+                },
             )
 
             stripe_helper = StripeHelper(client)

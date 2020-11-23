@@ -145,10 +145,14 @@ class RequestService:
 
     def _notify_client_on_new_request(self):
         client_id = self._client.id
+        recipient_list = [self._client.email]
 
         send_email.send(
-            client_id=client_id,
             event=settings.NEW_REQUEST,
+            recipient_list=recipient_list,
+            extra_context={
+                "client_id": client_id,
+            },
         )
 
     def _get_order_service(self) -> OrderService:

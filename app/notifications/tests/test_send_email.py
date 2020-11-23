@@ -6,7 +6,7 @@ from notifications.context import email_context
 from notifications.tasks import send_email
 
 
-@patch("notifications.tasks.Client")
+@patch("notifications.utils.Client")
 @patch("notifications.tasks.SendGridSender")
 def test_send_email_no_extra_context(send_grid_sender_class_mock, client_class_mock):
     send_grid_instance_mock = MagicMock()
@@ -17,7 +17,10 @@ def test_send_email_no_extra_context(send_grid_sender_class_mock, client_class_m
 
     send_email(
         event=settings.SIGNUP,
-        client_id=10,
+        recipient_list=["hello@world.com"],
+        extra_context={
+            "client_id": 10,
+        },
     )
 
     send_grid_instance_mock.send.assert_called_once_with(
@@ -32,7 +35,7 @@ def test_send_email_no_extra_context(send_grid_sender_class_mock, client_class_m
 
 @patch("notifications.utils.SubscriptionContainer")
 @patch("notifications.utils.Subscription")
-@patch("notifications.tasks.Client")
+@patch("notifications.utils.Client")
 @patch("notifications.tasks.SendGridSender")
 def test_send_email_with_subscription_context(
     send_grid_sender_class_mock,
@@ -52,8 +55,9 @@ def test_send_email_with_subscription_context(
 
     send_email(
         event=settings.SIGNUP,
-        client_id=10,
+        recipient_list=["hello@world.com"],
         extra_context={
+            "client_id": 10,
             "subscription_id": 100,
         },
     )
@@ -69,7 +73,7 @@ def test_send_email_with_subscription_context(
     )
 
 
-@patch("notifications.tasks.Client")
+@patch("notifications.utils.Client")
 @patch("notifications.tasks.SendGridSender")
 def test_send_email_with_extra_context(
     send_grid_sender_class_mock,
@@ -83,9 +87,10 @@ def test_send_email_with_extra_context(
 
     send_email(
         event=settings.SIGNUP,
-        client_id=10,
+        recipient_list=["hello@world.com"],
         extra_context={
             "foo": 100,
+            "client_id": 10,
         },
     )
 

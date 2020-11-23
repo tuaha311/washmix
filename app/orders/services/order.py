@@ -185,26 +185,39 @@ class OrderService:
     def _notify_client_on_new_order(self):
         client_id = self._client.id
         order_id = self._order.id
+        recipient_list = [self._client.email]
 
         send_email.send(
-            client_id=client_id,
             event=settings.NEW_ORDER,
+            recipient_list=recipient_list,
             extra_context={
+                "client_id": client_id,
                 "order_id": order_id,
             },
         )
 
     def _notify_client_on_payment_fail(self):
+        client_id = self._client.id
+        recipient_list = [self._client.email]
+
         send_email.send(
-            client_id=client_id,
-            event=settings.NEW_ORDER,
+            event=settings.PAYMENT_FAIL_CLIENT,
+            recipient_list=recipient_list,
             extra_context={
-                "order_id": order_id,
+                "client_id": client_id,
             },
         )
 
     def _notify_admin_on_payment_fail(self):
-        pass
+        client_id = self._client.id
+
+        send_email.send(
+            event=settings.PAYMENT_FAIL_ADMIN,
+            recipient_list=settings.ADMIN_EMAIL_LIST,
+            extra_context={
+                "client_id": client_id,
+            },
+        )
 
     @property
     def order(self):
