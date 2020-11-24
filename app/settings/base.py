@@ -36,13 +36,14 @@ INSTALLED_APPS = [
     "drf_yasg",
     "djangoql",
     # `other` app extends `base_site.html` from `django-jet` to
-    # inject React root
+    # inject React root and should be at higher place than `django-jet`
     "other",
     # `django-jet` has custom admin theme and should
     # be at higher place than django.contrib.admin
     "jet",
+    # here we have a custom AdminSite with extra routes
+    "other.apps.OtherConfig",
     # django
-    "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
