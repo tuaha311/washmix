@@ -1,4 +1,5 @@
 class StatusChoices:
+    # TODO add new status for new orders
     ACCEPTED = "accepted"
     IN_PROGRESS = "in_progress"
     COMPLETED = "completed"
