@@ -23,6 +23,7 @@ class Service(Common):
         verbose_name="image",
         blank=True,
     )
+    # many to many field THROUGH Price
     item_list = models.ManyToManyField(
         "orders.Item",
         verbose_name="items",
