@@ -65,10 +65,16 @@ class BasketService:
 
         with atomic():
             quantity = self._get_or_create_quantity(price)
+            current_count = quantity.count - count
+
+            # this expression has a lazy evaluation
+            # at database side
             quantity.count = F("count") - count
             quantity.save()
 
-            if quantity.count == DEFAULT_COUNT:
+            # we need to check a value after we will apply
+            # `F`-expression
+            if current_count == DEFAULT_COUNT:
                 quantity.delete()
 
             order_service.create_basket_invoice(order, basket)
