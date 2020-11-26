@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.db import models
-from django.utils.timezone import localdate
+from django.utils.timezone import localdate, localtime, now
 
 from core.common_models import Common
 from users.choices import EmployeePosition
@@ -42,11 +42,12 @@ class Employee(Common):
     )
     birthday = models.DateField(
         verbose_name="date of birthday",
+        default=localdate,
         null=True,
     )
     came_to_work = models.DateTimeField(
         verbose_name="came out to work from",
-        default=localdate,
+        default=now,
         null=True,
     )
 

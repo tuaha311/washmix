@@ -1,10 +1,16 @@
 from django.contrib import admin
 
 from core.admin import DefaultAdmin
+from deliveries.admin import RequestInline
 from users.models import Client, Customer, Employee
 
+
+class ClientAdmin(DefaultAdmin):
+    inlines = [RequestInline]
+
+
 models = [
-    [Client, DefaultAdmin],
+    [Client, ClientAdmin],
     [Employee, DefaultAdmin],
     [Customer, DefaultAdmin],
 ]

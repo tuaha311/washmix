@@ -51,3 +51,6 @@ class Subscription(CommonPackageSubscription, Common):
     class Meta:
         verbose_name = "subscription"
         verbose_name_plural = "subscriptions"
+
+    def __str__(self):
+        return f"{self.get_name_display()} - ${self.price}"
