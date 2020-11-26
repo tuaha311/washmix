@@ -5,7 +5,7 @@ from settings.base import *
 
 DEBUG = True
 
-ALLOWED_HOSTS = [DOMAIN]
+ALLOWED_HOSTS = [DOMAIN, "localhost"]
 
 ALLOWED_COUNTRY_CODES = [1, 7]
 
