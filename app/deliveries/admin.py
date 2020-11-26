@@ -3,7 +3,12 @@ from django.conf import settings
 from django.contrib import admin
 
 from core.admin import DefaultAdmin
-from deliveries.models import Delivery
+from deliveries.models import Delivery, Request
+
+
+class RequestInline(admin.TabularInline):
+    model = Request
+    extra = 1
 
 
 class DeliveryForm(forms.ModelForm):
