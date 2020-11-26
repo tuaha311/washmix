@@ -18,6 +18,11 @@ class DeliveryForm(forms.ModelForm):
 
 class DeliveryAdmin(DefaultAdmin):
     form = DeliveryForm
+    list_display = ["__str__", "employee", "kind", "status", "address", "is_rush", "comment"]
+    list_editable = [
+        "employee",
+        "status",
+    ]
 
 
 models = [

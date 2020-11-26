@@ -72,6 +72,9 @@ class Delivery(Common):
         #   - Dropoff
         unique_together = ["request", "kind",]
 
+    def __str__(self):
+        return f"# {self.id}"
+
     @property
     def address(self):
         return self.request.address
