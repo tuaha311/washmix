@@ -56,4 +56,4 @@ class WashmixAdminSite(AdminSite):
         }
         # end of copied part
 
-        return TemplateResponse(request, "pos/index.html", context)
+        return TemplateResponse(request, "admin/pos.html", context)
