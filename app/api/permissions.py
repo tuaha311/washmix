@@ -22,5 +22,5 @@ class IsEmployee(BaseAttributePermission):
     attribute_name = "employee"
 
 
-default_permissions_for_employee = [IsAuthenticated, IsEmployee]
-default_permissions_for_admin = [IsAuthenticated, IsAdminUser]
+default_driver_permissions = [IsAuthenticated, IsEmployee]
+default_pos_permissions = [IsAuthenticated, IsAdminUser]
