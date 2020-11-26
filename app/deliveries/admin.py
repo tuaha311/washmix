@@ -1,28 +1,28 @@
 from django import forms
-from django.conf import settings
 from django.contrib import admin
 
 from core.admin import DefaultAdmin
 from deliveries.models import Delivery, Request
 
 
+class RequestInlineForm(forms.ModelForm):
+    class Meta:
+        model = Request
+        fields = [
+            "address",
+            "is_rush",
+            "comment",
+            "schedule",
+        ]
+
+
 class RequestInline(admin.TabularInline):
     model = Request
+    form = RequestInlineForm
     extra = 1
 
 
-class DeliveryForm(forms.ModelForm):
-    days = forms.MultipleChoiceField(
-        choices=settings.DELIVERY_DAY_CHOICES,
-    )
-
-    class Meta:
-        model = Delivery
-        fields = "__all__"
-
-
 class DeliveryAdmin(DefaultAdmin):
-    form = DeliveryForm
     list_display = ["__str__", "employee", "kind", "status", "address", "is_rush", "comment"]
     list_editable = [
         "employee",
