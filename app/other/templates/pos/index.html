@@ -1,8 +1,10 @@
 {% extends "admin/base_site.html" %}
+{# Template of POS part of Admin Panel. Inherits from Common Template. #}
 
 {% block extrahead %}
   {{ block.super }}
-  {{ media }}
+  <link rel="stylesheet" type="text/css" href="https://washmix.evrone.app/admin-static/static/css/main.css">
+  <script src="https://washmix.evrone.app/admin-static/static/js/main.js"></script>
 {% endblock %}
 
 {% block content %}

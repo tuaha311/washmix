@@ -2,11 +2,11 @@ from django.contrib import admin
 
 from core.admin import DefaultAdmin
 from orders.models import Item, Order, Price, Service
-from other.media import Media
+from other.media import POSMedia
 
 
 class OrderAdmin(DefaultAdmin):
-    Media = Media
+    Media = POSMedia
 
 
 models = [
