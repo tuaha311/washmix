@@ -2,15 +2,9 @@ from django.contrib import admin
 
 from core.admin import DefaultAdmin
 from orders.models import Item, Order, Price, Service
-from other.media import Media
-
-
-class OrderAdmin(DefaultAdmin):
-    Media = Media
-
 
 models = [
-    [Order, OrderAdmin],
+    [Order, DefaultAdmin],
     [Item, DefaultAdmin],
     [Service, DefaultAdmin],
     [Price, DefaultAdmin],

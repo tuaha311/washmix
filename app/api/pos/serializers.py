@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from billing.models import Coupon
 from orders.models import Item, Price
 
 
@@ -31,4 +32,14 @@ class ItemSerializer(serializers.ModelSerializer):
             "title",
             "image",
             "price_list",
+        ]
+
+
+class CouponSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Coupon
+        fields = [
+            "id",
+            "code",
+            "description",
         ]

@@ -2,6 +2,7 @@ from rest_framework.generics import GenericAPIView, ListAPIView, UpdateAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 
+from api.authentication import default_pos_authentication
 from api.permissions import default_pos_permissions
 from orders.api.pos.serializers.orders import OrderSerializer
 from orders.containers.order import OrderContainer
@@ -9,6 +10,7 @@ from orders.containers.order import OrderContainer
 
 class OrderListView(ListAPIView):
     serializer_class = OrderSerializer
+    authentication_classes = default_pos_authentication
     permission_classes = default_pos_permissions
 
     def get_queryset(self):
@@ -20,6 +22,7 @@ class OrderListView(ListAPIView):
 
 class OrderUpdateView(UpdateAPIView):
     serializer_class = OrderSerializer
+    authentication_classes = default_pos_authentication
     permission_classes = default_pos_permissions
 
     def get_queryset(self):

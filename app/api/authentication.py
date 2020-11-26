@@ -1,0 +1,4 @@
+from rest_framework.authentication import SessionAuthentication
+from rest_framework_simplejwt.authentication import JWTAuthentication
+
+default_pos_authentication = [SessionAuthentication, JWTAuthentication]

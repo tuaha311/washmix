@@ -1,15 +1,11 @@
 from functools import update_wrapper
 
-from django import forms
 from django.contrib.admin import AdminSite
 from django.urls import path
 from django.views.generic.base import TemplateResponse
 
-from other.media import Media
 
-
-# metaclass definition copied from django.contrib.admin.options.BaseModelAdmin
-class WashmixAdminSite(AdminSite, metaclass=forms.MediaDefiningClass):
+class WashmixAdminSite(AdminSite):
     """
     Custom Admin site with few changes:
         - Custom site branding
@@ -20,8 +16,6 @@ class WashmixAdminSite(AdminSite, metaclass=forms.MediaDefiningClass):
     site_header = "Washmix"
     site_title = "washmix.com"
     index_title = "Washmix Admin Panel"
-
-    Media = Media
 
     def get_urls(self):
         """
@@ -58,15 +52,8 @@ class WashmixAdminSite(AdminSite, metaclass=forms.MediaDefiningClass):
         context = {
             **self.each_context(request),
             "title": self.index_title,
-            # injected by metaclass
-            "media": self.media,
             **(extra_context or {}),
         }
         # end of copied part
 
-        return TemplateResponse(request, "pos/index.html", context)
-
-    def _build_app_dict(self, request, label=None):
-        app_dict = super()._build_app_dict(request, label)
-
-        return app_dict
+        return TemplateResponse(request, "admin/pos.html", context)
