@@ -4,8 +4,18 @@ from rest_framework.response import Response
 
 from api.authentication import default_pos_authentication
 from api.permissions import default_pos_permissions
-from orders.api.pos.serializers.orders import OrderSerializer
+from orders.api.pos.serializers.orders import OrderPrepareSerializer, OrderSerializer
 from orders.containers.order import OrderContainer
+
+
+class OrderPrepareView(GenericAPIView):
+    serializer_class = OrderPrepareSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data, context={"request": request})
+        serializer.is_valid(raise_exception=True)
+
+        return Response()
 
 
 class OrderListView(ListAPIView):
@@ -34,10 +44,6 @@ class OrderUpdateView(UpdateAPIView):
         instance = super().get_object()
 
         return OrderContainer(instance)
-
-
-class OrderPrepareView(GenericAPIView):
-    pass
 
 
 class OrderRepeatView(GenericAPIView):

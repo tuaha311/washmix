@@ -1,6 +1,8 @@
 from rest_framework import serializers
 
 from billing.validators import validate_paid_invoice
+from deliveries.models import Request
+from users.models import Client
 
 
 class BaseClientField(serializers.PrimaryKeyRelatedField):
@@ -23,6 +25,14 @@ class InvoiceField(BaseClientField):
         default_validators.append(validate_paid_invoice)
 
         return default_validators
+
+
+class POSClientField(serializers.PrimaryKeyRelatedField):
+    queryset = Client.objects.all()
+
+
+class POSRequestField(serializers.PrimaryKeyRelatedField):
+    queryset = Request.objects.all()
 
 
 class RequestField(BaseClientField):
