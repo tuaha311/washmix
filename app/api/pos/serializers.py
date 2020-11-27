@@ -4,7 +4,7 @@ from billing.models import Coupon
 from orders.models import Item, Price
 
 
-class PriceSerializer(serializers.ModelSerializer):
+class ItemPriceSerializer(serializers.ModelSerializer):
     title = serializers.CharField(source="service.title", read_only=True)
     image = serializers.ImageField(source="service.image", read_only=True)
 
@@ -23,7 +23,7 @@ class PriceSerializer(serializers.ModelSerializer):
 
 
 class ItemSerializer(serializers.ModelSerializer):
-    price_list = PriceSerializer(many=True, read_only=True)
+    price_list = ItemPriceSerializer(many=True, read_only=True)
 
     class Meta:
         model = Item

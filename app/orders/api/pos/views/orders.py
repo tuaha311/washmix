@@ -4,18 +4,32 @@ from rest_framework.response import Response
 
 from api.authentication import default_pos_authentication
 from api.permissions import default_pos_permissions
-from orders.api.pos.serializers.orders import OrderPrepareSerializer, OrderSerializer
+from orders.api.pos.serializers.orders import (
+    OrderPrepareResponseSerializer,
+    OrderPrepareSerializer,
+    OrderSerializer,
+)
 from orders.containers.order import OrderContainer
+from orders.services.order import OrderService
 
 
 class OrderPrepareView(GenericAPIView):
     serializer_class = OrderPrepareSerializer
+    response_serializer_class = OrderPrepareResponseSerializer
 
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data, context={"request": request})
         serializer.is_valid(raise_exception=True)
 
-        return Response()
+        client = serializer.validated_data["client"]
+        request = serializer.validated_data["request"]
+
+        service = OrderService(client)
+        order = service.prepare(request)
+
+        response = self.response_serializer_class(order).data
+
+        return Response(response)
 
 
 class OrderListView(ListAPIView):
