@@ -47,6 +47,18 @@ class OrderService:
 
         return self.get_container()
 
+    def prepare(self, request: Request) -> Order:
+        client = self._client
+
+        order, _ = Order.objects.get_or_create(
+            client=client,
+            request=request,
+        )
+
+        self._order = order
+
+        return order
+
     def create_basket_invoice(
         self,
         order: Order,

@@ -17,11 +17,10 @@ basket_urls = (
 
 order_urls = (
     [
+        path("prepare/", orders.OrderPrepareView.as_view(), name="prepare"),
         path("", orders.OrderListView.as_view(), name="list"),
         path("<int:pk>/", orders.OrderUpdateView.as_view(), name="update"),
-        path("prepare/", orders.OrderPrepareView.as_view(), name="prepare"),
         path("checkout/", checkout.OrderCheckoutView.as_view(), name="checkout"),
-        path("repeat/", orders.OrderRepeatView.as_view(), name="repeat"),
         path("apply_coupon/", coupons.OrderApplyCouponView.as_view(), name="apply-coupon"),
     ],
     "order",
