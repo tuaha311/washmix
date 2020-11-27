@@ -34,6 +34,7 @@ class Client(Stripeable, Common):
         related_name="active_client",
         on_delete=models.CASCADE,
         null=True,
+        blank=True,
     )
     main_card = models.OneToOneField(
         "billing.Card",
@@ -41,6 +42,7 @@ class Client(Stripeable, Common):
         related_name="+",
         on_delete=models.SET_NULL,
         null=True,
+        blank=True,
     )
     main_phone = models.OneToOneField(
         "core.Phone",
@@ -48,6 +50,7 @@ class Client(Stripeable, Common):
         related_name="+",
         on_delete=models.SET_NULL,
         null=True,
+        blank=True,
     )
     main_address = models.OneToOneField(
         "locations.Address",
@@ -55,10 +58,12 @@ class Client(Stripeable, Common):
         related_name="+",
         on_delete=models.SET_NULL,
         null=True,
+        blank=True,
     )
     billing_address = JSONField(
         verbose_name="billing address",
         default=dict,
+        blank=True,
     )
 
     # Preferences

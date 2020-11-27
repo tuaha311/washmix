@@ -58,7 +58,8 @@ class Request(CommonScheduleRequest, Common):
         verbose_name="recurring schedule for request",
         related_name="request_list",
         on_delete=models.SET_NULL,
-        null=True
+        null=True,
+        blank=True,
     )
 
     class Meta:
