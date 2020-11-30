@@ -1,7 +1,6 @@
-from typing import Optional
+from typing import List, Optional
 
 from django.conf import settings
-from django.db.models import Sum
 
 from core.containers import BaseAmountContainer
 from core.utils import get_dollars
@@ -20,12 +19,7 @@ class OrderContainer(BaseAmountContainer):
 
     @property
     def amount(self) -> int:
-        basket_container = self.basket
-        request_container = self.request
-        subscription_container = self.subscription
-
-        container_list = [basket_container, request_container, subscription_container]
-        filled_container_list = [item for item in container_list if item]
+        filled_container_list = self._filled_container_list
         amount_list = [item.amount for item in filled_container_list]
 
         total_amount = sum(amount_list)
@@ -34,12 +28,12 @@ class OrderContainer(BaseAmountContainer):
 
     @property
     def discount(self) -> int:
-        order = self._order
-        invoice_list = order.invoice_list.all()
+        filled_container_list = self._filled_container_list
+        discount_list = [item.discount for item in filled_container_list]
 
-        amount = invoice_list.aggregate(total=Sum("discount"))["total"] or 0
+        total_amount = sum(discount_list)
 
-        return amount
+        return total_amount
 
     @property
     def credit_back(self) -> int:
@@ -101,3 +95,14 @@ class OrderContainer(BaseAmountContainer):
         extra_items_container = [ExtraItemContainer(item) for item in extra_items]
 
         return extra_items_container
+
+    @property
+    def _filled_container_list(self) -> List:
+        basket_container = self.basket
+        request_container = self.request
+        subscription_container = self.subscription
+
+        container_list = [basket_container, request_container, subscription_container]
+        filled_container_list = [item for item in container_list if item]
+
+        return filled_container_list
