@@ -1,4 +1,5 @@
 from core.containers import BaseAmountContainer
+from orders.containers.extra_item import ExtraItemContainer
 from orders.containers.quantity import QuantityContainer
 from orders.models import Basket
 from subscriptions.models import Subscription
@@ -36,6 +37,15 @@ class BasketContainer(BaseAmountContainer):
         quantity_container_list = [QuantityContainer(subscription, item) for item in quantity_list]
 
         return quantity_container_list
+
+    @property
+    def extra_items(self):
+        basket = self._basket
+        extra_items = basket.extra_items
+
+        extra_items_container = [ExtraItemContainer(item) for item in extra_items]
+
+        return extra_items_container
 
     def _calculate_sum(self, item_attribute_name: str) -> int:
         quantity_container_list = self.quantity_container_list

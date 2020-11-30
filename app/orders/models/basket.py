@@ -1,3 +1,4 @@
+from django.contrib.postgres.fields import JSONField
 from django.db import models
 
 from core.common_models import Common
@@ -36,6 +37,11 @@ class Basket(Common):
         related_name="basket",
         on_delete=models.PROTECT,
         null=True,
+    )
+    extra_items = JSONField(
+        verbose_name="extra items",
+        default=dict,
+        blank=True,
     )
 
     class Meta:

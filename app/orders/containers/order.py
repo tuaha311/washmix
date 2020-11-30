@@ -6,7 +6,6 @@ from core.containers import BaseAmountContainer
 from core.utils import get_dollars
 from deliveries.containers.request import RequestContainer
 from orders.containers.basket import BasketContainer
-from orders.containers.extra_item import ExtraItemContainer
 from orders.models import Order
 from subscriptions.containers import SubscriptionContainer
 
@@ -86,15 +85,6 @@ class OrderContainer(BaseAmountContainer):
         subscription_container = SubscriptionContainer(subscription)
 
         return subscription_container
-
-    @property
-    def extra_items(self):
-        order = self._order
-        extra_items = order.extra_items
-
-        extra_items_container = [ExtraItemContainer(item) for item in extra_items]
-
-        return extra_items_container
 
     @property
     def _filled_container_list(self) -> List:

@@ -1,3 +1,5 @@
+from typing import List
+
 from django.conf import settings
 from django.db.models import F
 from django.db.transaction import atomic
@@ -82,6 +84,15 @@ class BasketService:
 
         return self.get_container()
 
+    def set_extra_items(self, extra_items: List):
+        basket = self.basket
+
+        with atomic():
+            basket.extra_items = extra_items
+            basket.save()
+
+        return self.get_container()
+
     def get_container(self) -> OrderContainer:
         order_service = self.get_order_service()
         order_container = order_service.get_container()
@@ -114,6 +125,7 @@ class BasketService:
     def basket(self) -> Basket:
         client = self._client
 
+        # TODO refactor
         # we are looking for last basket, that wasn't paid
         basket, _ = Basket.objects.get_or_create(
             client=client,

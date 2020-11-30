@@ -11,6 +11,8 @@ basket_urls = (
         path("change_item/", baskets.BasketChangeItemView.as_view(), name="change-item"),
         # 3. you can clear whole basket
         path("clear/", baskets.BasketClearView.as_view(), name="clear"),
+        # 4. you can also add extra custom items to basket
+        path("set_extra_items/", baskets.BasketSetExtraItemsView.as_view(), name="set-extra-items"),
     ],
     "basket",
 )
