@@ -1,3 +1,4 @@
+from django.contrib.postgres.fields import JSONField
 from django.db import models
 
 from core.common_models import Common
@@ -56,6 +57,11 @@ class Order(Common):
         null=True,
     )
 
+    extra_items = JSONField(
+        verbose_name="extra items",
+        default=dict,
+        blank=True,
+    )
     status = models.CharField(
         max_length=20,
         verbose_name="status of order",

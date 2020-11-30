@@ -10,12 +10,18 @@ from orders.models import Order
 from users.models import Client
 
 
+class ExtraItemsSerializer(serializers.Serializer):
+    title = serializers.CharField()
+    amount = serializers.IntegerField()
+
+
 class OrderSerializer(CommonContainerSerializer, serializers.ModelSerializer):
     basket = BasketSerializer(allow_null=True)
     request = RequestResponseSerializer(allow_null=True)
     subscription = serializers.SlugRelatedField(slug_field="name", read_only=True, allow_null=True)
     credit_back = serializers.ReadOnlyField()
     dollar_credit_back = serializers.ReadOnlyField()
+    extra_items = ExtraItemsSerializer(many=True)
 
     class Meta:
         model = Order
@@ -37,6 +43,7 @@ class OrderSerializer(CommonContainerSerializer, serializers.ModelSerializer):
             "dollar_discount",
             "amount_with_discount",
             "dollar_amount_with_discount",
+            "extra_items",
         ]
 
 
