@@ -11,8 +11,8 @@ from users.models import Client
 
 
 class ExtraItemsSerializer(serializers.Serializer):
-    title = serializers.CharField()
-    amount = serializers.IntegerField()
+    title = serializers.CharField(required=True, allow_null=True)
+    amount = serializers.IntegerField(required=True, allow_null=True)
 
 
 class OrderSerializer(CommonContainerSerializer, serializers.ModelSerializer):
