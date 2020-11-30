@@ -35,6 +35,14 @@ class OrderService:
     def checkout(self, order: Order):
         """
         Method to charge all invoices of order.
+        At the checkout stage we already have all invoices ready.
+
+        Why?
+        Because we are calculating items amount in basket, delivery amount and all
+        rest of prices by aggregating invoices amount.
+        Also, we should store the discount amount in our invoices. When a client applies coupon
+        he applies coupon to the *whole* order, not to certain items. And at this stage we should
+        already have a invoice to have an instance to deal with it.
         """
 
         invoice_list = order.invoice_list.all()

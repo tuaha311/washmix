@@ -7,6 +7,7 @@ from core.containers import BaseAmountContainer
 from core.utils import get_dollars
 from deliveries.containers.request import RequestContainer
 from orders.containers.basket import BasketContainer
+from orders.containers.extra_item import ExtraItemContainer
 from orders.models import Order
 
 
@@ -15,6 +16,34 @@ class OrderContainer(BaseAmountContainer):
 
     def __init__(self, order: Order):
         self._order = order
+
+    @property
+    def amount(self) -> int:
+        order = self._order
+        invoice_list = order.invoice_list.all()
+
+        amount = invoice_list.aggregate(total=Sum("amount"))["total"] or 0
+
+        return amount
+
+    @property
+    def discount(self) -> int:
+        order = self._order
+        invoice_list = order.invoice_list.all()
+
+        amount = invoice_list.aggregate(total=Sum("discount"))["total"] or 0
+
+        return amount
+
+    @property
+    def credit_back(self) -> int:
+        amount_with_discount = self.amount_with_discount
+
+        return amount_with_discount * settings.CREDIT_BACK_PERCENTAGE / 100
+
+    @property
+    def dollar_credit_back(self) -> float:
+        return get_dollars(self, "credit_back")
 
     @property
     def basket(self) -> Optional[BasketContainer]:
@@ -47,29 +76,10 @@ class OrderContainer(BaseAmountContainer):
         return request_container
 
     @property
-    def amount(self) -> int:
+    def extra_items(self):
         order = self._order
-        invoice_list = order.invoice_list.all()
+        extra_items = order.extra_items
 
-        amount = invoice_list.aggregate(total=Sum("amount"))["total"] or 0
+        extra_items_container = [ExtraItemContainer(item) for item in extra_items]
 
-        return amount
-
-    @property
-    def discount(self) -> int:
-        order = self._order
-        invoice_list = order.invoice_list.all()
-
-        amount = invoice_list.aggregate(total=Sum("discount"))["total"] or 0
-
-        return amount
-
-    @property
-    def credit_back(self) -> int:
-        amount_with_discount = self.amount_with_discount
-
-        return amount_with_discount * settings.CREDIT_BACK_PERCENTAGE / 100
-
-    @property
-    def dollar_credit_back(self) -> float:
-        return get_dollars(self, "credit_back")
+        return extra_items_container

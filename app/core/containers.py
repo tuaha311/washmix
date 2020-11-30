@@ -17,13 +17,13 @@ class BaseAmountContainer:
     proxy_to_object = ""
 
     @property
-    def proxy(self):
-        proxy_key = self.proxy_to_object
-        return getattr(self, proxy_key)
+    @abstractmethod
+    def amount(self) -> int:
+        pass
 
     @property
     @abstractmethod
-    def amount(self) -> int:
+    def discount(self) -> float:
         pass
 
     @property
@@ -31,9 +31,9 @@ class BaseAmountContainer:
         return get_dollars(self, "amount")
 
     @property
-    @abstractmethod
-    def discount(self) -> float:
-        pass
+    def proxy(self):
+        proxy_key = self.proxy_to_object
+        return getattr(self, proxy_key)
 
     @property
     def dollar_discount(self) -> float:

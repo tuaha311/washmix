@@ -10,9 +10,10 @@ from orders.models import Order
 from users.models import Client
 
 
-class ExtraItemsSerializer(serializers.Serializer):
+class ExtraItemSerializer(serializers.Serializer):
     title = serializers.CharField(required=True, allow_null=True)
     amount = serializers.IntegerField(required=True, allow_null=True)
+    dollar_amount = serializers.FloatField(required=False, allow_null=True)
 
 
 class OrderSerializer(CommonContainerSerializer, serializers.ModelSerializer):
@@ -21,7 +22,7 @@ class OrderSerializer(CommonContainerSerializer, serializers.ModelSerializer):
     subscription = serializers.SlugRelatedField(slug_field="name", read_only=True, allow_null=True)
     credit_back = serializers.ReadOnlyField()
     dollar_credit_back = serializers.ReadOnlyField()
-    extra_items = ExtraItemsSerializer(many=True)
+    extra_items = ExtraItemSerializer(many=True)
 
     class Meta:
         model = Order
