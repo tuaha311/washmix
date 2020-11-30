@@ -4,6 +4,7 @@ from rest_framework import serializers
 
 from api.fields import OrderField
 from locations.models import Address, ZipCode
+from orders.models import Order
 from users.models import Client
 
 
@@ -45,6 +46,15 @@ class WelcomeCheckoutSerializer(serializers.Serializer):
     # at this moment client doesn't have an payment methods
     # 1. welcome scenario (no payment method)
     order = OrderField()
+
+    def validate_order(self, value: Order):
+        if not value.subscription:
+            raise serializers.ValidationError(
+                detail="Invalid order.",
+                code="invalid_order",
+            )
+
+        return value
 
 
 class WelcomeCheckoutResponseSerializer(serializers.Serializer):

@@ -5,6 +5,12 @@ from subscriptions.models import Subscription
 
 
 class SubscriptionContainer(BaseAmountContainer):
+    """
+    SubscriptionContainer implements pricing logic of subscription.
+
+    Subscription price depends only from subscription plan.
+    """
+
     proxy_to_object = "_subscription"
 
     def __init__(self, subscription: Subscription):

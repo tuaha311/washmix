@@ -5,6 +5,14 @@ from subscriptions.models import Subscription
 
 
 class BasketContainer(BaseAmountContainer):
+    """
+    BasketContainer implements pricing logic of basket.
+
+    Pricing depends on:
+        - Subscription
+        - Basket amount
+    """
+
     proxy_to_object = "_basket"
 
     def __init__(self, subscription: Subscription, basket: Basket):
