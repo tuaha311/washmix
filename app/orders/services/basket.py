@@ -41,16 +41,10 @@ class BasketService:
         Action for basket, adds item to basket.
         """
 
-        order_service = self.get_order_service()
-        order = order_service.order
-        basket = self.basket
-
         with atomic():
             quantity = self._get_or_create_quantity(price)
             quantity.count = F("count") + count
             quantity.save()
-
-            order_service.create_basket_invoice(order, basket)
 
         return self.get_container()
 
@@ -58,10 +52,6 @@ class BasketService:
         """
         Action for basket, removes item from basket.
         """
-
-        order_service = self.get_order_service()
-        order = order_service.order
-        basket = self.basket
 
         with atomic():
             quantity = self._get_or_create_quantity(price)
@@ -77,8 +67,6 @@ class BasketService:
             if current_count == DEFAULT_COUNT:
                 quantity.delete()
 
-            order_service.create_basket_invoice(order, basket)
-
         return self.get_container()
 
     def clear_all(self):
@@ -86,15 +74,11 @@ class BasketService:
         Action for basket, removes all items from basket.
         """
 
-        order_service = self.get_order_service()
-        order = order_service.order
         basket = self.basket
 
         with atomic():
             basket.item_list.set([])
             basket.save()
-
-            order_service.create_basket_invoice(order, basket)
 
         return self.get_container()
 

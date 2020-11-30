@@ -37,12 +37,9 @@ class SubscriptionService:
         with atomic():
             subscription = self._get_or_create_subscription(package)
             order_service = self._get_order_service(subscription)
-            order = order_service.order
 
             subscription = Subscription.objects.fill_subscription(package, subscription)
             subscription.save()
-
-            order_service.create_subscription_invoice(order, subscription)
 
         return order_service.get_container()
 

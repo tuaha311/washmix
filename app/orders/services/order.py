@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from django.conf import settings
 from django.db.transaction import atomic
@@ -35,16 +35,23 @@ class OrderService:
     def checkout(self, order: Order):
         """
         Method to charge all invoices of order.
-        At the checkout stage we already have all invoices ready.
-
-        Why?
-        Because we are calculating items amount in basket, delivery amount and all
-        rest of prices by aggregating invoices amount.
-        Also, we should store the discount amount in our invoices. When a client applies coupon
-        he applies coupon to the *whole* order, not to certain items. And at this stage we should
-        already have a invoice to have an instance to deal with it.
+        At the checkout stage we are creating invoice for every part of Order and
+        than charge them:
+            - Basket
+            - Request (2 Delivery)
+            - Subscription
         """
 
+        basket = order.basket
+        request = order.request
+        subscription = order.subscription
+
+        with atomic():
+            self.create_basket_invoice(order, basket)
+            self.create_delivery_invoice(order, basket, request)
+            self.create_subscription_invoice(order, subscription)
+
+        order.refresh_from_db()
         invoice_list = order.invoice_list.all()
 
         with atomic():
@@ -70,8 +77,12 @@ class OrderService:
     def create_basket_invoice(
         self,
         order: Order,
-        basket: Basket,
-    ) -> List[Invoice]:
+        basket: Optional[Basket],
+    ) -> Optional[List[Invoice]]:
+
+        if not basket:
+            return None
+
         client = self._client
         subscription = client.subscription
         invoice_service = InvoiceService(client)
@@ -93,9 +104,12 @@ class OrderService:
     def create_delivery_invoice(
         self,
         order: Order,
-        basket: Basket,
-        request: Request,
-    ) -> List[Invoice]:
+        basket: Optional[Basket],
+        request: Optional[Request],
+    ) -> Optional[List[Invoice]]:
+        if not basket or not request:
+            return None
+
         client = self._client
         subscription = client.subscription
         invoice_service = InvoiceService(client)
@@ -132,8 +146,11 @@ class OrderService:
     def create_subscription_invoice(
         self,
         order: Order,
-        subscription: Subscription,
-    ) -> List[Invoice]:
+        subscription: Optional[Subscription],
+    ) -> Optional[List[Invoice]]:
+        if not subscription:
+            return None
+
         client = self._client
         invoice_service = InvoiceService(client)
         subscription_container = SubscriptionContainer(subscription)

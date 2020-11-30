@@ -9,6 +9,7 @@ from deliveries.containers.request import RequestContainer
 from orders.containers.basket import BasketContainer
 from orders.containers.extra_item import ExtraItemContainer
 from orders.models import Order
+from subscriptions.containers import SubscriptionContainer
 
 
 class OrderContainer(BaseAmountContainer):
@@ -19,12 +20,17 @@ class OrderContainer(BaseAmountContainer):
 
     @property
     def amount(self) -> int:
-        order = self._order
-        invoice_list = order.invoice_list.all()
+        basket_container = self.basket
+        request_container = self.request
+        subscription_container = self.subscription
 
-        amount = invoice_list.aggregate(total=Sum("amount"))["total"] or 0
+        container_list = [basket_container, request_container, subscription_container]
+        filled_container_list = [item for item in container_list if item]
+        amount_list = [item.amount for item in filled_container_list]
 
-        return amount
+        total_amount = sum(amount_list)
+
+        return total_amount
 
     @property
     def discount(self) -> int:
@@ -74,6 +80,18 @@ class OrderContainer(BaseAmountContainer):
         request_container = RequestContainer(subscription, request, basket_container)
 
         return request_container
+
+    @property
+    def subscription(self) -> Optional[SubscriptionContainer]:
+        order = self._order
+        subscription = order.subscription
+
+        if not subscription:
+            return None
+
+        subscription_container = SubscriptionContainer(subscription)
+
+        return subscription_container
 
     @property
     def extra_items(self):

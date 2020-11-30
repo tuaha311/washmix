@@ -41,12 +41,9 @@ class RequestService:
         with atomic():
             order_service = self._get_order_service()
             order = order_service.order
-            basket = order.basket
 
             order.request = request
             order.save()
-
-            order_service.create_delivery_invoice(order, basket, request)
 
         return order_service.get_container()
 
