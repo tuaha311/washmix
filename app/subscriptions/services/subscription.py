@@ -1,18 +1,21 @@
-from typing import Optional
+from typing import List, Optional
 
 from django.conf import settings
 from django.db.transaction import atomic
 
 from stripe import PaymentMethod
 
+from billing.choices import Purpose
 from billing.models import Invoice
 from billing.services.card import CardService
+from billing.services.invoice import InvoiceService
 from billing.services.payments import PaymentService
 from notifications.tasks import send_email
 from orders.choices import PaymentChoices, StatusChoices
 from orders.containers.order import OrderContainer
 from orders.models import Order
 from orders.services.order import OrderService
+from subscriptions.containers import SubscriptionContainer
 from subscriptions.models import Package, Subscription
 from users.models import Client
 
@@ -98,6 +101,30 @@ class SubscriptionService:
         self._notify_client_on_purchase_of_advantage_program(subscription)
 
         return subscription
+
+    def create_invoice(
+        self,
+        order: Order,
+        subscription: Optional[Subscription],
+    ) -> Optional[List[Invoice]]:
+        if not subscription:
+            return None
+
+        client = self._client
+        invoice_service = InvoiceService(client)
+        subscription_container = SubscriptionContainer(subscription)
+
+        subscription_invoice = invoice_service.update_or_create(
+            order=order,
+            amount=subscription_container.amount,
+            discount=subscription_container.discount,
+            purpose=Purpose.SUBSCRIPTION,
+        )
+
+        subscription.invoice = subscription_invoice
+        subscription.save()
+
+        return [subscription_invoice]
 
     def fail(self, order: Order):
         subscription = order.subscription

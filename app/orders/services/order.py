@@ -1,23 +1,17 @@
-from typing import List, Optional
-
 from django.conf import settings
 from django.db.transaction import atomic
 
-from billing.choices import Purpose
 from billing.models import Coupon, Invoice
 from billing.services.coupon import CouponService
-from billing.services.invoice import InvoiceService
 from billing.services.payments import PaymentService
-from deliveries.choices import Kind
-from deliveries.containers.request import RequestContainer
 from deliveries.models import Request
+from deliveries.services.requests import RequestService
 from notifications.tasks import send_email
 from orders.choices import PaymentChoices
-from orders.containers.basket import BasketContainer
 from orders.containers.order import OrderContainer
 from orders.models import Basket, Order
-from subscriptions.containers import SubscriptionContainer
-from subscriptions.models import Subscription
+from orders.services.basket import BasketService
+from subscriptions.services.subscription import SubscriptionService
 from users.models import Client
 
 
@@ -42,14 +36,18 @@ class OrderService:
             - Subscription
         """
 
+        client = self._client
         basket = order.basket
         request = order.request
         subscription = order.subscription
+        basket_service = BasketService(client)
+        request_service = RequestService(client)
+        subscription_service = SubscriptionService(client)
 
         with atomic():
-            self.create_basket_invoice(order, basket)
-            self.create_delivery_invoice(order, basket, request)
-            self.create_subscription_invoice(order, subscription)
+            basket_service.create_invoice(order, basket)
+            request_service.create_invoice(order, basket, request)
+            subscription_service.create_invoice(order, subscription)
 
         order.refresh_from_db()
         invoice_list = order.invoice_list.all()
@@ -73,101 +71,6 @@ class OrderService:
         self._order = order
 
         return order
-
-    def create_basket_invoice(
-        self,
-        order: Order,
-        basket: Optional[Basket],
-    ) -> Optional[List[Invoice]]:
-
-        if not basket:
-            return None
-
-        client = self._client
-        subscription = client.subscription
-        invoice_service = InvoiceService(client)
-        basket_container = BasketContainer(subscription, basket)
-
-        basket_invoice = invoice_service.update_or_create(
-            order=order,
-            amount=basket_container.amount,
-            discount=basket_container.discount,
-            purpose=Purpose.BASKET,
-        )
-        basket.invoice = basket_invoice
-        basket.save()
-
-        self._order = order
-
-        return [basket_invoice]
-
-    def create_delivery_invoice(
-        self,
-        order: Order,
-        basket: Optional[Basket],
-        request: Optional[Request],
-    ) -> Optional[List[Invoice]]:
-        if not basket or not request:
-            return None
-
-        client = self._client
-        subscription = client.subscription
-        invoice_service = InvoiceService(client)
-        basket_container = BasketContainer(subscription, basket)
-        request_container = RequestContainer(subscription, request, basket_container)
-
-        # we have 2 kind - Pickup, Dropoff
-        # and for every of Delivery we create an invoice
-        kind_of_deliveries = Kind.MAP.keys()
-        invoice_list = []
-
-        for kind in kind_of_deliveries:
-            delivery_container_name = f"{kind}_container"
-            delivery_container = getattr(request_container, delivery_container_name)
-
-            delivery_invoice = invoice_service.update_or_create(
-                order=order,
-                amount=delivery_container.amount,
-                discount=delivery_container.discount,
-                purpose=kind,
-            )
-
-            invoice_attribute_name = f"{kind}_invoice"
-            setattr(request, invoice_attribute_name, delivery_invoice)
-
-            invoice_list.append(delivery_invoice)
-
-        request.save()
-
-        self._order = order
-
-        return invoice_list
-
-    def create_subscription_invoice(
-        self,
-        order: Order,
-        subscription: Optional[Subscription],
-    ) -> Optional[List[Invoice]]:
-        if not subscription:
-            return None
-
-        client = self._client
-        invoice_service = InvoiceService(client)
-        subscription_container = SubscriptionContainer(subscription)
-
-        subscription_invoice = invoice_service.update_or_create(
-            order=order,
-            amount=subscription_container.amount,
-            discount=subscription_container.discount,
-            purpose=Purpose.SUBSCRIPTION,
-        )
-
-        subscription.invoice = subscription_invoice
-        subscription.save()
-
-        self._order = order
-
-        return [subscription_invoice]
 
     def apply_coupon(self, order: Order, coupon: Coupon) -> OrderContainer:
         invoice_list = order.invoice_list.all()

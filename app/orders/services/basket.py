@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from django.conf import settings
 from django.db.models import F
@@ -6,6 +6,10 @@ from django.db.transaction import atomic
 
 from rest_framework import serializers
 
+from billing.choices import Purpose
+from billing.models import Invoice
+from billing.services.invoice import InvoiceService
+from orders.containers.basket import BasketContainer
 from orders.containers.order import OrderContainer
 from orders.models import Basket, Order, Price, Quantity
 from orders.services.order import OrderService
@@ -85,6 +89,10 @@ class BasketService:
         return self.get_container()
 
     def set_extra_items(self, extra_items: List):
+        """
+        Allows to set `extra_items` on Basket.
+        """
+
         basket = self.basket
 
         with atomic():
@@ -92,6 +100,31 @@ class BasketService:
             basket.save()
 
         return self.get_container()
+
+    def create_invoice(
+        self,
+        order: Order,
+        basket: Optional[Basket],
+    ) -> Optional[List[Invoice]]:
+
+        if not basket:
+            return None
+
+        client = self._client
+        subscription = client.subscription
+        invoice_service = InvoiceService(client)
+        basket_container = BasketContainer(subscription, basket)
+
+        basket_invoice = invoice_service.update_or_create(
+            order=order,
+            amount=basket_container.amount,
+            discount=basket_container.discount,
+            purpose=Purpose.BASKET,
+        )
+        basket.invoice = basket_invoice
+        basket.save()
+
+        return [basket_invoice]
 
     def get_container(self) -> OrderContainer:
         order_service = self.get_order_service()
