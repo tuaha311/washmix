@@ -17,8 +17,9 @@ class ApplyCouponSerializer(serializers.Serializer):
 
     def validate_order(self, value):
         order = value
+        subscription = order.subscription
 
-        if order.subscription.name == settings.PAYC:
+        if subscription and subscription.name == settings.PAYC:
             raise serializers.ValidationError(
                 detail="You cannot apply coupon to PAYC.",
                 code="no_coupon_for_payc",
