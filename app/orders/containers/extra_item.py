@@ -22,3 +22,9 @@ class ExtraItemContainer(BaseAmountContainer):
         extra_item = self._extra_item
 
         return extra_item["title"]
+
+    @property
+    def instructions(self):
+        extra_item = self._extra_item
+
+        return extra_item["instructions"]
