@@ -17,7 +17,6 @@ from orders.containers.basket import BasketContainer
 from orders.containers.order import OrderContainer
 from orders.models import Basket, Order
 from orders.services.basket import BasketService
-from orders.services.order import OrderService
 from users.models import Client
 
 
@@ -206,7 +205,7 @@ class RequestService:
             },
         )
 
-    def _get_order_service(self) -> OrderService:
+    def _get_order_service(self):
         client = self._client
         basket_service = BasketService(client)
 

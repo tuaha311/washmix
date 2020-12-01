@@ -14,7 +14,6 @@ from notifications.tasks import send_email
 from orders.choices import PaymentChoices, StatusChoices
 from orders.containers.order import OrderContainer
 from orders.models import Order
-from orders.services.order import OrderService
 from subscriptions.containers import SubscriptionContainer
 from subscriptions.models import Package, Subscription
 from users.models import Client
@@ -154,6 +153,8 @@ class SubscriptionService:
         )
 
     def _get_order_service(self, subscription: Subscription):
+        from orders.services.order import OrderService
+
         client = self._client
 
         # we are looking for last order, that was created for subscription

@@ -12,7 +12,6 @@ from billing.services.invoice import InvoiceService
 from orders.containers.basket import BasketContainer
 from orders.containers.order import OrderContainer
 from orders.models import Basket, Order, Price, Quantity
-from orders.services.order import OrderService
 from users.models import Client
 
 DEFAULT_COUNT = 0
@@ -139,7 +138,9 @@ class BasketService:
 
         return order_container
 
-    def get_order_service(self) -> OrderService:
+    def get_order_service(self):
+        from orders.services.order import OrderService
+
         client = self._client
         basket = self.basket
 
