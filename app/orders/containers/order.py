@@ -2,6 +2,7 @@ from typing import List, Optional
 
 from django.conf import settings
 
+from billing.services.coupon import CouponService
 from core.containers import BaseAmountContainer
 from core.utils import get_dollars
 from deliveries.containers.request import RequestContainer
@@ -27,12 +28,20 @@ class OrderContainer(BaseAmountContainer):
 
     @property
     def discount(self) -> int:
+        order = self._order
+        coupon = order.coupon
+        coupon_discount = 0
+
+        if coupon:
+            amount = self.amount
+            coupon_service = CouponService(amount, coupon)
+            coupon_discount = coupon_service.apply_coupon()
+
         filled_container_list = self._filled_container_list
-        discount_list = [item.discount for item in filled_container_list]
+        subscription_discount_list = [item.discount for item in filled_container_list]
+        subscription_discount = sum(subscription_discount_list)
 
-        total_amount = sum(discount_list)
-
-        return total_amount
+        return subscription_discount + coupon_discount
 
     @property
     def credit_back(self) -> int:
