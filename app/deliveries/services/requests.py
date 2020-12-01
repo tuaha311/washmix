@@ -14,9 +14,7 @@ from deliveries.utils import get_dropoff_day, get_pickup_day, get_pickup_start_e
 from deliveries.validators import RequestValidator
 from notifications.tasks import send_email
 from orders.containers.basket import BasketContainer
-from orders.containers.order import OrderContainer
 from orders.models import Basket, Order
-from orders.services.basket import BasketService
 from users.models import Client
 
 
@@ -183,16 +181,6 @@ class RequestService:
 
         return invoice_list
 
-    def choose(self, request: Request) -> OrderContainer:
-        with atomic():
-            order_service = self._get_order_service()
-            order = order_service.order
-
-            order.request = request
-            order.save()
-
-        return order_service.get_container()
-
     def _notify_client_on_new_request(self):
         client_id = self._client.id
         recipient_list = [self._client.email]
@@ -204,14 +192,6 @@ class RequestService:
                 "client_id": client_id,
             },
         )
-
-    def _get_order_service(self):
-        client = self._client
-        basket_service = BasketService(client)
-
-        order_service = basket_service.get_order_service()
-
-        return order_service
 
     @property
     def _pickup_start_end_auto_complete(self) -> Tuple[time, time]:
