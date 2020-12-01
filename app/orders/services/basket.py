@@ -139,6 +139,7 @@ class BasketService:
         return order_container
 
     def get_order_service(self):
+        # TODO refactor inline import
         from orders.services.order import OrderService
 
         client = self._client

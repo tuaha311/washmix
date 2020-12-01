@@ -153,6 +153,7 @@ class SubscriptionService:
         )
 
     def _get_order_service(self, subscription: Subscription):
+        # TODO refactor inline import
         from orders.services.order import OrderService
 
         client = self._client
