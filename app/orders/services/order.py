@@ -59,6 +59,11 @@ class OrderService:
         return self.get_container()
 
     def prepare(self, request: Request) -> Order:
+        """
+        Method prepares Order entity to be ready.
+        After this method, we can add items to basket in POS.
+        """
+
         client = self._client
 
         order, _ = Order.objects.get_or_create(
@@ -71,6 +76,10 @@ class OrderService:
         return order
 
     def apply_coupon(self, order: Order, coupon: Coupon) -> OrderContainer:
+        """
+        Method binds coupon with Order.
+        """
+
         # when we link Coupon with Order
         # discount calculated dynamically on the fly inside OrderContainer
         order.coupon = coupon
@@ -92,6 +101,11 @@ class OrderService:
         payment_service.charge()
 
     def finalize(self, order: Order) -> Order:
+        """
+        Last method in payment flow, that marks order as paid and
+        calls success events.
+        """
+
         self._order = order
 
         with atomic():
@@ -106,6 +120,10 @@ class OrderService:
         return order
 
     def fail(self, order: Order):
+        """
+        Method that handles Stripe Fail Webhook call.
+        """
+
         order.payment = PaymentChoices.FAIL
         order.save()
 

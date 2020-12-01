@@ -34,6 +34,10 @@ class BasketService:
         self._client = client
 
     def validate(self, price: Price, count: int, action: str):
+        """
+        Makes all validation related stuff.
+        """
+
         quantity = self._get_or_create_quantity(price)
 
         if action == settings.BASKET_REMOVE and quantity.count < count:
@@ -106,6 +110,9 @@ class BasketService:
         order: Order,
         basket: Optional[Basket],
     ) -> Optional[List[Invoice]]:
+        """
+        Basket invoicings method, called when POS checkout occurs.
+        """
 
         if not basket:
             return None

@@ -107,6 +107,10 @@ class SubscriptionService:
         order: Order,
         subscription: Optional[Subscription],
     ) -> Optional[List[Invoice]]:
+        """
+        Creates invoice for subscription. Called on Welcome checkout.
+        """
+
         if not subscription:
             return None
 

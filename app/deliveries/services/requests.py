@@ -42,15 +42,12 @@ class RequestService:
         self._pickup_end = pickup_end
         self._validator_service = RequestValidator(pickup_date, pickup_start, pickup_end)
 
-    def choose(self, request: Request) -> OrderContainer:
-        with atomic():
-            order_service = self._get_order_service()
-            order = order_service.order
+    def validate(self):
+        """
+        Makes all validation stuff.
+        """
 
-            order.request = request
-            order.save()
-
-        return order_service.get_container()
+        self._validator_service.validate()
 
     def create(self, **extra_kwargs) -> Request:
         """
@@ -148,6 +145,11 @@ class RequestService:
         basket: Optional[Basket],
         request: Optional[Request],
     ) -> Optional[List[Invoice]]:
+        """
+        Invoicing method, called when POS checkout occurs.
+        Creates 2 invoice - for Pickup Delivery and for Dropoff Delivery.
+        """
+
         if not basket or not request:
             return None
 
@@ -182,8 +184,15 @@ class RequestService:
 
         return invoice_list
 
-    def validate(self):
-        self._validator_service.validate()
+    def choose(self, request: Request) -> OrderContainer:
+        with atomic():
+            order_service = self._get_order_service()
+            order = order_service.order
+
+            order.request = request
+            order.save()
+
+        return order_service.get_container()
 
     def _notify_client_on_new_request(self):
         client_id = self._client.id
