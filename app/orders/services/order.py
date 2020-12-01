@@ -1,3 +1,5 @@
+from typing import List
+
 from django.conf import settings
 from django.db.transaction import atomic
 
@@ -36,25 +38,21 @@ class OrderService:
             - Subscription
         """
 
-        client = self._client
-        basket = order.basket
-        request = order.request
-        subscription = order.subscription
-        basket_service = BasketService(client)
-        request_service = RequestService(client)
-        subscription_service = SubscriptionService(client)
+        coupon = order.coupon
 
         with atomic():
-            basket_service.create_invoice(order, basket)
-            request_service.create_invoice(order, basket, request)
-            subscription_service.create_invoice(order, subscription)
+            # 1. we are creating invoices for every service we are offering to client
+            self._create_order_invoices(order)
 
-        order.refresh_from_db()
-        invoice_list = order.invoice_list.all()
+            order.refresh_from_db()
+            invoice_list = order.invoice_list.all()
 
-        with atomic():
-            for invoice in invoice_list:
-                self.charge(invoice)
+            # 2. we are calculating discount for client and persisting them in db
+            if coupon:
+                self._calculate_and_apply_discount(coupon, invoice_list)
+
+            # 3. we are charging client for amount of all invoices
+            self._charge_invoices(invoice_list)
 
         self._order = order
 
@@ -73,20 +71,12 @@ class OrderService:
         return order
 
     def apply_coupon(self, order: Order, coupon: Coupon) -> OrderContainer:
-        invoice_list = order.invoice_list.all()
-
+        # when we link Coupon with Order
+        # discount calculated dynamically on the fly inside OrderContainer
         order.coupon = coupon
         order.save()
 
-        # when we link Coupon with Order
-        # discount calculated dynamically on the fly inside OrderContainer
         self._order = order
-
-        for invoice in invoice_list:
-            amount = invoice.amount
-            coupon_service = CouponService(amount, coupon)
-            invoice.discount = coupon_service.apply_coupon()
-            invoice.save()
 
         return self.get_container()
 
@@ -123,6 +113,30 @@ class OrderService:
 
         self._notify_client_on_payment_fail()
         self._notify_admin_on_payment_fail()
+
+    def _create_order_invoices(self, order: Order):
+        client = self._client
+        basket = order.basket
+        request = order.request
+        subscription = order.subscription
+        basket_service = BasketService(client)
+        request_service = RequestService(client)
+        subscription_service = SubscriptionService(client)
+
+        basket_service.create_invoice(order, basket)
+        request_service.create_invoice(order, basket, request)
+        subscription_service.create_invoice(order, subscription)
+
+    def _calculate_and_apply_discount(self, coupon: Coupon, invoice_list: List[Invoice]):
+        for invoice in invoice_list:
+            amount = invoice.amount
+            coupon_service = CouponService(amount, coupon)
+            invoice.discount = coupon_service.apply_coupon()
+            invoice.save()
+
+    def _charge_invoices(self, invoice_list: List[Invoice]):
+        for invoice in invoice_list:
+            self.charge(invoice)
 
     def _notify_client_on_new_order(self):
         client_id = self._client.id
