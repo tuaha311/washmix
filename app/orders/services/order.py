@@ -9,7 +9,7 @@ from deliveries.services.requests import RequestService
 from notifications.tasks import send_email
 from orders.choices import PaymentChoices
 from orders.containers.order import OrderContainer
-from orders.models import Basket, Order
+from orders.models import Order
 from orders.services.basket import BasketService
 from subscriptions.services.subscription import SubscriptionService
 from users.models import Client
