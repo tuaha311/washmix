@@ -13,7 +13,7 @@ from orders.containers.order import OrderContainer
 from orders.services.order import OrderService
 
 
-class OrderPrepareView(GenericAPIView):
+class POSOrderPrepareView(GenericAPIView):
     serializer_class = OrderPrepareSerializer
     response_serializer_class = OrderPrepareResponseSerializer
 
@@ -32,7 +32,7 @@ class OrderPrepareView(GenericAPIView):
         return Response(response)
 
 
-class OrderListView(ListAPIView):
+class POSOrderListView(ListAPIView):
     serializer_class = OrderSerializer
     authentication_classes = default_pos_authentication
     permission_classes = default_pos_permissions
@@ -44,7 +44,7 @@ class OrderListView(ListAPIView):
         return [OrderContainer(item) for item in order_list]
 
 
-class OrderUpdateView(UpdateAPIView):
+class POSOrderUpdateView(UpdateAPIView):
     serializer_class = OrderSerializer
     authentication_classes = default_pos_authentication
     permission_classes = default_pos_permissions
@@ -60,7 +60,7 @@ class OrderUpdateView(UpdateAPIView):
         return OrderContainer(instance)
 
 
-class OrderRepeatView(GenericAPIView):
+class POSOrderRepeatView(GenericAPIView):
     """
     View for repeating order.
     """

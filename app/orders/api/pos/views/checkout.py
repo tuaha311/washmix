@@ -8,7 +8,7 @@ from orders.api.pos.serializers.orders import OrderCheckoutSerializer, OrderSeri
 from orders.services.order import OrderService
 
 
-class OrderCheckoutView(GenericAPIView):
+class POSOrderCheckoutView(GenericAPIView):
     serializer_class = OrderCheckoutSerializer
     response_serializer_class = OrderSerializer
     authentication_classes = default_pos_authentication

@@ -12,7 +12,7 @@ from orders.api.pos.serializers.orders import OrderSerializer
 from orders.services.basket import BasketService
 
 
-class BasketChangeItemView(GenericAPIView):
+class POSBasketChangeItemView(GenericAPIView):
     serializer_class = BasketChangeItemSerializer
     response_serializer_class = OrderSerializer
     authentication_classes = default_pos_authentication
@@ -36,7 +36,7 @@ class BasketChangeItemView(GenericAPIView):
         return Response(response)
 
 
-class BasketClearView(GenericAPIView):
+class POSBasketClearView(GenericAPIView):
     authentication_classes = default_pos_authentication
     permission_classes = default_pos_permissions
 
@@ -49,7 +49,7 @@ class BasketClearView(GenericAPIView):
         return Response()
 
 
-class BasketSetExtraItemsView(GenericAPIView):
+class POSBasketSetExtraItemsView(GenericAPIView):
     serializer_class = BasketSetExtraItemsSerializer
     response_serializer_class = OrderSerializer
     authentication_classes = default_pos_authentication
@@ -70,7 +70,7 @@ class BasketSetExtraItemsView(GenericAPIView):
         return Response(response)
 
 
-class BasketView(GenericAPIView):
+class POSBasketView(GenericAPIView):
     response_serializer_class = OrderSerializer
     authentication_classes = default_pos_authentication
     permission_classes = default_pos_permissions

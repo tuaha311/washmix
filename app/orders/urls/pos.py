@@ -1,29 +1,30 @@
 from django.urls import path
 
-from orders.api.client.views import coupons
-from orders.api.pos.views import baskets, checkout, orders
+from orders.api.pos.views import baskets, checkout, coupons, orders
 
 basket_urls = (
     [
         # 1. you can view items in basket
-        path("", baskets.BasketView.as_view(), name="basket"),
+        path("", baskets.POSBasketView.as_view(), name="basket"),
         # 2. add or remove items from basket
-        path("change_item/", baskets.BasketChangeItemView.as_view(), name="change-item"),
+        path("change_item/", baskets.POSBasketChangeItemView.as_view(), name="change-item"),
         # 3. you can clear whole basket
-        path("clear/", baskets.BasketClearView.as_view(), name="clear"),
+        path("clear/", baskets.POSBasketClearView.as_view(), name="clear"),
         # 4. you can also add extra custom items to basket
-        path("set_extra_items/", baskets.BasketSetExtraItemsView.as_view(), name="set-extra-items"),
+        path(
+            "set_extra_items/", baskets.POSBasketSetExtraItemsView.as_view(), name="set-extra-items"
+        ),
     ],
     "basket",
 )
 
 order_urls = (
     [
-        path("prepare/", orders.OrderPrepareView.as_view(), name="prepare"),
-        path("", orders.OrderListView.as_view(), name="list"),
-        path("<int:pk>/", orders.OrderUpdateView.as_view(), name="update"),
-        path("checkout/", checkout.OrderCheckoutView.as_view(), name="checkout"),
-        path("apply_coupon/", coupons.OrderApplyCouponView.as_view(), name="apply-coupon"),
+        path("prepare/", orders.POSOrderPrepareView.as_view(), name="prepare"),
+        path("", orders.POSOrderListView.as_view(), name="list"),
+        path("<int:pk>/", orders.POSOrderUpdateView.as_view(), name="update"),
+        path("checkout/", checkout.POSOrderCheckoutView.as_view(), name="checkout"),
+        path("apply_coupon/", coupons.POSOrderApplyCouponView.as_view(), name="apply-coupon"),
     ],
     "order",
 )
