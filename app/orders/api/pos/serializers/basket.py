@@ -8,10 +8,10 @@ from orders.services.basket import BasketService
 
 
 class ExtraItemSerializer(serializers.Serializer):
-    title = serializers.CharField(required=True, allow_null=True)
+    title = serializers.CharField(required=True)
+    amount = serializers.IntegerField(required=True)
     instructions = serializers.CharField(required=False, allow_null=True)
-    amount = serializers.IntegerField(required=True, allow_null=True)
-    dollar_amount = serializers.FloatField(required=False, allow_null=True)
+    dollar_amount = serializers.FloatField(required=False, allow_null=True, read_only=True)
 
 
 class BasketSetExtraItemsSerializer(serializers.Serializer):
