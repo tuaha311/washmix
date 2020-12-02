@@ -10,6 +10,7 @@ from billing.models import Invoice
 from billing.services.card import CardService
 from billing.services.invoice import InvoiceService
 from billing.services.payments import PaymentService
+from core.interfaces import PaymentInterfaceService
 from notifications.tasks import send_email
 from orders.choices import PaymentChoices, StatusChoices
 from orders.containers.order import OrderContainer
@@ -19,7 +20,7 @@ from subscriptions.models import Package, Subscription
 from users.models import Client
 
 
-class SubscriptionService:
+class SubscriptionService(PaymentInterfaceService):
     """
     Used for:
         - Set subscription via `choose`

@@ -10,6 +10,7 @@ from billing.choices import Purpose
 from billing.models import Invoice
 from billing.services.invoice import InvoiceService
 from billing.services.payments import PaymentService
+from core.interfaces import PaymentInterfaceService
 from orders.containers.basket import BasketContainer
 from orders.containers.order import OrderContainer
 from orders.models import Basket, Order, Price, Quantity
@@ -18,7 +19,7 @@ from users.models import Client
 DEFAULT_COUNT = 0
 
 
-class BasketService:
+class BasketService(PaymentInterfaceService):
     """
     This service is responsible for basket (card) business logic.
     Using this service you can:

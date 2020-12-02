@@ -8,6 +8,7 @@ from django.utils.timezone import localtime
 from billing.models import Invoice
 from billing.services.invoice import InvoiceService
 from billing.services.payments import PaymentService
+from core.interfaces import PaymentInterfaceService
 from deliveries.choices import Kind, Status
 from deliveries.containers.request import RequestContainer
 from deliveries.models import Delivery, Request
@@ -19,7 +20,7 @@ from orders.models import Basket, Order
 from users.models import Client
 
 
-class RequestService:
+class RequestService(PaymentInterfaceService):
     def __init__(
         self,
         client: Client,

@@ -1,10 +1,10 @@
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from typing import Any
 
 from core.utils import get_dollars
 
 
-class BaseAmountContainer:
+class BaseAmountContainer(ABC):
     """
     Container that adds properties of money.
     By default, proxies all not found attributes to proxy object (model instance)
