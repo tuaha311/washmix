@@ -32,6 +32,38 @@ class BasketService:
     def __init__(self, client: Client):
         self._client = client
 
+    def create_invoice(
+        self,
+        order: Order,
+        basket: Optional[Basket],
+        **kwargs,
+    ) -> Optional[List[Invoice]]:
+        """
+        Basket invoicings method, called when POS checkout occurs.
+        """
+
+        if not basket:
+            return None
+
+        client = self._client
+        subscription = client.subscription
+        invoice_service = InvoiceService(client)
+        basket_container = BasketContainer(subscription, basket)
+
+        basket_invoice = invoice_service.update_or_create(
+            order=order,
+            amount=basket_container.amount,
+            discount=basket_container.discount,
+            purpose=Purpose.BASKET,
+        )
+        basket.invoice = basket_invoice
+        basket.save()
+
+        return [basket_invoice]
+
+    def charge(self, basket: Basket, **kwargs):
+        pass
+
     def validate(self, price: Price, count: int, action: str):
         """
         Makes all validation related stuff.
@@ -107,34 +139,6 @@ class BasketService:
             basket.save()
 
         return basket
-
-    def create_invoice(
-        self,
-        order: Order,
-        basket: Optional[Basket],
-    ) -> Optional[List[Invoice]]:
-        """
-        Basket invoicings method, called when POS checkout occurs.
-        """
-
-        if not basket:
-            return None
-
-        client = self._client
-        subscription = client.subscription
-        invoice_service = InvoiceService(client)
-        basket_container = BasketContainer(subscription, basket)
-
-        basket_invoice = invoice_service.update_or_create(
-            order=order,
-            amount=basket_container.amount,
-            discount=basket_container.discount,
-            purpose=Purpose.BASKET,
-        )
-        basket.invoice = basket_invoice
-        basket.save()
-
-        return [basket_invoice]
 
     def _get_or_create_quantity(self, price: Price) -> Quantity:
         quantity, _ = Quantity.objects.get_or_create(

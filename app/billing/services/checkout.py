@@ -13,7 +13,7 @@ from billing.services.card import CardService
 from billing.stripe_helper import StripeHelper
 from core.services.main_attribute import MainAttributeService
 from locations.models import Address
-from subscriptions.services.subscription import SubscriptionService
+from orders.services.order import OrderService
 from users.models import Client
 
 
@@ -30,7 +30,7 @@ class WelcomeService:
         client = self._client
         order = self._order
         card_service = CardService(client)
-        subscription_service = SubscriptionService(client)
+        order_service = OrderService(client, order)
 
         with atomic():
             if order.is_save_card:
@@ -40,7 +40,7 @@ class WelcomeService:
             address = self._create_main_address(raw_address)
             billing_address = self._create_billing_address(raw_billing_address)
 
-            subscription_service.checkout(order)
+            order_service.checkout(order)
 
         return address, billing_address
 

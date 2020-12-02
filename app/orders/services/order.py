@@ -39,20 +39,35 @@ class OrderService:
         """
 
         coupon = order.coupon
+        client = self._client
+        basket = order.basket
+        request = order.request
+        subscription = order.subscription
 
         with atomic():
+            services = [
+                BasketService(client),
+                RequestService(client),
+                SubscriptionService(client),
+            ]
+
             # 1. we are creating invoices for every service we are offering to client
-            self._create_order_invoices(order)
+            for item in services:
+                item.create_invoice(
+                    order=order, basket=basket, request=request, subscription=subscription
+                )
 
             order.refresh_from_db()
             invoice_list = order.invoice_list.all()
 
-            # 2. we are calculating discount for client and persisting them in db
+            # 2. we are calculating discount for client before charging
+            # and persisting them in db
             if coupon:
                 self._calculate_and_apply_discount(coupon, invoice_list)
 
-            # 3. we are charging client for amount of all invoices
-            self._charge_invoices(invoice_list)
+            # 3. we are charging client for every service and invoices of them
+            for item in services:
+                item.charge(order=order, basket=basket, request=request, subscription=subscription)
 
         self._order = order
 

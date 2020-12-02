@@ -30,81 +30,11 @@ class SubscriptionService:
     def __init__(self, client: Client):
         self._client = client
 
-    def choose(self, package: Package) -> OrderContainer:
-        """
-        Action for Subscription, clones all properties of Subscription
-        based on Package attributes.
-        """
-
-        with atomic():
-            subscription = self._get_or_create_subscription(package)
-            order_service = self._get_order_service(subscription)
-
-            subscription = Subscription.objects.fill_subscription(package, subscription)
-            subscription.save()
-
-        return order_service.get_container()
-
-    def checkout(self, order: Order):
-        """
-        Method to charge all invoices of order.
-        Has additional handling for PAYC packages.
-        """
-
-        subscription = order.subscription
-        invoice_list = order.invoice_list.all()
-
-        with atomic():
-            if subscription.name == settings.PAYC:
-                self.finalize(order)
-
-            for invoice in invoice_list:
-                self.charge(invoice)
-
-    def charge(self, invoice: Invoice) -> Optional[PaymentMethod]:
-        """
-        For PAYC package we have a special case, where we just store a payment method.
-        For other packages - we are charging user for subscription amount.
-        """
-
-        payment_service = PaymentService(self._client, invoice)
-        card_service = CardService(self._client)
-
-        subscription = invoice.subscription
-        payment = None
-
-        if subscription.name == settings.PAYC:
-            card = self._client.card_list.first()
-            card_service.update_main_card(self._client, card)
-            return payment
-
-        return payment_service.charge()
-
-    def finalize(self, order: Order) -> Optional[Subscription]:
-        """
-        Final method that sets subscription on client after payment (checkout).
-        """
-
-        subscription = order.subscription
-
-        with atomic():
-            order.payment = PaymentChoices.PAID
-
-            if order.is_save_card:
-                order.card = self._client.main_card
-                order.save()
-
-            self._client.subscription = subscription
-            self._client.save()
-
-        self._notify_client_on_purchase_of_advantage_program(subscription)
-
-        return subscription
-
     def create_invoice(
         self,
         order: Order,
         subscription: Optional[Subscription],
+        **kwargs,
     ) -> Optional[List[Invoice]]:
         """
         Creates invoice for subscription. Called on Welcome checkout.
@@ -128,6 +58,71 @@ class SubscriptionService:
         subscription.save()
 
         return [subscription_invoice]
+
+    def charge(self, subscription: Subscription, **kwargs) -> Optional[PaymentMethod]:
+        """
+        For PAYC package we have a special case, where we just store a payment method.
+        For other packages - we are charging user for subscription amount.
+        """
+
+        invoice = subscription.invoice
+        payment_service = PaymentService(self._client, invoice)
+        card_service = CardService(self._client)
+
+        payment = None
+
+        if subscription.name == settings.PAYC:
+            card = self._client.card_list.first()
+            card_service.update_main_card(self._client, card)
+            return payment
+
+        return payment_service.charge()
+
+    def choose(self, package: Package) -> OrderContainer:
+        """
+        Action for Subscription, clones all properties of Subscription
+        based on Package attributes.
+        """
+
+        with atomic():
+            subscription = self._get_or_create_subscription(package)
+            order_service = self._get_order_service(subscription)
+
+            subscription = Subscription.objects.fill_subscription(package, subscription)
+            subscription.save()
+
+        return order_service.get_container()
+
+    def checkout(self, order: Order):
+        """
+        Method has additional handling for PAYC packages.
+        """
+
+        subscription = order.subscription
+
+        if subscription.name == settings.PAYC:
+            self.finalize(order)
+
+    def finalize(self, order: Order) -> Optional[Subscription]:
+        """
+        Final method that sets subscription on client after payment (checkout).
+        """
+
+        subscription = order.subscription
+
+        with atomic():
+            order.payment = PaymentChoices.PAID
+
+            if order.is_save_card:
+                order.card = self._client.main_card
+                order.save()
+
+            self._client.subscription = subscription
+            self._client.save()
+
+        self._notify_client_on_purchase_of_advantage_program(subscription)
+
+        return subscription
 
     def fail(self, order: Order):
         subscription = order.subscription

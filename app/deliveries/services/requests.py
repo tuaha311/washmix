@@ -39,6 +39,55 @@ class RequestService:
         self._pickup_end = pickup_end
         self._validator_service = RequestValidator(pickup_date, pickup_start, pickup_end)
 
+    def create_invoice(
+        self,
+        order: Order,
+        basket: Optional[Basket],
+        request: Optional[Request],
+        **kwargs,
+    ) -> Optional[List[Invoice]]:
+        """
+        Invoicing method, called when POS checkout occurs.
+        Creates 2 invoice - for Pickup Delivery and for Dropoff Delivery.
+        """
+
+        if not basket or not request:
+            return None
+
+        client = self._client
+        subscription = client.subscription
+        invoice_service = InvoiceService(client)
+        basket_container = BasketContainer(subscription, basket)
+        request_container = RequestContainer(subscription, request, basket_container)
+
+        # we have 2 kind - Pickup, Dropoff
+        # and for every of Delivery we create an invoice
+        kind_of_deliveries = Kind.MAP.keys()
+        invoice_list = []
+
+        for kind in kind_of_deliveries:
+            delivery_container_name = f"{kind}_container"
+            delivery_container = getattr(request_container, delivery_container_name)
+
+            delivery_invoice = invoice_service.update_or_create(
+                order=order,
+                amount=delivery_container.amount,
+                discount=delivery_container.discount,
+                purpose=kind,
+            )
+
+            invoice_attribute_name = f"{kind}_invoice"
+            setattr(request, invoice_attribute_name, delivery_invoice)
+
+            invoice_list.append(delivery_invoice)
+
+        request.save()
+
+        return invoice_list
+
+    def charge(self, request: Request, **kwargs):
+        pass
+
     def validate(self):
         """
         Makes all validation stuff.
@@ -135,51 +184,6 @@ class RequestService:
         dropoff.save()
 
         return request
-
-    def create_invoice(
-        self,
-        order: Order,
-        basket: Optional[Basket],
-        request: Optional[Request],
-    ) -> Optional[List[Invoice]]:
-        """
-        Invoicing method, called when POS checkout occurs.
-        Creates 2 invoice - for Pickup Delivery and for Dropoff Delivery.
-        """
-
-        if not basket or not request:
-            return None
-
-        client = self._client
-        subscription = client.subscription
-        invoice_service = InvoiceService(client)
-        basket_container = BasketContainer(subscription, basket)
-        request_container = RequestContainer(subscription, request, basket_container)
-
-        # we have 2 kind - Pickup, Dropoff
-        # and for every of Delivery we create an invoice
-        kind_of_deliveries = Kind.MAP.keys()
-        invoice_list = []
-
-        for kind in kind_of_deliveries:
-            delivery_container_name = f"{kind}_container"
-            delivery_container = getattr(request_container, delivery_container_name)
-
-            delivery_invoice = invoice_service.update_or_create(
-                order=order,
-                amount=delivery_container.amount,
-                discount=delivery_container.discount,
-                purpose=kind,
-            )
-
-            invoice_attribute_name = f"{kind}_invoice"
-            setattr(request, invoice_attribute_name, delivery_invoice)
-
-            invoice_list.append(delivery_invoice)
-
-        request.save()
-
-        return invoice_list
 
     def _notify_client_on_new_request(self):
         client_id = self._client.id
