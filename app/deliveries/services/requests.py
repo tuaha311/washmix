@@ -87,13 +87,16 @@ class RequestService(PaymentInterfaceService):
 
         return invoice_list
 
-    def charge(self, request: Request, **kwargs):
+    def charge(self, request: Request, basket: Basket, **kwargs):
         """
         We are charging user for:
             - basket amount
             - pickup delivery amount
             - dropoff delivery amount
         """
+
+        if not basket or not request:
+            return None
 
         client = self._client
         invoice_list = [item.invoice for item in request.delivery_list.all()]

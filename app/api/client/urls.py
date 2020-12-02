@@ -3,7 +3,7 @@ from django.urls import include, path
 from rest_framework.routers import SimpleRouter
 from rest_framework_simplejwt.views import TokenRefreshSlidingView, TokenVerifyView
 
-from api.client.views import auth, checkout, prepare, services, trigger, twilio
+from api.client.views import auth, checkout, services, trigger, twilio
 from billing.api.views import cards, invoices
 from core.api import views as core_views
 from deliveries.api.client.views import requests, schedules

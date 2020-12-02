@@ -71,6 +71,9 @@ class BasketService(PaymentInterfaceService):
             - dropoff delivery amount
         """
 
+        if not basket:
+            return None
+
         client = self._client
         invoice = basket.invoice
 

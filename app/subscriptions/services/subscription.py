@@ -66,6 +66,9 @@ class SubscriptionService(PaymentInterfaceService):
         For other packages - we are charging user for subscription amount.
         """
 
+        if not subscription:
+            return None
+
         invoice = subscription.invoice
         client = self._client
         payment_service = PaymentService(client, invoice)
