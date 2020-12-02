@@ -5,13 +5,13 @@ from api.fields import OrderField, POSClientField, POSRequestField
 from deliveries.api.pos.serializers import RequestResponseSerializer
 from deliveries.models import Request
 from locations.models import Address
-from orders.api.pos.serializers.basket import BasketSerializer
+from orders.api.pos.serializers.basket import POSBasketSerializer
 from orders.models import Order
 from users.models import Client
 
 
 class OrderSerializer(CommonContainerSerializer, serializers.ModelSerializer):
-    basket = BasketSerializer(allow_null=True)
+    basket = POSBasketSerializer(allow_null=True)
     request = RequestResponseSerializer(allow_null=True)
     subscription = serializers.SlugRelatedField(slug_field="name", read_only=True, allow_null=True)
     credit_back = serializers.ReadOnlyField()
@@ -51,6 +51,12 @@ class OrderPrepareSerializer(serializers.Serializer):
     def validate(self, attrs):
         client = attrs["client"]
         request = attrs["request"]
+
+        if not client.subscription:
+            raise serializers.ValidationError(
+                detail="Client doesn't have a subscription. Not enough info for Order formation.",
+                code="client_doesnt_have_subscription",
+            )
 
         if request not in client.request_list.all():
             raise serializers.ValidationError(

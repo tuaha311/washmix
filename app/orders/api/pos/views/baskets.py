@@ -5,15 +5,15 @@ from rest_framework.response import Response
 from api.authentication import default_pos_authentication
 from api.permissions import default_pos_permissions
 from orders.api.pos.serializers.basket import (
-    BasketChangeItemSerializer,
-    BasketSetExtraItemsSerializer,
+    POSBasketChangeItemSerializer,
+    POSBasketSetExtraItemsSerializer,
 )
 from orders.api.pos.serializers.orders import OrderSerializer
 from orders.services.basket import BasketService
 
 
 class POSBasketChangeItemView(GenericAPIView):
-    serializer_class = BasketChangeItemSerializer
+    serializer_class = POSBasketChangeItemSerializer
     response_serializer_class = OrderSerializer
     authentication_classes = default_pos_authentication
     permission_classes = default_pos_permissions
@@ -26,10 +26,11 @@ class POSBasketChangeItemView(GenericAPIView):
         price = serializer.validated_data["price"]
         count = serializer.validated_data["count"]
         action = serializer.validated_data["action"]
+        order = serializer.validated_data["order"]
 
         service = BasketService(client)
         method = getattr(service, f"{action}_item")
-        order_container = method(price, count)
+        order_container = method(order=order, price=price, count=count)
 
         response = self.response_serializer_class(order_container).data
 
@@ -50,7 +51,7 @@ class POSBasketClearView(GenericAPIView):
 
 
 class POSBasketSetExtraItemsView(GenericAPIView):
-    serializer_class = BasketSetExtraItemsSerializer
+    serializer_class = POSBasketSetExtraItemsSerializer
     response_serializer_class = OrderSerializer
     authentication_classes = default_pos_authentication
     permission_classes = default_pos_permissions

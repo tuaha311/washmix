@@ -11,7 +11,7 @@ from deliveries.services.requests import RequestService
 from notifications.tasks import send_email
 from orders.choices import PaymentChoices
 from orders.containers.order import OrderContainer
-from orders.models import Order
+from orders.models import Basket, Order
 from orders.services.basket import BasketService
 from subscriptions.services.subscription import SubscriptionService
 from users.models import Client
@@ -66,9 +66,14 @@ class OrderService:
 
         client = self._client
 
+        basket, _ = Basket.objects.get_or_create(
+            client=client,
+            order__request=request,
+        )
         order, _ = Order.objects.get_or_create(
             client=client,
             request=request,
+            basket=basket,
         )
 
         self._order = order

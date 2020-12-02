@@ -45,22 +45,26 @@ class BasketService:
                 code="cant_perform_item_remove",
             )
 
-    def add_item(self, price: Price, count: int) -> OrderContainer:
+    def add_item(self, order: Order, price: Price, count: int) -> OrderContainer:
         """
         Action for basket, adds item to basket.
         """
+
+        basket = self.basket
 
         with atomic():
             quantity = self._get_or_create_quantity(price)
             quantity.count = F("count") + count
             quantity.save()
 
-        return self.get_container()
+        return basket
 
-    def remove_item(self, price: Price, count: int) -> OrderContainer:
+    def remove_item(self, order: Order, price: Price, count: int) -> OrderContainer:
         """
         Action for basket, removes item from basket.
         """
+
+        basket = self.basket
 
         with atomic():
             quantity = self._get_or_create_quantity(price)
@@ -76,7 +80,7 @@ class BasketService:
             if current_count == DEFAULT_COUNT:
                 quantity.delete()
 
-        return self.get_container()
+        return basket
 
     def clear_all(self):
         """
@@ -89,7 +93,7 @@ class BasketService:
             basket.item_list.set([])
             basket.save()
 
-        return self.get_container()
+        return basket
 
     def set_extra_items(self, extra_items: List):
         """
@@ -102,7 +106,7 @@ class BasketService:
             basket.extra_items = extra_items
             basket.save()
 
-        return self.get_container()
+        return basket
 
     def create_invoice(
         self,
@@ -131,26 +135,6 @@ class BasketService:
         basket.save()
 
         return [basket_invoice]
-
-    def get_container(self) -> OrderContainer:
-        order_service = self.get_order_service()
-        order_container = order_service.get_container()
-
-        return order_container
-
-    def get_order_service(self):
-        # TODO refactor inline import
-        from orders.services.order import OrderService
-
-        client = self._client
-        basket = self.basket
-
-        # we are looking for last order, that was created for basket
-        # and wasn't paid
-        order, _ = Order.objects.get_or_create(client=client, basket=basket)
-        order_service = OrderService(client, order)
-
-        return order_service
 
     def _get_or_create_quantity(self, price: Price) -> Quantity:
         quantity, _ = Quantity.objects.get_or_create(

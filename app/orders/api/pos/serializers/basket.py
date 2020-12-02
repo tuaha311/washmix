@@ -3,31 +3,34 @@ from django.conf import settings
 from rest_framework import serializers
 
 from api.client.serializers.common import CommonContainerSerializer
+from api.fields import POSOrderField
 from orders.models import Basket, Price, Quantity
 from orders.services.basket import BasketService
 
 
-class ExtraItemSerializer(serializers.Serializer):
+class POSExtraItemSerializer(serializers.Serializer):
     title = serializers.CharField(required=True)
     amount = serializers.IntegerField(required=True)
     instructions = serializers.CharField(required=False, allow_null=True)
     dollar_amount = serializers.FloatField(required=False, allow_null=True, read_only=True)
 
 
-class BasketSetExtraItemsSerializer(serializers.Serializer):
-    extra_items = ExtraItemSerializer(many=True)
+class POSBasketSetExtraItemsSerializer(serializers.Serializer):
+    extra_items = POSExtraItemSerializer(many=True)
 
 
-class BasketChangeItemSerializer(serializers.Serializer):
+class POSBasketChangeItemSerializer(serializers.Serializer):
     price = serializers.PrimaryKeyRelatedField(queryset=Price.objects.all())
     count = serializers.IntegerField()
     action = serializers.ChoiceField(choices=settings.BASKET_ACTION_CHOICES)
+    order = POSOrderField()
 
     def validate(self, attrs):
         client = self.context["request"].user.client
         price = attrs["price"]
         count = attrs["count"]
         action = attrs["action"]
+        order = attrs["order"]
 
         service = BasketService(client)
         service.validate(price, count, action)
@@ -35,7 +38,7 @@ class BasketChangeItemSerializer(serializers.Serializer):
         return attrs
 
 
-class QuantitySerializer(CommonContainerSerializer, serializers.ModelSerializer):
+class POSQuantitySerializer(CommonContainerSerializer, serializers.ModelSerializer):
     id = serializers.IntegerField(source="price.id")
     service = serializers.CharField(source="price.service.title")
     item = serializers.CharField(source="price.item.title")
@@ -56,9 +59,9 @@ class QuantitySerializer(CommonContainerSerializer, serializers.ModelSerializer)
         ]
 
 
-class BasketSerializer(CommonContainerSerializer, serializers.ModelSerializer):
-    item_list = QuantitySerializer(many=True, source="quantity_container_list")
-    extra_items = ExtraItemSerializer(many=True)
+class POSBasketSerializer(CommonContainerSerializer, serializers.ModelSerializer):
+    item_list = POSQuantitySerializer(many=True, source="quantity_container_list")
+    extra_items = POSExtraItemSerializer(many=True)
 
     class Meta:
         model = Basket

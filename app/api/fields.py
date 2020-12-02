@@ -2,9 +2,13 @@ from rest_framework import serializers
 
 from billing.validators import validate_paid_invoice
 from deliveries.models import Request
+from orders.models import Order
 from users.models import Client
 
 
+#
+# Client application fields
+#
 class BaseClientField(serializers.PrimaryKeyRelatedField):
     attribute_name = ""
 
@@ -27,14 +31,6 @@ class InvoiceField(BaseClientField):
         return default_validators
 
 
-class POSClientField(serializers.PrimaryKeyRelatedField):
-    queryset = Client.objects.all()
-
-
-class POSRequestField(serializers.PrimaryKeyRelatedField):
-    queryset = Request.objects.all()
-
-
 class RequestField(BaseClientField):
     attribute_name = "request_list"
 
@@ -49,3 +45,18 @@ class SubscriptionField(BaseClientField):
 
 class BasketField(BaseClientField):
     attribute_name = "basket_list"
+
+
+#
+# POS application fields
+#
+class POSOrderField(serializers.PrimaryKeyRelatedField):
+    queryset = Order.objects.all()
+
+
+class POSClientField(serializers.PrimaryKeyRelatedField):
+    queryset = Client.objects.all()
+
+
+class POSRequestField(serializers.PrimaryKeyRelatedField):
+    queryset = Request.objects.all()
