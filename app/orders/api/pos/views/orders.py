@@ -1,5 +1,4 @@
-from rest_framework.generics import GenericAPIView, ListAPIView, UpdateAPIView
-from rest_framework.request import Request
+from rest_framework.generics import GenericAPIView, UpdateAPIView
 from rest_framework.response import Response
 
 from api.authentication import default_pos_authentication
@@ -10,12 +9,15 @@ from orders.api.pos.serializers.orders import (
     OrderSerializer,
 )
 from orders.containers.order import OrderContainer
+from orders.models import Order
 from orders.services.order import OrderService
 
 
 class POSOrderPrepareView(GenericAPIView):
     serializer_class = OrderPrepareSerializer
     response_serializer_class = OrderPrepareResponseSerializer
+    authentication_classes = default_pos_authentication
+    permission_classes = default_pos_permissions
 
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data, context={"request": request})
@@ -32,38 +34,18 @@ class POSOrderPrepareView(GenericAPIView):
         return Response(response)
 
 
-class POSOrderListView(ListAPIView):
-    serializer_class = OrderSerializer
-    authentication_classes = default_pos_authentication
-    permission_classes = default_pos_permissions
-
-    def get_queryset(self):
-        client = self.request.user.client
-        order_list = client.order_list.all()
-
-        return [OrderContainer(item) for item in order_list]
-
-
 class POSOrderUpdateView(UpdateAPIView):
+    """
+    Method for order update.
+    In most cases it used to change `note`.
+    """
+
     serializer_class = OrderSerializer
+    queryset = Order.objects.all()
     authentication_classes = default_pos_authentication
     permission_classes = default_pos_permissions
-
-    def get_queryset(self):
-        client = self.request.user.client
-
-        return client.order_list.all()
 
     def get_object(self):
         instance = super().get_object()
 
         return OrderContainer(instance)
-
-
-class POSOrderRepeatView(GenericAPIView):
-    """
-    View for repeating order.
-    """
-
-    def post(self, request: Request, *args, **kwargs):
-        return Response()

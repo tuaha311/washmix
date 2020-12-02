@@ -18,8 +18,8 @@ class POSOrderCheckoutView(GenericAPIView):
         serializer = self.serializer_class(data=drf_request.data, context={"request": drf_request})
         serializer.is_valid(raise_exception=True)
 
-        client = drf_request.user.client
         order = serializer.validated_data["order"]
+        client = order.client
 
         order_service = OrderService(client)
         order_container = order_service.checkout(order)

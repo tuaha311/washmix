@@ -6,6 +6,7 @@ from orders.api.client.serializers.coupons import (
     ApplyCouponResponseSerializer,
     ApplyCouponSerializer,
 )
+from orders.models import Order
 from orders.services.order import OrderService
 
 
@@ -17,9 +18,9 @@ class OrderApplyCouponView(GenericAPIView):
         serializer = self.serializer_class(data=request.data, context={"request": self.request})
         serializer.is_valid(raise_exception=True)
 
-        client = self.request.user.client
-        coupon = serializer.validated_data["coupon"]
         order = serializer.validated_data["order"]
+        coupon = serializer.validated_data["coupon"]
+        client = self.get_client(order)
 
         service = OrderService(client)
         order_container = service.apply_coupon(order, coupon)
@@ -27,3 +28,7 @@ class OrderApplyCouponView(GenericAPIView):
         response = self.response_serializer_class(order_container).data
 
         return Response(response)
+
+    def get_client(self, order: Order):
+        client = self.request.user.client
+        return client

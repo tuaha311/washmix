@@ -24,12 +24,12 @@ class POSBasketChangeItemView(GenericAPIView):
         serializer = self.serializer_class(data=request.data, context={"request": request})
         serializer.is_valid(raise_exception=True)
 
-        client = request.user.client
+        order = serializer.validated_data["order"]
+        client = order.client
+        basket = order.basket
         price = serializer.validated_data["price"]
         count = serializer.validated_data["count"]
         action = serializer.validated_data["action"]
-        order = serializer.validated_data["order"]
-        basket = order.basket
 
         service = BasketService(client)
         method = getattr(service, f"{action}_item")
@@ -51,8 +51,8 @@ class POSBasketClearView(GenericAPIView):
         serializer = self.serializer_class(data=request.data, context={"request": request})
         serializer.is_valid(raise_exception=True)
 
-        client = request.user.client
         order = serializer.validated_data["order"]
+        client = order.client
         basket = order.basket
 
         service = BasketService(client)
@@ -71,9 +71,9 @@ class POSBasketSetExtraItemsView(GenericAPIView):
         serializer = self.serializer_class(data=request.data, context={"request": request})
         serializer.is_valid(raise_exception=True)
 
-        client = request.user.client
-        extra_items = serializer.validated_data["extra_items"]
         order = serializer.validated_data["order"]
+        extra_items = serializer.validated_data["extra_items"]
+        client = order.client
         basket = order.basket
 
         service = BasketService(client)
