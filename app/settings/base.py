@@ -517,4 +517,3 @@ EMAIL_EVENT_INFO = {
 ##############
 
 JET_SIDE_MENU_COMPACT = True
-JET_DEFAULT_THEME = "washmix"
