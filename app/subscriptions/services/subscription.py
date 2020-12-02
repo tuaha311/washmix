@@ -66,14 +66,15 @@ class SubscriptionService:
         """
 
         invoice = subscription.invoice
-        payment_service = PaymentService(self._client, invoice)
-        card_service = CardService(self._client)
+        client = self._client
+        payment_service = PaymentService(client, invoice)
+        card_service = CardService(client)
 
         payment = None
 
         if subscription.name == settings.PAYC:
-            card = self._client.card_list.first()
-            card_service.update_main_card(self._client, card)
+            card = client.card_list.first()
+            card_service.update_main_card(client, card)
             return payment
 
         return payment_service.charge()
