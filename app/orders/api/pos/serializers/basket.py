@@ -8,6 +8,10 @@ from orders.models import Basket, Price, Quantity
 from orders.services.basket import BasketService
 
 
+class POSBasketClearSerializer(serializers.Serializer):
+    order = POSOrderField()
+
+
 class POSExtraItemSerializer(serializers.Serializer):
     title = serializers.CharField(required=True)
     amount = serializers.IntegerField(required=True)
@@ -17,6 +21,7 @@ class POSExtraItemSerializer(serializers.Serializer):
 
 class POSBasketSetExtraItemsSerializer(serializers.Serializer):
     extra_items = POSExtraItemSerializer(many=True)
+    order = POSOrderField()
 
 
 class POSBasketChangeItemSerializer(serializers.Serializer):
@@ -31,9 +36,10 @@ class POSBasketChangeItemSerializer(serializers.Serializer):
         count = attrs["count"]
         action = attrs["action"]
         order = attrs["order"]
+        basket = order.basket
 
         service = BasketService(client)
-        service.validate(price, count, action)
+        service.validate(basket, price, count, action)
 
         return attrs
 

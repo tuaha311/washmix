@@ -12,7 +12,6 @@ from billing.services.invoice import InvoiceService
 from billing.services.payments import PaymentService
 from core.interfaces import PaymentInterfaceService
 from orders.containers.basket import BasketContainer
-from orders.containers.order import OrderContainer
 from orders.models import Basket, Order, Price, Quantity
 from users.models import Client
 
@@ -86,12 +85,12 @@ class BasketService(PaymentInterfaceService):
         """
         pass
 
-    def validate(self, order: Order, price: Price, count: int, action: str):
+    def validate(self, basket: Basket, price: Price, count: int, action: str):
         """
         Makes all validation related stuff.
         """
 
-        quantity = self._get_or_create_quantity(price)
+        quantity = self._get_or_create_quantity(basket, price)
 
         if action == settings.BASKET_REMOVE and quantity.count < count:
             raise serializers.ValidationError(
@@ -99,29 +98,25 @@ class BasketService(PaymentInterfaceService):
                 code="cant_perform_item_remove",
             )
 
-    def add_item(self, order: Order, price: Price, count: int) -> OrderContainer:
+    def add_item(self, basket: Basket, price: Price, count: int) -> Basket:
         """
         Action for basket, adds item to basket.
         """
 
-        basket = self.basket
-
         with atomic():
-            quantity = self._get_or_create_quantity(price)
+            quantity = self._get_or_create_quantity(basket, price)
             quantity.count = F("count") + count
             quantity.save()
 
         return basket
 
-    def remove_item(self, order: Order, price: Price, count: int) -> OrderContainer:
+    def remove_item(self, basket: Basket, price: Price, count: int) -> Basket:
         """
         Action for basket, removes item from basket.
         """
 
-        basket = self.basket
-
         with atomic():
-            quantity = self._get_or_create_quantity(price)
+            quantity = self._get_or_create_quantity(basket, price)
             current_count = quantity.count - count
 
             # this expression has a lazy evaluation
@@ -136,12 +131,10 @@ class BasketService(PaymentInterfaceService):
 
         return basket
 
-    def clear_all(self):
+    def clear_all(self, basket: Basket):
         """
         Action for basket, removes all items from basket.
         """
-
-        basket = self.basket
 
         with atomic():
             basket.item_list.set([])
@@ -149,12 +142,10 @@ class BasketService(PaymentInterfaceService):
 
         return basket
 
-    def set_extra_items(self, extra_items: List):
+    def set_extra_items(self, basket: Basket, extra_items: List):
         """
         Allows to set `extra_items` on Basket.
         """
-
-        basket = self.basket
 
         with atomic():
             basket.extra_items = extra_items
@@ -162,9 +153,9 @@ class BasketService(PaymentInterfaceService):
 
         return basket
 
-    def _get_or_create_quantity(self, price: Price) -> Quantity:
+    def _get_or_create_quantity(self, basket: Basket, price: Price) -> Quantity:
         quantity, _ = Quantity.objects.get_or_create(
-            basket=self.basket,
+            basket=basket,
             price=price,
             defaults={
                 "count": DEFAULT_COUNT,
@@ -172,7 +163,3 @@ class BasketService(PaymentInterfaceService):
         )
 
         return quantity
-
-    @property
-    def basket(self) -> Basket:
-        order = self._order

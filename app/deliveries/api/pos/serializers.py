@@ -5,6 +5,8 @@ from deliveries.models import Request
 
 
 class RequestResponseSerializer(CommonContainerSerializer, serializers.ModelSerializer):
+    is_free = serializers.BooleanField(read_only=True)
+
     class Meta:
         model = Request
         fields = [
@@ -17,6 +19,7 @@ class RequestResponseSerializer(CommonContainerSerializer, serializers.ModelSeri
             "dropoff_start",
             "dropoff_end",
             "is_rush",
+            "is_free",
             "comment",
             "schedule",
             "amount",
