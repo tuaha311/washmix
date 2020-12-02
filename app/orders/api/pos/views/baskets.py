@@ -1,3 +1,5 @@
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -86,12 +88,18 @@ class POSBasketSetExtraItemsView(GenericAPIView):
         return Response(response)
 
 
+order_params = openapi.Parameter(
+    "order", openapi.IN_QUERY, type=openapi.TYPE_INTEGER, required=True
+)
+
+
 class POSBasketView(GenericAPIView):
     serializer_class = POSBasketClearSerializer
     response_serializer_class = OrderSerializer
     authentication_classes = default_pos_authentication
     permission_classes = default_pos_permissions
 
+    @swagger_auto_schema(manual_parameters=[order_params])
     def get(self, request: Request, *args, **kwargs):
         serializer = self.serializer_class(data=request.query_params, context={"request": request})
         serializer.is_valid(raise_exception=True)

@@ -41,12 +41,13 @@ python = "~3.7"
 
 # core + api
 Django = "~2.2"
-djangorestframework = "~3.11"
+djangorestframework = "~3.12"
 django-filter = "~2"
+drf-yasg = "~1.20"
 
 # authentication
 djoser = "^2.0.3"
-djangorestframework-simplejwt = "^4.4.0"
+djangorestframework-simplejwt = "~4.6"
 
 # social authentication
 social-auth-app-django = "^3.1.0"
@@ -79,7 +80,6 @@ Pillow = "^7.2.0"
 sendgrid = "^6.4.4"
 sentry-sdk = "^0.16.3"
 pre-commit = "^2.6.0"
-drf-yasg = "^1.17.1"
 netaddr = "^0.8.0"
 periodiq = "^0.12.1"
 djangoql = "^0.14.2"
