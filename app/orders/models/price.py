@@ -66,7 +66,7 @@ class Price(Amountable, Common):
         verbose_name = "price"
         verbose_name_plural = "prices"
         unique_together = ("service", "item",)
-        ordering = ["service__title", "item__title"]
+        ordering = ["item__title"]
 
     def __str__(self):
         return f"{self.service.title} on {self.item.title} = {self.dollar_amount} $"
