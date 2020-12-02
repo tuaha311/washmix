@@ -5,7 +5,6 @@ from django.db.transaction import atomic
 
 from billing.models import Coupon, Invoice
 from billing.services.coupon import CouponService
-from billing.services.payments import PaymentService
 from deliveries.models import Request
 from deliveries.services.requests import RequestService
 from notifications.tasks import send_email
@@ -109,17 +108,6 @@ class OrderService:
 
         return self.get_container()
 
-    def charge(self, invoice: Invoice):
-        """
-        We are charging user for:
-        - basket amount
-        - pickup delivery amount
-        - dropoff delivery amount
-        """
-
-        payment_service = PaymentService(self._client, invoice)
-        payment_service.charge()
-
     def finalize(self, order: Order) -> Order:
         """
         Last method in payment flow, that marks order as paid and
@@ -152,29 +140,12 @@ class OrderService:
         self._notify_client_on_payment_fail()
         self._notify_admin_on_payment_fail()
 
-    def _create_order_invoices(self, order: Order):
-        client = self._client
-        basket = order.basket
-        request = order.request
-        subscription = order.subscription
-        basket_service = BasketService(client)
-        request_service = RequestService(client)
-        subscription_service = SubscriptionService(client)
-
-        basket_service.create_invoice(order, basket)
-        request_service.create_invoice(order, basket, request)
-        subscription_service.create_invoice(order, subscription)
-
     def _calculate_and_apply_discount(self, coupon: Coupon, invoice_list: List[Invoice]):
         for invoice in invoice_list:
             amount = invoice.amount
             coupon_service = CouponService(amount, coupon)
             invoice.discount = coupon_service.apply_coupon()
             invoice.save()
-
-    def _charge_invoices(self, invoice_list: List[Invoice]):
-        for invoice in invoice_list:
-            self.charge(invoice)
 
     def _notify_client_on_new_order(self):
         client_id = self._client.id

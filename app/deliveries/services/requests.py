@@ -7,6 +7,7 @@ from django.utils.timezone import localtime
 
 from billing.models import Invoice
 from billing.services.invoice import InvoiceService
+from billing.services.payments import PaymentService
 from deliveries.choices import Kind, Status
 from deliveries.containers.request import RequestContainer
 from deliveries.models import Delivery, Request
@@ -86,7 +87,19 @@ class RequestService:
         return invoice_list
 
     def charge(self, request: Request, **kwargs):
-        pass
+        """
+        We are charging user for:
+            - basket amount
+            - pickup delivery amount
+            - dropoff delivery amount
+        """
+
+        client = self._client
+        invoice_list = [item.invoice for item in request.delivery_list.all()]
+
+        for invoice in invoice_list:
+            payment_service = PaymentService(client, invoice)
+            payment_service.charge()
 
     def validate(self):
         """

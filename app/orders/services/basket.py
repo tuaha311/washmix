@@ -9,6 +9,7 @@ from rest_framework import serializers
 from billing.choices import Purpose
 from billing.models import Invoice
 from billing.services.invoice import InvoiceService
+from billing.services.payments import PaymentService
 from orders.containers.basket import BasketContainer
 from orders.containers.order import OrderContainer
 from orders.models import Basket, Order, Price, Quantity
@@ -62,7 +63,18 @@ class BasketService:
         return [basket_invoice]
 
     def charge(self, basket: Basket, **kwargs):
-        pass
+        """
+        We are charging user for:
+            - basket amount
+            - pickup delivery amount
+            - dropoff delivery amount
+        """
+
+        client = self._client
+        invoice = basket.invoice
+
+        payment_service = PaymentService(client, invoice)
+        payment_service.charge()
 
     def validate(self, price: Price, count: int, action: str):
         """
