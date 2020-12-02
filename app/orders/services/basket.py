@@ -41,7 +41,7 @@ class BasketService(PaymentInterfaceService):
         **kwargs,
     ) -> Optional[List[Invoice]]:
         """
-        Basket invoicings method, called when POS checkout occurs.
+        Basket invoicing method, called when POS checkout occurs.
         """
 
         if not basket:
@@ -80,7 +80,13 @@ class BasketService(PaymentInterfaceService):
         payment_service = PaymentService(client, invoice)
         payment_service.charge()
 
-    def validate(self, price: Price, count: int, action: str):
+    def checkout(self, **kwargs):
+        """
+        Dummy implementation of interface.
+        """
+        pass
+
+    def validate(self, order: Order, price: Price, count: int, action: str):
         """
         Makes all validation related stuff.
         """
@@ -169,16 +175,4 @@ class BasketService(PaymentInterfaceService):
 
     @property
     def basket(self) -> Basket:
-        client = self._client
-
-        # TODO refactor
-        # we are looking for last basket, that wasn't paid
-        basket, _ = Basket.objects.get_or_create(
-            client=client,
-            invoice__transaction_list__isnull=True,
-            defaults={
-                "invoice": None,
-            },
-        )
-
-        return basket
+        order = self._order

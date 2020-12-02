@@ -68,6 +68,12 @@ class OrderService:
             for item in services:
                 item.charge(order=order, basket=basket, request=request, subscription=subscription)
 
+            # 4. we are calling last hooks
+            for item in services:
+                item.checkout(
+                    order=order, basket=basket, request=request, subscription=subscription
+                )
+
         self._order = order
 
         return self.get_container()

@@ -105,6 +105,12 @@ class RequestService(PaymentInterfaceService):
             payment_service = PaymentService(client, invoice)
             payment_service.charge()
 
+    def checkout(self, **kwargs):
+        """
+        Dummy implementation of interface.
+        """
+        pass
+
     def validate(self):
         """
         Makes all validation stuff.

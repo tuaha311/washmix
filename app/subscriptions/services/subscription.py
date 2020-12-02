@@ -83,6 +83,17 @@ class SubscriptionService(PaymentInterfaceService):
 
         return payment_service.charge()
 
+    def checkout(self, order: Order, subscription: Subscription, **kwargs):
+        """
+        Method has additional handling for PAYC packages.
+        """
+
+        if not subscription:
+            return None
+
+        if subscription.name == settings.PAYC:
+            self.finalize(order)
+
     def choose(self, package: Package) -> OrderContainer:
         """
         Action for Subscription, clones all properties of Subscription
@@ -97,16 +108,6 @@ class SubscriptionService(PaymentInterfaceService):
             subscription.save()
 
         return order_service.get_container()
-
-    def checkout(self, order: Order):
-        """
-        Method has additional handling for PAYC packages.
-        """
-
-        subscription = order.subscription
-
-        if subscription.name == settings.PAYC:
-            self.finalize(order)
 
     def finalize(self, order: Order) -> Optional[Subscription]:
         """

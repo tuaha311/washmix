@@ -9,3 +9,7 @@ class PaymentInterfaceService(ABC):
     @abstractmethod
     def create_invoice(self, **kwargs):
         pass
+
+    @abstractmethod
+    def checkout(self, **kwargs):
+        pass
