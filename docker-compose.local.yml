@@ -1,0 +1,49 @@
+version: '3.7'
+
+services:
+  database:
+    image: postgres:11
+    container_name: database
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: wm_pass
+      POSTGRES_USER: wm_user
+      POSTGRES_DB: wm_local
+    ports:
+      - "5432:5432"
+
+  cache:
+    image: redis:latest
+    container_name: cache
+    restart: always
+    ports:
+      - "6379:6379"
+
+  migrations:
+    build: .
+    container_name: migrations
+    restart: "no"
+    depends_on:
+      - cache
+      - database
+    environment:
+      SECRET_KEY: secret
+      SIMPLE_JWT_SIGNING_KEY: secret
+      DB_HOST: database
+      REDIS_HOST: cache
+    command: ["migrations"]
+
+
+  app:
+    build: .
+    container_name: app
+    restart: always
+    ports:
+      - "8000:8000"
+    depends_on:
+      - migrations
+    environment:
+      SECRET_KEY: secret
+      SIMPLE_JWT_SIGNING_KEY: secret
+      DB_HOST: database
+      REDIS_HOST: cache
