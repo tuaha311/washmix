@@ -51,7 +51,6 @@ sms_urls = (
 
 welcome_urls = (
     [
-        path("prepare/", prepare.WelcomePrepareView.as_view(), name="prepare"),
         path("checkout/", checkout.WelcomeCheckoutView.as_view(), name="checkout"),
     ],
     "welcome",
