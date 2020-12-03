@@ -4,7 +4,7 @@ from rest_framework import serializers
 
 from api.client.serializers.common import CommonContainerSerializer
 from api.fields import POSOrderField
-from orders.models import Basket, Price, Quantity
+from orders.models import Basket, Order, Price, Quantity
 from orders.services.basket import BasketService
 
 
@@ -22,6 +22,18 @@ class POSExtraItemSerializer(serializers.Serializer):
 class POSBasketSetExtraItemsSerializer(serializers.Serializer):
     extra_items = POSExtraItemSerializer(many=True)
     order = POSOrderField()
+
+    def validate_order(self, value: Order):
+        order = value
+        basket = order.basket
+
+        if not basket:
+            raise serializers.ValidationError(
+                detail="Provide order with basket.",
+                code="provide_order_with_basket",
+            )
+
+        return value
 
 
 class POSBasketChangeItemSerializer(serializers.Serializer):
