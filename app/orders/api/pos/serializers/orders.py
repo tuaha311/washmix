@@ -5,13 +5,13 @@ from api.fields import OrderField, POSClientField, POSRequestField
 from deliveries.api.pos.serializers import RequestResponseSerializer
 from deliveries.models import Request
 from locations.models import Address
-from orders.api.pos.serializers.basket import POSBasketSerializer
+from orders.api.pos.serializers.basket import BasketSerializer
 from orders.models import Order
 from users.models import Client
 
 
 class OrderSerializer(CommonContainerSerializer, serializers.ModelSerializer):
-    basket = POSBasketSerializer(allow_null=True)
+    basket = BasketSerializer(allow_null=True)
     request = RequestResponseSerializer(allow_null=True)
     subscription = serializers.SlugRelatedField(slug_field="name", read_only=True, allow_null=True)
     credit_back = serializers.ReadOnlyField()
@@ -40,11 +40,11 @@ class OrderSerializer(CommonContainerSerializer, serializers.ModelSerializer):
         ]
 
 
-class OrderCheckoutSerializer(serializers.Serializer):
+class POSOrderCheckoutSerializer(serializers.Serializer):
     order = OrderField()
 
 
-class OrderPrepareSerializer(serializers.Serializer):
+class POSOrderPrepareSerializer(serializers.Serializer):
     client = POSClientField()
     request = POSRequestField()
 
@@ -67,7 +67,7 @@ class OrderPrepareSerializer(serializers.Serializer):
         return attrs
 
 
-class OrderPrepareAddressSerializer(serializers.ModelSerializer):
+class POSOrderPrepareAddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address
         fields = [
@@ -79,7 +79,7 @@ class OrderPrepareAddressSerializer(serializers.ModelSerializer):
         ]
 
 
-class OrderPrepareClientSerializer(serializers.ModelSerializer):
+class POSOrderPrepareClientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Client
         fields = [
@@ -99,8 +99,8 @@ class OrderPrepareClientSerializer(serializers.ModelSerializer):
         ]
 
 
-class OrderPrepareRequestSerializer(serializers.ModelSerializer):
-    address = OrderPrepareAddressSerializer()
+class POSOrderPrepareRequestSerializer(serializers.ModelSerializer):
+    address = POSOrderPrepareAddressSerializer()
 
     class Meta:
         model = Request
@@ -112,9 +112,9 @@ class OrderPrepareRequestSerializer(serializers.ModelSerializer):
         ]
 
 
-class OrderPrepareResponseSerializer(serializers.ModelSerializer):
-    client = OrderPrepareClientSerializer()
-    request = OrderPrepareRequestSerializer()
+class POSOrderPrepareResponseSerializer(serializers.ModelSerializer):
+    client = POSOrderPrepareClientSerializer()
+    request = POSOrderPrepareRequestSerializer()
 
     class Meta:
         model = Order

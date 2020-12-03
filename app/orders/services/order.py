@@ -86,15 +86,14 @@ class OrderService:
 
         client = self._client
 
-        basket, _ = Basket.objects.get_or_create(
-            client=client,
-            order__request=request,
-        )
-        order, _ = Order.objects.get_or_create(
-            client=client,
-            request=request,
-            basket=basket,
-        )
+        with atomic():
+            basket, _ = Basket.objects.get_or_create(
+                client=client,
+                order__request=request,
+            )
+            order, _ = Order.objects.update_or_create(
+                client=client, request=request, defaults={"basket": basket}
+            )
 
         self._order = order
 

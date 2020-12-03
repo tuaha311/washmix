@@ -6,9 +6,16 @@ from api.client.serializers.common import CommonContainerSerializer
 from api.fields import POSOrderField
 from orders.models import Basket, Order, Price, Quantity
 from orders.services.basket import BasketService
+from orders.validators import check_order
 
 
-class POSBasketClearSerializer(serializers.Serializer):
+class BaseOrderValidateSerializer(serializers.Serializer):
+    def validate_order(self, value: Order):
+        check_order(value)
+        return value
+
+
+class POSBasketClearSerializer(BaseOrderValidateSerializer):
     order = POSOrderField()
 
 
@@ -19,24 +26,12 @@ class POSExtraItemSerializer(serializers.Serializer):
     dollar_amount = serializers.FloatField(required=False, allow_null=True, read_only=True)
 
 
-class POSBasketSetExtraItemsSerializer(serializers.Serializer):
+class POSBasketSetExtraItemsSerializer(BaseOrderValidateSerializer):
     extra_items = POSExtraItemSerializer(many=True)
     order = POSOrderField()
 
-    def validate_order(self, value: Order):
-        order = value
-        basket = order.basket
 
-        if not basket:
-            raise serializers.ValidationError(
-                detail="Provide order with basket.",
-                code="provide_order_with_basket",
-            )
-
-        return value
-
-
-class POSBasketChangeItemSerializer(serializers.Serializer):
+class POSBasketChangeItemSerializer(BaseOrderValidateSerializer):
     price = serializers.PrimaryKeyRelatedField(queryset=Price.objects.all())
     count = serializers.IntegerField()
     action = serializers.ChoiceField(choices=settings.BASKET_ACTION_CHOICES)
@@ -77,7 +72,7 @@ class POSQuantitySerializer(CommonContainerSerializer, serializers.ModelSerializ
         ]
 
 
-class POSBasketSerializer(CommonContainerSerializer, serializers.ModelSerializer):
+class BasketSerializer(CommonContainerSerializer, serializers.ModelSerializer):
     item_list = POSQuantitySerializer(many=True, source="quantity_container_list")
     extra_items = POSExtraItemSerializer(many=True)
 

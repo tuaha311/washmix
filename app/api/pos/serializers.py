@@ -22,7 +22,7 @@ class ItemPriceSerializer(serializers.ModelSerializer):
         ]
 
 
-class ItemSerializer(serializers.ModelSerializer):
+class POSItemSerializer(serializers.ModelSerializer):
     price_list = ItemPriceSerializer(many=True, read_only=True)
 
     class Meta:
@@ -35,7 +35,7 @@ class ItemSerializer(serializers.ModelSerializer):
         ]
 
 
-class CouponSerializer(serializers.ModelSerializer):
+class POSCouponSerializer(serializers.ModelSerializer):
     class Meta:
         model = Coupon
         fields = [

@@ -32,6 +32,7 @@ class Order(Common):
         related_name="order",
         on_delete=models.PROTECT,
         null=True,
+        blank=True,
     )
     request = models.OneToOneField(
         "deliveries.Request",
@@ -39,6 +40,7 @@ class Order(Common):
         related_name="order",
         on_delete=models.PROTECT,
         null=True,
+        blank=True,
     )
     subscription = models.OneToOneField(
         "subscriptions.Subscription",
@@ -46,6 +48,7 @@ class Order(Common):
         related_name="order",
         on_delete=models.PROTECT,
         null=True,
+        blank=True,
     )
     coupon = models.ForeignKey(
         "billing.Coupon",

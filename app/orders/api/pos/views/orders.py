@@ -4,9 +4,9 @@ from rest_framework.response import Response
 from api.authentication import default_pos_authentication
 from api.permissions import default_pos_permissions
 from orders.api.pos.serializers.orders import (
-    OrderPrepareResponseSerializer,
-    OrderPrepareSerializer,
     OrderSerializer,
+    POSOrderPrepareResponseSerializer,
+    POSOrderPrepareSerializer,
 )
 from orders.containers.order import OrderContainer
 from orders.models import Order
@@ -14,8 +14,8 @@ from orders.services.order import OrderService
 
 
 class POSOrderPrepareView(GenericAPIView):
-    serializer_class = OrderPrepareSerializer
-    response_serializer_class = OrderPrepareResponseSerializer
+    serializer_class = POSOrderPrepareSerializer
+    response_serializer_class = POSOrderPrepareResponseSerializer
     authentication_classes = default_pos_authentication
     permission_classes = default_pos_permissions
 
