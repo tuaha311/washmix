@@ -12,7 +12,6 @@ class WashMixAutoSchema(SwaggerAutoSchema):
 
     response_serializer_attribute = "response_serializer_class"
     empty_response_attribute = "empty_response"
-    implicit_list_response_methods = ()
 
     def get_default_response_serializer(self):
         """
