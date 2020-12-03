@@ -98,9 +98,7 @@ class POSBasketView(GenericAPIView):
     response_serializer_class = OrderSerializer
     authentication_classes = default_pos_authentication
     permission_classes = default_pos_permissions
-    # mark view to return single object instead of array
-    # Reference - drf_yasg.utils.is_list_view
-    suffix = "Instance"
+    is_list_response = False
 
     @swagger_auto_schema(manual_parameters=[order_params])
     def get(self, request: Request, *args, **kwargs):

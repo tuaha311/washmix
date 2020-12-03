@@ -12,6 +12,7 @@ class WashMixAutoSchema(SwaggerAutoSchema):
 
     response_serializer_attribute = "response_serializer_class"
     empty_response_attribute = "empty_response"
+    is_list_response_attribute = "is_list_response"
 
     def get_default_response_serializer(self):
         """
@@ -40,3 +41,17 @@ class WashMixAutoSchema(SwaggerAutoSchema):
                 value.pop("schema")
 
         return responses
+
+    def has_list_response(self):
+        """
+        Method allows to us control `responses` field - we can return `array` or
+        `schema` fields.
+        """
+
+        has_list_response = super().has_list_response()
+
+        if hasattr(self.view, self.is_list_response_attribute):
+            is_list_response = getattr(self.view, self.is_list_response_attribute)
+            return is_list_response
+
+        return has_list_response
