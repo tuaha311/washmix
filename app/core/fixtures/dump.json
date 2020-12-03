@@ -5118,7 +5118,7 @@
       "created": "2020-10-01T01:59:43.187Z",
       "changed": "2020-10-01T01:59:43.187Z",
       "title": "Laundry",
-      "image": ""
+      "image": "washer.png"
     }
   },
   {
@@ -5128,7 +5128,7 @@
       "created": "2020-10-01T01:59:43.661Z",
       "changed": "2020-10-01T01:59:43.661Z",
       "title": "Dry Cleaning",
-      "image": ""
+      "image": "iron.png"
     }
   },
   {
@@ -5138,7 +5138,7 @@
       "created": "2020-10-01T01:59:45.253Z",
       "changed": "2020-10-01T01:59:45.253Z",
       "title": "Wash & Folds",
-      "image": ""
+      "image": "towel.png"
     }
   },
   {
@@ -5148,7 +5148,7 @@
       "created": "2020-10-01T01:59:45.581Z",
       "changed": "2020-10-01T01:59:45.581Z",
       "title": "Households",
-      "image": ""
+      "image": "leather.png"
     }
   },
   {
@@ -5158,7 +5158,7 @@
       "created": "2020-10-01T01:59:46.836Z",
       "changed": "2020-10-01T01:59:46.836Z",
       "title": "Alterations & Repair",
-      "image": ""
+      "image": "alteration.png"
     }
   },
   {
@@ -5168,7 +5168,7 @@
       "created": "2020-10-01T01:59:50.397Z",
       "changed": "2020-10-01T01:59:50.397Z",
       "title": "Wedding Gowns",
-      "image": ""
+      "image": "preservation.png"
     }
   },
   {
@@ -5178,7 +5178,7 @@
       "created": "2020-10-01T01:59:50.564Z",
       "changed": "2020-10-01T01:59:50.564Z",
       "title": "Area Rug",
-      "image": ""
+      "image": "rug-cleaning.png"
     }
   }
 ]

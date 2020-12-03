@@ -50,11 +50,13 @@ class DjoserProxyView(UserViewSet):
 
 
 class ForgotPasswordView(DjoserProxyView):
+    empty_response = True
     response_serializer_class = auth.EmptyResponseSerializer
     proxy_action = {"post": "reset_password"}
 
 
 class SetNewPasswordView(DjoserProxyView):
+    empty_response = True
     response_serializer_class = auth.EmptyResponseSerializer
     proxy_action = {"post": "reset_password_confirm"}
 
