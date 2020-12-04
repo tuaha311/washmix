@@ -1,5 +1,4 @@
 from django.conf import settings
-from django.db.transaction import atomic
 
 import stripe
 from rest_framework.generics import GenericAPIView
@@ -9,12 +8,8 @@ from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK
 
 from billing.api.serializers import payments
-from billing.choices import Purpose
 from billing.services.intent import IntentService
-from billing.services.payments import PaymentService
 from billing.services.webhook import StripeWebhookService
-from orders.services.order import OrderService
-from subscriptions.services.subscription import SubscriptionService
 
 
 class CreateIntentView(GenericAPIView):
@@ -40,8 +35,6 @@ class CreateIntentView(GenericAPIView):
 
 class StripeWebhookView(GenericAPIView):
     permission_classes = [AllowAny]
-    success_events = ["charge.succeeded"]
-    fail_events = ["charge.failed"]
 
     def post(self, request: Request, *args, **kwargs):
         # we will use Stripe SDK to check validity of event instead
@@ -57,29 +50,6 @@ class StripeWebhookView(GenericAPIView):
             body = webhook_service.body
             return Response(body, status=status)
 
-        payment, client, invoice, purpose = webhook_service.parse()
-        order = invoice.order
-
-        payment_service = PaymentService(client, invoice)
-        subscription_service = SubscriptionService(client)
-        order_service = OrderService(client)
-
-        with atomic():
-            if event.type in self.success_events:
-                # we are marked our invoice as paid
-                payment_service.confirm(payment)
-
-                if purpose == Purpose.SUBSCRIPTION:
-                    subscription_service.finalize(order)
-
-                elif purpose == Purpose.BASKET:
-                    order_service.finalize(order)
-
-            elif event.type in self.fail_events:
-                if purpose == Purpose.SUBSCRIPTION:
-                    subscription_service.fail(order)
-
-                elif purpose == Purpose.BASKET:
-                    order_service.fail(order)
+        webhook_service.accept_payment(event)
 
         return Response({}, status=HTTP_200_OK)
