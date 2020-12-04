@@ -163,7 +163,7 @@ Corresponding to models, we have a wrapper around this models called `containers
 ## About initial data (fixtures)
 1. To create dump of database in JSON format
 ```bash
-python manage.py dumpdata swap_user_named_email billing core deliveries locations notifications orders subscriptions users -o dump.json
+python manage.py dumpdata to_named_email billing core deliveries locations notifications orders subscriptions users -o dump.json
 ```
 2. To load data from dump in JSON format to database
 ```bash

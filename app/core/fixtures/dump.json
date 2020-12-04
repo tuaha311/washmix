@@ -9,8 +9,8 @@
       "email": "api@evrone.com",
       "is_active": true,
       "is_staff": true,
-      "first_name": "",
-      "last_name": "",
+      "first_name": "Ivan",
+      "last_name": "Petrov",
       "groups": [],
       "user_permissions": []
     }
@@ -41,8 +41,8 @@
       "email": "savoskin@evrone.com",
       "is_active": true,
       "is_staff": true,
-      "first_name": "",
-      "last_name": "",
+      "first_name": "Alexander",
+      "last_name": "Petrov",
       "groups": [],
       "user_permissions": []
     }
@@ -80,103 +80,45 @@
     }
   },
   {
-    "model": "users.client",
+    "model": "billing.card",
     "pk": 1,
     "fields": {
-      "created": "2020-10-01T01:59:50.886Z",
-      "changed": "2020-10-01T01:59:50.894Z",
-      "stripe_id": "cus_HsLFiIYxwKsoOC",
-      "user": 1,
-      "subscription": null,
-      "main_card": null,
-      "main_phone": 1,
-      "main_address": 1,
-      "detergents": "",
-      "starch": "",
-      "no_crease": "",
-      "fabric_softener": false,
-      "fix_tears": false,
-      "is_auto_billing": true
+      "created": "2020-12-04T02:15:19.274Z",
+      "changed": "2020-12-04T02:15:19.274Z",
+      "stripe_id": "pm_1HfNKpEIZcTcPHNvI7JRgyuW",
+      "client": 1,
+      "last": "4242",
+      "expiration_month": 4,
+      "expiration_year": 2024,
+      "is_active": true
     }
   },
   {
-    "model": "users.client",
+    "model": "billing.card",
     "pk": 2,
     "fields": {
-      "created": "2020-10-01T01:59:51.009Z",
-      "changed": "2020-10-01T01:59:51.014Z",
-      "stripe_id": "cus_HxSYa6ACuzQdtS",
-      "user": 2,
-      "subscription": null,
-      "main_card": null,
-      "main_phone": 2,
-      "main_address": 2,
-      "detergents": "",
-      "starch": "",
-      "no_crease": "",
-      "fabric_softener": false,
-      "fix_tears": false,
-      "is_auto_billing": true
+      "created": "2020-12-04T02:15:19.290Z",
+      "changed": "2020-12-04T02:15:19.290Z",
+      "stripe_id": "pm_1HNWh4EIZcTcPHNvAUvX9pVd",
+      "client": 1,
+      "last": "4242",
+      "expiration_month": 4,
+      "expiration_year": 2024,
+      "is_active": true
     }
   },
   {
-    "model": "users.client",
+    "model": "billing.card",
     "pk": 3,
     "fields": {
-      "created": "2020-10-01T01:59:51.136Z",
-      "changed": "2020-10-01T01:59:51.141Z",
-      "stripe_id": "cus_HxSYL19Joq6KTq",
-      "user": 3,
-      "subscription": null,
-      "main_card": null,
-      "main_phone": 3,
-      "main_address": null,
-      "detergents": "",
-      "starch": "",
-      "no_crease": "",
-      "fabric_softener": false,
-      "fix_tears": false,
-      "is_auto_billing": true
-    }
-  },
-  {
-    "model": "users.client",
-    "pk": 4,
-    "fields": {
-      "created": "2020-10-01T01:59:51.249Z",
-      "changed": "2020-10-01T01:59:51.256Z",
-      "stripe_id": "cus_HxSY7DuMrXnEc1",
-      "user": 4,
-      "subscription": null,
-      "main_card": null,
-      "main_phone": 4,
-      "main_address": 3,
-      "detergents": "",
-      "starch": "",
-      "no_crease": "",
-      "fabric_softener": false,
-      "fix_tears": false,
-      "is_auto_billing": true
-    }
-  },
-  {
-    "model": "users.client",
-    "pk": 5,
-    "fields": {
-      "created": "2020-10-01T01:59:51.359Z",
-      "changed": "2020-10-01T02:04:35.372Z",
-      "stripe_id": "cus_HxSY7DuMrXnEc0",
-      "user": 5,
-      "subscription": null,
-      "main_card": null,
-      "main_phone": 5,
-      "main_address": 4,
-      "detergents": "",
-      "starch": "",
-      "no_crease": "",
-      "fabric_softener": false,
-      "fix_tears": false,
-      "is_auto_billing": true
+      "created": "2020-12-04T02:17:17.779Z",
+      "changed": "2020-12-04T02:17:17.779Z",
+      "stripe_id": "pm_1HloG8EIZcTcPHNvCo0YBI9n",
+      "client": 3,
+      "last": "4242",
+      "expiration_month": 4,
+      "expiration_year": 2024,
+      "is_active": true
     }
   },
   {
@@ -212,66 +154,251 @@
     }
   },
   {
-    "model": "subscriptions.package",
+    "model": "billing.invoice",
     "pk": 1,
     "fields": {
-      "created": "2020-10-01T01:59:40.438Z",
-      "changed": "2020-10-01T01:59:40.438Z",
-      "price": 0,
-      "dry_clean": 0,
-      "laundry": 0,
-      "alterations": 0,
-      "wash_fold": 0,
-      "delivery_free_from": 4900,
-      "has_delivery": false,
-      "has_welcome_box": false,
-      "has_seasonal_garment": false,
-      "has_credit_back": false,
-      "is_most_popular": false,
-      "name": "payc",
-      "description": "Pay as You Clean"
+      "created": "2020-12-04T02:15:19.486Z",
+      "changed": "2020-12-04T02:15:19.486Z",
+      "amount": 19900,
+      "discount": 0,
+      "client": 1,
+      "order": 1,
+      "card": null,
+      "purpose": "subscription"
     }
   },
   {
-    "model": "subscriptions.package",
+    "model": "billing.invoice",
     "pk": 2,
     "fields": {
-      "created": "2020-10-01T01:59:40.457Z",
-      "changed": "2020-10-01T01:59:40.457Z",
-      "price": 19900,
-      "dry_clean": 10,
-      "laundry": 10,
-      "alterations": 10,
-      "wash_fold": 10,
-      "delivery_free_from": 3900,
-      "has_delivery": true,
-      "has_welcome_box": true,
-      "has_seasonal_garment": false,
-      "has_credit_back": false,
-      "is_most_popular": false,
-      "name": "gold",
-      "description": "Pre Pay Credit"
+      "created": "2020-12-04T02:17:17.828Z",
+      "changed": "2020-12-04T02:17:17.828Z",
+      "amount": 29900,
+      "discount": 0,
+      "client": 3,
+      "order": 2,
+      "card": null,
+      "purpose": "subscription"
     }
   },
   {
-    "model": "subscriptions.package",
-    "pk": 3,
+    "model": "billing.transaction",
+    "pk": 1,
     "fields": {
-      "created": "2020-10-01T01:59:40.481Z",
-      "changed": "2020-10-01T01:59:40.481Z",
-      "price": 29900,
-      "dry_clean": 20,
-      "laundry": 20,
-      "alterations": 20,
-      "wash_fold": 20,
-      "delivery_free_from": 3900,
-      "has_delivery": true,
-      "has_welcome_box": true,
-      "has_seasonal_garment": true,
-      "has_credit_back": true,
-      "is_most_popular": true,
-      "name": "platinum",
-      "description": "Pre Pay Credit"
+      "created": "2020-12-04T02:15:36.668Z",
+      "changed": "2020-12-04T02:15:36.668Z",
+      "stripe_id": "ch_1HcAFhEIZcTcPHNvNsIjWuo3",
+      "amount": 19900,
+      "client": 1,
+      "invoice": 1,
+      "kind": "debit",
+      "provider": "stripe",
+      "source": {
+        "id": "ch_1HcAFhEIZcTcPHNvNsIjWuo3",
+        "paid": true,
+        "order": null,
+        "amount": 19900,
+        "object": "charge",
+        "review": null,
+        "source": null,
+        "status": "succeeded",
+        "created": 1602682969,
+        "dispute": null,
+        "invoice": null,
+        "outcome": {
+          "type": "authorized",
+          "reason": null,
+          "risk_level": "normal",
+          "risk_score": 29,
+          "network_status": "approved_by_network",
+          "seller_message": "Payment complete."
+        },
+        "refunds": {
+          "url": "/v1/charges/ch_1HcAFhEIZcTcPHNvNsIjWuo7/refunds",
+          "data": [],
+          "object": "list",
+          "has_more": false,
+          "total_count": 0
+        },
+        "captured": true,
+        "currency": "usd",
+        "customer": "cus_HsLFiIYxwKsoOC",
+        "disputed": false,
+        "livemode": false,
+        "metadata": {
+          "purpose": "subscription",
+          "invoice_id": "1"
+        },
+        "refunded": false,
+        "shipping": null,
+        "application": null,
+        "description": null,
+        "destination": null,
+        "receipt_url": "https://pay.stripe.com/receipts/acct_1C1ffYEIZcTcPHNv/ch_1HcAFhEIZcTcPHNvNsIjWuo7/rcpt_ICZOL02JlsFHPZbjkJgIIeVZoeazRrn",
+        "failure_code": null,
+        "on_behalf_of": null,
+        "fraud_details": {},
+        "receipt_email": "djo@dominges.com",
+        "transfer_data": null,
+        "payment_intent": "pi_1HcAFgEIZcTcPHNvrD1cb02c",
+        "payment_method": "pm_1HcAFgEIZcTcPHNvg7dsovPP",
+        "receipt_number": null,
+        "transfer_group": null,
+        "amount_captured": 19900,
+        "amount_refunded": 0,
+        "application_fee": null,
+        "billing_details": {
+          "name": "djoe dominoes",
+          "email": null,
+          "phone": null,
+          "address": {
+            "city": null,
+            "line1": "859-899 Rengstorff Avenue, Mountain View, CA, USA",
+            "line2": "30",
+            "state": null,
+            "country": null,
+            "postal_code": "94043"
+          }
+        },
+        "failure_message": null,
+        "source_transfer": null,
+        "balance_transaction": "txn_1HcAFhEIZcTcPHNvxkX8vfdn",
+        "statement_descriptor": null,
+        "application_fee_amount": null,
+        "payment_method_details": {
+          "card": {
+            "brand": "visa",
+            "last4": "4242",
+            "checks": {
+              "cvc_check": "pass",
+              "address_line1_check": "pass",
+              "address_postal_code_check": "pass"
+            },
+            "wallet": null,
+            "country": "US",
+            "funding": "credit",
+            "network": "visa",
+            "exp_year": 2023,
+            "exp_month": 10,
+            "fingerprint": "9CRTMtALmpC0WUhX",
+            "installments": null,
+            "three_d_secure": null
+          },
+          "type": "card"
+        },
+        "statement_descriptor_suffix": null,
+        "calculated_statement_descriptor": "WASHMIX.COM"
+      }
+    }
+  },
+  {
+    "model": "billing.transaction",
+    "pk": 2,
+    "fields": {
+      "created": "2020-12-04T02:18:03.839Z",
+      "changed": "2020-12-04T02:18:03.839Z",
+      "stripe_id": "ch_1HcAFhEIZcTcPHNvNsIjWuo2",
+      "amount": 29900,
+      "client": 3,
+      "invoice": 2,
+      "kind": "debit",
+      "provider": "stripe",
+      "source": {
+        "id": "ch_1HcAFhEIZcTcPHNvNsIjWuo2",
+        "paid": true,
+        "order": null,
+        "amount": 19900,
+        "object": "charge",
+        "review": null,
+        "source": null,
+        "status": "succeeded",
+        "created": 1602682969,
+        "dispute": null,
+        "invoice": null,
+        "outcome": {
+          "type": "authorized",
+          "reason": null,
+          "risk_level": "normal",
+          "risk_score": 29,
+          "network_status": "approved_by_network",
+          "seller_message": "Payment complete."
+        },
+        "refunds": {
+          "url": "/v1/charges/ch_1HcAFhEIZcTcPHNvNsIjWuo7/refunds",
+          "data": [],
+          "object": "list",
+          "has_more": false,
+          "total_count": 0
+        },
+        "captured": true,
+        "currency": "usd",
+        "customer": "cus_HxSYL19Joq6KTq",
+        "disputed": false,
+        "livemode": false,
+        "metadata": {
+          "purpose": "subscription",
+          "invoice_id": "2"
+        },
+        "refunded": false,
+        "shipping": null,
+        "application": null,
+        "description": null,
+        "destination": null,
+        "receipt_url": "https://pay.stripe.com/receipts/acct_1C1ffYEIZcTcPHNv/ch_1HcAFhEIZcTcPHNvNsIjWuo7/rcpt_ICZOL02JlsFHPZbjkJgIIeVZoeazRrn",
+        "failure_code": null,
+        "on_behalf_of": null,
+        "fraud_details": {},
+        "receipt_email": "djo@dominges.com",
+        "transfer_data": null,
+        "payment_intent": "pi_1HcAFgEIZcTcPHNvrD1cb02c",
+        "payment_method": "pm_1HcAFgEIZcTcPHNvg7dsovPP",
+        "receipt_number": null,
+        "transfer_group": null,
+        "amount_captured": 19900,
+        "amount_refunded": 0,
+        "application_fee": null,
+        "billing_details": {
+          "name": "djoe dominoes",
+          "email": null,
+          "phone": null,
+          "address": {
+            "city": null,
+            "line1": "859-899 Rengstorff Avenue, Mountain View, CA, USA",
+            "line2": "30",
+            "state": null,
+            "country": null,
+            "postal_code": "94043"
+          }
+        },
+        "failure_message": null,
+        "source_transfer": null,
+        "balance_transaction": "txn_1HcAFhEIZcTcPHNvxkX8vfdn",
+        "statement_descriptor": null,
+        "application_fee_amount": null,
+        "payment_method_details": {
+          "card": {
+            "brand": "visa",
+            "last4": "4242",
+            "checks": {
+              "cvc_check": "pass",
+              "address_line1_check": "pass",
+              "address_postal_code_check": "pass"
+            },
+            "wallet": null,
+            "country": "US",
+            "funding": "credit",
+            "network": "visa",
+            "exp_year": 2023,
+            "exp_month": 10,
+            "fingerprint": "9CRTMtALmpC0WUhX",
+            "installments": null,
+            "three_d_secure": null
+          },
+          "type": "card"
+        },
+        "statement_descriptor_suffix": null,
+        "calculated_statement_descriptor": "WASHMIX.COM"
+      }
     }
   },
   {
@@ -327,6 +454,96 @@
       "client": 5,
       "title": "Main",
       "number": "+14086660079"
+    }
+  },
+  {
+    "model": "deliveries.delivery",
+    "pk": 1,
+    "fields": {
+      "created": "2020-12-04T02:16:31.338Z",
+      "changed": "2020-12-04T02:16:31.338Z",
+      "employee": null,
+      "request": 1,
+      "invoice": null,
+      "kind": "pickup",
+      "status": "accepted",
+      "date": "2020-12-07",
+      "start": "13:00:00",
+      "end": "15:00:00"
+    }
+  },
+  {
+    "model": "deliveries.delivery",
+    "pk": 2,
+    "fields": {
+      "created": "2020-12-04T02:16:31.342Z",
+      "changed": "2020-12-04T02:16:31.342Z",
+      "employee": null,
+      "request": 1,
+      "invoice": null,
+      "kind": "dropoff",
+      "status": "accepted",
+      "date": "2020-12-10",
+      "start": "13:00:00",
+      "end": "15:00:00"
+    }
+  },
+  {
+    "model": "deliveries.delivery",
+    "pk": 3,
+    "fields": {
+      "created": "2020-12-04T02:19:08.309Z",
+      "changed": "2020-12-04T02:19:08.309Z",
+      "employee": null,
+      "request": 2,
+      "invoice": null,
+      "kind": "pickup",
+      "status": "accepted",
+      "date": "2020-12-08",
+      "start": "13:00:00",
+      "end": "15:00:00"
+    }
+  },
+  {
+    "model": "deliveries.delivery",
+    "pk": 4,
+    "fields": {
+      "created": "2020-12-04T02:19:08.312Z",
+      "changed": "2020-12-04T02:19:08.312Z",
+      "employee": null,
+      "request": 2,
+      "invoice": null,
+      "kind": "dropoff",
+      "status": "accepted",
+      "date": "2020-12-11",
+      "start": "13:00:00",
+      "end": "15:00:00"
+    }
+  },
+  {
+    "model": "deliveries.request",
+    "pk": 1,
+    "fields": {
+      "created": "2020-12-04T02:16:31.332Z",
+      "changed": "2020-12-04T02:16:31.332Z",
+      "comment": "",
+      "is_rush": false,
+      "client": 1,
+      "address": 1,
+      "schedule": null
+    }
+  },
+  {
+    "model": "deliveries.request",
+    "pk": 2,
+    "fields": {
+      "created": "2020-12-04T02:19:08.304Z",
+      "changed": "2020-12-04T02:19:08.304Z",
+      "comment": "",
+      "is_rush": false,
+      "client": 3,
+      "address": 6,
+      "schedule": null
     }
   },
   {
@@ -1526,6 +1743,34 @@
       "title": "Main",
       "address_line_1": "Amerika",
       "address_line_2": "Boston 4",
+      "has_doorman": false
+    }
+  },
+  {
+    "model": "locations.address",
+    "pk": 5,
+    "fields": {
+      "created": "2020-12-04T02:15:19.333Z",
+      "changed": "2020-12-04T02:15:19.333Z",
+      "client": 1,
+      "zip_code": 85,
+      "title": "Main",
+      "address_line_1": "Manhattan",
+      "address_line_2": "",
+      "has_doorman": false
+    }
+  },
+  {
+    "model": "locations.address",
+    "pk": 6,
+    "fields": {
+      "created": "2020-12-04T02:17:17.803Z",
+      "changed": "2020-12-04T02:17:17.803Z",
+      "client": 3,
+      "zip_code": 84,
+      "title": "Main",
+      "address_line_1": "New York",
+      "address_line_2": "",
       "has_doorman": false
     }
   },
@@ -3133,6 +3378,42 @@
       "title": "Cowhide Rug [Min Price 99$]",
       "image": "",
       "is_visible": true
+    }
+  },
+  {
+    "model": "orders.order",
+    "pk": 1,
+    "fields": {
+      "created": "2020-12-04T02:14:59.502Z",
+      "changed": "2020-12-04T02:15:36.691Z",
+      "client": 1,
+      "employee": null,
+      "basket": null,
+      "request": null,
+      "subscription": 1,
+      "coupon": null,
+      "status": "accepted",
+      "payment": "paid",
+      "note": "",
+      "is_save_card": true
+    }
+  },
+  {
+    "model": "orders.order",
+    "pk": 2,
+    "fields": {
+      "created": "2020-12-04T02:17:01.269Z",
+      "changed": "2020-12-04T02:18:03.853Z",
+      "client": 3,
+      "employee": null,
+      "basket": null,
+      "request": null,
+      "subscription": 2,
+      "coupon": null,
+      "status": "accepted",
+      "payment": "paid",
+      "note": "",
+      "is_save_card": true
     }
   },
   {
@@ -5179,6 +5460,224 @@
       "changed": "2020-10-01T01:59:50.564Z",
       "title": "Area Rug",
       "image": "rug-cleaning.png"
+    }
+  },
+  {
+    "model": "subscriptions.package",
+    "pk": 1,
+    "fields": {
+      "created": "2020-10-01T01:59:40.438Z",
+      "changed": "2020-10-01T01:59:40.438Z",
+      "price": 0,
+      "dry_clean": 0,
+      "laundry": 0,
+      "alterations": 0,
+      "wash_fold": 0,
+      "delivery_free_from": 4900,
+      "has_delivery": false,
+      "has_welcome_box": false,
+      "has_seasonal_garment": false,
+      "has_credit_back": false,
+      "is_most_popular": false,
+      "name": "payc",
+      "description": "Pay as You Clean"
+    }
+  },
+  {
+    "model": "subscriptions.package",
+    "pk": 2,
+    "fields": {
+      "created": "2020-10-01T01:59:40.457Z",
+      "changed": "2020-10-01T01:59:40.457Z",
+      "price": 19900,
+      "dry_clean": 10,
+      "laundry": 10,
+      "alterations": 10,
+      "wash_fold": 10,
+      "delivery_free_from": 3900,
+      "has_delivery": true,
+      "has_welcome_box": true,
+      "has_seasonal_garment": false,
+      "has_credit_back": false,
+      "is_most_popular": false,
+      "name": "gold",
+      "description": "Pre Pay Credit"
+    }
+  },
+  {
+    "model": "subscriptions.package",
+    "pk": 3,
+    "fields": {
+      "created": "2020-10-01T01:59:40.481Z",
+      "changed": "2020-10-01T01:59:40.481Z",
+      "price": 29900,
+      "dry_clean": 20,
+      "laundry": 20,
+      "alterations": 20,
+      "wash_fold": 20,
+      "delivery_free_from": 3900,
+      "has_delivery": true,
+      "has_welcome_box": true,
+      "has_seasonal_garment": true,
+      "has_credit_back": true,
+      "is_most_popular": true,
+      "name": "platinum",
+      "description": "Pre Pay Credit"
+    }
+  },
+  {
+    "model": "subscriptions.subscription",
+    "pk": 1,
+    "fields": {
+      "created": "2020-12-04T02:14:59.485Z",
+      "changed": "2020-12-04T02:15:19.497Z",
+      "price": 19900,
+      "dry_clean": 10,
+      "laundry": 10,
+      "alterations": 10,
+      "wash_fold": 10,
+      "delivery_free_from": 3900,
+      "has_delivery": true,
+      "has_welcome_box": true,
+      "has_seasonal_garment": false,
+      "has_credit_back": false,
+      "is_most_popular": false,
+      "client": 1,
+      "name": "gold",
+      "invoice": 1
+    }
+  },
+  {
+    "model": "subscriptions.subscription",
+    "pk": 2,
+    "fields": {
+      "created": "2020-12-04T02:17:01.254Z",
+      "changed": "2020-12-04T02:17:17.836Z",
+      "price": 29900,
+      "dry_clean": 20,
+      "laundry": 20,
+      "alterations": 20,
+      "wash_fold": 20,
+      "delivery_free_from": 3900,
+      "has_delivery": true,
+      "has_welcome_box": true,
+      "has_seasonal_garment": true,
+      "has_credit_back": true,
+      "is_most_popular": true,
+      "client": 3,
+      "name": "platinum",
+      "invoice": 2
+    }
+  },
+  {
+    "model": "users.client",
+    "pk": 1,
+    "fields": {
+      "created": "2020-10-01T01:59:50.886Z",
+      "changed": "2020-12-04T02:15:36.696Z",
+      "stripe_id": "cus_HsLFiIYxwKsoOC",
+      "user": 1,
+      "subscription": 1,
+      "main_card": 2,
+      "main_phone": 1,
+      "main_address": 1,
+      "billing_address": {
+        "zip_code": "95103",
+        "address_line_1": "Oklahoma"
+      },
+      "detergents": "",
+      "starch": "",
+      "no_crease": "",
+      "fabric_softener": false,
+      "fix_tears": false,
+      "is_auto_billing": true
+    }
+  },
+  {
+    "model": "users.client",
+    "pk": 2,
+    "fields": {
+      "created": "2020-10-01T01:59:51.009Z",
+      "changed": "2020-10-01T01:59:51.014Z",
+      "stripe_id": "cus_HxSYa6ACuzQdtS",
+      "user": 2,
+      "subscription": null,
+      "main_card": null,
+      "main_phone": 2,
+      "main_address": 2,
+      "billing_address": {},
+      "detergents": "",
+      "starch": "",
+      "no_crease": "",
+      "fabric_softener": false,
+      "fix_tears": false,
+      "is_auto_billing": true
+    }
+  },
+  {
+    "model": "users.client",
+    "pk": 3,
+    "fields": {
+      "created": "2020-10-01T01:59:51.136Z",
+      "changed": "2020-12-04T02:18:03.857Z",
+      "stripe_id": "cus_HxSYL19Joq6KTq",
+      "user": 3,
+      "subscription": 2,
+      "main_card": 3,
+      "main_phone": 3,
+      "main_address": 6,
+      "billing_address": {
+        "zip_code": "95103",
+        "address_line_1": "Oklahoma"
+      },
+      "detergents": "",
+      "starch": "",
+      "no_crease": "",
+      "fabric_softener": false,
+      "fix_tears": false,
+      "is_auto_billing": true
+    }
+  },
+  {
+    "model": "users.client",
+    "pk": 4,
+    "fields": {
+      "created": "2020-10-01T01:59:51.249Z",
+      "changed": "2020-10-01T01:59:51.256Z",
+      "stripe_id": "cus_HxSY7DuMrXnEc1",
+      "user": 4,
+      "subscription": null,
+      "main_card": null,
+      "main_phone": 4,
+      "main_address": 3,
+      "billing_address": {},
+      "detergents": "",
+      "starch": "",
+      "no_crease": "",
+      "fabric_softener": false,
+      "fix_tears": false,
+      "is_auto_billing": true
+    }
+  },
+  {
+    "model": "users.client",
+    "pk": 5,
+    "fields": {
+      "created": "2020-10-01T01:59:51.359Z",
+      "changed": "2020-10-01T02:04:35.372Z",
+      "stripe_id": "cus_HxSY7DuMrXnEc0",
+      "user": 5,
+      "subscription": null,
+      "main_card": null,
+      "main_phone": 5,
+      "main_address": 4,
+      "billing_address": {},
+      "detergents": "",
+      "starch": "",
+      "no_crease": "",
+      "fabric_softener": false,
+      "fix_tears": false,
+      "is_auto_billing": true
     }
   }
 ]
