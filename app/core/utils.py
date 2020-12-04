@@ -9,7 +9,8 @@ def get_dollars(self, attribute_name: str):
     Returns amount in dollars.
     """
     amount_value = getattr(self, attribute_name)
-    return amount_value / settings.CENTS_IN_DOLLAR
+    dollar_amount = amount_value / settings.CENTS_IN_DOLLAR
+    return round(dollar_amount, 2)
 
 
 def get_clean_number(raw_number: str):
