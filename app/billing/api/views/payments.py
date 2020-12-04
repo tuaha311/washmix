@@ -10,7 +10,7 @@ from rest_framework.status import HTTP_200_OK
 
 from billing.api.serializers import payments
 from billing.choices import Purpose
-from billing.services.invoice import InvoiceService
+from billing.services.intent import IntentService
 from billing.services.payments import PaymentService
 from billing.services.webhook import StripeWebhookService
 from orders.services.order import OrderService
@@ -27,12 +27,10 @@ class CreateIntentView(GenericAPIView):
 
         client = self.request.user.client
         is_save_card = serializer.validated_data["is_save_card"]
-        invoice = serializer.validated_data["invoice"]
+        order = serializer.validated_data["order"]
 
-        payment_service = PaymentService(client, invoice)
-
-        InvoiceService.update_invoice(invoice, is_save_card)
-        intent = payment_service.create_intent()
+        intent_service = IntentService(client)
+        intent = intent_service.create_intent(order, is_save_card)
 
         response_body = {"public_key": settings.STRIPE_PUBLIC_KEY, "secret": intent.client_secret}
         response = self.response_serializer_class(response_body).data
