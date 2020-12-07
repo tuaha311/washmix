@@ -1,7 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 
 from api.permissions import default_driver_permissions
-from deliveries.api.client.serializers.deliveries import DeliverySerializer
+from deliveries.api.driver.serializers import DeliverySerializer
 
 
 class DeliveryViewSet(ModelViewSet):
