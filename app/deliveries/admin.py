@@ -30,8 +30,6 @@ class DeliveryAdmin(DefaultAdmin):
     ]
 
 
-models = [
-    [Delivery, DeliveryAdmin],
-]
+models = [[Delivery, DeliveryAdmin], [Request, DefaultAdmin]]
 for item in models:
     admin.site.register(*item)
