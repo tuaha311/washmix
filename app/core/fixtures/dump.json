@@ -1706,7 +1706,7 @@
     "fields": {
       "password": "pbkdf2_sha256$150000$s1ijnGXwCyA5$VpMguyCOL400V0XI1r/5JSRYGVLiLlQojXba1SvXBcM=",
       "last_login": null,
-      "is_superuser": true,
+      "is_superuser": false,
       "email": "admin@washmix.com",
       "is_active": true,
       "is_staff": true,
