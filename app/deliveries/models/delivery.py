@@ -39,8 +39,14 @@ class Delivery(Common):
         related_name="delivery",
         on_delete=models.PROTECT,
         null=True,
+        blank=True,
     )
 
+    priority = models.PositiveSmallIntegerField(
+        verbose_name="priority",
+        null=True,
+        blank=True,
+    )
     kind = models.CharField(
         max_length=10,
         verbose_name="kind of delivery",
@@ -66,7 +72,7 @@ class Delivery(Common):
     class Meta:
         verbose_name = "delivery"
         verbose_name_plural = "deliveries"
-        ordering = ["-date"]
+        ordering = ["-date", "-priority"]
         # for 1 Request we allow 2 Deliveries:
         #   - Pickup
         #   - Dropoff

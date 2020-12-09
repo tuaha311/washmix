@@ -23,10 +23,21 @@ class RequestInline(admin.TabularInline):
 
 
 class DeliveryAdmin(DefaultAdmin):
-    list_display = ["__str__", "employee", "kind", "status", "address", "is_rush", "comment"]
+    list_display = [
+        "__str__",
+        "date",
+        "priority",
+        "employee",
+        "kind",
+        "status",
+        "address",
+        "is_rush",
+        "comment",
+    ]
     list_editable = [
         "employee",
         "status",
+        "priority",
     ]
 
 
