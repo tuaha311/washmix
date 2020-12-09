@@ -19,4 +19,5 @@ class DeliverySerializer(serializers.ModelSerializer):
             "address",
             "comment",
             "is_rush",
+            "priority",
         ]
