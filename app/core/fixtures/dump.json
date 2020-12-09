@@ -2117,7 +2117,7 @@
     "fields": {
       "created": "2020-12-04T02:16:31.338Z",
       "changed": "2020-12-04T02:16:31.338Z",
-      "employee": null,
+      "employee": 1,
       "request": 1,
       "invoice": null,
       "kind": "pickup",
@@ -2133,7 +2133,7 @@
     "fields": {
       "created": "2020-12-04T02:16:31.342Z",
       "changed": "2020-12-04T02:16:31.342Z",
-      "employee": null,
+      "employee": 1,
       "request": 1,
       "invoice": null,
       "kind": "dropoff",
