@@ -19,14 +19,16 @@ class Price(Amountable, Common):
     """
 
     PCS = "pcs"
+    SET = "set"
     LBS = "lbs"
     SQ_FT = "sq_ft"
     BAG = "bag"
     PLEAT = "pleat"
     UNIT_MAP = {
         PCS: "pcs",
+        SET: "Set",
         LBS: "Pound",
-        SQ_FT: "Square Foot",
+        SQ_FT: "Sqft",
         BAG: "Bag",
         PLEAT: "Pleat",
     }

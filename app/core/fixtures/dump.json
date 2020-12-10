@@ -4975,7 +4975,7 @@
     "fields": {
       "created": "2020-10-01T01:59:50.420Z",
       "changed": "2020-10-01T01:59:50.420Z",
-      "title": "Clean Only [Min price $149.95]",
+      "title": "Clean Only",
       "image": "",
       "is_visible": true
     }
@@ -4986,7 +4986,7 @@
     "fields": {
       "created": "2020-10-01T01:59:50.466Z",
       "changed": "2020-10-01T01:59:50.466Z",
-      "title": "Clean + Preservation [Min price $299.95]",
+      "title": "Clean + Preservation",
       "image": "",
       "is_visible": true
     }
@@ -4997,7 +4997,7 @@
     "fields": {
       "created": "2020-10-01T01:59:50.512Z",
       "changed": "2020-10-01T01:59:50.512Z",
-      "title": "Additional Accessories [Min price $24.95]",
+      "title": "Additional Accessories",
       "image": "",
       "is_visible": true
     }
@@ -5636,7 +5636,7 @@
     "fields": {
       "created": "2020-10-01T01:59:45.306Z",
       "changed": "2020-10-01T01:59:45.306Z",
-      "amount": 3999,
+      "amount": 399,
       "service": 3,
       "item": 38,
       "count": 1,
@@ -5718,7 +5718,7 @@
       "service": 4,
       "item": 44,
       "count": 1,
-      "unit": "pcs"
+      "unit": "set"
     }
   },
   {
