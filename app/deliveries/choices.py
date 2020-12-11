@@ -1,9 +1,11 @@
 class Status:
+    CANCELLED = "cancelled"
     ACCEPTED = "accepted"
     IN_PROGRESS = "in_progress"
     COMPLETED = "completed"
 
     MAP = {
+        CANCELLED: "Cancelled",
         ACCEPTED: "Accepted",
         IN_PROGRESS: "In progress",
         COMPLETED: "Completed",

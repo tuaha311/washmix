@@ -42,6 +42,10 @@ class Delivery(Common):
         blank=True,
     )
 
+    note = models.TextField(
+        verbose_name="note on delivery",
+        blank=True,
+    )
     priority = models.PositiveSmallIntegerField(
         verbose_name="priority",
         null=True,
@@ -83,16 +87,28 @@ class Delivery(Common):
 
     @property
     def address(self):
+        """
+        Delivery address
+        """
         return self.request.address
 
     @property
     def client(self):
+        """
+        Client
+        """
         return self.request.client
 
     @property
     def is_rush(self):
+        """
+        Is rush delivery or not
+        """
         return self.request.is_rush
 
     @property
     def comment(self):
+        """
+        Client clients on delivery
+        """
         return self.request.comment
