@@ -95,6 +95,7 @@ fabric3 = "^1.14.post1"
 pytest = "^5.4.3"
 pytest-django = "^3.10.0"
 environs = "^8.0.0"
+django-debug-toolbar = "^3.2"
 
 
 [build-system]

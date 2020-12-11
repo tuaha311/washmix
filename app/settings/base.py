@@ -27,15 +27,6 @@ ALLOWED_HOSTS = ["*"]
 SECRET_KEY = env.str("SECRET_KEY")
 
 INSTALLED_APPS = [
-    # third party
-    "rest_framework",
-    "djoser",
-    "social_django",
-    "swap_user",
-    "swap_user.to_named_email",
-    "drf_yasg",
-    "djangoql",
-    "django_filters",
     # `other` app extends `base_site.html` from `django-jet` to
     # inject React root and should be at higher place than `django-jet`
     "other",
@@ -50,6 +41,15 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # third party
+    "rest_framework",
+    "djoser",
+    "social_django",
+    "swap_user",
+    "swap_user.to_named_email",
+    "drf_yasg",
+    "djangoql",
+    "django_filters",
     # local
     "orders",
     "users",
@@ -78,7 +78,6 @@ DATABASES = {
 
 
 MIDDLEWARE = [
-    "core.middleware.logging_middleware",
     "django.middleware.security.SecurityMiddleware",
     "django.middleware.cache.UpdateCacheMiddleware",
     "django.middleware.gzip.GZipMiddleware",
