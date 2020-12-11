@@ -9,7 +9,10 @@ class DeliveryViewSet(ModelViewSet):
     serializer_class = DeliverySerializer
     permission_classes = default_driver_permissions
     filter_backends = (filters.DjangoFilterBackend,)
-    filterset_fields = ("kind",)
+    filterset_fields = (
+        "kind",
+        "status",
+    )
 
     def get_queryset(self):
         employee = self.request.user.employee
