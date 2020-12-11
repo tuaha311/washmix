@@ -22,12 +22,14 @@ class Customer(Common):
         verbose_name="email",
         unique=True,
         null=True,
+        blank=True
     )
     phone = models.CharField(
         verbose_name="phone",
         max_length=20,
         unique=True,
         null=True,
+        blank=True,
         validators=[validate_phone],
     )
     full_name = models.CharField(
@@ -53,5 +55,5 @@ class Customer(Common):
     )
 
     class Meta:
-        verbose_name = "customer"
-        verbose_name_plural = "customers"
+        verbose_name = "Potential Customer"
+        verbose_name_plural = "Potential Customers"

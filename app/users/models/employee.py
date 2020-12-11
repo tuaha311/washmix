@@ -1,12 +1,13 @@
 from django.conf import settings
 from django.db import models
-from django.utils.timezone import localdate, localtime, now
+from django.utils.timezone import localdate, now
 
 from core.common_models import Common
 from users.choices import EmployeePosition
+from users.mixins import ProxyUserInfoMixin
 
 
-class Employee(Common):
+class Employee(ProxyUserInfoMixin, Common):
     """
     Service-side entity.
 
@@ -54,3 +55,6 @@ class Employee(Common):
     class Meta:
         verbose_name = "employee"
         verbose_name_plural = "employees"
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name} - {self.get_position_display()}"

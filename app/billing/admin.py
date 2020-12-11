@@ -1,8 +1,8 @@
 from django.contrib import admin
 
-from billing.models import Card, Coupon, Invoice, Transaction
+from billing.models import Coupon, Transaction
 from core.admin import DefaultAdmin
 
-models = [[Card], [Transaction], [Coupon, DefaultAdmin], [Invoice, DefaultAdmin]]
+models = [[Transaction], [Coupon, DefaultAdmin]]
 for item in models:
     admin.site.register(*item)

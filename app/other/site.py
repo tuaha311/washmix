@@ -57,3 +57,8 @@ class WashmixAdminSite(AdminSite):
         # end of copied part
 
         return TemplateResponse(request, "admin/pos.html", context)
+
+    @property
+    def actions(self):
+        # here we are hiding default `delete_selected` action
+        return []
