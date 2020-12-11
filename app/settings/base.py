@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     "swap_user.to_named_email",
     "drf_yasg",
     "djangoql",
+    "django_filters",
     # `other` app extends `base_site.html` from `django-jet` to
     # inject React root and should be at higher place than `django-jet`
     "other",
