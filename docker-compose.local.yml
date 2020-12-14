@@ -33,7 +33,6 @@ services:
       REDIS_HOST: cache
     command: ["migrations"]
 
-
   app:
     build: .
     container_name: app
@@ -42,8 +41,30 @@ services:
       - "8000:8000"
     depends_on:
       - migrations
+    volumes:
+      - "assets:/app/ass"
     environment:
       SECRET_KEY: secret
       SIMPLE_JWT_SIGNING_KEY: secret
       DB_HOST: database
       REDIS_HOST: cache
+
+  web:
+    image: "caddy:2.2.1-alpine"
+    container_name: web
+    depends_on:
+      - app
+      - migrations
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "assets:/assets"
+      - "caddy_data:/data"
+      - "caddy_config:/config"
+    command: ["caddy", "file-server", "--root", "/assets"]
+
+volumes:
+  caddy_data:
+  caddy_config:
+  assets:
