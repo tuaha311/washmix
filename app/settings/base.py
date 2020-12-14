@@ -166,7 +166,6 @@ EMAIL_PORT = 587
 
 AUTH_USER_MODEL = "to_named_email.NamedEmailUser"
 
-SERVING_STATIC = True
 SHOW_OPENAPI_SCHEMA = True
 
 

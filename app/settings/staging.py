@@ -3,7 +3,7 @@ from sentry_sdk.integrations.django import DjangoIntegration
 
 from settings.base import *
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [DOMAIN, "localhost"]
 
