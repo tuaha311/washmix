@@ -27,17 +27,31 @@ if settings.DEBUG:
     import debug_toolbar
 
     local_patterns = [
+        # Django Debug Toolbar
+        path("__debug__/", include(debug_toolbar.urls)),
+    ]
+
+    urlpatterns += local_patterns
+
+
+if settings.SERVING_STATIC:
+    local_patterns = [
+        # Static files serving
+        *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
+        *static(settings.STATIC_URL, document_root=settings.STATIC_ROOT),
+    ]
+
+    urlpatterns += local_patterns
+
+
+if settings.SHOW_OPENAPI_SCHEMA:
+    local_patterns = [
         # OpenAPI docs
         path(
             "openapi/",
             schema_view.without_ui(cache_timeout=0),
             name="openapi-schema",
         ),
-        # Django Debug Toolbar
-        path("__debug__/", include(debug_toolbar.urls)),
-        # Static files serving
-        *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
-        *static(settings.STATIC_URL, document_root=settings.STATIC_ROOT),
     ]
 
     urlpatterns += local_patterns
@@ -48,7 +62,4 @@ urlpatterns += [
     path("api/", include("api.urls")),
     path("jet/", include("jet.urls", "jet")),
     path("admin/", admin.site.urls),
-    # Temporary static files serving
-    *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
-    *static(settings.STATIC_URL, document_root=settings.STATIC_ROOT),
 ]
