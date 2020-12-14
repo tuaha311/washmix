@@ -205,7 +205,7 @@ bcrypt = ["bcrypt"]
 name = "django-debug-toolbar"
 version = "3.2"
 description = "A configurable set of panels that display various debug information about the current request/response."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -1254,7 +1254,7 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "1.1"
 python-versions = "~3.7"
-content-hash = "4fb7ba7bec6de3b109f8e8578641a21adf65b9d33fb4f8b5af312ede1764f594"
+content-hash = "4d1a8fcacc273203f84cac79db764573a67a2b19cff20d31956b4b5bedb1dd04"
 
 [metadata.files]
 appdirs = [
