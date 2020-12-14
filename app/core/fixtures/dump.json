@@ -2080,6 +2080,26 @@
           "view_customer",
           "users",
           "customer"
+        ],
+        [
+          "add_client",
+          "users",
+          "client"
+        ],
+        [
+          "change_client",
+          "users",
+          "client"
+        ],
+        [
+          "delete_client",
+          "users",
+          "client"
+        ],
+        [
+          "view_client",
+          "users",
+          "client"
         ]
       ]
     }
