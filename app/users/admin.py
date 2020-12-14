@@ -1,12 +1,36 @@
 from django import forms
 from django.contrib import admin
 
+from billing.models import Invoice
 from core.admin import DefaultAdmin
 from deliveries.models import Request
 from orders.models import Order
 from users.models import Client, Customer, Employee
 
 
+#
+# Invoice inlines
+#
+class InvoiceInlineForm(forms.ModelForm):
+    class Meta:
+        model = Invoice
+        fields = [
+            "amount",
+            "discount",
+            "card",
+            "purpose",
+        ]
+
+
+class InvoiceInlineAdmin(admin.TabularInline):
+    model = Invoice
+    form = InvoiceInlineForm
+    extra = 1
+
+
+#
+# Order inlines
+#
 class OrderInlineForm(forms.ModelForm):
     class Meta:
         model = Order
@@ -28,6 +52,9 @@ class OrderInlineAdmin(admin.TabularInline):
     extra = 1
 
 
+#
+# Request inlines
+#
 class RequestInlineForm(forms.ModelForm):
     class Meta:
         model = Request
@@ -45,8 +72,11 @@ class RequestInlineAdmin(admin.TabularInline):
     extra = 1
 
 
+#
+# Client Admin
+#
 class ClientAdmin(DefaultAdmin):
-    inlines = [RequestInlineAdmin, OrderInlineAdmin]
+    inlines = [RequestInlineAdmin, OrderInlineAdmin, InvoiceInlineAdmin]
     list_display = [
         "full_name",
         "email",

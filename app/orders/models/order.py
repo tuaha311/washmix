@@ -85,6 +85,9 @@ class Order(Common):
         verbose_name_plural = "orders"
         unique_together = ["basket", "request",]
 
+    def __str__(self):
+        return f"# {self.id}"
+
     @property
     def pretty_status(self):
         return self.get_status_display()

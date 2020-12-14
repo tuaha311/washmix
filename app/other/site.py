@@ -1,6 +1,7 @@
 from functools import update_wrapper
 
 from django.contrib.admin import AdminSite
+from django.http import HttpResponseRedirect
 from django.urls import path
 from django.views.generic.base import TemplateResponse
 
@@ -57,6 +58,27 @@ class WashmixAdminSite(AdminSite):
         # end of copied part
 
         return TemplateResponse(request, "admin/pos.html", context)
+
+    def index(self, request, extra_context=None):
+        """
+        Redirect from index to POS.
+        """
+
+        # start of copied part from django.contrib.admin.sites.AdminSite#index views
+        app_list = self.get_app_list(request)
+        redirect_url = "/admin/users/client/"
+
+        context = {
+            **self.each_context(request),
+            "title": self.index_title,
+            "app_list": app_list,
+            **(extra_context or {}),
+        }
+
+        request.current_app = self.name
+        # end of copied part
+
+        return HttpResponseRedirect(redirect_url, context)
 
     @property
     def actions(self):

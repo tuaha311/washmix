@@ -24,8 +24,23 @@ class BasketAdmin(DefaultAdmin):
     inlines = [QuantityInlineAdmin]
 
 
+class OrderAdmin(DefaultAdmin):
+    list_display = [
+        "__str__",
+        "employee",
+        "basket",
+        "request",
+        "coupon",
+        "status",
+        "payment",
+    ]
+    list_editable = [
+        "employee",
+    ]
+
+
 models = [
-    [Order, DefaultAdmin],
+    [Order, OrderAdmin],
     [Item, DefaultAdmin],
     [Service, DefaultAdmin],
     [Price, DefaultAdmin],

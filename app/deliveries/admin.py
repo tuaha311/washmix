@@ -4,6 +4,16 @@ from core.admin import DefaultAdmin
 from deliveries.models import Delivery, Request
 
 
+class RequestAdmin(DefaultAdmin):
+    list_display = [
+        "__str__",
+        "client",
+        "address",
+        "pickup_date",
+        "dropoff_date",
+    ]
+
+
 class DeliveryAdmin(DefaultAdmin):
     list_display = [
         "__str__",
@@ -27,6 +37,6 @@ class DeliveryAdmin(DefaultAdmin):
     ]
 
 
-models = [[Delivery, DeliveryAdmin], [Request, DefaultAdmin]]
+models = [[Delivery, DeliveryAdmin], [Request, RequestAdmin]]
 for item in models:
     admin.site.register(*item)
