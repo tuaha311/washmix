@@ -2290,8 +2290,6 @@
       "value_off": 1000,
       "end_date": "2020-10-01T01:59:51.392Z",
       "is_valid": true,
-      "max_redemptions": 1,
-      "kind": "FIRST"
     }
   },
   {
@@ -2306,8 +2304,6 @@
       "value_off": 20,
       "end_date": "2020-10-01T01:59:51.461Z",
       "is_valid": true,
-      "max_redemptions": 1,
-      "kind": "FIRST"
     }
   },
   {

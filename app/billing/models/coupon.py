@@ -3,7 +3,6 @@ from django.utils.timezone import localtime
 
 from billing.choices import DiscountBy
 from core.common_models import Common
-from legacy.enums import CouponType
 
 
 class Coupon(Common):
@@ -42,17 +41,6 @@ class Coupon(Common):
     is_valid = models.BooleanField(
         verbose_name="is coupon valid for apply",
         default=True,
-    )
-    max_redemptions = models.IntegerField(
-        verbose_name="maximum count of redemptions",
-        default=1,
-    )
-    kind = models.CharField(
-        verbose_name="coupon type",
-        max_length=30,
-        choices=[(item, item.value) for item in CouponType],
-        null=True,
-        default=CouponType.FIRST.value,
     )
 
     class Meta:
