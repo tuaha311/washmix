@@ -9,6 +9,8 @@ class RequestAdmin(DefaultAdmin):
         "__str__",
         "client",
         "address",
+        "comment",
+        "is_rush",
         "pickup_date",
         "dropoff_date",
     ]
@@ -24,9 +26,11 @@ class DeliveryAdmin(DefaultAdmin):
         "status",
         "address",
         "is_rush",
+        "note",
         "comment",
     ]
     list_editable = [
+        "date",
         "employee",
         "status",
         "priority",
