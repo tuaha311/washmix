@@ -4,7 +4,13 @@ from core.admin import DefaultAdmin
 from deliveries.models import Delivery, Request
 
 
+class DeliveryInlineAdmin(admin.TabularInline):
+    model = Delivery
+    extra = 1
+
+
 class RequestAdmin(DefaultAdmin):
+    inlines = [DeliveryInlineAdmin]
     list_display = [
         "__str__",
         "client",
@@ -12,7 +18,9 @@ class RequestAdmin(DefaultAdmin):
         "comment",
         "is_rush",
         "pickup_date",
+        "pickup_status",
         "dropoff_date",
+        "dropoff_status",
     ]
 
 

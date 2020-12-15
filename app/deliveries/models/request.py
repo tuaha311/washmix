@@ -122,6 +122,10 @@ class Request(CommonScheduleRequest, Common):
         pickup.invoice = value
         pickup.save()
 
+    @property
+    def pickup_status(self):
+        return self.pickup.get_status_display()
+
     #
     # dropoff proxy fields
     #
@@ -133,13 +137,31 @@ class Request(CommonScheduleRequest, Common):
     def dropoff_date(self):
         return self.dropoff.date
 
+    @dropoff_date.setter
+    def dropoff_date(self, value):
+        dropoff = self.dropoff
+        dropoff.date = value
+        dropoff.save()
+
     @property
     def dropoff_start(self):
         return self.dropoff.start
 
+    @dropoff_start.setter
+    def dropoff_start(self, value):
+        dropoff = self.dropoff
+        dropoff.start = value
+        dropoff.save()
+
     @property
     def dropoff_end(self):
         return self.dropoff.end
+
+    @dropoff_end.setter
+    def dropoff_end(self, value):
+        dropoff = self.dropoff
+        dropoff.end = value
+        dropoff.save()
 
     @property
     def dropoff_invoice(self):
@@ -150,3 +172,8 @@ class Request(CommonScheduleRequest, Common):
         dropoff = self.dropoff
         dropoff.invoice = value
         dropoff.save()
+
+    @property
+    def dropoff_status(self):
+        return self.dropoff.get_status_display()
+
