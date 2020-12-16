@@ -1,3 +1,5 @@
+import os
+
 from django.conf import settings
 
 import phonenumbers
@@ -96,3 +98,11 @@ def recursive_getattr(object_, name: str, default=None):
         return new_object
 
     return recursive_getattr(new_object, new_name, default)
+
+
+def generate_pdf_report_path(order_pk: int):
+    pass
+
+
+def is_file_exists(path: str):
+    pass
