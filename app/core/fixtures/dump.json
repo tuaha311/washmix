@@ -2289,7 +2289,7 @@
       "discount_by": "amount",
       "value_off": 1000,
       "end_date": "2020-10-01T01:59:51.392Z",
-      "is_valid": true,
+      "is_valid": true
     }
   },
   {
@@ -2303,7 +2303,7 @@
       "discount_by": "percentage",
       "value_off": 20,
       "end_date": "2020-10-01T01:59:51.461Z",
-      "is_valid": true,
+      "is_valid": true
     }
   },
   {
