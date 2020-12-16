@@ -47,3 +47,4 @@ class Basket(Common):
     class Meta:
         verbose_name = "basket"
         verbose_name_plural = "baskets"
+        ordering = ["-created"]

@@ -1,6 +1,10 @@
+from pathlib import PosixPath
+from typing import Optional
+
 from django.db import models
 
 from core.common_models import Common
+from core.utils import generate_pdf_report_path, is_file_exists
 from orders.choices import PaymentChoices, StatusChoices
 
 
@@ -79,11 +83,16 @@ class Order(Common):
         verbose_name="should we save the card",
         default=True,
     )
+    is_pdf_ready = models.BooleanField(
+        verbose_name="PDF-report is ready",
+        default=False,
+    )
 
     class Meta:
         verbose_name = "order"
         verbose_name_plural = "orders"
         unique_together = ["basket", "request",]
+        ordering = ["-created"]
 
     def __str__(self):
         return f"# {self.id}"
@@ -91,3 +100,13 @@ class Order(Common):
     @property
     def pretty_status(self):
         return self.get_status_display()
+
+    @property
+    def pdf_path(self) -> Optional[PosixPath]:
+        order_pk = self.pk
+        pdf_path = generate_pdf_report_path(order_pk)
+
+        if self.is_pdf_ready and is_file_exists(pdf_path):
+            return pdf_path
+
+        return None
