@@ -5,9 +5,7 @@ from settings.base import *
 
 DEBUG = True
 
-DEV_ONLY_APPS = [
-    "debug_toolbar",
-]
+DEV_ONLY_APPS = []
 INSTALLED_APPS += DEV_ONLY_APPS
 
 
@@ -16,7 +14,6 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.middleware.cache.UpdateCacheMiddleware",
     "django.middleware.gzip.GZipMiddleware",
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",

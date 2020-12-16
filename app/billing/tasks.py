@@ -7,7 +7,7 @@ from django.utils.timezone import localtime
 import dramatiq
 from periodiq import cron
 
-from billing.utils import create_credit_back
+from billing.utils import add_credits
 from core.utils import add_to_execution_cache, exists_in_execution_cache
 from orders.containers.order import OrderContainer
 from users.models import Client
@@ -52,7 +52,7 @@ def accrue_credit_back_every_3_month():
 
         credit_back_amount = order_total_amount * settings.CREDIT_BACK_PERCENTAGE / 100
 
-        create_credit_back(client, credit_back_amount)
+        add_credits(client, credit_back_amount)
 
         add_to_execution_cache(key)
 

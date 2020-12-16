@@ -34,6 +34,7 @@ class Invoice(CalculatedAmountWithDiscount, Amountable, Discountable, Common):
         verbose_name="order",
         on_delete=models.PROTECT,
         related_name="invoice_list",
+        null=True,
     )
     card = models.ForeignKey(
         "billing.Card",

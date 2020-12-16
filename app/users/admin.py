@@ -1,7 +1,9 @@
 from django import forms
 from django.contrib import admin
 
+from billing.choices import Provider
 from billing.models import Invoice
+from billing.utils import add_credits
 from core.admin import DefaultAdmin
 from deliveries.models import Request
 from orders.models import Order
@@ -75,15 +77,36 @@ class RequestInlineAdmin(admin.TabularInline):
 #
 # Client Admin
 #
+class ClientForm(forms.ModelForm):
+    credit_amount = forms.IntegerField(required=False, label="Add credits, in cents (¢)")
+
+    class Meta:
+        model = Client
+        fields = "__all__"
+
+
 class ClientAdmin(DefaultAdmin):
+    readonly_fields = [
+        "balance",
+    ]
+    form = ClientForm
     inlines = [RequestInlineAdmin, OrderInlineAdmin, InvoiceInlineAdmin]
     list_display = [
+        "__str__",
         "full_name",
-        "email",
         "main_phone",
         "subscription",
         "main_address",
     ]
+
+    def save_form(self, request, form, change):
+        client = form.instance
+        credit_amount = form.cleaned_data.get("credit_amount", 0)
+
+        if credit_amount > 0:
+            add_credits(client, credit_amount, purpose=Provider.WASHMIX)
+
+        super().save_form(request, form, change)
 
 
 class CustomerAdmin(DefaultAdmin):

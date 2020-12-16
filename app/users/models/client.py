@@ -104,8 +104,7 @@ class Client(ProxyUserInfoMixin, Stripeable, Common):
         verbose_name = "client"
         verbose_name_plural = "clients"
 
-    @property
-    def balance(self):
+    def _balance(self):
         debit_transactions = self.transaction_list.filter(kind=Kind.DEBIT)
         credit_transactions = self.transaction_list.filter(kind=Kind.CREDIT)
 
@@ -113,6 +112,8 @@ class Client(ProxyUserInfoMixin, Stripeable, Common):
         credit_total = credit_transactions.aggregate(total=Sum("amount"))["total"] or 0
 
         return debit_total - credit_total
+    _balance.short_description = 'Balance, in cents (¢)'
+    balance = property(_balance)
     
     @property
     def dollar_balance(self):
