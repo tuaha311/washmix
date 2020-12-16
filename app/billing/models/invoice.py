@@ -42,6 +42,7 @@ class Invoice(CalculatedAmountWithDiscount, Amountable, Discountable, Common):
         related_name="invoice_list",
         on_delete=models.SET_NULL,
         null=True,
+        blank=True,
     )
 
     purpose = models.CharField(

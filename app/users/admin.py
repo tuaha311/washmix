@@ -101,12 +101,12 @@ class ClientAdmin(DefaultAdmin):
 
     def save_form(self, request, form, change):
         client = form.instance
-        credit_amount = form.cleaned_data.get("credit_amount", 0)
+        credit_amount = form.cleaned_data.get("credit_amount", None)
 
-        if credit_amount > 0:
+        if credit_amount and credit_amount > 0:
             add_credits(client, credit_amount, purpose=Provider.WASHMIX)
 
-        super().save_form(request, form, change)
+        return super().save_form(request, form, change)
 
 
 class CustomerAdmin(DefaultAdmin):
