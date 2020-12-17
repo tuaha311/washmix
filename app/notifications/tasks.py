@@ -2,7 +2,6 @@ import logging
 
 import dramatiq
 
-from notifications.context import email_context
 from notifications.senders.sendgrid import SendGridSender
 from notifications.utils import get_extra_context
 
@@ -27,7 +26,6 @@ def send_email(event: str, recipient_list: list, extra_context: dict = None):
         recipient_list=recipient_list,
         event=event,
         context={
-            "washmix": email_context,
             **extra_context,
         },
     )

@@ -12,6 +12,7 @@ from orders.choices import PaymentChoices
 from orders.containers.order import OrderContainer
 from orders.models import Basket, Order
 from orders.services.basket import BasketService
+from orders.tasks import generate_pdf_from_html
 from subscriptions.services.subscription import SubscriptionService
 from users.models import Client
 
@@ -120,6 +121,7 @@ class OrderService:
         """
 
         self._order = order
+        order_id = order.id
 
         with atomic():
             order.payment = PaymentChoices.PAID
@@ -129,6 +131,9 @@ class OrderService:
                 order.save()
 
         self._notify_client_on_new_order()
+        generate_pdf_from_html.send(
+            order_id=order_id,
+        )
 
         return order
 

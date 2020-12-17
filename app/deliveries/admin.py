@@ -28,7 +28,7 @@ class DeliveryAdmin(DefaultAdmin):
     list_display = [
         "__str__",
         "date",
-        "priority",
+        "sorting",
         "employee",
         "kind",
         "status",
@@ -41,7 +41,7 @@ class DeliveryAdmin(DefaultAdmin):
         "date",
         "employee",
         "status",
-        "priority",
+        "sorting",
     ]
     list_filter = [
         "status",

@@ -12,6 +12,12 @@
 * Install [docker-compose](https://docs.docker.com/compose/install/).
 * Install [Python >= 3.7.5](https://www.python.org/downloads/).
 * Install [pre-commit](https://pre-commit.com).
+* Install WeasyPrint [dependencies](https://weasyprint.readthedocs.io/en/stable/install.html):
+
+MacOS:
+```bash
+brew install python3 cairo pango gdk-pixbuf libffi
+```
 * Checkout to `dev` branch:
   ```bash
   git checkout dev

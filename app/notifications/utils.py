@@ -1,3 +1,4 @@
+from notifications.context import email_context
 from orders.containers.order import OrderContainer
 from orders.models import Order
 from subscriptions.containers import SubscriptionContainer
@@ -6,7 +7,10 @@ from users.models import Client
 
 
 def get_extra_context(client_id: int, subscription_id: int = None, order_id: int = None, **kwargs):
-    context = {**kwargs}
+    context = {
+        "washmix": email_context,
+        **kwargs,
+    }
 
     client = Client.objects.get(id=client_id)
     context["client"] = client
