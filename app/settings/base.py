@@ -107,6 +107,8 @@ STATIC_ROOT = BASE_DIR / "assets"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
+PDF_REPORTS_ROOT = MEDIA_ROOT / "reports"
+
 WSGI_APPLICATION = "settings.wsgi.application"
 
 
@@ -444,6 +446,7 @@ DRAMATIQ_IMPORT_MODULES = [
     "notifications.tasks",
     "billing.tasks",
     "deliveries.tasks",
+    "orders.tasks",
 ]
 DRAMATIQ_BROKER.add_middleware(PeriodiqMiddleware(skip_delay=30))
 dramatiq.set_broker(DRAMATIQ_BROKER)

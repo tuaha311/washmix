@@ -101,8 +101,11 @@ def recursive_getattr(object_, name: str, default=None):
 
 
 def generate_pdf_report_path(order_pk: int):
-    pass
+    pdf_name = f"order-{order_pk}.pdf"
+    pdf_path = settings.PDF_REPORTS_ROOT / pdf_name
+
+    return pdf_path
 
 
 def is_file_exists(path: str):
-    pass
+    return os.path.exists(path)
