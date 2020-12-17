@@ -46,8 +46,8 @@ class Delivery(Common):
         verbose_name="note on delivery",
         blank=True,
     )
-    priority = models.PositiveSmallIntegerField(
-        verbose_name="priority",
+    sorting = models.PositiveSmallIntegerField(
+        verbose_name="sorting",
         null=True,
         blank=True,
     )
@@ -76,7 +76,7 @@ class Delivery(Common):
     class Meta:
         verbose_name = "delivery"
         verbose_name_plural = "deliveries"
-        ordering = ["-date", "-priority"]
+        ordering = ["-date", "sorting"]
         # for 1 Request we allow 2 Deliveries:
         #   - Pickup
         #   - Dropoff
