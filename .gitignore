@@ -43,3 +43,6 @@ venv
 */assets/admin
 */assets/drf-yasg
 */assets/rest_framework
+
+# media files
+*/media/reports/*

@@ -133,7 +133,6 @@ class OrderService:
         """
 
         self._order = order
-        order_id = order.id
 
         with atomic():
             order.payment = PaymentChoices.PAID
@@ -143,9 +142,7 @@ class OrderService:
                 order.save()
 
         self._notify_client_on_new_order()
-        generate_pdf_from_html.send(
-            order_id=order_id,
-        )
+        self._generate_pdf_report()
 
         return order
 
@@ -181,6 +178,13 @@ class OrderService:
                 "client_id": client_id,
                 "order_id": order_id,
             },
+        )
+
+    def _generate_pdf_report(self):
+        order_id = self._order.id
+
+        generate_pdf_from_html.send(
+            order_id=order_id,
         )
 
     def _notify_client_on_payment_fail(self):

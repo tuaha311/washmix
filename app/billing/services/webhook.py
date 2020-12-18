@@ -71,9 +71,6 @@ class StripeWebhookService:
                 if purpose == Purpose.SUBSCRIPTION:
                     subscription_service.finalize(order)
 
-                elif purpose == Purpose.BASKET:
-                    order_service.finalize(order)
-
             elif event.type in self.fail_events:
                 if purpose == Purpose.SUBSCRIPTION:
                     subscription_service.fail(order)

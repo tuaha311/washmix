@@ -1,4 +1,5 @@
 import os
+from pathlib import PosixPath
 
 from django.conf import settings
 
@@ -100,12 +101,39 @@ def recursive_getattr(object_, name: str, default=None):
     return recursive_getattr(new_object, new_name, default)
 
 
-def generate_pdf_report_path(order_pk: int):
+def is_file_exists(path: str) -> bool:
+    """
+    Checks file exists or not.
+    """
+
+    return os.path.exists(path)
+
+
+def ensure_folder_exists(path: PosixPath) -> None:
+    """
+    We are preparing folder for future usage.
+    We should ensure that folder exists - we are always
+    trying to create it.
+    """
+
+    absolute_path = str(path)
+
+    try:
+        os.mkdir(absolute_path)
+    except FileExistsError:
+        pass
+
+
+def generate_pdf_report_path(order_pk: int) -> PosixPath:
+    """
+    Generates PDF-report path for Order.
+    """
+
+    pdf_reports_root = settings.PDF_REPORTS_ROOT
+
+    ensure_folder_exists(pdf_reports_root)
+
     pdf_name = f"order-{order_pk}.pdf"
-    pdf_path = settings.PDF_REPORTS_ROOT / pdf_name
+    pdf_path = pdf_reports_root / pdf_name
 
     return pdf_path
-
-
-def is_file_exists(path: str):
-    return os.path.exists(path)

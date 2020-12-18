@@ -29,6 +29,8 @@ class OrderSerializer(CommonContainerSerializer, serializers.ModelSerializer):
             "pretty_status",
             "note",
             "is_save_card",
+            "is_pdf_ready",
+            "pdf_path",
             "credit_back",
             "dollar_credit_back",
             "amount",

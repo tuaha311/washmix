@@ -23,6 +23,7 @@ class POSOrderCheckoutView(GenericAPIView):
 
         order_service = OrderService(client)
         order_container = order_service.checkout(order)
+        order_service.finalize(order)
 
         response = self.response_serializer_class(order_container).data
         return Response(response)
