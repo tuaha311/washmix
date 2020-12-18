@@ -25,6 +25,9 @@ class BasketAdmin(DefaultAdmin):
 
 
 class OrderAdmin(DefaultAdmin):
+    readonly_fields = [
+        "pdf_path",
+    ]
     list_display = [
         "__str__",
         "employee",

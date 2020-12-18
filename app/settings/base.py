@@ -501,8 +501,8 @@ EMAIL_EVENT_INFO = {
     },
     NEW_ORDER: {
         "template_name": "new_order.html",
-        "subject": "WashMix Payment Failed",
-        "from_email": "payment@washmix.com",
+        "subject": "WashMix New Order",
+        "from_email": "order@washmix.com",
     },
     PAYMENT_FAIL_CLIENT: {
         "template_name": "payment_fail_client.html",
