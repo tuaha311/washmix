@@ -1,5 +1,7 @@
 from django import forms
 from django.contrib import admin
+from django.template.loader import render_to_string
+from django.utils.safestring import mark_safe
 
 from core.admin import DefaultAdmin
 from orders.models import Basket, Item, Order, Price, Quantity, Service
@@ -40,6 +42,15 @@ class OrderAdmin(DefaultAdmin):
     list_editable = [
         "employee",
     ]
+
+    def pdf_path(self, instance):
+        context = {"instance": instance}
+
+        widget = render_to_string("widgets/href.html", context=context)
+
+        return mark_safe(widget)
+
+    pdf_path.short_description = "PDF path"
 
 
 models = [
