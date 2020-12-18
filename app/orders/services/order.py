@@ -114,6 +114,18 @@ class OrderService:
 
         return self.get_container()
 
+    def remove_coupon(self, order: Order) -> OrderContainer:
+        """
+        Methos remove coupon from Order.
+        """
+
+        order.coupon = None
+        order.save()
+
+        self._order = order
+
+        return self.get_container()
+
     def finalize(self, order: Order) -> Order:
         """
         Last method in payment flow, that marks order as paid and

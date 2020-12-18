@@ -1,15 +1,19 @@
 from api.authentication import default_pos_authentication
 from api.permissions import default_pos_permissions
-from orders.api.client.views.coupons import OrderApplyCouponView
-from orders.api.pos.serializers.coupons import POSApplyCouponSerializer
-from orders.models import Order
+from orders.api.client.views.coupons import OrderApplyCouponView, OrderRemoveCouponView
+from orders.api.pos.serializers.coupons import (
+    POSOrderApplyCouponSerializer,
+    POSOrderRemoveCouponSerializer,
+)
 
 
 class POSOrderApplyCouponView(OrderApplyCouponView):
-    serializer_class = POSApplyCouponSerializer
+    serializer_class = POSOrderApplyCouponSerializer
     authentication_classes = default_pos_authentication
     permission_classes = default_pos_permissions
 
-    def get_client(self, order: Order):
-        client = order.client
-        return client
+
+class POSOrderRemoveCouponView(OrderRemoveCouponView):
+    serializer_class = POSOrderRemoveCouponSerializer
+    authentication_classes = default_pos_authentication
+    permission_classes = default_pos_permissions

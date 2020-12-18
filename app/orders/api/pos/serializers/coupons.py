@@ -6,7 +6,11 @@ from api.fields import POSOrderField
 from billing.models import Coupon
 
 
-class POSApplyCouponSerializer(serializers.Serializer):
+class POSOrderRemoveCouponSerializer(serializers.Serializer):
+    order = POSOrderField()
+
+
+class POSOrderApplyCouponSerializer(serializers.Serializer):
     coupon = serializers.SlugRelatedField(slug_field="code", queryset=Coupon.objects.all())
     order = POSOrderField()
 

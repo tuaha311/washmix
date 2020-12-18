@@ -24,6 +24,7 @@ order_urls = (
         path("<int:pk>/", orders.POSOrderUpdateView.as_view(), name="update"),
         path("checkout/", checkout.POSOrderCheckoutView.as_view(), name="checkout"),
         path("apply_coupon/", coupons.POSOrderApplyCouponView.as_view(), name="apply-coupon"),
+        path("remove_coupon/", coupons.POSOrderRemoveCouponView.as_view(), name="remove-coupon"),
     ],
     "order",
 )

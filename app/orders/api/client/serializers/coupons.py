@@ -8,7 +8,11 @@ from billing.models import Coupon
 from orders.models import Order
 
 
-class ApplyCouponSerializer(serializers.Serializer):
+class OrderRemoveCouponSerializer(serializers.Serializer):
+    order = OrderField()
+
+
+class OrderApplyCouponSerializer(serializers.Serializer):
     coupon = serializers.SlugRelatedField(slug_field="code", queryset=Coupon.objects.all())
     # at this moment client can have or not to have payment method
     # 1. welcome scenario (no payment method)
@@ -28,7 +32,7 @@ class ApplyCouponSerializer(serializers.Serializer):
         return value
 
 
-class ApplyCouponResponseSerializer(CommonContainerSerializer, serializers.ModelSerializer):
+class OrderApplyCouponResponseSerializer(CommonContainerSerializer, serializers.ModelSerializer):
     subscription = serializers.SlugRelatedField(read_only=True, slug_field="name")
     coupon = serializers.SlugRelatedField(read_only=True, slug_field="code")
 
