@@ -27,6 +27,7 @@ class DeliverySerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "note",
+            "order",
             "kind",
             "status",
             "date",

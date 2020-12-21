@@ -25,6 +25,9 @@ class RequestAdmin(DefaultAdmin):
 
 
 class DeliveryAdmin(DefaultAdmin):
+    readonly_fields = [
+        "order",
+    ]
     list_display = [
         "__str__",
         "date",

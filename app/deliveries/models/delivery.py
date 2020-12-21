@@ -86,29 +86,44 @@ class Delivery(Common):
         return f"# {self.id}"
 
     @property
+    def order(self):
+        request = self.request
+        order = request.order
+
+        return order
+
+    @property
     def address(self):
         """
         Delivery address
         """
-        return self.request.address
+
+        request = self.request
+        return request.address
 
     @property
     def client(self):
         """
         Client
         """
-        return self.request.client
+
+        request = self.request
+        return request.client
 
     @property
     def is_rush(self):
         """
         Is rush delivery or not
         """
-        return self.request.is_rush
+
+        request = self.request
+        return request.is_rush
 
     @property
     def comment(self):
         """
         Client clients on delivery
         """
-        return self.request.comment
+
+        request = self.request
+        return request.comment

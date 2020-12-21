@@ -28,11 +28,13 @@ class BasketAdmin(DefaultAdmin):
 
 class OrderAdmin(DefaultAdmin):
     readonly_fields = [
+        "pdf_ready",
         "pdf_path",
     ]
     list_display = [
         "__str__",
         "employee",
+        "subscription",
         "basket",
         "request",
         "coupon",
@@ -44,6 +46,10 @@ class OrderAdmin(DefaultAdmin):
     ]
 
     def pdf_path(self, instance):
+        """
+        Shows a relative to media root URL of PDF-report.
+        """
+
         context = {"instance": instance}
 
         widget = render_to_string("widgets/href.html", context=context)
@@ -51,6 +57,20 @@ class OrderAdmin(DefaultAdmin):
         return mark_safe(widget)
 
     pdf_path.short_description = "PDF path"
+
+    def pdf_ready(self, instance):
+        """
+        Simple method that prettifies a boolean field to show in admin.
+        """
+
+        ready_status = "Not ready"
+
+        if instance.is_pdf_ready:
+            ready_status = "Ready"
+
+        return ready_status
+
+    pdf_ready.short_description = "PDF-report is ready"
 
 
 models = [

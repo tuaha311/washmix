@@ -86,6 +86,7 @@ class Order(Common):
     is_pdf_ready = models.BooleanField(
         verbose_name="PDF-report is ready",
         default=False,
+        editable=False,
     )
 
     class Meta:
