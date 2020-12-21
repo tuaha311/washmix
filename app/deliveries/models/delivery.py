@@ -76,7 +76,7 @@ class Delivery(Common):
     class Meta:
         verbose_name = "delivery"
         verbose_name_plural = "deliveries"
-        ordering = ["-date", "sorting"]
+        ordering = ["employee", "-date", "sorting", ]
         # for 1 Request we allow 2 Deliveries:
         #   - Pickup
         #   - Dropoff
