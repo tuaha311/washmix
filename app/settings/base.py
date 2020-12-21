@@ -27,14 +27,14 @@ ALLOWED_HOSTS = ["*"]
 SECRET_KEY = env.str("SECRET_KEY")
 
 INSTALLED_APPS = [
-    # `other` app extends `base_site.html` from `django-jet` to
+    # `branding` app extends `base_site.html` from `django-jet` to
     # inject React root and should be at higher place than `django-jet`
-    "other",
+    "branding",
     # `django-jet` has custom admin theme and should
     # be at higher place than django.contrib.admin
     "jet",
     # here we have a custom AdminSite with extra routes
-    "other.apps.OtherConfig",
+    "branding.apps.BrandingConfig",
     # django
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -59,7 +59,7 @@ INSTALLED_APPS = [
     "deliveries",
     "subscriptions",
     # inside core app we are unregistering some models
-    # it should be lower that other apps to be last application and apply
+    # it should be lower that branding apps to be last application and apply
     # last changes for admin
     "core",
 ]

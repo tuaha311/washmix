@@ -6,6 +6,7 @@ from deliveries.api.pos.serializers import RequestResponseSerializer
 from deliveries.models import Request
 from locations.models import Address
 from orders.api.pos.serializers.basket import BasketSerializer
+from orders.choices import PaymentChoices
 from orders.models import Order
 from users.models import Client
 
@@ -45,12 +46,31 @@ class OrderSerializer(CommonContainerSerializer, serializers.ModelSerializer):
 class POSOrderCheckoutSerializer(serializers.Serializer):
     order = OrderField()
 
+    def validate_order(self, value):
+        """
+        Here we are preventing duplicate checkout on paid orders.
+        """
+
+        order = value
+
+        if order.payment == PaymentChoices.PAID:
+            raise serializers.ValidationError(
+                detail="Order already paid.",
+                code="order_paid",
+            )
+
+        return value
+
 
 class POSOrderPrepareSerializer(serializers.Serializer):
     client = POSClientField()
     request = POSRequestField()
 
     def validate(self, attrs):
+        """
+        If client doesn't have a subscription - we can't bill him.
+        """
+
         client = attrs["client"]
         request = attrs["request"]
 

@@ -10,8 +10,8 @@ class WashmixAdminSite(AdminSite):
     """
     Custom Admin site with few changes:
         - Custom site branding
-        - Added new /pos/ route
         - Added new Media class with .js and .css definitions
+        - Added new /pos/ route
     """
 
     site_header = "Washmix"
