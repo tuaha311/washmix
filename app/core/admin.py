@@ -5,12 +5,14 @@ from django.contrib.auth.models import Group, Permission
 from djangoql.admin import DjangoQLSearchMixin
 from social_django.models import Association, Nonce, UserSocialAuth
 
+from core.models import Phone
+
 
 class DefaultAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
     pass
 
 
-registered_models = []
+registered_models = [[Phone, DefaultAdmin]]
 for item in registered_models:
     admin.site.register(*item)
 

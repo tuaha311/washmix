@@ -43,7 +43,7 @@ class QuantityContainer(BaseAmountContainer):
 
     def _get_discount(self) -> int:
         """
-        Returns discount amount for Service based on Service category.
+        Returns discount amount for Service based on Subscription discount for this category.
         """
 
         quantity = self._quantity
