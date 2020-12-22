@@ -91,8 +91,6 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "settings.urls"
 
-REMINDER_TIME = 15
-
 
 LANGUAGE_CODE = "en-AU"
 TIME_ZONE = "America/Los_Angeles"
@@ -169,6 +167,11 @@ EMAIL_PORT = 587
 AUTH_USER_MODEL = "to_named_email.NamedEmailUser"
 
 SHOW_OPENAPI_SCHEMA = True
+
+SECONDS_IN_MINUTE = 60
+SECONDS_IN_HOUR = SECONDS_IN_MINUTE * 60
+
+SESSION_COOKIE_AGE = SECONDS_IN_HOUR * 2
 
 
 #####################################
