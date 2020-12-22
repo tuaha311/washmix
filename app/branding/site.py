@@ -82,5 +82,9 @@ class WashmixAdminSite(AdminSite):
 
     @property
     def actions(self):
-        # here we are hiding default `delete_selected` action
+        """
+        Here we are hiding default `delete_selected` action.
+        I.e. we are hiding Actions selector at bottom of page.
+        """
+
         return []

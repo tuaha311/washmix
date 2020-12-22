@@ -21,6 +21,7 @@ class ClientSerializer(serializers.ModelSerializer):
 class DeliverySerializer(serializers.ModelSerializer):
     address = AddressSerializer(read_only=True)
     client = ClientSerializer(read_only=True)
+    order = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = Delivery
