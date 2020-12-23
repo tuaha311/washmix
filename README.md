@@ -176,6 +176,16 @@ python manage.py dumpdata --natural-foreign -o dump.json contenttypes auth to_na
 python manage.py loaddata dump.json
 ```
 
+We have predefined test in fixture users with emails:
+* admin@washmix.com
+* driver@washmix.com
+* ds.ionin@evrone.com
+* og@evrone.com
+* savoskin@evrone.com
+* api@evrone.com
+
+All test users have same password `helloevrone`
+
 
 ## Notes
 For weekday storing in database and when working in codebase we are using integers starting from 1 (Mon) to 7 (Sun).
