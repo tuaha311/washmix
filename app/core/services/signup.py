@@ -16,18 +16,18 @@ class SignupService:
             client_id = client.id
             recipient_list = [client.email]
 
-            send_email.send(
-                event=settings.SIGNUP,
-                recipient_list=recipient_list,
-                extra_context={
-                    "client_id": client_id,
-                },
-            )
-
             stripe_helper = StripeHelper(client)
             customer = stripe_helper.customer
 
             client.stripe_id = customer["id"]
             client.save()
+
+        send_email.send(
+            event=settings.SIGNUP,
+            recipient_list=recipient_list,
+            extra_context={
+                "client_id": client_id,
+            },
+        )
 
         return client
