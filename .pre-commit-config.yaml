@@ -16,9 +16,3 @@ repos:
         entry: isort app
         language: python
         types: [python]
-
-      - id: mypy
-        name: mypy
-        entry: mypy app
-        language: python
-        types: [python]

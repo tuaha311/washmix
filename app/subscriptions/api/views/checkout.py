@@ -2,9 +2,9 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 
+from orders.services.order import OrderService
 from subscriptions.api.serializers.checkout import SubscriptionCheckoutSerializer
 from subscriptions.api.serializers.choose import SubscriptionChooseResponseSerializer
-from subscriptions.services.subscription import SubscriptionService
 
 
 class SubscriptionCheckoutView(GenericAPIView):
@@ -16,12 +16,11 @@ class SubscriptionCheckoutView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
 
         order = serializer.validated_data["order"]
-        subscription = order.subscription
 
         client = request.user.client
 
-        subscription_service = SubscriptionService(client)
-        order_container = subscription_service.checkout(order, subscription)
+        order_service = OrderService(client, order)
+        order_container = order_service.checkout(order)
 
         response = self.response_serializer_class(order_container).data
 

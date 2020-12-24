@@ -3,8 +3,6 @@ from typing import List, Optional
 from django.conf import settings
 from django.db.transaction import atomic
 
-from stripe import PaymentMethod
-
 from billing.choices import Purpose
 from billing.models import Invoice
 from billing.services.card import CardService
@@ -95,6 +93,9 @@ class SubscriptionService(PaymentInterfaceService):
     def checkout(self, order: Order, subscription: Subscription, **kwargs):
         """
         Method has additional handling for PAYC packages.
+
+        This method called in OrderService.checkout and we are passing a
+        few extra kwargs.
         """
 
         if not subscription:
@@ -163,7 +164,8 @@ class SubscriptionService(PaymentInterfaceService):
         )
 
     def _get_order_service(self, subscription: Subscription):
-        # TODO refactor inline import
+        # We are preventing circular import of OrderService
+        # by importing this import inline
         from orders.services.order import OrderService
 
         client = self._client

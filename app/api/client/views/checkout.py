@@ -23,8 +23,8 @@ class WelcomeCheckoutView(GenericAPIView):
         raw_billing_address = serializer.validated_data["billing_address"]
 
         client = request.user.client
-        service = WelcomeService(client, request, order)
-        address, billing_address = service.checkout(user, raw_address, raw_billing_address)
+        welcome_service = WelcomeService(client, request, order)
+        address, billing_address = welcome_service.checkout(user, raw_address, raw_billing_address)
 
         response_body = {
             "user": user,
