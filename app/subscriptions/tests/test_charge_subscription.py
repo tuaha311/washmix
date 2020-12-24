@@ -19,10 +19,10 @@ def test_payc_subscription(card_service_class_mock, payment_service_class_mock):
     subscription = MagicMock()
     client.subscription = None
     subscription.name = settings.PAYC
-    invoice.subscription = subscription
+    subscription.invoice = invoice
 
     service = SubscriptionService(client)
-    service.charge(invoice)
+    service.charge(subscription)
 
     payment_service_class_mock.assert_called_once_with(client, invoice)
     card_service_class_mock.asssert_called_once_with(client)
@@ -44,14 +44,14 @@ def test_gold_platinum_subscription(card_service_class_mock, payment_service_cla
     invoice = MagicMock()
     subscription = MagicMock()
     client.subscription = None
-    invoice.subscription = subscription
+    subscription.invoice = invoice
     subscription_list = [settings.GOLD, settings.PLATINUM]
 
     for item in subscription_list:
         subscription.name = item
 
         service = SubscriptionService(client)
-        service.charge(invoice)
+        service.charge(subscription)
 
     payment_service_class_mock.assert_called_with(client, invoice)
     card_service_class_mock.asssert_called_with(client)
