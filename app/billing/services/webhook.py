@@ -26,7 +26,7 @@ class StripeWebhookService:
         self._request = request
         self._event = event
         self.status = HTTP_200_OK
-        self.body = {}
+        self.body: dict = {}
 
     def is_valid(self):
         if self.enable_ip_check:

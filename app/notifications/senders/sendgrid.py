@@ -12,7 +12,13 @@ class SendGridSender(Sender):
         self._client = SendGridAPIClient(api_key=settings.SENDGRID_API_KEY).client
 
     def raw_send(
-        self, from_email: str, recipient_list: list, subject: str, html_content: str
+        self,
+        from_email: str,
+        recipient_list: list,
+        subject: str,
+        html_content: str,
+        *args,
+        **kwargs,
     ) -> None:
         recipient_list = [To(item) for item in recipient_list]
 
@@ -26,7 +32,7 @@ class SendGridSender(Sender):
 
         self._client.mail.send.post(request_body=request_body)
 
-    def send(self, recipient_list: list, event: str, context: dict = None) -> None:
+    def send(self, recipient_list: list, event: str, context: dict = None, *args, **kwargs) -> None:
         event_info = settings.EMAIL_EVENT_INFO[event]
 
         subject = event_info["subject"]
