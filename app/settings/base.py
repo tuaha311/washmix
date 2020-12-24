@@ -374,7 +374,7 @@ DJOSER = {
     "PASSWORD_RESET_CONFIRM_RETYPE": False,
     "TOKEN_MODEL": None,
     "EMAIL": {
-        "password_reset": "core.emails.PasswordResetEmail",
+        "password_reset": "notifications.emails.PasswordResetEmail",
     },
 }
 

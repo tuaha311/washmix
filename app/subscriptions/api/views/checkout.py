@@ -16,11 +16,12 @@ class SubscriptionCheckoutView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
 
         order = serializer.validated_data["order"]
+        subscription = order.subscription
 
         client = request.user.client
 
         subscription_service = SubscriptionService(client)
-        order_container = subscription_service.checkout(order)
+        order_container = subscription_service.checkout(order, subscription)
 
         response = self.response_serializer_class(order_container).data
 
