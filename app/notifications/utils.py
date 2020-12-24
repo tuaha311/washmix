@@ -7,7 +7,7 @@ from users.models import Client
 
 
 def get_extra_context(client_id: int, subscription_id: int = None, order_id: int = None, **kwargs):
-    context = {
+    context: dict = {
         "washmix": email_context,
         **kwargs,
     }

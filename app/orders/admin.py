@@ -56,7 +56,7 @@ class OrderAdmin(DefaultAdmin):
 
         return mark_safe(widget)
 
-    pdf_path.short_description = "PDF path"
+    pdf_path.short_description = "PDF path"  # type: ignore
 
     def pdf_ready(self, instance):
         """
@@ -70,7 +70,7 @@ class OrderAdmin(DefaultAdmin):
 
         return ready_status
 
-    pdf_ready.short_description = "PDF-report is ready"
+    pdf_ready.short_description = "PDF-report is ready"  # type: ignore
 
 
 models = [

@@ -22,7 +22,7 @@ def test_payc_subscription(card_service_class_mock, payment_service_class_mock):
     subscription.invoice = invoice
 
     service = SubscriptionService(client)
-    service.charge(subscription)
+    service.charge(request=None, basket=None, subscription=subscription)
 
     payment_service_class_mock.assert_called_once_with(client, invoice)
     card_service_class_mock.asssert_called_once_with(client)
@@ -51,7 +51,7 @@ def test_gold_platinum_subscription(card_service_class_mock, payment_service_cla
         subscription.name = item
 
         service = SubscriptionService(client)
-        service.charge(subscription)
+        service.charge(request=None, basket=None, subscription=subscription)
 
     payment_service_class_mock.assert_called_with(client, invoice)
     card_service_class_mock.asssert_called_with(client)

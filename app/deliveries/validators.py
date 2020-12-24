@@ -12,9 +12,9 @@ from deliveries.utils import get_dropoff_day, get_pickup_day, get_pickup_start_e
 class RequestValidator:
     def __init__(
         self,
-        pickup_date: date = None,
-        pickup_start: time = None,
-        pickup_end: time = None,
+        pickup_date: date,
+        pickup_start: time,
+        pickup_end: time,
     ):
         self._pickup_date = pickup_date
         self._pickup_start = pickup_start

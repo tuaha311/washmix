@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Dict, List, Tuple
 
 from django.conf import settings
 
@@ -116,8 +116,8 @@ class DeliveryContainer(BaseAmountContainer):
     def _get_amount_discount(self) -> Tuple[int, int]:
         subscription = self._subscription
         basket = self._basket
-        price_map = self.price_map[subscription.name]
-        price_list = price_map["price_list"]
+        price_map: Dict = self.price_map[subscription.name]
+        price_list: List[Dict] = price_map["price_list"]
         discount_from = subscription.delivery_free_from
         discount = settings.DEFAULT_ZERO_DISCOUNT
 

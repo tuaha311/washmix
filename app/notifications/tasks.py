@@ -26,7 +26,7 @@ def send_email(event: str, recipient_list: list, extra_context: dict = None):
         recipient_list=recipient_list,
         event=event,
         context={
-            **extra_context,
+            **extra_context,  # type: ignore
         },
     )
 
