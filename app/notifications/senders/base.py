@@ -9,10 +9,10 @@ class Sender(ABC):
     @abstractmethod
     def raw_send(
         self,
-        from_email: str,
+        from_sender: str,
         recipient_list: list,
         subject: str,
-        html_content: str,
+        body: str,
         *args,
         **kwargs,
     ):

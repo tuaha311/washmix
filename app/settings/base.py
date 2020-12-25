@@ -455,6 +455,19 @@ DRAMATIQ_BROKER.add_middleware(PeriodiqMiddleware(skip_delay=30))
 dramatiq.set_broker(DRAMATIQ_BROKER)
 
 
+#######################
+# NOTIFICATION EVENTS #
+#######################
+
+SIGNUP = "signup"
+FORGOT_PASSWORD = "forgot_password"
+PURCHASE_SUBSCRIPTION_GOLD_PLATINUM = "purchase_subscription_gold_platinum"
+NEW_REQUEST = "new_request"
+NEW_ORDER = "new_order"
+PAYMENT_FAIL_CLIENT = "payment_fail_client"
+PAYMENT_FAIL_ADMIN = "payment_fail_admin"
+
+
 ##########
 # TWILIO #
 ##########
@@ -466,6 +479,12 @@ TWILIO_SUCCESS = "success"
 TWILIO_FAIL = "fail"
 TWILIO_PICKUP_CODE = "pickup_scheduled"
 
+SMS_EVENT_INFO = {
+    NEW_REQUEST: {
+        "template_name": "sms/new_request.html",
+    },
+}
+
 
 ############
 # SENDGRID #
@@ -475,16 +494,9 @@ SENDGRID_FROM_EMAIL = Email("info@washmix.com")
 SENDGRID_API_KEY = env.str("SENDGRID_API_KEY", "")
 ADMIN_EMAIL_LIST = ["admin@washmix.com"]
 
-SIGNUP = "signup"
-FORGOT_PASSWORD = "forgot_password"
-PURCHASE_SUBSCRIPTION_GOLD_PLATINUM = "purchase_subscription_gold_platinum"
-NEW_REQUEST = "new_request"
-NEW_ORDER = "new_order"
-PAYMENT_FAIL_CLIENT = "payment_fail_client"
-PAYMENT_FAIL_ADMIN = "payment_fail_admin"
 EMAIL_EVENT_INFO = {
     SIGNUP: {
-        "template_name": "welcome.html",
+        "template_name": "email/welcome.html",
         "subject": "Welcome to Washmix!",
         "from_email": "hello@washmix.com",
     },
@@ -493,27 +505,27 @@ EMAIL_EVENT_INFO = {
         "from_email": "security@washmix.com",
     },
     PURCHASE_SUBSCRIPTION_GOLD_PLATINUM: {
-        "template_name": "purchase_gold_platinum.html",
+        "template_name": "email/purchase_gold_platinum.html",
         "subject": "Welcome to WashMix Advantage Program",
         "from_email": "advantage@washmix.com",
     },
     NEW_REQUEST: {
-        "template_name": "new_request.html",
+        "template_name": "email/new_request.html",
         "subject": "New Request Pickup",
         "from_email": "request@washmix.com",
     },
     NEW_ORDER: {
-        "template_name": "new_order.html",
+        "template_name": "email/new_order.html",
         "subject": "WashMix New Order",
         "from_email": "order@washmix.com",
     },
     PAYMENT_FAIL_CLIENT: {
-        "template_name": "payment_fail_client.html",
+        "template_name": "email/payment_fail_client.html",
         "subject": "WashMix Payment Failed",
         "from_email": "payment@washmix.com",
     },
     PAYMENT_FAIL_ADMIN: {
-        "template_name": "payment_fail_admin.html",
+        "template_name": "email/payment_fail_admin.html",
         "subject": "WashMix Payment Failed",
         "from_email": "issue@washmix.com",
     },
