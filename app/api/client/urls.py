@@ -75,6 +75,7 @@ urlpatterns = [
     path("orders/", include("orders.urls.client")),
     path("subscription/", include("subscriptions.urls.client")),
     path("invoices/", invoices.InvoiceListView.as_view(), name="invoice-list"),
+    path("cards/refresh/", cards.CardRefreshView.as_view(), name="card-refresh"),
     # default routes has a higher priority under router URLS
     *router.urls,
     # open methods without authorization (landing page, authorization, health check)
