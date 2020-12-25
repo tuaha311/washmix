@@ -16,11 +16,25 @@ class SubscriptionCheckoutSerializer(serializers.Serializer):
         """
 
         order = value
+        subscription = order.subscription
+        client = self.context["request"].user.client
+
+        if not subscription:
+            raise serializers.ValidationError(
+                detail="Provide order for subscription.",
+                code="provide_order_for_subscription",
+            )
 
         if order.payment == PaymentChoices.PAID:
             raise serializers.ValidationError(
                 detail="Order already paid.",
                 code="order_paid",
+            )
+
+        if client.subscription and client.subscription.name == subscription.name:
+            raise serializers.ValidationError(
+                detail="You already have this subscription.",
+                code="already_at_this_subscription",
             )
 
         return value
