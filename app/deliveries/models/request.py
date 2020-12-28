@@ -71,7 +71,7 @@ class Request(CommonScheduleRequest, Common):
 
     @property
     def pretty_pickup_message(self) -> str:
-        pretty_date = self.pickup.date.strftime("%d %B")
+        pretty_date = self.pickup.pretty_date
 
         return pretty_date
 
