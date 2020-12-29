@@ -20,10 +20,11 @@ class POSOrderCheckoutView(GenericAPIView):
 
         order = serializer.validated_data["order"]
         client = order.client
+        employee = drf_request.user.employee
 
         order_service = OrderService(client)
         order_container = order_service.checkout(order)
-        order_service.finalize(order)
+        order_service.finalize(order, employee)
 
         response = self.response_serializer_class(order_container).data
         return Response(response)
