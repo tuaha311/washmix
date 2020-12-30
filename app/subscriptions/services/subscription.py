@@ -1,9 +1,11 @@
 from typing import List, Optional
+from uuid import uuid4
 
 from django.conf import settings
 from django.db.transaction import atomic
 
-from billing.choices import Purpose
+from billing.choices import Provider, Purpose
+from billing.containers import PaymentContainer
 from billing.models import Invoice
 from billing.services.card import CardService
 from billing.services.invoice import InvoiceService
@@ -81,14 +83,19 @@ class SubscriptionService(PaymentInterfaceService):
         payment_service = PaymentService(client, invoice)
         card_service = CardService(client)
 
-        payment = None
-
+        # save payment method for PAYC
+        # and confirm payment
         if subscription.name == settings.PAYC:
             card = client.card_list.first()
             card_service.update_main_card(client, card)
-            return payment
 
-        payment_service.charge()
+            payment_id = str(uuid4())
+            payment_amount = 0
+            payment_container = PaymentContainer(payment_id, payment_amount)
+
+            payment_service.confirm(payment_container, provider=Provider.WASHMIX)
+        else:
+            payment_service.charge()
 
     def checkout(self, order: Order, subscription: Subscription, **kwargs):
         """

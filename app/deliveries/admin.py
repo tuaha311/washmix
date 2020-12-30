@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.db.models.signals import post_save
 
 from core.admin import DefaultAdmin
-from deliveries.models import Delivery, Request
+from deliveries.models import Delivery, Request, Schedule
 
 
 class DeliveryInlineAdmin(admin.TabularInline):
@@ -73,6 +73,6 @@ class DeliveryAdmin(DefaultAdmin):
         return super().save_model(request, obj, form, change)
 
 
-models = [[Delivery, DeliveryAdmin], [Request, RequestAdmin]]
+models = [[Schedule, DefaultAdmin], [Delivery, DeliveryAdmin], [Request, RequestAdmin]]
 for item in models:
     admin.site.register(*item)

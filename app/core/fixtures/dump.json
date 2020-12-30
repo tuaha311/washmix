@@ -2062,6 +2062,26 @@
           "order"
         ],
         [
+          "add_client",
+          "users",
+          "client"
+        ],
+        [
+          "change_client",
+          "users",
+          "client"
+        ],
+        [
+          "delete_client",
+          "users",
+          "client"
+        ],
+        [
+          "view_client",
+          "users",
+          "client"
+        ],
+        [
           "add_customer",
           "users",
           "customer"
@@ -2082,24 +2102,24 @@
           "customer"
         ],
         [
-          "add_client",
-          "users",
-          "client"
+          "add_request",
+          "deliveries",
+          "request"
         ],
         [
-          "change_client",
-          "users",
-          "client"
+          "change_request",
+          "deliveries",
+          "request"
         ],
         [
-          "delete_client",
-          "users",
-          "client"
+          "delete_request",
+          "deliveries",
+          "request"
         ],
         [
-          "view_client",
-          "users",
-          "client"
+          "view_request",
+          "deliveries",
+          "request"
         ]
       ]
     }
@@ -2149,6 +2169,26 @@
           "view_order",
           "orders",
           "order"
+        ],
+        [
+          "change_client",
+          "users",
+          "client"
+        ],
+        [
+          "view_client",
+          "users",
+          "client"
+        ],
+        [
+          "change_request",
+          "deliveries",
+          "request"
+        ],
+        [
+          "view_request",
+          "deliveries",
+          "request"
         ]
       ]
     }
@@ -2349,6 +2389,20 @@
   },
   {
     "model": "billing.invoice",
+    "pk": 1,
+    "fields": {
+      "created": "2020-12-30T04:14:48.947Z",
+      "changed": "2020-12-30T04:14:48.948Z",
+      "amount": 0,
+      "discount": 0,
+      "client": 1,
+      "order": 1,
+      "card": null,
+      "purpose": "subscription"
+    }
+  },
+  {
+    "model": "billing.invoice",
     "pk": 2,
     "fields": {
       "created": "2020-12-04T02:15:19.486Z",
@@ -2373,6 +2427,21 @@
       "order": 3,
       "card": null,
       "purpose": "subscription"
+    }
+  },
+  {
+    "model": "billing.transaction",
+    "pk": 1,
+    "fields": {
+      "created": "2020-12-30T04:15:00.419Z",
+      "changed": "2020-12-30T04:15:00.419Z",
+      "stripe_id": "697cf8b6-ae60-4447-b432-c3aaa4b6be98",
+      "amount": 0,
+      "client": 1,
+      "invoice": 1,
+      "kind": "debit",
+      "provider": "washmix",
+      "source": {}
     }
   },
   {
@@ -2632,10 +2701,46 @@
     "model": "deliveries.delivery",
     "pk": 1,
     "fields": {
+      "created": "2020-12-30T04:47:40.968Z",
+      "changed": "2020-12-30T04:47:40.968Z",
+      "employee": null,
+      "request": 1,
+      "invoice": null,
+      "note": "",
+      "sorting": null,
+      "kind": "pickup",
+      "status": "accepted",
+      "date": "2020-12-30",
+      "start": "13:00:00",
+      "end": "15:00:00"
+    }
+  },
+  {
+    "model": "deliveries.delivery",
+    "pk": 2,
+    "fields": {
+      "created": "2020-12-30T04:47:40.999Z",
+      "changed": "2020-12-30T04:47:40.999Z",
+      "employee": null,
+      "request": 1,
+      "invoice": null,
+      "note": "",
+      "sorting": null,
+      "kind": "dropoff",
+      "status": "accepted",
+      "date": "2021-01-04",
+      "start": "13:00:00",
+      "end": "15:00:00"
+    }
+  },
+  {
+    "model": "deliveries.delivery",
+    "pk": 3,
+    "fields": {
       "created": "2020-12-04T02:16:31.338Z",
       "changed": "2020-12-04T02:16:31.338Z",
       "employee": 4,
-      "request": 1,
+      "request": 2,
       "invoice": null,
       "note": "",
       "sorting": null,
@@ -2648,12 +2753,12 @@
   },
   {
     "model": "deliveries.delivery",
-    "pk": 2,
+    "pk": 4,
     "fields": {
       "created": "2020-12-04T02:16:31.342Z",
       "changed": "2020-12-04T02:16:31.342Z",
       "employee": 4,
-      "request": 1,
+      "request": 2,
       "invoice": null,
       "note": "",
       "sorting": null,
@@ -2666,12 +2771,12 @@
   },
   {
     "model": "deliveries.delivery",
-    "pk": 3,
+    "pk": 5,
     "fields": {
       "created": "2020-12-04T02:19:08.309Z",
       "changed": "2020-12-04T02:19:08.309Z",
       "employee": null,
-      "request": 2,
+      "request": 3,
       "invoice": null,
       "note": "",
       "sorting": null,
@@ -2684,12 +2789,12 @@
   },
   {
     "model": "deliveries.delivery",
-    "pk": 4,
+    "pk": 6,
     "fields": {
       "created": "2020-12-04T02:19:08.312Z",
       "changed": "2020-12-04T02:19:08.312Z",
       "employee": null,
-      "request": 2,
+      "request": 3,
       "invoice": null,
       "note": "",
       "sorting": null,
@@ -2704,6 +2809,19 @@
     "model": "deliveries.request",
     "pk": 1,
     "fields": {
+      "created": "2020-12-30T04:47:40.963Z",
+      "changed": "2020-12-30T04:47:40.963Z",
+      "comment": "",
+      "is_rush": false,
+      "client": 1,
+      "address": 1,
+      "schedule": null
+    }
+  },
+  {
+    "model": "deliveries.request",
+    "pk": 2,
+    "fields": {
       "created": "2020-12-04T02:16:31.332Z",
       "changed": "2020-12-04T02:16:31.332Z",
       "comment": "",
@@ -2715,7 +2833,7 @@
   },
   {
     "model": "deliveries.request",
-    "pk": 2,
+    "pk": 3,
     "fields": {
       "created": "2020-12-04T02:19:08.304Z",
       "changed": "2020-12-04T02:19:08.304Z",
@@ -5534,6 +5652,25 @@
   },
   {
     "model": "orders.order",
+    "pk": 1,
+    "fields": {
+      "created": "2020-12-30T04:14:33.781Z",
+      "changed": "2020-12-30T04:15:00.455Z",
+      "client": 1,
+      "employee": null,
+      "basket": null,
+      "request": null,
+      "subscription": 1,
+      "coupon": null,
+      "status": "accepted",
+      "payment": "paid",
+      "note": "",
+      "is_save_card": true,
+      "is_pdf_ready": false
+    }
+  },
+  {
+    "model": "orders.order",
     "pk": 2,
     "fields": {
       "created": "2020-12-04T02:14:59.502Z",
@@ -5547,7 +5684,8 @@
       "status": "accepted",
       "payment": "paid",
       "note": "",
-      "is_save_card": true
+      "is_save_card": true,
+      "is_pdf_ready": false
     }
   },
   {
@@ -5565,7 +5703,8 @@
       "status": "accepted",
       "payment": "paid",
       "note": "",
-      "is_save_card": true
+      "is_save_card": true,
+      "is_pdf_ready": false
     }
   },
   {
@@ -7679,6 +7818,28 @@
   },
   {
     "model": "subscriptions.subscription",
+    "pk": 1,
+    "fields": {
+      "created": "2020-12-30T04:14:33.758Z",
+      "changed": "2020-12-30T04:14:48.959Z",
+      "price": 0,
+      "dry_clean": 0,
+      "laundry": 0,
+      "alterations": 0,
+      "wash_fold": 0,
+      "delivery_free_from": 4900,
+      "has_delivery": false,
+      "has_welcome_box": false,
+      "has_seasonal_garment": false,
+      "has_credit_back": false,
+      "is_most_popular": false,
+      "client": 1,
+      "name": "payc",
+      "invoice": null
+    }
+  },
+  {
+    "model": "subscriptions.subscription",
     "pk": 2,
     "fields": {
       "created": "2020-12-04T02:14:59.485Z",
@@ -7726,12 +7887,12 @@
     "pk": 1,
     "fields": {
       "created": "2020-10-01T01:59:50.886Z",
-      "changed": "2020-12-04T02:15:36.696Z",
+      "changed": "2020-12-30T04:15:00.469Z",
       "stripe_id": "cus_HsLFiIYxwKsoOC",
       "user": [
         "payc@washmix.com"
       ],
-      "subscription": null,
+      "subscription": 1,
       "main_card": 1,
       "main_phone": 1,
       "main_address": 1,
