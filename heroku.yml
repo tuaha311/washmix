@@ -6,7 +6,7 @@ build:
 #    - "./docker-entrypoint.sh migrations"
 #  image: web
 run:
-  web: #./docker-entrypoint.sh
+  web: "" #./docker-entrypoint.sh
   worker:
     command:
       - worker
