@@ -6,14 +6,12 @@ build:
 #    - "./docker-entrypoint.sh migrations"
 #  image: web
 run:
-  web: "" #./docker-entrypoint.sh
+  web: ./docker-entrypoint.sh
   worker:
     command:
-      - worker
-#      - "./docker-entrypoint.sh worker"
+      - "./docker-entrypoint.sh worker"
     image: web
   scheduler:
     command:
-      - scheduler
-#      - "./docker-entrypoint.sh scheduler"
+      - "./docker-entrypoint.sh scheduler"
     image: web
