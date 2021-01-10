@@ -9,7 +9,9 @@ RUN apt-get install libcairo2 \
   shared-mime-info
 
 ENV PYTHONUNBUFFERED 1
-EXPOSE 8000
+
+###Edited for use in Heroku
+#EXPOSE 8000
 
 COPY poetry.lock pyproject.toml /
 RUN pip install poetry \
