@@ -1,10 +1,10 @@
 build:
   docker:
     web: Dockerfile
-release:
-  command:
-    - migrations
-  image: web
+#release:
+#  command:
+#    - ./docker-entrypoint.sh migrations
+#  image: web
 run:
   web: ./docker-entrypoint.sh
   worker:
