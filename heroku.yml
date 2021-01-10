@@ -1,0 +1,17 @@
+build:
+  docker:
+    web: Dockerfile
+release:
+  command:
+    - ./docker-entrypoint.sh migrations
+  image: web
+run:
+  web: ./docker-entrypoint.sh
+  worker:
+    command:
+      - ./docker-entrypoint.sh worker
+    image: web
+  scheduler:
+    command:
+      - ./docker-entrypoint.sh scheduler
+    image: web
