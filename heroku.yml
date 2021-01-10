@@ -3,7 +3,7 @@ build:
     web: Dockerfile
 release:
   command:
-    - ./docker-entrypoint.sh migrations
+    - migrations
   image: web
 run:
   web: ./docker-entrypoint.sh
