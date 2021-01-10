@@ -23,8 +23,8 @@ else
   ###Added for use in Heroku
   if [ -n "$PORT" ]
   then
-#    echo "Running migrations"
-#    python manage.py migrate --settings settings.staging --noinput
+    echo "Running migrations"
+    python manage.py migrate --settings settings.staging --noinput
     echo "Running django application"
     python manage.py collectstatic --settings settings.staging --noinput
     python manage.py loaddata dump.json --settings settings.staging
