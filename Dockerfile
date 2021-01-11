@@ -24,4 +24,6 @@ WORKDIR /app
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 
-ENTRYPOINT ["/docker-entrypoint.sh"]
+###Edited for use in Heroku
+CMD ["/docker-entrypoint.sh"]
+#ENTRYPOINT ["/docker-entrypoint.sh"]
