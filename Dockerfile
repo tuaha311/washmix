@@ -12,6 +12,9 @@ RUN apt-get update && apt-get install -y libcairo2 \
   telnet \
   && rm -rf /var/lib/apt/lists/*
 
+###Added for use in Heroku
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+
 ENV PYTHONUNBUFFERED 1
 
 ###Edited for use in Heroku
