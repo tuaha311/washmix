@@ -21,7 +21,7 @@ def create_transaction(
     Common helper that creates transaction.
     """
 
-    if not source:
+    if not source or not isinstance(source, dict):
         source = {}
 
     transaction = Transaction.objects.create(

@@ -60,12 +60,16 @@ class Invoice(CalculatedAmountWithDiscount, Amountable, Discountable, Common):
         return f"№ {self.pk} {self.amount}"
 
     @property
-    def is_filled(self) -> bool:
-        required_fields = [self.card, self.amount]
-        return all(required_fields)
+    def is_paid(self) -> bool:
+        transaction_list = self.transaction_list
+        amount_with_discount = self.amount_with_discount
+
+        transaction_paid_amount = transaction_list.aggregate(total=Sum("amount"))["total"] or 0
+
+        return transaction_paid_amount >= amount_with_discount
 
     @property
-    def is_paid(self):
-        total_amount = self.transaction_list.aggregate(total=Sum('amount'))['total'] or 0
+    def has_transaction(self) -> bool:
+        transaction_list = self.transaction_list
 
-        return total_amount >= self.amount_with_discount
+        return transaction_list.exists()

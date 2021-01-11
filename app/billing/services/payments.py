@@ -6,7 +6,8 @@ from django.db.transaction import atomic
 from stripe import PaymentIntent, PaymentMethod, SetupIntent
 from stripe.error import StripeError
 
-from billing.choices import Purpose
+from billing.choices import Provider, Purpose
+from billing.containers import PaymentContainer
 from billing.models import Invoice, Transaction
 from billing.services.card import CardService
 from billing.stripe_helper import StripeHelper
@@ -53,7 +54,7 @@ class PaymentService:
 
     def charge(self):
         """
-        We are iterating to the all user's card list and choosing first one
+        We are iterating via all user's card list and choosing first one
         where we find an enough money to charge. At first successful attempt we
         are continuing our payment flow.
 
@@ -69,16 +70,22 @@ class PaymentService:
             if unpaid_amount > 0:
                 self._charge_card(unpaid_amount)
 
-    def confirm(self, payment: PaymentMethod) -> Optional[Transaction]:
+    def confirm(
+        self, payment: Union[PaymentMethod, PaymentContainer], provider=Provider.STRIPE
+    ) -> Optional[Transaction]:
         """
         Last method in payment flow - it's responsible for creating payment transaction
         for invoice. After transaction created for invoice, Invoice will be marked
         as paid.
         """
 
+        invoice = self._invoice
+
         # .confirm method works idempotently - if we already marked
-        # invoice as paid, than we doesn't make changes
-        if self._invoice.is_paid:
+        # invoice as paid, than we doesn't make changes.
+        # also we are checking that invoice has a transaction - special case for PAYC
+        # when invoice has amount of 0.
+        if invoice.is_paid and invoice.has_transaction:
             return None
 
         transaction = create_debit(
@@ -87,6 +94,7 @@ class PaymentService:
             stripe_id=payment.id,
             amount=payment.amount,
             source=payment,
+            provider=provider,
         )
 
         return transaction
@@ -138,7 +146,9 @@ class PaymentService:
         # without charging prepaid balance
         if invoice.purpose == Purpose.SUBSCRIPTION:
             paid_amount = 0
-            return paid_amount, unpaid_amount
+
+            # we are reducing to a integer number for Stripe
+            return paid_amount, int(unpaid_amount)
 
         # if prepaid balance enough to pay full price - we will
         # use this money for invoice payment.
@@ -153,4 +163,5 @@ class PaymentService:
             paid_amount = balance
             unpaid_amount = amount_with_discount - balance
 
-        return paid_amount, unpaid_amount
+        # we are reducing to a integer number for Stripe
+        return paid_amount, int(unpaid_amount)

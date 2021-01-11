@@ -38,12 +38,12 @@ class POSBasketChangeItemSerializer(BaseOrderValidateSerializer):
     order = POSOrderField()
 
     def validate(self, attrs):
-        client = self.context["request"].user.client
         price = attrs["price"]
         count = attrs["count"]
         action = attrs["action"]
         order = attrs["order"]
         basket = order.basket
+        client = order.client
 
         service = BasketService(client)
         service.validate(basket, price, count, action)

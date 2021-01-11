@@ -2062,6 +2062,26 @@
           "order"
         ],
         [
+          "add_client",
+          "users",
+          "client"
+        ],
+        [
+          "change_client",
+          "users",
+          "client"
+        ],
+        [
+          "delete_client",
+          "users",
+          "client"
+        ],
+        [
+          "view_client",
+          "users",
+          "client"
+        ],
+        [
           "add_customer",
           "users",
           "customer"
@@ -2082,9 +2102,73 @@
           "customer"
         ],
         [
-          "add_client",
-          "users",
-          "client"
+          "add_request",
+          "deliveries",
+          "request"
+        ],
+        [
+          "change_request",
+          "deliveries",
+          "request"
+        ],
+        [
+          "delete_request",
+          "deliveries",
+          "request"
+        ],
+        [
+          "view_request",
+          "deliveries",
+          "request"
+        ]
+      ]
+    }
+  },
+  {
+    "model": "auth.group",
+    "pk": 2,
+    "fields": {
+      "name": "Stuff",
+      "permissions": [
+        [
+          "add_basket",
+          "orders",
+          "basket"
+        ],
+        [
+          "change_basket",
+          "orders",
+          "basket"
+        ],
+        [
+          "delete_basket",
+          "orders",
+          "basket"
+        ],
+        [
+          "view_basket",
+          "orders",
+          "basket"
+        ],
+        [
+          "add_order",
+          "orders",
+          "order"
+        ],
+        [
+          "change_order",
+          "orders",
+          "order"
+        ],
+        [
+          "delete_order",
+          "orders",
+          "order"
+        ],
+        [
+          "view_order",
+          "orders",
+          "order"
         ],
         [
           "change_client",
@@ -2092,14 +2176,19 @@
           "client"
         ],
         [
-          "delete_client",
+          "view_client",
           "users",
           "client"
         ],
         [
-          "view_client",
-          "users",
-          "client"
+          "change_request",
+          "deliveries",
+          "request"
+        ],
+        [
+          "view_request",
+          "deliveries",
+          "request"
         ]
       ]
     }
@@ -2108,14 +2197,14 @@
     "model": "to_named_email.namedemailuser",
     "pk": 1,
     "fields": {
-      "password": "pbkdf2_sha256$150000$Pq9VdD5eOgnW$Kl/iK9xJAVHd+u5t9d2mcHqs/Ee15IDIC6MqjOtEdWU=",
+      "password": "pbkdf2_sha256$150000$GtGvVX8LG7YO$c7sFjR179wE4QC7SsNpIbMIyLE9GUD9/vqzldUu+4Bo=",
       "last_login": null,
-      "is_superuser": true,
-      "email": "api@evrone.com",
+      "is_superuser": false,
+      "email": "payc@washmix.com",
       "is_active": true,
-      "is_staff": true,
-      "first_name": "Ivan",
-      "last_name": "Petrov",
+      "is_staff": false,
+      "first_name": "John",
+      "last_name": "Smith",
       "groups": [],
       "user_permissions": []
     }
@@ -2124,14 +2213,14 @@
     "model": "to_named_email.namedemailuser",
     "pk": 2,
     "fields": {
-      "password": "pbkdf2_sha256$150000$GtGvVX8LG7YO$c7sFjR179wE4QC7SsNpIbMIyLE9GUD9/vqzldUu+4Bo=",
+      "password": "pbkdf2_sha256$150000$Pq9VdD5eOgnW$Kl/iK9xJAVHd+u5t9d2mcHqs/Ee15IDIC6MqjOtEdWU=",
       "last_login": null,
-      "is_superuser": true,
-      "email": "ds.ionin@evrone.com",
+      "is_superuser": false,
+      "email": "gold@washmix.com",
       "is_active": true,
-      "is_staff": true,
-      "first_name": "",
-      "last_name": "",
+      "is_staff": false,
+      "first_name": "Bob",
+      "last_name": "Brown",
       "groups": [],
       "user_permissions": []
     }
@@ -2142,12 +2231,12 @@
     "fields": {
       "password": "pbkdf2_sha256$150000$NsS1SlOL6qnU$TAW6sm7S8VSllhLKpIIbm5UdJ6xjQ6xjeFHdXrTOKVw=",
       "last_login": null,
-      "is_superuser": true,
-      "email": "savoskin@evrone.com",
+      "is_superuser": false,
+      "email": "platinum@washmix.com",
       "is_active": true,
-      "is_staff": true,
-      "first_name": "Alexander",
-      "last_name": "Petrov",
+      "is_staff": false,
+      "first_name": "Jack",
+      "last_name": "Miller",
       "groups": [],
       "user_permissions": []
     }
@@ -2159,11 +2248,11 @@
       "password": "pbkdf2_sha256$150000$OdLNprvGdgKM$ekYO6IHcyp6kPFEWxTXiGgvw4r2wM3cDn6dZPKEVhcc=",
       "last_login": null,
       "is_superuser": true,
-      "email": "og@evrone.com",
+      "email": "superadmin@washmix.com",
       "is_active": true,
       "is_staff": true,
-      "first_name": "",
-      "last_name": "",
+      "first_name": "Sam",
+      "last_name": "Jones",
       "groups": [],
       "user_permissions": []
     }
@@ -2172,46 +2261,14 @@
     "model": "to_named_email.namedemailuser",
     "pk": 5,
     "fields": {
-      "password": "pbkdf2_sha256$150000$omzdavRTSGop$JcxDkJyv6CKe3wxbyEpekrEMyhUFsa1iQJVB5kgsnlQ=",
-      "last_login": null,
-      "is_superuser": true,
-      "email": "michaelbehestaein@evrone.com",
-      "is_active": true,
-      "is_staff": true,
-      "first_name": "",
-      "last_name": "",
-      "groups": [],
-      "user_permissions": []
-    }
-  },
-  {
-    "model": "to_named_email.namedemailuser",
-    "pk": 6,
-    "fields": {
-      "password": "pbkdf2_sha256$150000$qS6RQeX34Aix$paeTeC7chBQoVPtFog+u3Fwokpi6KKcakMqZj7j6vBQ=",
-      "last_login": null,
-      "is_superuser": false,
-      "email": "driver@washmix.com",
-      "is_active": true,
-      "is_staff": false,
-      "first_name": "",
-      "last_name": "",
-      "groups": [],
-      "user_permissions": []
-    }
-  },
-  {
-    "model": "to_named_email.namedemailuser",
-    "pk": 7,
-    "fields": {
       "password": "pbkdf2_sha256$150000$s1ijnGXwCyA5$VpMguyCOL400V0XI1r/5JSRYGVLiLlQojXba1SvXBcM=",
       "last_login": null,
       "is_superuser": false,
       "email": "admin@washmix.com",
       "is_active": true,
       "is_staff": true,
-      "first_name": "",
-      "last_name": "",
+      "first_name": "Emilia",
+      "last_name": "Garcia",
       "groups": [
         [
           "Admins"
@@ -2222,17 +2279,41 @@
   },
   {
     "model": "to_named_email.namedemailuser",
-    "pk": 8,
+    "pk": 6,
     "fields": {
       "password": "pbkdf2_sha256$150000$ErHLiZsIyKl2$bKtXtyeT4CTtQgle676WW429IQwbzggm2h9ygFYdxYc=",
       "last_login": null,
       "is_superuser": false,
       "email": "laundress@washmix.com",
       "is_active": true,
-      "is_staff": false,
-      "first_name": "",
-      "last_name": "",
-      "groups": [],
+      "is_staff": true,
+      "first_name": "Patricia",
+      "last_name": "Martinez",
+      "groups": [
+        [
+          "Stuff"
+        ]
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "to_named_email.namedemailuser",
+    "pk": 7,
+    "fields": {
+      "password": "pbkdf2_sha256$150000$qS6RQeX34Aix$paeTeC7chBQoVPtFog+u3Fwokpi6KKcakMqZj7j6vBQ=",
+      "last_login": null,
+      "is_superuser": false,
+      "email": "driver@washmix.com",
+      "is_active": true,
+      "is_staff": true,
+      "first_name": "Benjamin",
+      "last_name": "Sanchez",
+      "groups": [
+        [
+          "Stuff"
+        ]
+      ],
       "user_permissions": []
     }
   },
@@ -2257,7 +2338,7 @@
       "created": "2020-12-04T02:15:19.290Z",
       "changed": "2020-12-04T02:15:19.290Z",
       "stripe_id": "pm_1HNWh4EIZcTcPHNvAUvX9pVd",
-      "client": 1,
+      "client": 2,
       "last": "4242",
       "expiration_month": 4,
       "expiration_year": 2024,
@@ -2310,9 +2391,9 @@
     "model": "billing.invoice",
     "pk": 1,
     "fields": {
-      "created": "2020-12-04T02:15:19.486Z",
-      "changed": "2020-12-04T02:15:19.486Z",
-      "amount": 19900,
+      "created": "2020-12-30T04:14:48.947Z",
+      "changed": "2020-12-30T04:14:48.948Z",
+      "amount": 0,
       "discount": 0,
       "client": 1,
       "order": 1,
@@ -2324,12 +2405,26 @@
     "model": "billing.invoice",
     "pk": 2,
     "fields": {
+      "created": "2020-12-04T02:15:19.486Z",
+      "changed": "2020-12-04T02:15:19.486Z",
+      "amount": 19900,
+      "discount": 0,
+      "client": 2,
+      "order": 2,
+      "card": null,
+      "purpose": "subscription"
+    }
+  },
+  {
+    "model": "billing.invoice",
+    "pk": 3,
+    "fields": {
       "created": "2020-12-04T02:17:17.828Z",
       "changed": "2020-12-04T02:17:17.828Z",
       "amount": 29900,
       "discount": 0,
       "client": 3,
-      "order": 2,
+      "order": 3,
       "card": null,
       "purpose": "subscription"
     }
@@ -2338,12 +2433,27 @@
     "model": "billing.transaction",
     "pk": 1,
     "fields": {
+      "created": "2020-12-30T04:15:00.419Z",
+      "changed": "2020-12-30T04:15:00.419Z",
+      "stripe_id": "697cf8b6-ae60-4447-b432-c3aaa4b6be98",
+      "amount": 0,
+      "client": 1,
+      "invoice": 1,
+      "kind": "debit",
+      "provider": "washmix",
+      "source": {}
+    }
+  },
+  {
+    "model": "billing.transaction",
+    "pk": 2,
+    "fields": {
       "created": "2020-12-04T02:15:36.668Z",
       "changed": "2020-12-04T02:15:36.668Z",
       "stripe_id": "ch_1HcAFhEIZcTcPHNvNsIjWuo3",
       "amount": 19900,
-      "client": 1,
-      "invoice": 1,
+      "client": 2,
+      "invoice": 2,
       "kind": "debit",
       "provider": "stripe",
       "source": {
@@ -2380,7 +2490,7 @@
         "livemode": false,
         "metadata": {
           "purpose": "subscription",
-          "invoice_id": "1"
+          "invoice_id": "2"
         },
         "refunded": false,
         "shipping": null,
@@ -2446,21 +2556,21 @@
   },
   {
     "model": "billing.transaction",
-    "pk": 2,
+    "pk": 3,
     "fields": {
       "created": "2020-12-04T02:18:03.839Z",
       "changed": "2020-12-04T02:18:03.839Z",
       "stripe_id": "ch_1HcAFhEIZcTcPHNvNsIjWuo2",
       "amount": 29900,
       "client": 3,
-      "invoice": 2,
+      "invoice": 3,
       "kind": "debit",
       "provider": "stripe",
       "source": {
         "id": "ch_1HcAFhEIZcTcPHNvNsIjWuo2",
         "paid": true,
         "order": null,
-        "amount": 19900,
+        "amount": 29900,
         "object": "charge",
         "review": null,
         "source": null,
@@ -2490,7 +2600,7 @@
         "livemode": false,
         "metadata": {
           "purpose": "subscription",
-          "invoice_id": "2"
+          "invoice_id": "3"
         },
         "refunded": false,
         "shipping": null,
@@ -2562,7 +2672,7 @@
       "changed": "2020-10-01T01:59:50.890Z",
       "client": 1,
       "title": "Main",
-      "number": "+79261213702"
+      "number": "+79150321367"
     }
   },
   {
@@ -2573,7 +2683,7 @@
       "changed": "2020-10-01T01:59:51.011Z",
       "client": 2,
       "title": "Main",
-      "number": "+79150321367"
+      "number": "+79261213702"
     }
   },
   {
@@ -2588,35 +2698,49 @@
     }
   },
   {
-    "model": "core.phone",
-    "pk": 4,
+    "model": "deliveries.delivery",
+    "pk": 1,
     "fields": {
-      "created": "2020-10-01T01:59:51.253Z",
-      "changed": "2020-10-01T01:59:51.253Z",
-      "client": 4,
-      "title": "Main",
-      "number": "+14152994883"
-    }
-  },
-  {
-    "model": "core.phone",
-    "pk": 5,
-    "fields": {
-      "created": "2020-10-01T01:59:51.362Z",
-      "changed": "2020-10-01T01:59:51.362Z",
-      "client": 5,
-      "title": "Main",
-      "number": "+14086660079"
+      "created": "2020-12-30T04:47:40.968Z",
+      "changed": "2020-12-30T04:47:40.968Z",
+      "employee": null,
+      "request": 1,
+      "invoice": null,
+      "note": "",
+      "sorting": null,
+      "kind": "pickup",
+      "status": "accepted",
+      "date": "2020-12-30",
+      "start": "13:00:00",
+      "end": "15:00:00"
     }
   },
   {
     "model": "deliveries.delivery",
-    "pk": 1,
+    "pk": 2,
+    "fields": {
+      "created": "2020-12-30T04:47:40.999Z",
+      "changed": "2020-12-30T04:47:40.999Z",
+      "employee": null,
+      "request": 1,
+      "invoice": null,
+      "note": "",
+      "sorting": null,
+      "kind": "dropoff",
+      "status": "accepted",
+      "date": "2021-01-04",
+      "start": "13:00:00",
+      "end": "15:00:00"
+    }
+  },
+  {
+    "model": "deliveries.delivery",
+    "pk": 3,
     "fields": {
       "created": "2020-12-04T02:16:31.338Z",
       "changed": "2020-12-04T02:16:31.338Z",
-      "employee": 1,
-      "request": 1,
+      "employee": 4,
+      "request": 2,
       "invoice": null,
       "note": "",
       "sorting": null,
@@ -2629,12 +2753,12 @@
   },
   {
     "model": "deliveries.delivery",
-    "pk": 2,
+    "pk": 4,
     "fields": {
       "created": "2020-12-04T02:16:31.342Z",
       "changed": "2020-12-04T02:16:31.342Z",
-      "employee": 1,
-      "request": 1,
+      "employee": 4,
+      "request": 2,
       "invoice": null,
       "note": "",
       "sorting": null,
@@ -2647,12 +2771,12 @@
   },
   {
     "model": "deliveries.delivery",
-    "pk": 3,
+    "pk": 5,
     "fields": {
       "created": "2020-12-04T02:19:08.309Z",
       "changed": "2020-12-04T02:19:08.309Z",
       "employee": null,
-      "request": 2,
+      "request": 3,
       "invoice": null,
       "note": "",
       "sorting": null,
@@ -2665,12 +2789,12 @@
   },
   {
     "model": "deliveries.delivery",
-    "pk": 4,
+    "pk": 6,
     "fields": {
       "created": "2020-12-04T02:19:08.312Z",
       "changed": "2020-12-04T02:19:08.312Z",
       "employee": null,
-      "request": 2,
+      "request": 3,
       "invoice": null,
       "note": "",
       "sorting": null,
@@ -2685,8 +2809,8 @@
     "model": "deliveries.request",
     "pk": 1,
     "fields": {
-      "created": "2020-12-04T02:16:31.332Z",
-      "changed": "2020-12-04T02:16:31.332Z",
+      "created": "2020-12-30T04:47:40.963Z",
+      "changed": "2020-12-30T04:47:40.963Z",
       "comment": "",
       "is_rush": false,
       "client": 1,
@@ -2698,12 +2822,25 @@
     "model": "deliveries.request",
     "pk": 2,
     "fields": {
+      "created": "2020-12-04T02:16:31.332Z",
+      "changed": "2020-12-04T02:16:31.332Z",
+      "comment": "",
+      "is_rush": false,
+      "client": 2,
+      "address": 1,
+      "schedule": null
+    }
+  },
+  {
+    "model": "deliveries.request",
+    "pk": 3,
+    "fields": {
       "created": "2020-12-04T02:19:08.304Z",
       "changed": "2020-12-04T02:19:08.304Z",
       "comment": "",
       "is_rush": false,
       "client": 3,
-      "address": 6,
+      "address": 4,
       "schedule": null
     }
   },
@@ -3883,39 +4020,11 @@
     "model": "locations.address",
     "pk": 3,
     "fields": {
-      "created": "2020-10-01T02:04:35.366Z",
-      "changed": "2020-10-01T02:04:35.366Z",
-      "client": 4,
-      "zip_code": 18,
-      "title": "Main",
-      "address_line_1": "Amerika",
-      "address_line_2": "Boston 3",
-      "has_doorman": false
-    }
-  },
-  {
-    "model": "locations.address",
-    "pk": 4,
-    "fields": {
-      "created": "2020-10-01T02:04:35.366Z",
-      "changed": "2020-10-01T02:04:35.366Z",
-      "client": 5,
-      "zip_code": 18,
-      "title": "Main",
-      "address_line_1": "Amerika",
-      "address_line_2": "Boston 4",
-      "has_doorman": false
-    }
-  },
-  {
-    "model": "locations.address",
-    "pk": 5,
-    "fields": {
       "created": "2020-12-04T02:15:19.333Z",
       "changed": "2020-12-04T02:15:19.333Z",
-      "client": 1,
+      "client": 2,
       "zip_code": 85,
-      "title": "Main",
+      "title": "Second",
       "address_line_1": "Manhattan",
       "address_line_2": "",
       "has_doorman": false
@@ -3923,7 +4032,7 @@
   },
   {
     "model": "locations.address",
-    "pk": 6,
+    "pk": 4,
     "fields": {
       "created": "2020-12-04T02:17:17.803Z",
       "changed": "2020-12-04T02:17:17.803Z",
@@ -5545,8 +5654,8 @@
     "model": "orders.order",
     "pk": 1,
     "fields": {
-      "created": "2020-12-04T02:14:59.502Z",
-      "changed": "2020-12-04T02:15:36.691Z",
+      "created": "2020-12-30T04:14:33.781Z",
+      "changed": "2020-12-30T04:15:00.455Z",
       "client": 1,
       "employee": null,
       "basket": null,
@@ -5556,16 +5665,17 @@
       "status": "accepted",
       "payment": "paid",
       "note": "",
-      "is_save_card": true
+      "is_save_card": true,
+      "is_pdf_ready": false
     }
   },
   {
     "model": "orders.order",
     "pk": 2,
     "fields": {
-      "created": "2020-12-04T02:17:01.269Z",
-      "changed": "2020-12-04T02:18:03.853Z",
-      "client": 3,
+      "created": "2020-12-04T02:14:59.502Z",
+      "changed": "2020-12-04T02:15:36.691Z",
+      "client": 2,
       "employee": null,
       "basket": null,
       "request": null,
@@ -5574,7 +5684,27 @@
       "status": "accepted",
       "payment": "paid",
       "note": "",
-      "is_save_card": true
+      "is_save_card": true,
+      "is_pdf_ready": false
+    }
+  },
+  {
+    "model": "orders.order",
+    "pk": 3,
+    "fields": {
+      "created": "2020-12-04T02:17:01.269Z",
+      "changed": "2020-12-04T02:18:03.853Z",
+      "client": 3,
+      "employee": null,
+      "basket": null,
+      "request": null,
+      "subscription": 3,
+      "coupon": null,
+      "status": "accepted",
+      "payment": "paid",
+      "note": "",
+      "is_save_card": true,
+      "is_pdf_ready": false
     }
   },
   {
@@ -7690,6 +7820,28 @@
     "model": "subscriptions.subscription",
     "pk": 1,
     "fields": {
+      "created": "2020-12-30T04:14:33.758Z",
+      "changed": "2020-12-30T04:14:48.959Z",
+      "price": 0,
+      "dry_clean": 0,
+      "laundry": 0,
+      "alterations": 0,
+      "wash_fold": 0,
+      "delivery_free_from": 4900,
+      "has_delivery": false,
+      "has_welcome_box": false,
+      "has_seasonal_garment": false,
+      "has_credit_back": false,
+      "is_most_popular": false,
+      "client": 1,
+      "name": "payc",
+      "invoice": null
+    }
+  },
+  {
+    "model": "subscriptions.subscription",
+    "pk": 2,
+    "fields": {
       "created": "2020-12-04T02:14:59.485Z",
       "changed": "2020-12-04T02:15:19.497Z",
       "price": 19900,
@@ -7703,14 +7855,14 @@
       "has_seasonal_garment": false,
       "has_credit_back": false,
       "is_most_popular": false,
-      "client": 1,
+      "client": 2,
       "name": "gold",
-      "invoice": 1
+      "invoice": 2
     }
   },
   {
     "model": "subscriptions.subscription",
-    "pk": 2,
+    "pk": 3,
     "fields": {
       "created": "2020-12-04T02:17:01.254Z",
       "changed": "2020-12-04T02:17:17.836Z",
@@ -7727,7 +7879,7 @@
       "is_most_popular": true,
       "client": 3,
       "name": "platinum",
-      "invoice": 2
+      "invoice": 3
     }
   },
   {
@@ -7735,18 +7887,18 @@
     "pk": 1,
     "fields": {
       "created": "2020-10-01T01:59:50.886Z",
-      "changed": "2020-12-04T02:15:36.696Z",
+      "changed": "2020-12-30T04:15:00.469Z",
       "stripe_id": "cus_HsLFiIYxwKsoOC",
       "user": [
-        "api@evrone.com"
+        "payc@washmix.com"
       ],
       "subscription": 1,
-      "main_card": 2,
+      "main_card": 1,
       "main_phone": 1,
       "main_address": 1,
       "billing_address": {
         "zip_code": "95103",
-        "address_line_1": "Oklahoma"
+        "address_line_1": "New Jersey"
       },
       "detergents": "",
       "starch": "",
@@ -7764,13 +7916,16 @@
       "changed": "2020-10-01T01:59:51.014Z",
       "stripe_id": "cus_HxSYa6ACuzQdtS",
       "user": [
-        "ds.ionin@evrone.com"
+        "gold@washmix.com"
       ],
-      "subscription": null,
-      "main_card": null,
+      "subscription": 2,
+      "main_card": 2,
       "main_phone": 2,
       "main_address": 2,
-      "billing_address": {},
+      "billing_address": {
+        "zip_code": "95103",
+        "address_line_1": "Boston"
+      },
       "detergents": "",
       "starch": "",
       "no_crease": "",
@@ -7787,62 +7942,16 @@
       "changed": "2020-12-04T02:18:03.857Z",
       "stripe_id": "cus_HxSYL19Joq6KTq",
       "user": [
-        "savoskin@evrone.com"
+        "platinum@washmix.com"
       ],
-      "subscription": 2,
+      "subscription": 3,
       "main_card": 3,
       "main_phone": 3,
-      "main_address": 6,
+      "main_address": 4,
       "billing_address": {
         "zip_code": "95103",
         "address_line_1": "Oklahoma"
       },
-      "detergents": "",
-      "starch": "",
-      "no_crease": "",
-      "fabric_softener": false,
-      "fix_tears": false,
-      "is_auto_billing": true
-    }
-  },
-  {
-    "model": "users.client",
-    "pk": 4,
-    "fields": {
-      "created": "2020-10-01T01:59:51.249Z",
-      "changed": "2020-10-01T01:59:51.256Z",
-      "stripe_id": "cus_HxSY7DuMrXnEc1",
-      "user": [
-        "og@evrone.com"
-      ],
-      "subscription": null,
-      "main_card": null,
-      "main_phone": 4,
-      "main_address": 3,
-      "billing_address": {},
-      "detergents": "",
-      "starch": "",
-      "no_crease": "",
-      "fabric_softener": false,
-      "fix_tears": false,
-      "is_auto_billing": true
-    }
-  },
-  {
-    "model": "users.client",
-    "pk": 5,
-    "fields": {
-      "created": "2020-10-01T01:59:51.359Z",
-      "changed": "2020-10-01T02:04:35.372Z",
-      "stripe_id": "cus_HxSY7DuMrXnEc0",
-      "user": [
-        "michaelbehestaein@evrone.com"
-      ],
-      "subscription": null,
-      "main_card": null,
-      "main_phone": 5,
-      "main_address": 4,
-      "billing_address": {},
       "detergents": "",
       "starch": "",
       "no_crease": "",
@@ -7858,17 +7967,32 @@
       "created": "2020-12-07T14:58:01.941Z",
       "changed": "2020-12-07T14:58:03.084Z",
       "user": [
-        "driver@washmix.com"
+        "superadmin@washmix.com"
       ],
-      "position": "driver",
+      "position": "manager",
       "SSN": "111222333",
-      "birthday": "2016-12-15",
+      "birthday": "2000-10-22",
       "came_to_work": "2020-12-07T14:58:18.521Z"
     }
   },
   {
     "model": "users.employee",
     "pk": 2,
+    "fields": {
+      "created": "2020-12-07T14:58:01.941Z",
+      "changed": "2020-12-07T14:58:03.084Z",
+      "user": [
+        "admin@washmix.com"
+      ],
+      "position": "manager",
+      "SSN": "111222333",
+      "birthday": "1999-10-10",
+      "came_to_work": "2020-12-07T14:58:18.521Z"
+    }
+  },
+  {
+    "model": "users.employee",
+    "pk": 3,
     "fields": {
       "created": "2020-12-07T14:59:09.057Z",
       "changed": "2020-12-07T14:59:10.350Z",
@@ -7879,6 +8003,21 @@
       "SSN": "444555666",
       "birthday": "2018-12-13",
       "came_to_work": "2020-12-07T14:59:35.893Z"
+    }
+  },
+  {
+    "model": "users.employee",
+    "pk": 4,
+    "fields": {
+      "created": "2020-12-07T14:58:01.941Z",
+      "changed": "2020-12-07T14:58:03.084Z",
+      "user": [
+        "driver@washmix.com"
+      ],
+      "position": "driver",
+      "SSN": "111222333",
+      "birthday": "2016-12-15",
+      "came_to_work": "2020-12-07T14:58:18.521Z"
     }
   }
 ]

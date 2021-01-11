@@ -48,3 +48,6 @@ class Basket(Common):
         verbose_name = "basket"
         verbose_name_plural = "baskets"
         ordering = ["-created"]
+
+    def __str__(self):
+        return f"Basket # {self.id}"

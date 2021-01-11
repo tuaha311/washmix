@@ -1,4 +1,9 @@
+from typing import Any
+
+
 class ProxyUserInfoMixin:
+    user: Any
+
     #
     # user proxy fields
     #

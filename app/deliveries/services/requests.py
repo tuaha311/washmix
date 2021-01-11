@@ -17,6 +17,7 @@ from deliveries.validators import RequestValidator
 from notifications.tasks import send_email
 from orders.containers.basket import BasketContainer
 from orders.models import Basket, Order
+from subscriptions.models import Subscription
 from users.models import Client
 
 
@@ -46,6 +47,7 @@ class RequestService(PaymentInterfaceService):
         order: Order,
         basket: Optional[Basket],
         request: Optional[Request],
+        subscription: Optional[Subscription],
         **kwargs,
     ) -> Optional[List[Invoice]]:
         """
@@ -59,8 +61,8 @@ class RequestService(PaymentInterfaceService):
         client = self._client
         subscription = client.subscription
         invoice_service = InvoiceService(client)
-        basket_container = BasketContainer(subscription, basket)
-        request_container = RequestContainer(subscription, request, basket_container)
+        basket_container = BasketContainer(subscription, basket)  # type: ignore
+        request_container = RequestContainer(subscription, request, basket_container)  # type: ignore
 
         # we have 2 kind - Pickup, Dropoff
         # and for every of Delivery we create an invoice
@@ -87,7 +89,13 @@ class RequestService(PaymentInterfaceService):
 
         return invoice_list
 
-    def charge(self, request: Request, basket: Basket, **kwargs):
+    def charge(
+        self,
+        request: Optional[Request],
+        basket: Optional[Basket],
+        subscription: Optional[Subscription],
+        **kwargs,
+    ):
         """
         We are charging user for:
             - basket amount

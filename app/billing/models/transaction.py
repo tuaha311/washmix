@@ -30,12 +30,12 @@ class Transaction(Amountable, Stripeable, Common):
 
     kind = models.CharField(
         verbose_name="kind of transaction",
-        max_length=10,
+        max_length=20,
         choices=Kind.CHOICES,
     )
     provider = models.CharField(
         verbose_name="provider of transaction",
-        max_length=10,
+        max_length=20,
         choices=Provider.CHOICES,
     )
     source = JSONField(

@@ -112,7 +112,7 @@ class Client(ProxyUserInfoMixin, Stripeable, Common):
         credit_total = credit_transactions.aggregate(total=Sum("amount"))["total"] or 0
 
         return debit_total - credit_total
-    _balance.short_description = 'Balance, in cents (¢)'
+    _balance.short_description = 'Balance, in cents (¢)'  # type: ignore
     balance = property(_balance)
     
     @property

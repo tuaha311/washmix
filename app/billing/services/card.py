@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from billing.models import Card, Invoice
+from billing.models import Card
 from billing.stripe_helper import StripeHelper
 from users.models import Client
 

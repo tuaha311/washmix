@@ -191,6 +191,12 @@ All test users have same password `helloevrone`
 For weekday storing in database and when working in codebase we are using integers starting from 1 (Mon) to 7 (Sun).
 In Python code you can use `.isoweekday` method for access to this value.
 
+
+## Signals
+We have `post_save` signal for Delivery model that sends SMS on Client's number with
+delivery information.
+
+
 ## Twilio
 Attributes for `Sent to Flex` widget that copied from YouTube:
 ```json

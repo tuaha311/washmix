@@ -1,3 +1,5 @@
+import logging
+
 from django.conf import settings
 from django.template.loader import render_to_string
 
@@ -6,27 +8,14 @@ from sendgrid.helpers.mail import HtmlContent, Mail, To
 
 from notifications.senders.base import Sender
 
+logger = logging.getLogger(__name__)
+
 
 class SendGridSender(Sender):
     def __init__(self):
         self._client = SendGridAPIClient(api_key=settings.SENDGRID_API_KEY).client
 
-    def raw_send(
-        self, from_email: str, recipient_list: list, subject: str, html_content: str
-    ) -> None:
-        recipient_list = [To(item) for item in recipient_list]
-
-        mail = Mail(
-            from_email=from_email,
-            to_emails=recipient_list,
-            subject=subject,
-            html_content=HtmlContent(html_content),
-        )
-        request_body = mail.get()
-
-        self._client.mail.send.post(request_body=request_body)
-
-    def send(self, recipient_list: list, event: str, context: dict = None) -> None:
+    def send(self, recipient_list: list, event: str, context: dict = None, *args, **kwargs) -> None:
         event_info = settings.EMAIL_EVENT_INFO[event]
 
         subject = event_info["subject"]
@@ -36,8 +25,31 @@ class SendGridSender(Sender):
         html_content = render_to_string(template_name, context=context)
 
         self.raw_send(
-            from_email=from_email,
+            from_sender=from_email,
             subject=subject,
             recipient_list=recipient_list,
-            html_content=html_content,
+            body=html_content,
         )
+
+    def raw_send(
+        self,
+        from_sender: str,
+        recipient_list: list,
+        subject: str,
+        body: str,
+        *args,
+        **kwargs,
+    ) -> None:
+        recipient_list = [To(item) for item in recipient_list]
+
+        mail = Mail(
+            from_email=from_sender,
+            to_emails=recipient_list,
+            subject=subject,
+            html_content=HtmlContent(body),
+        )
+        request_body = mail.get()
+
+        response = self._client.mail.send.post(request_body=request_body)
+
+        logger.info(f"SendGrid response - {response}")

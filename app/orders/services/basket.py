@@ -11,8 +11,10 @@ from billing.models import Invoice
 from billing.services.invoice import InvoiceService
 from billing.services.payments import PaymentService
 from core.interfaces import PaymentInterfaceService
+from deliveries.models import Request
 from orders.containers.basket import BasketContainer
 from orders.models import Basket, Order, Price, Quantity
+from subscriptions.models import Subscription
 from users.models import Client
 
 DEFAULT_COUNT = 0
@@ -37,6 +39,8 @@ class BasketService(PaymentInterfaceService):
         self,
         order: Order,
         basket: Optional[Basket],
+        request: Optional[Request],
+        subscription: Optional[Subscription],
         **kwargs,
     ) -> Optional[List[Invoice]]:
         """
@@ -49,7 +53,7 @@ class BasketService(PaymentInterfaceService):
         client = self._client
         subscription = client.subscription
         invoice_service = InvoiceService(client)
-        basket_container = BasketContainer(subscription, basket)
+        basket_container = BasketContainer(subscription, basket)  # type: ignore
 
         basket_invoice = invoice_service.update_or_create(
             order=order,
@@ -62,7 +66,13 @@ class BasketService(PaymentInterfaceService):
 
         return [basket_invoice]
 
-    def charge(self, basket: Basket, **kwargs):
+    def charge(
+        self,
+        request: Optional[Request],
+        basket: Optional[Basket],
+        subscription: Optional[Subscription],
+        **kwargs,
+    ):
         """
         We are charging user for:
             - basket amount

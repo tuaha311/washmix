@@ -86,6 +86,14 @@ class Delivery(Common):
         return f"# {self.id}"
 
     @property
+    def pretty_date(self) -> str:
+        date = self.date
+
+        pretty_date = date.strftime("%d %B, %Y")
+
+        return pretty_date
+
+    @property
     def order(self):
         request = self.request
         order = request.order

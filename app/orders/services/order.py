@@ -14,7 +14,7 @@ from orders.models import Basket, Order
 from orders.services.basket import BasketService
 from orders.tasks import generate_pdf_from_html
 from subscriptions.services.subscription import SubscriptionService
-from users.models import Client
+from users.models import Client, Employee
 
 
 class OrderService:
@@ -126,7 +126,7 @@ class OrderService:
 
         return self.get_container()
 
-    def finalize(self, order: Order) -> Order:
+    def finalize(self, order: Order, employee: Employee) -> Order:
         """
         Last method in payment flow, that marks order as paid and
         calls success events.
@@ -136,10 +136,12 @@ class OrderService:
 
         with atomic():
             order.payment = PaymentChoices.PAID
+            order.employee = employee
 
             if order.is_save_card:
                 order.card = self._client.main_card
-                order.save()
+
+            order.save()
 
         self._notify_client_on_new_order()
         self._generate_pdf_report()

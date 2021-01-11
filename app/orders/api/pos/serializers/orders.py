@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from api.client.serializers.common import CommonContainerSerializer
-from api.fields import OrderField, POSClientField, POSRequestField
+from api.fields import POSClientField, POSOrderField, POSRequestField
 from deliveries.api.pos.serializers import RequestResponseSerializer
 from deliveries.models import Request
 from locations.models import Address
@@ -44,7 +44,7 @@ class OrderSerializer(CommonContainerSerializer, serializers.ModelSerializer):
 
 
 class POSOrderCheckoutSerializer(serializers.Serializer):
-    order = OrderField()
+    order = POSOrderField()
 
     def validate_order(self, value):
         """

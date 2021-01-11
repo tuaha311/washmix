@@ -1,20 +1,21 @@
 from typing import List, Optional
+from uuid import uuid4
 
 from django.conf import settings
 from django.db.transaction import atomic
 
-from stripe import PaymentMethod
-
-from billing.choices import Purpose
+from billing.choices import Provider, Purpose
+from billing.containers import PaymentContainer
 from billing.models import Invoice
 from billing.services.card import CardService
 from billing.services.invoice import InvoiceService
 from billing.services.payments import PaymentService
 from core.interfaces import PaymentInterfaceService
+from deliveries.models import Request
 from notifications.tasks import send_email
 from orders.choices import PaymentChoices, StatusChoices
 from orders.containers.order import OrderContainer
-from orders.models import Order
+from orders.models import Basket, Order
 from subscriptions.containers import SubscriptionContainer
 from subscriptions.models import Package, Subscription
 from users.models import Client
@@ -34,6 +35,8 @@ class SubscriptionService(PaymentInterfaceService):
     def create_invoice(
         self,
         order: Order,
+        basket: Optional[Basket],
+        request: Optional[Request],
         subscription: Optional[Subscription],
         **kwargs,
     ) -> Optional[List[Invoice]]:
@@ -60,7 +63,13 @@ class SubscriptionService(PaymentInterfaceService):
 
         return [subscription_invoice]
 
-    def charge(self, subscription: Subscription, **kwargs) -> Optional[PaymentMethod]:
+    def charge(
+        self,
+        request: Optional[Request],
+        basket: Optional[Basket],
+        subscription: Optional[Subscription],
+        **kwargs,
+    ):
         """
         For PAYC package we have a special case, where we just store a payment method.
         For other packages - we are charging user for subscription amount.
@@ -74,18 +83,26 @@ class SubscriptionService(PaymentInterfaceService):
         payment_service = PaymentService(client, invoice)
         card_service = CardService(client)
 
-        payment = None
-
+        # save payment method for PAYC
+        # and confirm payment
         if subscription.name == settings.PAYC:
             card = client.card_list.first()
             card_service.update_main_card(client, card)
-            return payment
 
-        return payment_service.charge()
+            payment_id = str(uuid4())
+            payment_amount = 0
+            payment_container = PaymentContainer(payment_id, payment_amount)
+
+            payment_service.confirm(payment_container, provider=Provider.WASHMIX)
+        else:
+            payment_service.charge()
 
     def checkout(self, order: Order, subscription: Subscription, **kwargs):
         """
         Method has additional handling for PAYC packages.
+
+        This method called in OrderService.checkout and we are passing a
+        few extra kwargs.
         """
 
         if not subscription:
@@ -154,7 +171,8 @@ class SubscriptionService(PaymentInterfaceService):
         )
 
     def _get_order_service(self, subscription: Subscription):
-        # TODO refactor inline import
+        # We are preventing circular import of OrderService
+        # by importing this import inline
         from orders.services.order import OrderService
 
         client = self._client
