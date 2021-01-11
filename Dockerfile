@@ -7,7 +7,8 @@ RUN apt-get install libcairo2 \
   libgdk-pixbuf2.0-0 \
   libffi-dev \
   shared-mime-info \
-  curl
+  curl \
+  net-tools
 
 ENV PYTHONUNBUFFERED 1
 
