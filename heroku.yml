@@ -7,11 +7,11 @@ release:
   image: web
 run:
   web: /docker-entrypoint.sh
-  worker:
+  dramatiq:
     command:
       - "/docker-entrypoint.sh worker"
     image: web
-  scheduler:
+  periodiq:
     command:
       - "/docker-entrypoint.sh scheduler"
     image: web
