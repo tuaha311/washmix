@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y libcairo2 \
   curl \
   net-tools \
   telnet \
-  openssh \
+  openssh-server \
   && rm -rf /var/lib/apt/lists/*
 
 ###Added for use in Heroku
