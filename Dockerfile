@@ -7,10 +7,9 @@ RUN apt-get update && apt-get install -y libcairo2 \
   libgdk-pixbuf2.0-0 \
   libffi-dev \
   shared-mime-info \
-  curl \
-  net-tools \
-  telnet \
+  ###Added for use in Heroku
   openssh-server \
+  ###
   && rm -rf /var/lib/apt/lists/*
 
 ###Added for use in Heroku
@@ -19,11 +18,13 @@ RUN rm /bin/sh \
  && mkdir -p /app/.profile.d/ \
  && printf '#!/usr/bin/env bash\n\nset +o posix\n\n[ -z "$SSH_CLIENT" ] && source <(curl --fail --retry 7 -sSL "$HEROKU_EXEC_URL")\n' > /app/.profile.d/heroku-exec.sh \
  && chmod +x /app/.profile.d/heroku-exec.sh
+###
 
 ENV PYTHONUNBUFFERED 1
 
 ###Edited for use in Heroku
 #EXPOSE 8000
+###
 
 COPY poetry.lock pyproject.toml /
 RUN pip install poetry \
@@ -38,3 +39,4 @@ COPY docker-entrypoint.sh /docker-entrypoint.sh
 ###Edited for use in Heroku
 CMD ["/docker-entrypoint.sh"]
 #ENTRYPOINT ["/docker-entrypoint.sh"]
+###
