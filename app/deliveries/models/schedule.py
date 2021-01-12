@@ -37,7 +37,7 @@ class Schedule(CommonScheduleRequest, Common):
             choices=settings.DELIVERY_DAY_CHOICES,
         ),
         verbose_name="recurring pickup days",
-        max_length=7,
+        max_length=5,
     )
     status = models.CharField(
         max_length=20,
@@ -48,3 +48,10 @@ class Schedule(CommonScheduleRequest, Common):
     class Meta:
         verbose_name = "schedule"
         verbose_name_plural = "schedules"
+
+    def __str__(self):
+        days = self.days
+        pretty_days = [settings.DELIVERY_DAYS_MAP[item] for item in days]
+        string_days = ", ".join(pretty_days)
+
+        return f"#{self.id} - {string_days}"
