@@ -139,7 +139,7 @@ class ClientAdmin(DefaultAdmin):
 
         self.message_user(request, "Client was removed.", messages.SUCCESS)
 
-    full_delete_action.short_description = "Remove all client's info."
+    full_delete_action.short_description = "Remove all client's info."  # type: ignore
 
 
 class CustomerAdmin(DefaultAdmin):
