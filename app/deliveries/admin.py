@@ -1,3 +1,5 @@
+from django import forms
+from django.conf import settings
 from django.contrib import admin
 from django.db.models.signals import post_save
 
@@ -73,6 +75,23 @@ class DeliveryAdmin(DefaultAdmin):
         return super().save_model(request, obj, form, change)
 
 
-models = [[Schedule, DefaultAdmin], [Delivery, DeliveryAdmin], [Request, RequestAdmin]]
+class ScheduleForm(forms.ModelForm):
+    # we are overriding default `days` field widget
+    days = forms.TypedMultipleChoiceField(
+        coerce=lambda val: int(val),
+        choices=settings.DELIVERY_DAY_CHOICES,
+        label="Recurring pickup days",
+    )
+
+    class Meta:
+        model = Schedule
+        fields = "__all__"
+
+
+class ScheduleAdmin(DefaultAdmin):
+    form = ScheduleForm
+
+
+models = [[Schedule, ScheduleAdmin], [Delivery, DeliveryAdmin], [Request, RequestAdmin]]
 for item in models:
     admin.site.register(*item)

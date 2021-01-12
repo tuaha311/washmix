@@ -37,7 +37,7 @@ class Delivery(Common):
         "billing.Invoice",
         verbose_name="invoice for delivery",
         related_name="delivery",
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         null=True,
         blank=True,
     )

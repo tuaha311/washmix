@@ -422,11 +422,13 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ["profile", "email", "openid"]
 
 REDIS_HOST = env.str("REDIS_HOST", "localhost")
 REDIS_PORT = env.str("REDIS_PORT", "6379")
+REDIS_PASSWORD = env.str("REDIS_PASSWORD", None)
 REDIS_DB = 0
 REDIS_URL = f"{REDIS_HOST}:{REDIS_PORT}"
 REDIS_CLIENT = StrictRedis(
     host=REDIS_HOST,
     port=REDIS_PORT,
+    password=REDIS_PASSWORD,
     db=REDIS_DB,
 )
 REDIS_DEFAULT_EXPIRATION_TIME = 60 * 60 * 23

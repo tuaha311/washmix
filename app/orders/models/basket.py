@@ -35,7 +35,7 @@ class Basket(Common):
         "billing.Invoice",
         verbose_name="invoice for basket",
         related_name="basket",
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         null=True,
     )
     extra_items = JSONField(
