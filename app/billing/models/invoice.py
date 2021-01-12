@@ -32,7 +32,7 @@ class Invoice(CalculatedAmountWithDiscount, Amountable, Discountable, Common):
     order = models.ForeignKey(
         "orders.Order",
         verbose_name="order",
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         related_name="invoice_list",
         null=True,
     )
@@ -57,7 +57,7 @@ class Invoice(CalculatedAmountWithDiscount, Amountable, Discountable, Common):
         verbose_name_plural = "invoices"
 
     def __str__(self):
-        return f"№ {self.pk} {self.amount}"
+        return f"№ {self.id} {self.amount}"
 
     @property
     def is_paid(self) -> bool:

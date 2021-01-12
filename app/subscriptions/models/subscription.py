@@ -42,7 +42,7 @@ class Subscription(CommonPackageSubscription, Common):
         "billing.Invoice",
         verbose_name="invoice",
         related_name="subscription",
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         null=True,
     )
 

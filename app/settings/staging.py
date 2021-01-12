@@ -5,7 +5,12 @@ from settings.base import *
 
 DEBUG = True
 
-ALLOWED_HOSTS = [DOMAIN, "localhost"]
+ALLOWED_HOSTS = [
+    DOMAIN,
+    "localhost",
+    "washmix.herokuapp.com",
+    "washmix-back.herokuapp.com",
+]
 
 ALLOWED_COUNTRY_CODES = [1, 7]
 

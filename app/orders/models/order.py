@@ -34,7 +34,7 @@ class Order(Common):
         "orders.Basket",
         verbose_name="basket",
         related_name="order",
-        on_delete=models.PROTECT,
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )
@@ -42,7 +42,7 @@ class Order(Common):
         "deliveries.Request",
         verbose_name="request",
         related_name="order",
-        on_delete=models.PROTECT,
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )
@@ -50,7 +50,7 @@ class Order(Common):
         "subscriptions.Subscription",
         verbose_name="subscription",
         related_name="order",
-        on_delete=models.PROTECT,
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )
@@ -96,7 +96,7 @@ class Order(Common):
         ordering = ["-created"]
 
     def __str__(self):
-        return f"# {self.id}"
+        return f"№ {self.pk}"
 
     @property
     def pretty_status(self):

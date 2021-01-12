@@ -24,7 +24,7 @@ class Transaction(Amountable, Stripeable, Common):
     invoice = models.ForeignKey(
         "billing.Invoice",
         verbose_name="invoice",
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         related_name="transaction_list",
     )
 
@@ -46,3 +46,6 @@ class Transaction(Amountable, Stripeable, Common):
     class Meta:
         verbose_name = "transaction"
         verbose_name_plural = "transactions"
+
+    def __str__(self):
+        return f"№ {self.pk}"
