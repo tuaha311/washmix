@@ -7,12 +7,12 @@ RUN apt-get update && apt-get install -y libcairo2 \
   libgdk-pixbuf2.0-0 \
   libffi-dev \
   shared-mime-info \
-  ###Added for use in Heroku
+  ###Added for use exec command (open container console) in Heroku
   openssh-server \
   ###
   && rm -rf /var/lib/apt/lists/*
 
-###Added for use in Heroku
+###Added for use exec command (open container console) in Heroku
 RUN rm /bin/sh \
  && ln -s /bin/bash /bin/sh \
  && mkdir -p /app/.profile.d/ \
