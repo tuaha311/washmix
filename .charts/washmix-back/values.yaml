@@ -33,6 +33,7 @@ ingress:
         - /pos
         - /media
         - /assets
+        - /jet
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
