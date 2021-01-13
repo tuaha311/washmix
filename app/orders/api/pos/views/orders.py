@@ -1,4 +1,5 @@
 from rest_framework.generics import GenericAPIView, UpdateAPIView
+from rest_framework.request import Request
 from rest_framework.response import Response
 
 from api.authentication import default_pos_authentication
@@ -19,7 +20,7 @@ class POSOrderPrepareView(GenericAPIView):
     authentication_classes = default_pos_authentication
     permission_classes = default_pos_permissions
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request: Request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data, context={"request": request})
         serializer.is_valid(raise_exception=True)
 

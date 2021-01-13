@@ -1,7 +1,10 @@
+from rest_framework.generics import GenericAPIView
+from rest_framework.request import Request
+from rest_framework.response import Response
 from rest_framework.serializers import Serializer
 from rest_framework.viewsets import ModelViewSet
 
-from deliveries.api.client.serializers.requests import RequestSerializer
+from deliveries.api.client.serializers.requests import RequestCheckSerializer, RequestSerializer
 from deliveries.services.requests import RequestService
 
 
@@ -43,3 +46,17 @@ class RequestViewSet(ModelViewSet):
             service.recalculate(request)
 
         serializer.save()
+
+
+class RequestCheckView(GenericAPIView):
+    """
+    Goal of this view - validate request pickup date and time.
+    """
+
+    serializer_class = RequestCheckSerializer
+
+    def post(self, request: Request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data, context={"request": request})
+        serializer.is_valid(raise_exception=True)
+
+        return Response()

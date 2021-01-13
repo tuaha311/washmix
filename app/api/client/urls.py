@@ -3,7 +3,7 @@ from django.urls import include, path
 from rest_framework.routers import SimpleRouter
 from rest_framework_simplejwt.views import TokenRefreshSlidingView, TokenVerifyView
 
-from api.client.views import auth, checkout, services, trigger, twilio
+from api.client.views import auth, checkout, services, twilio
 from billing.api.views import cards, invoices
 from core.api import views as core_views
 from deliveries.api.client.views import requests, schedules
@@ -70,12 +70,12 @@ urlpatterns = [
     path("zip_codes/", zip_codes.ZipCodeListView.as_view(), name="zip-code-list"),
     path("sms/", include(sms_urls)),
     path("welcome/", include(welcome_urls)),
-    path("trigger/", trigger.TriggerView.as_view(), name="trigger"),
     path("billing/", include("billing.urls.client")),
     path("orders/", include("orders.urls.client")),
     path("subscription/", include("subscriptions.urls.client")),
     path("invoices/", invoices.InvoiceListView.as_view(), name="invoice-list"),
     path("cards/refresh/", cards.CardRefreshView.as_view(), name="card-refresh"),
+    path("requests/check/", requests.RequestCheckView.as_view(), name="request-check"),
     # default routes has a higher priority under router URLS
     *router.urls,
     # open methods without authorization (landing page, authorization, health check)
