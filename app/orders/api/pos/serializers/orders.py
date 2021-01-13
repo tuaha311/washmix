@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from api.client.serializers.common import CommonContainerSerializer
 from api.fields import POSClientField, POSOrderField, POSRequestField
+from billing.models import Coupon
 from deliveries.api.pos.serializers import RequestResponseSerializer
 from deliveries.models import Request
 from locations.models import Address
@@ -15,6 +16,9 @@ class OrderSerializer(CommonContainerSerializer, serializers.ModelSerializer):
     basket = BasketSerializer(allow_null=True)
     request = RequestResponseSerializer(allow_null=True)
     subscription = serializers.SlugRelatedField(slug_field="name", read_only=True, allow_null=True)
+    coupon = serializers.SlugRelatedField(
+        slug_field="code", allow_null=True, queryset=Coupon.objects.all()
+    )
     credit_back = serializers.ReadOnlyField()
     dollar_credit_back = serializers.ReadOnlyField()
 
@@ -40,6 +44,7 @@ class OrderSerializer(CommonContainerSerializer, serializers.ModelSerializer):
             "dollar_discount",
             "amount_with_discount",
             "dollar_amount_with_discount",
+            "coupon",
         ]
 
 
