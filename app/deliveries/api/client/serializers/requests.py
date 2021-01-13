@@ -49,3 +49,18 @@ class RequestSerializer(serializers.ModelSerializer):
             service.validate()
 
         return attrs
+
+
+class RequestCheckSerializer(serializers.Serializer):
+    pickup_date = serializers.DateField()
+    pickup_start = serializers.TimeField()
+
+    def validate(self, attrs):
+        client = self.context["request"].user.client
+        pickup_date = attrs["pickup_date"]
+        pickup_start = attrs["pickup_start"]
+
+        service = RequestService(client=client, pickup_date=pickup_date, pickup_start=pickup_start)
+        service.validate()
+
+        return attrs
