@@ -6,7 +6,7 @@ from django.db.transaction import atomic
 from billing.choices import Provider
 from billing.models import Invoice
 from billing.utils import add_credits
-from core.admin import DefaultAdmin
+from core.admin import AdminWithSearch
 from deliveries.models import Request
 from orders.models import Order
 from users.models import Client, Customer, Employee
@@ -87,9 +87,10 @@ class ClientForm(forms.ModelForm):
         fields = "__all__"
 
 
-class ClientAdmin(DefaultAdmin):
+class ClientAdmin(AdminWithSearch):
     readonly_fields = [
         "balance",
+        "stripe_id",
     ]
     form = ClientForm
     inlines = [RequestInlineAdmin, OrderInlineAdmin, InvoiceInlineAdmin]
@@ -142,7 +143,7 @@ class ClientAdmin(DefaultAdmin):
     full_delete_action.short_description = "Remove all client's info."  # type: ignore
 
 
-class CustomerAdmin(DefaultAdmin):
+class CustomerAdmin(AdminWithSearch):
     list_display = [
         "full_name",
         "email",
@@ -156,8 +157,8 @@ class CustomerAdmin(DefaultAdmin):
 
 models = [
     [Client, ClientAdmin],
-    [Employee, DefaultAdmin],
-    [Customer, DefaultAdmin],
+    [Employee, AdminWithSearch],
+    [Customer, AdminWithSearch],
 ]
 for item in models:
     admin.site.register(*item)
