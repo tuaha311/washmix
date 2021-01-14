@@ -37,6 +37,7 @@ class Card(Stripeable, Common):
     class Meta:
         verbose_name = "card"
         verbose_name_plural = "cards"
+        unique_together = ("client", "stripe_id",)
 
     def __str__(self):
         return f"*** {self.last} - {self.expiration_month}/{self.expiration_year}"
