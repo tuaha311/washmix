@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 
-from core.admin import DefaultAdmin
+from core.admin import AdminWithSearch
 from orders.models import Basket, Item, Order, Price, Quantity, Service
 
 
@@ -22,11 +22,11 @@ class QuantityInlineAdmin(admin.TabularInline):
     extra = 1
 
 
-class BasketAdmin(DefaultAdmin):
+class BasketAdmin(AdminWithSearch):
     inlines = [QuantityInlineAdmin]
 
 
-class OrderAdmin(DefaultAdmin):
+class OrderAdmin(AdminWithSearch):
     readonly_fields = [
         "pdf_ready",
         "pdf_path",
@@ -75,9 +75,9 @@ class OrderAdmin(DefaultAdmin):
 
 models = [
     [Order, OrderAdmin],
-    [Item, DefaultAdmin],
-    [Service, DefaultAdmin],
-    [Price, DefaultAdmin],
+    [Item, AdminWithSearch],
+    [Service, AdminWithSearch],
+    [Price, AdminWithSearch],
     [Basket, BasketAdmin],
 ]
 for item in models:

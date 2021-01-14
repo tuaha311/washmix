@@ -41,6 +41,13 @@ class CardService:
 
         return self._client.card_list.all()
 
+    def remove_card(self, stripe_id: str):
+        """
+        Method that removes card from user.
+        """
+
+        self._stripe_helper.detach_payment_method(stripe_id)
+
     @classmethod
     def update_main_card(cls, client: Client, card: Card):
         client.main_card = card

@@ -3,7 +3,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.db.models.signals import post_save
 
-from core.admin import DefaultAdmin
+from core.admin import AdminWithSearch
 from deliveries.models import Delivery, Request, Schedule
 
 
@@ -12,7 +12,7 @@ class DeliveryInlineAdmin(admin.TabularInline):
     extra = 1
 
 
-class RequestAdmin(DefaultAdmin):
+class RequestAdmin(AdminWithSearch):
     inlines = [DeliveryInlineAdmin]
     list_display = [
         "__str__",
@@ -27,7 +27,7 @@ class RequestAdmin(DefaultAdmin):
     ]
 
 
-class DeliveryAdmin(DefaultAdmin):
+class DeliveryAdmin(AdminWithSearch):
     readonly_fields = [
         "order",
     ]
@@ -88,7 +88,7 @@ class ScheduleForm(forms.ModelForm):
         fields = "__all__"
 
 
-class ScheduleAdmin(DefaultAdmin):
+class ScheduleAdmin(AdminWithSearch):
     form = ScheduleForm
 
 

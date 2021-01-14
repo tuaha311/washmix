@@ -24,10 +24,3 @@ class InvoiceService:
         )
 
         return invoice
-
-    @classmethod
-    def update_invoice(cls, invoice, is_save_card: bool) -> Invoice:
-        invoice.is_save_card = is_save_card
-        invoice.save()
-
-        return invoice

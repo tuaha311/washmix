@@ -8,11 +8,11 @@ from social_django.models import Association, Nonce, UserSocialAuth
 from core.models import Phone
 
 
-class DefaultAdmin(DjangoQLSearchMixin, admin.ModelAdmin):
+class AdminWithSearch(DjangoQLSearchMixin, admin.ModelAdmin):
     pass
 
 
-registered_models = [[Phone, DefaultAdmin]]
+registered_models = [[Phone, AdminWithSearch]]
 for item in registered_models:
     admin.site.register(*item)
 
