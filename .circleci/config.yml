@@ -23,6 +23,10 @@ aliases:
           echo $KUBECONFIG_TOKEN | base64 -d > $KUBECONFIG
     - deploy_helm_chart
 
+  - &deploy_to_heroku
+    - checkout
+    - deploy_to_heroku
+
 # Commands
 commands:
   build_and_push_docker_image:
@@ -51,6 +55,13 @@ commands:
           command: |
             helm version && .charts/update.sh
 
+  deploy_to_heroku:
+    description: "Deploy applicaton to Heroku"
+    steps:
+      - run:
+          command: |
+            git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git master
+
 jobs:
   "Build docker image":
     <<: *build_environment
@@ -59,7 +70,11 @@ jobs:
   "Deploy Helm chart":
     <<: *build_environment
     steps: *deploy_helm_chart
- 
+
+  "Deploy to Heroku":
+    <<: *build_environment
+    steps: *deploy_to_heroku
+
 # // End of jobs
 
 _release-filters: &release-filters
@@ -76,5 +91,10 @@ workflows:
       - "Deploy Helm chart":
           requires:
             - "Build docker image"
+          filters:
+            <<: *release-filters
+  deploy-to-heroku:
+    jobs:
+      - "Deploy to Heroku":
           filters:
             <<: *release-filters
