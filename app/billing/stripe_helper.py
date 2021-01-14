@@ -121,3 +121,12 @@ class StripeHelper:
         )
 
         return payment_method
+
+    def detach_payment_method(self, payment_method_id: str):
+        """
+        Reference - https://stripe.com/docs/api/payment_methods/detach
+        """
+
+        payment_method = stripe.PaymentMethod.detach(payment_method_id)
+
+        return payment_method
