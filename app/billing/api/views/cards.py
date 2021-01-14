@@ -18,6 +18,19 @@ class CardViewSet(PreventDeletionOfMainAttributeMixin, SetMainAttributeMixin, Mo
         client = self.request.user.client
         return client.card_list.all()
 
+    def perform_destroy(self, instance):
+        client = self.request.user.client
+        stripe_id = instance.stripe_id
+
+        # in super class we have validation on
+        # removing main card - and we are running it first
+        super().perform_destroy(instance)
+
+        # if card was removed from DB, we can remove it
+        # from Stripe account
+        service = CardService(client)
+        service.remove_card(stripe_id)
+
 
 class CardRefreshView(GenericAPIView):
     response_serializer_class = CardSerializer

@@ -33,7 +33,7 @@ class PaymentService:
         self._invoice = invoice
         self._stripe_helper = StripeHelper(client)
 
-    def create_intent(self) -> Union[SetupIntent, PaymentIntent]:
+    def create_intent(self, is_save_card: bool) -> Union[SetupIntent, PaymentIntent]:
         """
         This method used to create Stripe's `SetupIntent` or `PaymentIntent` in
         dependency of user preferences:
@@ -43,7 +43,7 @@ class PaymentService:
             called `PaymentIntent`
         """
 
-        if self._invoice.is_save_card:
+        if is_save_card:
             intent = self._stripe_helper.create_setup_intent()
         else:
             intent = self._stripe_helper.create_payment_intent(
