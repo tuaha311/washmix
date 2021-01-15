@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from django.conf import settings
 from django.db.transaction import atomic
@@ -145,6 +145,17 @@ class OrderService:
 
         self._notify_client_on_new_order()
         self._generate_pdf_report()
+
+        return order
+
+    def already_formed(self, request: Request) -> Optional[Order]:
+        client = self._client
+        order = None
+
+        try:
+            order = Order.objects.get(client=client, request=request)
+        except Order.DoesNotExist:
+            pass
 
         return order
 
