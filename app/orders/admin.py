@@ -19,7 +19,7 @@ class QuantityInlineForm(forms.ModelForm):
 class QuantityInlineAdmin(admin.TabularInline):
     model = Quantity
     form = QuantityInlineForm
-    extra = 1
+    extra = 0
 
 
 class BasketAdmin(AdminWithSearch):

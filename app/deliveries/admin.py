@@ -9,7 +9,7 @@ from deliveries.models import Delivery, Request, Schedule
 
 class DeliveryInlineAdmin(admin.TabularInline):
     model = Delivery
-    extra = 1
+    extra = 0
 
 
 class RequestAdmin(AdminWithSearch):

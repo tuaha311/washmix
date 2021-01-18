@@ -29,7 +29,7 @@ class InvoiceInlineForm(forms.ModelForm):
 class InvoiceInlineAdmin(admin.TabularInline):
     model = Invoice
     form = InvoiceInlineForm
-    extra = 1
+    extra = 0
 
 
 #
@@ -53,7 +53,7 @@ class OrderInlineForm(forms.ModelForm):
 class OrderInlineAdmin(admin.TabularInline):
     model = Order
     form = OrderInlineForm
-    extra = 1
+    extra = 0
 
 
 #
@@ -73,7 +73,7 @@ class RequestInlineForm(forms.ModelForm):
 class RequestInlineAdmin(admin.TabularInline):
     model = Request
     form = RequestInlineForm
-    extra = 1
+    extra = 0
 
 
 #
