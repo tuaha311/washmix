@@ -12,7 +12,6 @@ from orders.choices import PaymentChoices
 from orders.containers.order import OrderContainer
 from orders.models import Basket, Order
 from orders.services.basket import BasketService
-from orders.tasks import generate_pdf_from_html
 from subscriptions.services.subscription import SubscriptionService
 from users.models import Client, Employee
 
@@ -146,7 +145,6 @@ class OrderService:
             order.save()
 
         self._notify_client_on_new_order()
-        self._generate_pdf_report()
 
         return order
 
@@ -193,13 +191,6 @@ class OrderService:
                 "client_id": client_id,
                 "order_id": order_id,
             },
-        )
-
-    def _generate_pdf_report(self):
-        order_id = self._order.id
-
-        generate_pdf_from_html.send(
-            order_id=order_id,
         )
 
     def _notify_client_on_payment_fail(self):

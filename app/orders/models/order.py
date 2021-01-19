@@ -1,10 +1,6 @@
-from typing import Optional
-
-from django.conf import settings
 from django.db import models
 
 from core.common_models import Common
-from core.utils import generate_pdf_report_path, is_file_exists
 from orders.choices import PaymentChoices, StatusChoices
 
 
@@ -83,11 +79,6 @@ class Order(Common):
         verbose_name="should we save the card",
         default=True,
     )
-    is_pdf_ready = models.BooleanField(
-        verbose_name="PDF-report is ready",
-        default=False,
-        editable=False,
-    )
 
     class Meta:
         verbose_name = "order"
@@ -103,19 +94,3 @@ class Order(Common):
     @property
     def pretty_status(self):
         return self.get_status_display()
-
-    @property
-    def pdf_path(self) -> Optional[str]:
-        order_pk = self.pk
-        base_dir = settings.BASE_DIR
-        pdf_path = generate_pdf_report_path(order_pk)
-
-        # we are looking for path with `media` and using
-        # relative path to base dir of project
-        relative_to_base_dir = pdf_path.relative_to(base_dir)
-        relative_path = str(relative_to_base_dir)
-
-        if self.is_pdf_ready and is_file_exists(relative_path):
-            return f"/{relative_path}"
-
-        return None

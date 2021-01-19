@@ -5665,8 +5665,7 @@
       "status": "accepted",
       "payment": "paid",
       "note": "",
-      "is_save_card": true,
-      "is_pdf_ready": false
+      "is_save_card": true
     }
   },
   {
@@ -5684,8 +5683,7 @@
       "status": "accepted",
       "payment": "paid",
       "note": "",
-      "is_save_card": true,
-      "is_pdf_ready": false
+      "is_save_card": true
     }
   },
   {
@@ -5703,8 +5701,7 @@
       "status": "accepted",
       "payment": "paid",
       "note": "",
-      "is_save_card": true,
-      "is_pdf_ready": false
+      "is_save_card": true
     }
   },
   {
