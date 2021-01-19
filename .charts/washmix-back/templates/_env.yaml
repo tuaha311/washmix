@@ -55,5 +55,5 @@
 - name: TWILIO_AUTH_TOKEN
   value: "63a2e3fb37b3b816ccb266c25e60f4b1"
 - name: TWILIO_NUMBER
-  value: "test4"
+  value: "+14159939274"
 {{ end }}
