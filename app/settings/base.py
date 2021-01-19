@@ -445,7 +445,6 @@ DRAMATIQ_IMPORT_MODULES = [
     "notifications.tasks",
     "billing.tasks",
     "deliveries.tasks",
-    "orders.tasks",
 ]
 DRAMATIQ_BROKER.add_middleware(PeriodiqMiddleware(skip_delay=30))
 dramatiq.set_broker(DRAMATIQ_BROKER)
