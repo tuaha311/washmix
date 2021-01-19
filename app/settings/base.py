@@ -438,7 +438,13 @@ REDIS_DEFAULT_EXPIRATION_TIME = 60 * 60 * 23
 ############
 
 DRAMATIQ_DB = 1
-DRAMATIQ_BROKER = RedisBroker(client=REDIS_CLIENT)
+DRAMATIQ_REDIS_CLIENT = StrictRedis(
+    host=REDIS_HOST,
+    port=REDIS_PORT,
+    db=DRAMATIQ_DB,
+    password=REDIS_PASSWORD,
+)
+DRAMATIQ_BROKER = RedisBroker(client=DRAMATIQ_REDIS_CLIENT)
 
 # define list of modules with tasks
 DRAMATIQ_IMPORT_MODULES = [

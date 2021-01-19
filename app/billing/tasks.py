@@ -15,11 +15,6 @@ from users.models import Client
 logger = logging.getLogger(__name__)
 
 
-@dramatiq.actor(periodic=cron("* * * * *"))
-def periodic_worker_health():
-    logger.info("OK")
-
-
 # every day at 05:00
 @dramatiq.actor(periodic=cron("00 05 * * *"))
 def accrue_credit_back_every_3_month():
