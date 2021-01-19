@@ -57,3 +57,6 @@ class Customer(Common):
     class Meta:
         verbose_name = "Potential Customer"
         verbose_name_plural = "Potential Customers"
+
+    def __str__(self):
+        return f"#{self.id}"

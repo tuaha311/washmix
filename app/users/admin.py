@@ -145,6 +145,7 @@ class ClientAdmin(AdminWithSearch):
 
 class CustomerAdmin(AdminWithSearch):
     list_display = [
+        "__str__",
         "full_name",
         "email",
         "phone",
@@ -158,7 +159,7 @@ class CustomerAdmin(AdminWithSearch):
 models = [
     [Client, ClientAdmin],
     [Employee, AdminWithSearch],
-    [Customer, AdminWithSearch],
+    [Customer, CustomerAdmin],
 ]
 for item in models:
     admin.site.register(*item)
