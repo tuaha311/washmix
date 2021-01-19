@@ -16,7 +16,11 @@ logger = logging.getLogger(__name__)
 
 
 # every day at 05:00
-@dramatiq.actor(periodic=cron("00 05 * * *"), max_retries=settings.DRAMATIQ_MAX_RETRIES)
+@dramatiq.actor(
+    periodic=cron("00 05 * * *"),
+    max_retries=settings.DRAMATIQ_MAX_RETRIES,
+    max_age=settings.DRAMATIQ_MAX_AGE,
+)
 def accrue_credit_back_every_3_month():
     now = localtime()
     credit_back_period = settings.CREDIT_BACK_PERIOD

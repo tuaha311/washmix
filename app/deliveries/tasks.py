@@ -14,7 +14,11 @@ logger = logging.getLogger(__name__)
 
 
 # every day at 06:00
-@dramatiq.actor(periodic=cron("00 06 * * *"), max_retries=settings.DRAMATIQ_MAX_RETRIES)
+@dramatiq.actor(
+    periodic=cron("00 06 * * *"),
+    max_retries=settings.DRAMATIQ_MAX_RETRIES,
+    max_age=settings.DRAMATIQ_MAX_AGE,
+)
 def create_recurring_request_every_day():
     now = localtime()
     weekday = now.isoweekday()
