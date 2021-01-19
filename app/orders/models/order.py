@@ -92,6 +92,8 @@ class Order(Common):
     class Meta:
         verbose_name = "order"
         verbose_name_plural = "orders"
+        # for one order we can have only one unique pair
+        # of (basket_id, request_id)
         unique_together = ["basket", "request",]
         ordering = ["-created"]
 

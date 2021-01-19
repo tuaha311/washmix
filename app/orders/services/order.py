@@ -88,6 +88,8 @@ class OrderService:
         client = self._client
 
         with atomic():
+            # for one order we are creating unique
+            # pair of (basket_id, request_id)
             basket, _ = Basket.objects.get_or_create(
                 client=client,
                 order__request=request,
