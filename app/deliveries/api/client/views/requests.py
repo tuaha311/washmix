@@ -1,3 +1,4 @@
+from django_filters import rest_framework as filters
 from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -6,11 +7,25 @@ from rest_framework.viewsets import ModelViewSet
 
 from deliveries.api.client.serializers.requests import RequestCheckSerializer, RequestSerializer
 from deliveries.services.requests import RequestService
+from orders.choices import StatusChoices
+
+
+class RequestFilter(filters.FilterSet):
+    status = filters.MultipleChoiceFilter(field_name="order__status", choices=StatusChoices.CHOICES)
+    created = filters.DateTimeFilter(field_name="created", lookup_expr="gte")
+
+    class Meta:
+        fields = [
+            "status",
+            "created",
+        ]
 
 
 class RequestViewSet(ModelViewSet):
     serializer_class = RequestSerializer
     recalculate_fields = {"pickup_date"}
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = RequestFilter
 
     def get_queryset(self):
         client = self.request.user.client
