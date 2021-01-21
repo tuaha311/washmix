@@ -31,7 +31,7 @@ if settings.DEBUG:
         # Django Debug Toolbar
         path("__debug__/", include(debug_toolbar.urls)),
         # Email render view
-        path("render/", RenderView.as_view()),
+        path("render/<str:email_kind>/", RenderView.as_view()),
     ]
 
     urlpatterns += local_patterns

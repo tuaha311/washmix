@@ -1,4 +1,4 @@
-{% extends "base_email.html %}
+{% extends "base_email.html" %}
 
 {% block body %}
   <header>
@@ -12,10 +12,10 @@
   <div id="login-able-to-do">
     <p class="highlight-background">When you log in to your account, you will be able to do the following:</p>
     <ul>
-      <li>View order history</li>
-      <li>Make changes to your account & personal detail</li>
-      <li>Change your password</li>
-      <li>Set your preferences</li>
+      <li><span>View order history</span></li>
+      <li><span>Make changes to your account & personal detail</span></li>
+      <li><span>Change your password</span></li>
+      <li><span>Set your preferences</span></li>
     </ul>
   </div>
 
@@ -23,16 +23,16 @@
     <b>SMS [Text]:</b> ​Save this Phone Number {{ washmix.phone_number }}
     <ul>
       <li>
-        To schedule your Next Pickup, simply send a request to this number via text
+        <span>To schedule your Next Pickup, simply send a request to this number via text</span>
         <ul>
-          <li>[​Text & Data charges may/will be applied by your service provider]​</li>
+          <li><span>[​Text & Data charges may/will be applied by your service provider]​</span></li>
         </ul>
       </li>
 
       <li>
         <b>Commands</b>
         <ul>
-          <li>To Request a Pickup → Text <b>“​Pickup”</b></li>
+          <li><span>To Request a Pickup → Text <b>“​Pickup”</b></span></li>
         </ul>
       </li>
 
@@ -40,10 +40,10 @@
         <b>Cut Off time</b>
         <ul>
           <li>
-            Monday-Saturday
+            <span>Monday-Saturday</span>
             <ul>
-              <li>Text sent ​<b>BEFORE</b> 9​ am <b>[​Same-Day Pickup]</b></li>
-              <li>Text sent ​<b>AFTER</b> ​9am ​<b>[Next-Day Pickup]</b></li>
+              <li><span>Text sent ​<b>BEFORE</b> 9​ am <b>[​Same-Day Pickup]</b></span></li>
+              <li><span>Text sent ​<b>AFTER</b> ​9am ​<b>[Next-Day Pickup]</b></span></li>
             </ul>
           </li>
         </ul>
