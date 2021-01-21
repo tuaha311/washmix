@@ -1,23 +1,22 @@
 from django_filters import rest_framework as filters
 from rest_framework.generics import GenericAPIView
-from rest_framework.request import Request
+from rest_framework.request import Request as DRFRequest
 from rest_framework.response import Response
 from rest_framework.serializers import Serializer
 from rest_framework.viewsets import ModelViewSet
 
 from deliveries.api.client.serializers.requests import RequestCheckSerializer, RequestSerializer
 from deliveries.services.requests import RequestService
-from orders.choices import StatusChoices
 
 
 class RequestFilter(filters.FilterSet):
-    status = filters.MultipleChoiceFilter(field_name="order__status", choices=StatusChoices.CHOICES)
-    created = filters.DateTimeFilter(field_name="created", lookup_expr="gte")
+    created = filters.DateTimeFilter(lookup_expr="gte")
+    is_upcoming = filters.BooleanFilter(field_name="order", lookup_expr="isnull")
 
     class Meta:
         fields = [
             "status",
-            "created",
+            "is_upcoming",
         ]
 
 
@@ -44,7 +43,7 @@ class RequestViewSet(ModelViewSet):
 
         serializer.instance = request
 
-    def perform_update(self, serializer):
+    def perform_update(self, serializer: Serializer):
         update_fields = set(serializer.validated_data.keys())
         client = self.request.user.client
 
@@ -70,7 +69,7 @@ class RequestCheckView(GenericAPIView):
 
     serializer_class = RequestCheckSerializer
 
-    def post(self, request: Request, *args, **kwargs):
+    def post(self, request: DRFRequest, *args, **kwargs):
         serializer = self.serializer_class(data=request.data, context={"request": request})
         serializer.is_valid(raise_exception=True)
 
