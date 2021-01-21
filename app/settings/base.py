@@ -500,7 +500,7 @@ ADMIN_EMAIL_LIST = ["admin@washmix.com"]
 
 EMAIL_EVENT_INFO = {
     SIGNUP: {
-        "template_name": "email/welcome.html",
+        "template_name": "email/signup.html",
         "subject": "Welcome to Washmix!",
         "from_email": "hello@washmix.com",
     },
