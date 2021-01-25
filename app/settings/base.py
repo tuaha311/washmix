@@ -494,6 +494,7 @@ SMS_EVENT_INFO = {
 # SENDGRID #
 ############
 
+SENDGRID_NO_REPLY = "no-reply@washmix.com"
 SENDGRID_FROM_EMAIL = Email("info@washmix.com")
 SENDGRID_API_KEY = env.str("SENDGRID_API_KEY", "")
 ADMIN_EMAIL_LIST = ["admin@washmix.com"]
@@ -511,27 +512,31 @@ EMAIL_EVENT_INFO = {
     PURCHASE_SUBSCRIPTION_GOLD_PLATINUM: {
         "template_name": "email/purchase_gold_platinum.html",
         "subject": "Welcome to WashMix Advantage Program",
-        "from_email": "advantage@washmix.com",
+        "from_email": "cs@washmix.com",
     },
     NEW_REQUEST: {
         "template_name": "email/new_request.html",
         "subject": "New Request Pickup",
-        "from_email": "request@washmix.com",
+        "from_email": "orders@washmix.com",
+        "reply_to": "orders@washmix.com",
     },
     NEW_ORDER: {
         "template_name": "email/new_order.html",
         "subject": "WashMix New Order",
-        "from_email": "order@washmix.com",
+        "from_email": "cs@washmix.com",
+        "reply_to": "orders@washmix.com",
     },
     PAYMENT_FAIL_CLIENT: {
         "template_name": "email/payment_fail_client.html",
         "subject": "WashMix Payment Failed",
-        "from_email": "payment@washmix.com",
+        "from_email": "billing@washmix.com",
+        "reply_to": "billing@washmix.com",
     },
     PAYMENT_FAIL_ADMIN: {
         "template_name": "email/payment_fail_admin.html",
         "subject": "WashMix Payment Failed",
-        "from_email": "issue@washmix.com",
+        "from_email": "info@washmix.com",
+        "reply_to": "info@washmix.com",
     },
 }
 
