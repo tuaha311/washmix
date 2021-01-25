@@ -80,6 +80,13 @@ class WashmixAdminSite(AdminSite):
 
         return HttpResponseRedirect(redirect_url, context)
 
+    def each_context(self, request):
+        context = super().each_context(request)
+
+        context["site_url"] = None
+
+        return context
+
     @property
     def actions(self):
         """
