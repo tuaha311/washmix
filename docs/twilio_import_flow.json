@@ -1,5 +1,5 @@
 {
-  "description": "Proxy with Flex",
+  "description": "Proxy with Flex (v1.2)",
   "states": [
     {
       "name": "Trigger",
@@ -18,8 +18,8 @@
       ],
       "properties": {
         "offset": {
-          "x": 0,
-          "y": 0
+          "x": 130,
+          "y": 260
         }
       }
     },
@@ -28,20 +28,20 @@
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "Send-fallback-text",
+          "next": "Show-menu-and-wait",
           "event": "noMatch"
         },
         {
-          "next": "Proxy-request",
+          "next": "Make-HTTP-delivery-request",
           "event": "match",
           "conditions": [
             {
-              "friendly_name": "If value matches_any_of pickup, pick",
+              "friendly_name": "One word",
               "arguments": [
                 "{{trigger.message.Body}}"
               ],
               "type": "matches_any_of",
-              "value": "pickup, pick, request"
+              "value": "pickup, pick up, pick, request"
             }
           ]
         }
@@ -49,40 +49,17 @@
       "properties": {
         "input": "{{trigger.message.Body}}",
         "offset": {
-          "x": -10,
-          "y": 270
+          "x": 10,
+          "y": 490
         }
       }
     },
     {
-      "name": "Send-fallback-text",
-      "type": "send-message",
-      "transitions": [
-        {
-          "event": "sent"
-        },
-        {
-          "event": "failed"
-        }
-      ],
-      "properties": {
-        "offset": {
-          "x": -460,
-          "y": 270
-        },
-        "service": "{{trigger.message.InstanceSid}}",
-        "channel": "{{trigger.message.ChannelSid}}",
-        "from": "{{flow.channel.address}}",
-        "to": "{{contact.channel.address}}",
-        "body": "Thank you for message. Unfortunately, we can't handle you request. Please, try again."
-      }
-    },
-    {
-      "name": "Proxy-request",
+      "name": "Make-HTTP-delivery-request",
       "type": "make-http-request",
       "transitions": [
         {
-          "next": "Handle-server-response",
+          "next": "Try-to-create-delivery",
           "event": "success"
         },
         {
@@ -91,76 +68,29 @@
       ],
       "properties": {
         "offset": {
-          "x": 60,
-          "y": 670
+          "x": 430,
+          "y": 840
         },
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
         "body": "{\"message\": \"{{trigger.message.Body}}\", \"phone\": \"{{trigger.message.ChannelAttributes.from}}\"}",
-        "url": "https://washmix.evrone.app/api/v1.0/sms/twilio_webhook/"
+        "url": "https://washmix.evrone.app/api/client/sms/delivery/"
       }
     },
     {
-      "name": "Send-checkout-text",
-      "type": "send-message",
-      "transitions": [
-        {
-          "event": "sent"
-        },
-        {
-          "event": "failed"
-        }
-      ],
-      "properties": {
-        "offset": {
-          "x": -550,
-          "y": 1290
-        },
-        "service": "{{trigger.message.InstanceSid}}",
-        "channel": "{{trigger.message.ChannelSid}}",
-        "from": "{{flow.channel.address}}",
-        "to": "{{contact.channel.address}}",
-        "body": "Thank you for requesting a pickup. You’re scheduled for {{widgets.Proxy-request.parsed.message}} . Please have your bag out. If any questions call us back"
-      }
-    },
-    {
-      "name": "Send-no-match-found",
-      "type": "send-message",
-      "transitions": [
-        {
-          "event": "sent"
-        },
-        {
-          "event": "failed"
-        }
-      ],
-      "properties": {
-        "offset": {
-          "x": 730,
-          "y": 1240
-        },
-        "service": "{{trigger.message.InstanceSid}}",
-        "channel": "{{trigger.message.ChannelSid}}",
-        "from": "{{flow.channel.address}}",
-        "to": "{{contact.channel.address}}",
-        "body": "Thank you for your pickup request. Unfortunately, we can’t locate\nyou in our database. But not to worry, we will be in touch soon"
-      }
-    },
-    {
-      "name": "Handle-server-response",
+      "name": "Try-to-create-delivery",
       "type": "split-based-on",
       "transitions": [
         {
           "event": "noMatch"
         },
         {
-          "next": "Send-checkout-text",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value equal_to success",
               "arguments": [
-                "{{widgets.Proxy-request.parsed.event}}"
+                "{{widgets.Make-HTTP-delivery-request.parsed.event}}"
               ],
               "type": "equal_to",
               "value": "success"
@@ -168,13 +98,13 @@
           ]
         },
         {
-          "next": "Agent-connected",
+          "next": "Fallback-message",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value equal_to fail",
               "arguments": [
-                "{{widgets.Proxy-request.parsed.event}}"
+                "{{widgets.Make-HTTP-delivery-request.parsed.event}}"
               ],
               "type": "equal_to",
               "value": "fail"
@@ -183,15 +113,15 @@
         }
       ],
       "properties": {
-        "input": "{{widgets.Proxy-request.parsed.event}}",
+        "input": "{{widgets.Make-HTTP-delivery-request.parsed.event}}",
         "offset": {
-          "x": 60,
-          "y": 970
+          "x": 1180,
+          "y": 1050
         }
       }
     },
     {
-      "name": "Send-to-Flex",
+      "name": "Flex-New-Customer",
       "type": "send-to-flex",
       "transitions": [
         {
@@ -206,19 +136,93 @@
       ],
       "properties": {
         "offset": {
-          "x": 300,
-          "y": 1750
+          "x": -780,
+          "y": 2930
         },
-        "workflow": "WW480e7e81aee26aa37378a0a6705c3344",
-        "channel": "TC26544bc251241b67bfa9d3239f0f07f2"
+        "workflow": "WWbe46409b0a5491baca791783a119e95a",
+        "channel": "TC26544bc251241b67bfa9d3239f0f07f2",
+        "attributes": "{\"tag\": \"new-customer\"}",
+        "timeout": "86400"
       }
     },
     {
-      "name": "Agent-connected",
+      "name": "Split-logic",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "Fallback-message",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{widgets.Show-menu-and-wait.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "Type-2",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 2",
+              "arguments": [
+                "{{widgets.Show-menu-and-wait.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "2"
+            }
+          ]
+        },
+        {
+          "next": "Type-3",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 3",
+              "arguments": [
+                "{{widgets.Show-menu-and-wait.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "3"
+            }
+          ]
+        },
+        {
+          "next": "Type-4",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 4",
+              "arguments": [
+                "{{widgets.Show-menu-and-wait.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "4"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.Show-menu-and-wait.inbound.Body}}",
+        "offset": {
+          "x": 420,
+          "y": 2240
+        }
+      }
+    },
+    {
+      "name": "Type-2",
       "type": "send-message",
       "transitions": [
         {
-          "next": "Send-to-Flex",
+          "next": "Flex-New-Customer",
           "event": "sent"
         },
         {
@@ -227,14 +231,300 @@
       ],
       "properties": {
         "offset": {
-          "x": 310,
-          "y": 1400
+          "x": -150,
+          "y": 2550
         },
         "service": "{{trigger.message.InstanceSid}}",
         "channel": "{{trigger.message.ChannelSid}}",
         "from": "{{flow.channel.address}}",
         "to": "{{contact.channel.address}}",
-        "body": "Dear client soon operator will connect to help you."
+        "body": "Great! In order to sign up you must first proceed to WashMix.com to set up an account. If any issues pls call us here or email CS@Washmix.com"
+      }
+    },
+    {
+      "name": "Type-3",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "Flex-Customer-Support",
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 280,
+          "y": 2610
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "to": "{{contact.channel.address}}",
+        "body": "Thank you, one of our team member will contact you shortly - OR - you can call or Email us at CS@WashMix.com if urgent."
+      }
+    },
+    {
+      "name": "Type-4",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "Flex-Something-Else",
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 690,
+          "y": 2690
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "to": "{{contact.channel.address}}",
+        "body": "Thank you, one of our team member will contact you shortly - OR - you can call or Email us at CS@WashMix.com if urgent."
+      }
+    },
+    {
+      "name": "Show-menu-and-wait",
+      "type": "send-and-wait-for-reply",
+      "transitions": [
+        {
+          "next": "Menu-router",
+          "event": "incomingMessage"
+        },
+        {
+          "event": "timeout"
+        },
+        {
+          "event": "deliveryFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -640,
+          "y": 1080
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "body": "- Type 1 for PICK UP Request\n- Type 2 for New Customer\n- Type 3 for Customer Support\n- Type 4 Something Else",
+        "timeout": "600"
+      }
+    },
+    {
+      "name": "Flex-Customer-Support",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -340,
+          "y": 2930
+        },
+        "workflow": "WWbe46409b0a5491baca791783a119e95a",
+        "channel": "TC26544bc251241b67bfa9d3239f0f07f2",
+        "attributes": "{\"tag\": \"customer-support\"}",
+        "timeout": "86400"
+      }
+    },
+    {
+      "name": "Flex-Something-Else",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 110,
+          "y": 2940
+        },
+        "workflow": "WWbe46409b0a5491baca791783a119e95a",
+        "channel": "TC26544bc251241b67bfa9d3239f0f07f2",
+        "attributes": "{\"tag\": \"something-else\"}",
+        "timeout": "86400"
+      }
+    },
+    {
+      "name": "Make-HTTP-workers-request",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "Is-workers-online",
+          "event": "success"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 290,
+          "y": 1680
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "body": "{\"sid\": \"WSf4478ac8ee039cb8fbcd416ecd762a9f\"}",
+        "url": "https://washmix.evrone.app/api/client/sms/online_workers/"
+      }
+    },
+    {
+      "name": "Is-workers-online",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "Split-logic",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to true",
+              "arguments": [
+                "{{widgets.Make-HTTP-workers-request.parsed.online}}"
+              ],
+              "type": "equal_to",
+              "value": "true"
+            }
+          ]
+        },
+        {
+          "next": "Fallback-message",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to false",
+              "arguments": [
+                "{{widgets.Make-HTTP-workers-request.parsed.online}}"
+              ],
+              "type": "equal_to",
+              "value": "false"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.Make-HTTP-workers-request.parsed.online}}",
+        "offset": {
+          "x": 1100,
+          "y": 1820
+        }
+      }
+    },
+    {
+      "name": "Fallback-message",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "Flex-Other",
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -230,
+          "y": 2120
+        },
+        "service": "{{trigger.message.InstanceSid}}",
+        "channel": "{{trigger.message.ChannelSid}}",
+        "from": "{{flow.channel.address}}",
+        "to": "{{contact.channel.address}}",
+        "body": "Thanks for your reply, we have received your inquiry. Our agents currently busy assisting others, however rest assured we will reply back to you shortly. IF URGENT please call us directly 415-993-9274"
+      }
+    },
+    {
+      "name": "Flex-Other",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -1330,
+          "y": 2530
+        },
+        "workflow": "WWbe46409b0a5491baca791783a119e95a",
+        "channel": "TC26544bc251241b67bfa9d3239f0f07f2",
+        "attributes": "{\"tag\": \"other\"}",
+        "timeout": "86400"
+      }
+    },
+    {
+      "name": "Menu-router",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "Show-menu-and-wait",
+          "event": "noMatch"
+        },
+        {
+          "next": "Make-HTTP-delivery-request",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to 1",
+              "arguments": [
+                "{{widgets.Show-menu-and-wait.inbound.Body}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "Make-HTTP-workers-request",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value matches_any_of 2,3,4",
+              "arguments": [
+                "{{widgets.Show-menu-and-wait.inbound.Body}}"
+              ],
+              "type": "matches_any_of",
+              "value": "2,3,4"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.Show-menu-and-wait.inbound.Body}}",
+        "offset": {
+          "x": -390,
+          "y": 1400
+        }
       }
     }
   ],
