@@ -29,10 +29,12 @@ class TwilioFlexService:
         self._validate_address()
 
         address = self.client.main_address
+        instructions = address.instructions
 
         service = RequestService(client=self.client)
+        request = service.create(address=address, comment=instructions)
 
-        return service.create(address=address)
+        return request
 
     def validate_or_save(self):
         self._validate_or_save_phone()
