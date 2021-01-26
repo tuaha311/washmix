@@ -102,7 +102,10 @@ Looks great isn't it?
 
 ## Docs
 Most of models are documented with docstrings. 
-If you want to see database architecture - please open `models.drawio` at [draw.io](https://draw.io).
+You can find all documentation files at `docs` folder:
+- `models_architecture.drawio` database architecture - please open it at [draw.io](https://draw.io).
+- `twilio_import_flow.json` Twilio Scenario Flow export JSON, you can export it in [Twilio Console](https://twilio.com)
+- `twilio_scenario_flowchart.drawio` Twilio Flow Flowchart - please open it at [draw.io](https://draw.io).
 
 REST API documentation can be found at `/openapi/` address.
 REST API documentation created in [OpenAPI](https://www.openapis.org) specification. 
