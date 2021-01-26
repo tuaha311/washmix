@@ -14,6 +14,14 @@ class Service(Common):
     - Press clean
     """
 
+    # many to many field THROUGH Price
+    item_list = models.ManyToManyField(
+        "orders.Item",
+        verbose_name="items",
+        related_name="service_list",
+        through="orders.Price",
+    )
+
     title = models.CharField(
         verbose_name="title of service",
         max_length=200,
@@ -22,13 +30,6 @@ class Service(Common):
     image = models.ImageField(
         verbose_name="image",
         blank=True,
-    )
-    # many to many field THROUGH Price
-    item_list = models.ManyToManyField(
-        "orders.Item",
-        verbose_name="items",
-        related_name="service_list",
-        through="orders.Price",
     )
 
     class Meta:
