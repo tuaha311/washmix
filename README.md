@@ -56,19 +56,26 @@ brew install python3 cairo pango gdk-pixbuf libffi
 
 
 ## Applications
+`api` - REST API views, serializers and common handlers for Django REST Framework.
+
 `billing` - here we store all models related to the balance and cards of user.
 
-`core` - core models of washmix project.
+`branding` - all stuff that related to the WashMix branding of Admin Panel.
+
+`core` - core application of WashMix project, here we store some common utils, mixins, helper functions and classes. 
+
+`deliveries` - application responsible for logic of request pickups, deliveries.
+
+`locations` - main logic of addresses, cities were we present  and zip codes that we support
 
 `notifications` - this application responsible for sending SMS and email messages to users and storing historical info about sending.
 
 `orders` - here we store all logic related to the order creation, cart and item management.
 
+`subscriptions` - Packages, Subscriptions and related services.
+
 `users` - one of the main applications, whole logic of clients, employees management stored here.
 
-`pickups` - logic of request pickups, deliveries
-
-`locations` - main logic of addresses, cities were we present  and zip codes that we support
 
 
 ## Project layout
@@ -105,15 +112,20 @@ OpenAPI can be exported and opened in many editors:
 - Postman 
 - Swagger
 
+## About User models
+We have a corresponding models that can authenticate in WashMix:
+- Client (our WashMix application clients, that can purchase subscription and make pickups.)
+- Employee (WashMix stuff that handles orders, that comes for request pickups and etc.)
 
-## Billing
+Client and Employee has One-to-One relation with User.
 
-Test card list:
-```bash
-4242 4242 4242 4242 - success
-4000 0025 0000 3155 - requires authentication
-4000 0000 0000 9995 - declined
-```
+Why we choose One-to-One relation? Because we have 2 different models (Client, Employee) and both of them
+can use Django Authentication system to login, signup and etc - we just need to link models with One-to-One User and our authentication
+system will work for both of models (Client, Employee).
+
+One-to-One relation is most simple and robust solution for this case (when we have 2 different models that can
+use authentication system). If we choose approach with custom user model - we need to implement full authentication cycle 
+for both models (Client, Employee). 
 
 
 ## How to run worker for background tasks
@@ -165,6 +177,14 @@ Corresponding to models, we have a wrapper around this models called `containers
   - `QuantityContainer`
   - `RequestContainer`
   - `OrderContainer`
+  
+Test card list:
+```bash
+4242 4242 4242 4242 - success
+4000 0025 0000 3155 - requires authentication
+4000 0000 0000 9995 - declined
+```
+
 
 ## About initial data (fixtures)
 1. To create dump of database in JSON format
@@ -177,12 +197,13 @@ python manage.py loaddata dump.json
 ```
 
 We have predefined test in fixture users with emails:
+* payc@washmix.com
+* gold@washmix.com
+* platinum@washmix.com
+* superadmin@washmix.com
 * admin@washmix.com
+* laundress@washmix.com
 * driver@washmix.com
-* ds.ionin@evrone.com
-* og@evrone.com
-* savoskin@evrone.com
-* api@evrone.com
 
 All test users have same password `helloevrone`
 
