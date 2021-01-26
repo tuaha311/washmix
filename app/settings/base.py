@@ -234,8 +234,11 @@ CREDIT_BACK_PERCENTAGE = 5
 #################
 
 TODAY_DELIVERY_CUT_OFF_TIME = time(hour=9)
-DELIVERY_START_WORKING = time(hour=9)
-DELIVERY_END_WORKING = time(hour=18)
+DELIVERY_START_WORKING = time(hour=13)
+DELIVERY_END_WORKING = time(hour=19)
+
+PICKUP_SAME_DAY_START_TIMEDELTA = timedelta(hours=4)
+PICKUP_SAME_DAY_END_TIMEDELTA = timedelta(hours=2)
 
 
 ############
@@ -263,14 +266,6 @@ DELIVERY_STATUS_MAP = {
     PAUSED: "Paused recurring delivery",
 }
 DELIVERY_STATUS_CHOICES = list(DELIVERY_STATUS_MAP.items())
-
-
-################
-# PICKUPS INFO #
-################
-
-PICKUP_SAME_DAY_START_TIMEDELTA = timedelta(hours=4)
-PICKUP_SAME_DAY_END_TIMEDELTA = timedelta(hours=2)
 
 
 ################################
