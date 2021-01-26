@@ -20,14 +20,12 @@ class Customer(Common):
 
     email = models.EmailField(
         verbose_name="email",
-        unique=True,
         null=True,
         blank=True
     )
     phone = models.CharField(
         verbose_name="phone",
         max_length=20,
-        unique=True,
         null=True,
         blank=True,
         validators=[validate_phone],
