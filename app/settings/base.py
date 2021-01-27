@@ -446,9 +446,10 @@ DRAMATIQ_BROKER = RedisBroker(client=DRAMATIQ_REDIS_CLIENT)
 
 # define list of modules with tasks
 DRAMATIQ_IMPORT_MODULES = [
-    "notifications.tasks",
     "billing.tasks",
+    "core.tasks",
     "deliveries.tasks",
+    "notifications.tasks",
 ]
 DRAMATIQ_BROKER.add_middleware(PeriodiqMiddleware(skip_delay=30))
 dramatiq.set_broker(DRAMATIQ_BROKER)
