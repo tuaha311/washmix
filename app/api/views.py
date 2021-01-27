@@ -5,6 +5,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from api.serializers import HealthSerializer
+from core.tasks import worker_health
 from notifications.utils import get_extra_context
 
 
@@ -12,13 +13,17 @@ class HealthView(GenericAPIView):
     """
     PUBLIC METHOD.
 
-    Health of service.
+    View that shows our API is working.
+    Also, via this view we are checking that
+    dramatiq worker is working.
     """
 
     serializer_class = HealthSerializer
     permission_classes = [AllowAny]
 
     def get(self, request, *args, **kwargs):
+        worker_health.send()
+
         return Response({"status": "ok"})
 
 
