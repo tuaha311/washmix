@@ -1,3 +1,23 @@
-<div>
-  Welcome to WashMix dear friend {{ client.email }}!
-</div>
+{% extends "base_email.html" %}
+
+{% block body %}
+  <div class="title">
+    Hello {{ client.full_name }}, Welcome to WashMix
+  </div>
+
+  <div class="signup-info">
+    <p>Thank you for registering with us. As a valued member, once you log into your account, you will be able to do the following:</p>
+
+    <ul>
+      <li><span>Proceed through checkout faster when making a purchase</span></li>
+      <li><span>Check the status of orders</span></li>
+      <li><span>View past orders</span></li>
+      <li><span>Make changes to your account information</span></li>
+      <li><span>Change your password</span></li>
+      <li><span>Store alternative addresses (for shipping to multiple family members and friends!)</span></li>
+    </ul>
+
+    <p>Thanks,</p>
+    <p>WashMix</p>
+  </div>
+{% endblock %}

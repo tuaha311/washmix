@@ -4,7 +4,7 @@ from django.conf import settings
 from django.template.loader import render_to_string
 
 from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import HtmlContent, Mail, To
+from sendgrid.helpers.mail import HtmlContent, Mail, ReplyTo, To
 
 from notifications.senders.base import Sender
 
@@ -20,6 +20,7 @@ class SendGridSender(Sender):
 
         subject = event_info["subject"]
         template_name = event_info["template_name"]
+        reply_to = event_info.get("reply_to", settings.SENDGRID_NO_REPLY)
         from_email = event_info.get("from_email", settings.SENDGRID_FROM_EMAIL)
 
         html_content = render_to_string(template_name, context=context)
@@ -29,6 +30,7 @@ class SendGridSender(Sender):
             subject=subject,
             recipient_list=recipient_list,
             body=html_content,
+            reply_to=reply_to,
         )
 
     def raw_send(
@@ -37,6 +39,7 @@ class SendGridSender(Sender):
         recipient_list: list,
         subject: str,
         body: str,
+        reply_to: str = None,
         *args,
         **kwargs,
     ) -> None:
@@ -48,6 +51,10 @@ class SendGridSender(Sender):
             subject=subject,
             html_content=HtmlContent(body),
         )
+
+        if reply_to:
+            mail.reply_to = ReplyTo(email=reply_to)
+
         request_body = mail.get()
 
         response = self._client.mail.send.post(request_body=request_body)

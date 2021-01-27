@@ -32,11 +32,6 @@ class Subscription(CommonPackageSubscription, Common):
         on_delete=models.CASCADE,
         related_name="subscription_list",
     )
-    name = models.CharField(
-        verbose_name="name",
-        max_length=20,
-        choices=settings.PACKAGE_NAME_CHOICES,
-    )
     # invoice created at the moment of Order creation
     invoice = models.OneToOneField(
         "billing.Invoice",
@@ -44,6 +39,12 @@ class Subscription(CommonPackageSubscription, Common):
         related_name="subscription",
         on_delete=models.CASCADE,
         null=True,
+    )
+
+    name = models.CharField(
+        verbose_name="name",
+        max_length=20,
+        choices=settings.PACKAGE_NAME_CHOICES,
     )
 
     objects = SubscriptionManager()

@@ -3,6 +3,7 @@ from typing import Optional, Tuple, Union
 
 from django.db.transaction import atomic
 
+from rest_framework import serializers
 from stripe import PaymentIntent, PaymentMethod, SetupIntent
 from stripe.error import StripeError
 
@@ -115,24 +116,37 @@ class PaymentService:
 
     def _charge_card(self, amount: int):
         card_service = CardService(self._client)
+        charge_successful = False
+        payment = None
 
         for item in self._client.card_list.all():
             # we are trying to charge the card list of client
             # and we are stopping at first successful attempt
+
+            if charge_successful:
+                break
+
             try:
                 payment = self._stripe_helper.create_payment_intent(
                     payment_method_id=item.stripe_id,
                     amount=amount,
                     invoice=self._invoice,
                 )
-
                 card_service.update_main_card(self._client, item)
 
-                return payment
+                charge_successful = True
 
             except StripeError as err:
                 logger.error(err)
                 continue
+
+        if not charge_successful:
+            raise serializers.ValidationError(
+                detail="Can't bill your card.",
+                code="cant_bill_your_card",
+            )
+
+        return payment
 
     def _calculate_paid_and_unpaid(self) -> Tuple[int, int]:
         invoice = self._invoice

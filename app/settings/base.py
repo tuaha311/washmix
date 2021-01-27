@@ -234,8 +234,11 @@ CREDIT_BACK_PERCENTAGE = 5
 #################
 
 TODAY_DELIVERY_CUT_OFF_TIME = time(hour=9)
-DELIVERY_START_WORKING = time(hour=9)
-DELIVERY_END_WORKING = time(hour=18)
+DELIVERY_START_WORKING = time(hour=13)
+DELIVERY_END_WORKING = time(hour=19)
+
+PICKUP_SAME_DAY_START_TIMEDELTA = timedelta(hours=4)
+PICKUP_SAME_DAY_END_TIMEDELTA = timedelta(hours=2)
 
 
 ############
@@ -265,14 +268,6 @@ DELIVERY_STATUS_MAP = {
 DELIVERY_STATUS_CHOICES = list(DELIVERY_STATUS_MAP.items())
 
 
-################
-# PICKUPS INFO #
-################
-
-PICKUP_SAME_DAY_START_TIMEDELTA = timedelta(hours=4)
-PICKUP_SAME_DAY_END_TIMEDELTA = timedelta(hours=2)
-
-
 ################################
 # APPLICATION GLOBAL VARIABLES #
 ################################
@@ -287,6 +282,7 @@ TWITTER_URL = "https://twitter.com/mix_wash/"
 INSTAGRAM_URL = "https://www.instagram.com/washmix/"
 FACEBOOK_URL = "https://www.facebook.com/WASHMIXOriginal/"
 PHONE_NUMBER = "4​15-993-WASH [9724]"
+LAUNDRY_ADDRESS = "4949 Market St. San Francisco CA 94132"
 
 
 #########################
@@ -314,8 +310,8 @@ REST_FRAMEWORK = {
 ####################################
 
 SIMPLE_JWT = {
-    "SLIDING_TOKEN_LIFETIME": timedelta(days=1),
-    "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
+    "SLIDING_TOKEN_LIFETIME": timedelta(minutes=30),
+    "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(minutes=30),
     "SIGNING_KEY": env.str("SIMPLE_JWT_SIGNING_KEY"),
     "AUTH_HEADER_TYPES": ("Bearer",),
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.SlidingToken",),
@@ -438,14 +434,21 @@ REDIS_DEFAULT_EXPIRATION_TIME = 60 * 60 * 23
 ############
 
 DRAMATIQ_DB = 1
-DRAMATIQ_BROKER = RedisBroker(client=REDIS_CLIENT)
+DRAMATIQ_MAX_RETRIES = 3
+DRAMATIQ_MAX_AGE = SECONDS_IN_HOUR
+DRAMATIQ_REDIS_CLIENT = StrictRedis(
+    host=REDIS_HOST,
+    port=REDIS_PORT,
+    db=DRAMATIQ_DB,
+    password=REDIS_PASSWORD,
+)
+DRAMATIQ_BROKER = RedisBroker(client=DRAMATIQ_REDIS_CLIENT)
 
 # define list of modules with tasks
 DRAMATIQ_IMPORT_MODULES = [
     "notifications.tasks",
     "billing.tasks",
     "deliveries.tasks",
-    "orders.tasks",
 ]
 DRAMATIQ_BROKER.add_middleware(PeriodiqMiddleware(skip_delay=30))
 dramatiq.set_broker(DRAMATIQ_BROKER)
@@ -486,13 +489,14 @@ SMS_EVENT_INFO = {
 # SENDGRID #
 ############
 
+SENDGRID_NO_REPLY = "no-reply@washmix.com"
 SENDGRID_FROM_EMAIL = Email("info@washmix.com")
 SENDGRID_API_KEY = env.str("SENDGRID_API_KEY", "")
 ADMIN_EMAIL_LIST = ["admin@washmix.com"]
 
 EMAIL_EVENT_INFO = {
     SIGNUP: {
-        "template_name": "email/welcome.html",
+        "template_name": "email/signup.html",
         "subject": "Welcome to Washmix!",
         "from_email": "hello@washmix.com",
     },
@@ -503,27 +507,31 @@ EMAIL_EVENT_INFO = {
     PURCHASE_SUBSCRIPTION_GOLD_PLATINUM: {
         "template_name": "email/purchase_gold_platinum.html",
         "subject": "Welcome to WashMix Advantage Program",
-        "from_email": "advantage@washmix.com",
+        "from_email": "cs@washmix.com",
     },
     NEW_REQUEST: {
         "template_name": "email/new_request.html",
         "subject": "New Request Pickup",
-        "from_email": "request@washmix.com",
+        "from_email": "orders@washmix.com",
+        "reply_to": "orders@washmix.com",
     },
     NEW_ORDER: {
         "template_name": "email/new_order.html",
         "subject": "WashMix New Order",
-        "from_email": "order@washmix.com",
+        "from_email": "cs@washmix.com",
+        "reply_to": "orders@washmix.com",
     },
     PAYMENT_FAIL_CLIENT: {
         "template_name": "email/payment_fail_client.html",
         "subject": "WashMix Payment Failed",
-        "from_email": "payment@washmix.com",
+        "from_email": "billing@washmix.com",
+        "reply_to": "billing@washmix.com",
     },
     PAYMENT_FAIL_ADMIN: {
         "template_name": "email/payment_fail_admin.html",
         "subject": "WashMix Payment Failed",
-        "from_email": "issue@washmix.com",
+        "from_email": "info@washmix.com",
+        "reply_to": "info@washmix.com",
     },
 }
 

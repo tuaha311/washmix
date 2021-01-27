@@ -21,6 +21,7 @@ basket_urls = (
 order_urls = (
     [
         path("prepare/", orders.POSOrderPrepareView.as_view(), name="prepare"),
+        path("already_formed/", orders.POSOrderAlreadyFormedView.as_view(), name="already-formed"),
         path("<int:pk>/", orders.POSOrderUpdateView.as_view(), name="update"),
         path("checkout/", checkout.POSOrderCheckoutView.as_view(), name="checkout"),
         path("apply_coupon/", coupons.POSOrderApplyCouponView.as_view(), name="apply-coupon"),

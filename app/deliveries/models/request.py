@@ -65,6 +65,7 @@ class Request(CommonScheduleRequest, Common):
     class Meta:
         verbose_name = "request"
         verbose_name_plural = "requests"
+        ordering = ["-created"]
 
     def __str__(self):
         return f"# {self.id}"

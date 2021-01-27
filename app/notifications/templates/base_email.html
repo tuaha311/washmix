@@ -1,18 +1,70 @@
+{% load full_static %}
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8">
-    <style>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+    <style media="all" type="text/css">
       * {
-        color: black;
+        color: #666666;
+      }
+
+      body {
+        width: 800px;
+        height: 100%;
+        margin: 0 auto;
+        padding: 0;
+        background-color: #e4e4e4;
+        font-family: 'Montserrat', sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      header {
+        width: 100%;
+        margin-bottom: 40px;
+      }
+
+      footer {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 40px;
+        width: 100%;
+        background-color: #39b6ed;
+        color: #fff;
       }
 
       a {
-        color: blue;
+        color: #39b6ed;
       }
 
       .highlight-background {
         background-color: lightgrey;
+      }
+
+      .container {
+        background-color: #fff;
+        padding: 50px;
+      }
+
+      .info {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        width: 100%;
+        background-color: #fafafa;
+      }
+
+      .socials {
+        display: flex;
+        align-items: center;
+      }
+
+      .social-icon {
+        margin-right: 20px;
       }
 
       .divider {
@@ -21,6 +73,18 @@
         background-color: grey;
         margin-top: 10px;
         margin-bottom: 10px;
+      }
+
+      .padding-around {
+        padding: 10px;
+      }
+
+      .large-margin-top {
+        margin-top: 20px;
+      }
+
+      .large-margin-bottom {
+        margin-bottom: 20px;
       }
 
       .margin-top {
@@ -54,17 +118,67 @@
       .red {
         color: red;
       }
+
+      .title {
+        line-height: 1.2;
+        color: #003459;
+        font-size: 24px;
+        font-weight: 500;
+      }
+
+      ul li {
+        color: #39b6ed;
+      }
+
+      ul li span {
+        color: #666666;
+      }
     </style>
     {% block extra_style %}
     {% endblock %}
   </head>
 
   <body>
-    {% block body %}
-    {% endblock %}
+    <div class="container">
+      <header>
+        <a href="https://{{ washmix.domain }}" target="_blank">
+          <img src="{% full_static 'images/logo_with_text.png' %}" alt="logo" style="border: none;" width="160"/>
+        </a>
+      </header>
 
-    <footer class="highlight-background margin-top">
-      If you have any questions about your account or any other matter, please feel free to contact us at ​<a href="mailto:cs@washmix.com">cs@washmix.com</a>.​ OR call us directly at <b>{{ washmix.phone_number }}</b>
+      {% block body %}
+      {% endblock %}
+
+      <div class="highlight-background margin-top instructions padding-around">
+        If you have any questions about your account or any other matter, please feel free to contact us at ​<a href="mailto:cs@washmix.com">cs@washmix.com</a>.​ OR call us directly at <b>{{ washmix.phone_number }}</b>
+      </div>
+    </div>
+
+    <div class="info">
+      <div class="socials large-margin-bottom large-margin-top">
+        <a href="{{ washmix.facebook_url }}" target="_blank" class="social-icon">
+          <img src="{% full_static 'images/facebook.png' %}" alt="facebook" style="border: none;" width="22"/>
+        </a>
+        <a href="{{ washmix.twitter_url }}" target="_blank" class="social-icon">
+          <img src="{% full_static 'images/twitter.png' %}" alt="twitter" style="border: none;" width="22"/>
+        </a>
+        <a href="{{ washmix.instagram_url }}" target="_blank" class="social-icon">
+          <img src="{% full_static 'images/instagram.png' %}" alt="instagram" style="border: none;" width="22"/>
+        </a>
+      </div>
+
+      <div class="receiver large-margin-bottom">This message was sent to <a href="mailto:{{ client.email }}">{{ client.email }}</a> by WashMix.</div>
+
+      <a href="https://{{ washmix.domain }}" class="large-margin-bottom" target="_blank">
+        <img src="{% full_static 'images/logo.png' %}" alt="logo" style="border: none;" width="48"/>
+      </a>
+
+      <div class="address large-margin-bottom">{{ washmix.laundry_address }}</div>
+      <div class="support large-margin-bottom"><a href="mailto:info@washmix.com">info@washmix.com</a></div>
+    </div>
+
+    <footer>
+      © 2021 WashMix, Inc. All Rights Reserved.
     </footer>
   </body>
 </html>

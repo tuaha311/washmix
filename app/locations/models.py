@@ -84,6 +84,10 @@ class Address(Common):
         max_length=250,
         blank=True,
     )
+    instructions = models.TextField(
+        verbose_name="delivery instructions",
+        blank=True,
+    )
     has_doorman = models.BooleanField(
         verbose_name="is doorman at this address",
         default=False,

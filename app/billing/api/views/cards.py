@@ -3,14 +3,12 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from api.client.mixins import PreventDeletionOfMainAttributeMixin, SetMainAttributeMixin
+from api.client.mixins import SetMainAttributeMixin
 from billing.api.serializers.cards import CardSerializer
 from billing.services.card import CardService
 
 
-class CardViewSet(PreventDeletionOfMainAttributeMixin, SetMainAttributeMixin, ModelViewSet):
-    # TODO remove PATCH / PUT methods
-
+class CardViewSet(SetMainAttributeMixin, ModelViewSet):
     serializer_class = CardSerializer
     main_attribute = "main_card"
 

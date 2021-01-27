@@ -29,7 +29,7 @@ class InvoiceInlineForm(forms.ModelForm):
 class InvoiceInlineAdmin(admin.TabularInline):
     model = Invoice
     form = InvoiceInlineForm
-    extra = 1
+    extra = 0
 
 
 #
@@ -53,7 +53,7 @@ class OrderInlineForm(forms.ModelForm):
 class OrderInlineAdmin(admin.TabularInline):
     model = Order
     form = OrderInlineForm
-    extra = 1
+    extra = 0
 
 
 #
@@ -73,7 +73,7 @@ class RequestInlineForm(forms.ModelForm):
 class RequestInlineAdmin(admin.TabularInline):
     model = Request
     form = RequestInlineForm
-    extra = 1
+    extra = 0
 
 
 #
@@ -145,6 +145,7 @@ class ClientAdmin(AdminWithSearch):
 
 class CustomerAdmin(AdminWithSearch):
     list_display = [
+        "__str__",
         "full_name",
         "email",
         "phone",
@@ -158,7 +159,7 @@ class CustomerAdmin(AdminWithSearch):
 models = [
     [Client, ClientAdmin],
     [Employee, AdminWithSearch],
-    [Customer, AdminWithSearch],
+    [Customer, CustomerAdmin],
 ]
 for item in models:
     admin.site.register(*item)

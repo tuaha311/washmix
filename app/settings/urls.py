@@ -8,6 +8,7 @@ from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 
 from api.generators import WashMixSchemaGenerator
+from api.views import RenderView
 
 urlpatterns = []
 
@@ -29,6 +30,8 @@ if settings.DEBUG:
     local_patterns = [
         # Django Debug Toolbar
         path("__debug__/", include(debug_toolbar.urls)),
+        # Email render view
+        path("render/<str:email_kind>/", RenderView.as_view()),
     ]
 
     urlpatterns += local_patterns
@@ -52,7 +55,7 @@ urlpatterns += [
     path("api/", include("api.urls")),
     path("jet/", include("jet.urls", "jet")),
     path("admin/", admin.site.urls),
-    # Temporary static files serving
+    # Static files serving
     *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
     *static(settings.STATIC_URL, document_root=settings.STATIC_ROOT),
 ]

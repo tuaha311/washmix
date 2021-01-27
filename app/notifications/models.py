@@ -5,6 +5,7 @@ from core.common_models import Common
 
 class Notification(Common):
     """
+    Legacy entity - that comes from previous contractors.
     Service-side entity.
     """
 

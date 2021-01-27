@@ -1,5 +1,8 @@
 import logging
 
+from django.conf import settings
+from django.db import models
+
 import dramatiq
 
 from notifications.senders.sendgrid import SendGridSender
@@ -7,11 +10,7 @@ from notifications.senders.twilio_sms import TwilioSender
 from notifications.utils import get_extra_context
 
 logger = logging.getLogger(__name__)
-
-
-@dramatiq.actor
-def worker_health():
-    logger.info("OK")
+ignore_exceptions = (models.ObjectDoesNotExist,)
 
 
 def _common_send_handler(
@@ -32,7 +31,11 @@ def _common_send_handler(
     )
 
 
-@dramatiq.actor
+@dramatiq.actor(
+    max_retries=settings.DRAMATIQ_MAX_RETRIES,
+    max_age=settings.DRAMATIQ_MAX_AGE,
+    throws=ignore_exceptions,
+)
 def send_email(event: str, recipient_list: list, extra_context: dict = None):
     _common_send_handler(
         sender_class=SendGridSender,
@@ -44,7 +47,11 @@ def send_email(event: str, recipient_list: list, extra_context: dict = None):
     logger.info(f"Sent email via SendGrid to {recipient_list}")
 
 
-@dramatiq.actor
+@dramatiq.actor(
+    max_retries=settings.DRAMATIQ_MAX_RETRIES,
+    max_age=settings.DRAMATIQ_MAX_AGE,
+    throws=ignore_exceptions,
+)
 def raw_send_email(to: list, html_content: str, subject: str, from_email: str):
     sender = SendGridSender()
     sender.raw_send(
@@ -57,7 +64,11 @@ def raw_send_email(to: list, html_content: str, subject: str, from_email: str):
     logger.info(f"Raw emails sent via SendGrid to {to}")
 
 
-@dramatiq.actor
+@dramatiq.actor(
+    max_retries=settings.DRAMATIQ_MAX_RETRIES,
+    max_age=settings.DRAMATIQ_MAX_AGE,
+    throws=ignore_exceptions,
+)
 def send_sms(event: str, recipient_list: list, extra_context: dict = None):
     _common_send_handler(
         sender_class=TwilioSender,

@@ -195,11 +195,13 @@ class SubscriptionService(PaymentInterfaceService):
     def _get_or_create_subscription(self, package: Package):
         client = self._client
 
-        # we are looking for last subscription that wasn't attached to the client.
+        # we are looking for last subscription that wasn't attached to the client
+        # and wasn't paid
         subscription, _ = Subscription.objects.get_or_create(
             client=client,
+            invoice__isnull=True,
             active_client__isnull=True,
-            defaults={"invoice": None, **package.as_dict},
+            defaults=package.as_dict,
         )
 
         return subscription

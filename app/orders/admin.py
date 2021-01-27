@@ -1,10 +1,12 @@
 from django import forms
+from django.conf import settings
 from django.contrib import admin
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 
 from core.admin import AdminWithSearch
 from orders.models import Basket, Item, Order, Price, Quantity, Service
+from orders.utils import generate_pdf_from_html
 
 
 class QuantityInlineForm(forms.ModelForm):
@@ -19,7 +21,7 @@ class QuantityInlineForm(forms.ModelForm):
 class QuantityInlineAdmin(admin.TabularInline):
     model = Quantity
     form = QuantityInlineForm
-    extra = 1
+    extra = 0
 
 
 class BasketAdmin(AdminWithSearch):
@@ -28,7 +30,6 @@ class BasketAdmin(AdminWithSearch):
 
 class OrderAdmin(AdminWithSearch):
     readonly_fields = [
-        "pdf_ready",
         "pdf_path",
     ]
     list_display = [
@@ -45,32 +46,36 @@ class OrderAdmin(AdminWithSearch):
         "employee",
     ]
 
-    def pdf_path(self, instance):
+    def pdf_path(self, order: Order):
         """
         Shows a relative to media root URL of PDF-report.
+        PDF-path only accessible for POS orders.
         """
 
-        context = {"instance": instance}
+        if order.subscription:
+            return "-"
 
+        pdf_path = self._generate_pdf_report(order)
+
+        context = {"pdf_path": pdf_path}
         widget = render_to_string("widgets/href.html", context=context)
 
         return mark_safe(widget)
 
     pdf_path.short_description = "PDF path"  # type: ignore
 
-    def pdf_ready(self, instance):
-        """
-        Simple method that prettifies a boolean field to show in admin.
-        """
+    def _generate_pdf_report(self, order: Order):
+        order_id = order.id
+        base_dir = settings.BASE_DIR
 
-        ready_status = "Not ready"
+        absolute_path = generate_pdf_from_html(order_id)
 
-        if instance.is_pdf_ready:
-            ready_status = "Ready"
+        # we are looking for path with `media` and using
+        # relative path to base dir of project
+        relative_to_base_dir = absolute_path.relative_to(base_dir)
+        relative_path = str(relative_to_base_dir)
 
-        return ready_status
-
-    pdf_ready.short_description = "PDF-report is ready"  # type: ignore
+        return f"/{relative_path}"
 
 
 models = [

@@ -49,12 +49,16 @@ def get_pickup_start_end(start_datetime: datetime) -> Tuple[time, time]:
     opening hours.
     """
 
-    start_time = start_datetime.time()
-
     # we can't pickup right now, we will came in 4 hours after your pickup request
     pickup_start_datetime = start_datetime + settings.PICKUP_SAME_DAY_START_TIMEDELTA
+    pickup_start_time = pickup_start_datetime.time()
+    # we are giving to client time gap in 2 hours
+    pickup_end_datetime = pickup_start_datetime + settings.PICKUP_SAME_DAY_END_TIMEDELTA
+    pickup_end_time = pickup_end_datetime.time()
 
-    if not (settings.DELIVERY_START_WORKING < start_time < settings.DELIVERY_END_WORKING):
+    if not (
+        settings.DELIVERY_END_WORKING > pickup_start_time > settings.DELIVERY_START_WORKING
+    ) or not (settings.DELIVERY_END_WORKING > pickup_end_time > settings.DELIVERY_START_WORKING):
         pickup_start_datetime = datetime(
             year=start_datetime.year,
             month=start_datetime.month,
@@ -62,10 +66,7 @@ def get_pickup_start_end(start_datetime: datetime) -> Tuple[time, time]:
             hour=settings.DELIVERY_START_WORKING.hour,
             minute=settings.DELIVERY_START_WORKING.minute,
         )
-        pickup_start_datetime = pickup_start_datetime + settings.PICKUP_SAME_DAY_START_TIMEDELTA
-
-    # we are giving to client time gap, and end of gap in 4 hours
-    pickup_end_datetime = pickup_start_datetime + settings.PICKUP_SAME_DAY_END_TIMEDELTA
+        pickup_end_datetime = pickup_start_datetime + settings.PICKUP_SAME_DAY_END_TIMEDELTA
 
     return pickup_start_datetime.time(), pickup_end_datetime.time()
 
