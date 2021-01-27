@@ -24,7 +24,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          args: ["migrations"]
+          args: ["/docker-entrypoint.sh", "migrations"]
           env:
             {{- include "common.container.env" . | nindent 12 }}
       containers:
@@ -37,7 +37,7 @@ spec:
               protocol: TCP
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          args: ["application"]
+          args: ["/docker-entrypoint.sh", "application"]
           env:
             {{- include "common.container.env" . | nindent 12 }}
         - name: {{ .Chart.Name }}-worker
@@ -45,7 +45,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          args: ["worker"]
+          args: ["/docker-entrypoint.sh", "worker"]
           env:
             {{- include "common.container.env" . | nindent 12 }}
         - name: {{ .Chart.Name }}-scheduler
@@ -53,7 +53,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          args: ["scheduler"]
+          args: ["/docker-entrypoint.sh", "scheduler"]
           env:
             {{- include "common.container.env" . | nindent 12 }}
       {{- with .Values.nodeSelector }}

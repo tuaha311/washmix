@@ -100,3 +100,4 @@ workflows:
             branches:
               only:
                 - heroku-test
+                - master
