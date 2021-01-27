@@ -23,6 +23,10 @@ class HealthView(GenericAPIView):
 
 
 class RenderView(TemplateView):
+    """
+    View that renders emails with defined context.
+    """
+
     email_template_map = {
         "signup": "email/signup.html",
         "subscription": "email/purchase_gold_platinum.html",
