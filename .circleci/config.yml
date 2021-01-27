@@ -80,7 +80,7 @@ jobs:
 _release-filters: &release-filters
   branches:
     only:
-      - master
+      - dev
 
 workflows:
   build-n-push-images:
