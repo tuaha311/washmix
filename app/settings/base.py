@@ -463,7 +463,9 @@ SIGNUP = "signup"
 FORGOT_PASSWORD = "forgot_password"
 PURCHASE_SUBSCRIPTION_GOLD_PLATINUM = "purchase_subscription_gold_platinum"
 NEW_REQUEST = "new_request"
+NEW_DELIVERY = "new_delivery"
 NEW_ORDER = "new_order"
+DELIVERY_DROPOFF_COMPLETE = "delivery_dropoff_complete"
 PAYMENT_FAIL_CLIENT = "payment_fail_client"
 PAYMENT_FAIL_ADMIN = "payment_fail_admin"
 
@@ -480,8 +482,11 @@ TWILIO_FAIL = "fail"
 TWILIO_PICKUP_CODE = "pickup_scheduled"
 
 SMS_EVENT_INFO = {
-    NEW_REQUEST: {
-        "template_name": "sms/new_request.html",
+    NEW_DELIVERY: {
+        "template_name": "sms/new_delivery.html",
+    },
+    DELIVERY_DROPOFF_COMPLETE: {
+        "template_name": "sms/dropoff_complete.html",
     },
 }
 

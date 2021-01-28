@@ -77,4 +77,4 @@ def send_sms(event: str, recipient_list: list, extra_context: dict = None):
         extra_context=extra_context,
     )
 
-    logger.info("Sent SMS via Twilio to {recipient_list}")
+    logger.info(f"Sent SMS via Twilio to {recipient_list}")
