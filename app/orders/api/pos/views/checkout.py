@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from api.authentication import default_pos_authentication
 from api.permissions import default_pos_permissions
 from orders.api.pos.serializers.orders import OrderSerializer, POSOrderCheckoutSerializer
-from orders.services.order import OrderService
+from orders.services.pos import POSService
 
 
 class POSOrderCheckoutView(GenericAPIView):
@@ -22,9 +22,8 @@ class POSOrderCheckoutView(GenericAPIView):
         client = order.client
         employee = drf_request.user.employee
 
-        order_service = OrderService(client)
-        order_container = order_service.checkout(order)
-        order_service.finalize(order, employee)
+        pos_service = POSService(client, order, employee)
+        order_container = pos_service.checkout()
 
         response = self.response_serializer_class(order_container).data
         return Response(response)

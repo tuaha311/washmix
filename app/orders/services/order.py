@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from django.conf import settings
 from django.db.transaction import atomic
@@ -23,7 +23,7 @@ class OrderService:
         - Delivery info
     """
 
-    def __init__(self, client: Client, order=None):
+    def __init__(self, client: Client, order: Order = None):
         self._client = client
         self._order = order
 

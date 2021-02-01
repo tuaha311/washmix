@@ -36,6 +36,10 @@ class BaseAmountContainer(ABC):
         return getattr(self, proxy_key)
 
     @property
+    def original(self):
+        return self.proxy
+
+    @property
     def dollar_discount(self) -> float:
         return get_dollars(self, "discount")
 

@@ -13,6 +13,7 @@ from billing.models import Invoice, Transaction
 from billing.services.card import CardService
 from billing.stripe_helper import StripeHelper
 from billing.utils import create_credit, create_debit
+from subscriptions.models import Package
 from users.models import Client
 
 logger = logging.getLogger(__name__)
@@ -99,6 +100,25 @@ class PaymentService:
         )
 
         return transaction
+
+    def _purchase_subscription(self):
+        from orders.services.order import OrderService
+        from subscriptions.services.subscription import SubscriptionService
+
+        client = self._client
+        subscription = client.subscription
+        package_name = subscription.name
+        package = Package.objects.get(name=package_name)
+
+        with atomic():
+            subscription_service = SubscriptionService(client)
+            order_container = subscription_service.choose(package)
+            order = order_container.original
+
+            order_service = OrderService(client, order)
+            order_container = order_service.checkout(order)
+
+        return order_container
 
     def _charge_prepaid_balance(self):
         client = self._client
