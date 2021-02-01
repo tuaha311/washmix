@@ -27,6 +27,12 @@ class SubscriptionService(PaymentInterfaceService):
         - Set subscription via `choose`
         - Clone subscription from package
         - Charging user for subscription price
+
+    Order of methods by importance:
+        - create_invoice
+        - charge
+        - checkout
+        - finalize
     """
 
     def __init__(self, client: Client):
@@ -111,6 +117,42 @@ class SubscriptionService(PaymentInterfaceService):
         if subscription.name == settings.PAYC:
             self.finalize(order)
 
+    def finalize(self, order: Order) -> Optional[Subscription]:
+        """
+        Final hook that sets subscription on client after payment (checkout).
+
+        Usually called in 2 cases:
+            - If user purchases PAYC subscription. PAYC is free and doesn't require any charges.
+            In such case will be called by self (`SubscriptionService`).
+            - If user purchases GOLD or PLATINUM subscription. Then it will be called inside `StripeWebhookService`.
+        """
+
+        subscription = order.subscription
+        client = self._client
+
+        # we are waiting while all invoices will be confirmed
+        if not order.is_all_invoices_paid:
+            return None
+
+        # if order is paid - no need to fire events again
+        if order.payment == OrderPaymentChoices.PAID:
+            return None
+
+        with atomic():
+            order.payment = OrderPaymentChoices.PAID
+
+            if order.is_save_card:
+                order.card = client.main_card
+
+            order.save()
+
+            client.subscription = subscription
+            client.save()
+
+        self._notify_client_on_purchase_of_advantage_program(subscription)
+
+        return subscription
+
     def choose(self, package: Package) -> OrderContainer:
         """
         Action for Subscription, clones all properties of Subscription
@@ -125,29 +167,6 @@ class SubscriptionService(PaymentInterfaceService):
             subscription.save()
 
         return order_service.get_container()
-
-    def finalize(self, order: Order) -> Optional[Subscription]:
-        """
-        Final method that sets subscription on client after payment (checkout).
-        """
-
-        subscription = order.subscription
-
-        with atomic():
-            if order.is_all_invoices_paid:
-                order.payment = OrderPaymentChoices.PAID
-
-            if order.is_save_card:
-                order.card = self._client.main_card
-
-            order.save()
-
-            self._client.subscription = subscription
-            self._client.save()
-
-        self._notify_client_on_purchase_of_advantage_program(subscription)
-
-        return subscription
 
     def fail(self, order: Order):
         subscription = order.subscription

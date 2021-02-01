@@ -129,14 +129,25 @@ class OrderService:
 
     def finalize(self, order: Order, employee: Employee) -> Optional[Order]:
         """
-        Last method in payment flow, that marks order as paid and
+        Last hook in payment flow, that marks order as paid and
         calls success events.
+
+        Usually called in 2 cases:
+            - If client have enough money and can pay for all our services from prepaid
+            balance. Hook called from `POSService`.
+            - If client have't money at prepaid balance. In such case this hook will be
+            called from `StripeWebhookService`.
         """
 
+        client = self._client
         self._order = order
 
-        # if order not paid - we can't fire success events
+        # we are waiting while all invoices will be confirmed
         if not order.is_all_invoices_paid:
+            return None
+
+        # if order is paid - no need to fire events again
+        if order.payment == OrderPaymentChoices.PAID:
             return None
 
         with atomic():
@@ -144,7 +155,7 @@ class OrderService:
             order.employee = employee
 
             if order.is_save_card:
-                order.card = self._client.main_card
+                order.card = client.main_card
 
             order.save()
 

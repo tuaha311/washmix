@@ -46,15 +46,10 @@ class POSService:
         client = self._client
         order = self._order
         employee = self._employee
-        # we are caching variable value, because in next steps we will charge
-        # prepaid balance
-        is_enough_balance = self._is_enough_balance
 
         order_service = OrderService(client)
         order_container = order_service.checkout(order)
-
-        if is_enough_balance:
-            order_service.finalize(order, employee)
+        order_service.finalize(order, employee)
 
         return order_container
 

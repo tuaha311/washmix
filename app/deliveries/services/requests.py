@@ -22,6 +22,14 @@ from users.models import Client
 
 
 class RequestService(PaymentInterfaceService):
+    """
+    This service is responsible for Requests / Deliveries handling.
+
+    Order of methods by importance:
+        - create_invoice
+        - charge
+    """
+
     def __init__(
         self,
         client: Client,

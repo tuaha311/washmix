@@ -30,6 +30,10 @@ class BasketService(PaymentInterfaceService):
         - See items in basket
         - See discount for item
         - See total discount on your basket
+
+    Order of methods by importance:
+        - create_invoice
+        - charge
     """
 
     def __init__(self, client: Client):
