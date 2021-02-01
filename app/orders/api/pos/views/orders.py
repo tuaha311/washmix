@@ -11,7 +11,7 @@ from orders.api.pos.serializers.orders import (
     POSOrderPrepareResponseSerializer,
     POSOrderPrepareSerializer,
 )
-from orders.choices import PaymentChoices
+from orders.choices import OrderPaymentChoices
 from orders.containers.order import OrderContainer
 from orders.models import Order
 from orders.services.order import OrderService
@@ -83,7 +83,7 @@ class POSOrderAlreadyFormedView(GenericAPIView):
         service = OrderService(client)
         order = service.already_formed(request)
 
-        if order and order.employee and order.basket and order.payment == PaymentChoices.PAID:
+        if order and order.employee and order.basket and order.payment == OrderPaymentChoices.PAID:
             formed = True
 
         response = self.response_serializer_class({"formed": formed, "order": order}).data

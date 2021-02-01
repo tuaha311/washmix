@@ -6,7 +6,7 @@ from django.db.transaction import atomic
 
 from rest_framework import serializers
 
-from billing.choices import Purpose
+from billing.choices import InvoicePurpose
 from billing.models import Invoice
 from billing.services.invoice import InvoiceService
 from billing.services.payments import PaymentService
@@ -59,7 +59,7 @@ class BasketService(PaymentInterfaceService):
             order=order,
             amount=basket_container.amount,
             discount=basket_container.discount,
-            purpose=Purpose.BASKET,
+            purpose=InvoicePurpose.BASKET,
         )
         basket.invoice = basket_invoice
         basket.save()

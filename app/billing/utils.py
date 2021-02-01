@@ -1,9 +1,11 @@
 from functools import partial
+from math import ceil
+from typing import Union
 
 from django.conf import settings
 from django.db.transaction import atomic
 
-from billing.choices import Kind, Provider, Purpose
+from billing.choices import InvoiceKind, InvoiceProvider, InvoicePurpose
 from billing.models import Invoice, Transaction
 from users.models import Client
 
@@ -11,10 +13,10 @@ from users.models import Client
 def create_transaction(
     client: Client,
     invoice: Invoice,
-    amount: int,
+    amount: Union[int, float],
     kind: str,
     source=None,
-    provider=Provider.STRIPE,
+    provider=InvoiceProvider.STRIPE,
     stripe_id: str = None,
 ) -> Transaction:
     """
@@ -24,24 +26,30 @@ def create_transaction(
     if not source or not isinstance(source, dict):
         source = {}
 
+    # in some cases amount can be float - for example, if we have
+    # discount 3.5$ from 35$.
+    ceil_amount = ceil(amount)
+
     transaction = Transaction.objects.create(
         client=client,
         invoice=invoice,
         kind=kind,
         provider=provider,
         stripe_id=stripe_id,
-        amount=amount,
+        amount=ceil_amount,
         source=source,
     )
 
     return transaction
 
 
-create_debit = partial(create_transaction, kind=Kind.DEBIT)
-create_credit = partial(create_transaction, kind=Kind.CREDIT, provider=Provider.WASHMIX)
+create_debit = partial(create_transaction, kind=InvoiceKind.DEBIT)
+create_credit = partial(
+    create_transaction, kind=InvoiceKind.CREDIT, provider=InvoiceProvider.WASHMIX
+)
 
 
-def add_credits(client: Client, amount: int, purpose=Provider.CREDIT_BACK) -> Transaction:
+def add_credits(client: Client, amount: int, purpose=InvoiceProvider.CREDIT_BACK) -> Transaction:
     """
     Helper function that creates invoice and transaction for internal credit accrue.
     """
@@ -51,7 +59,7 @@ def add_credits(client: Client, amount: int, purpose=Provider.CREDIT_BACK) -> Tr
             client=client,
             amount=amount,
             discount=settings.DEFAULT_ZERO_DISCOUNT,
-            purpose=Purpose.CREDIT,
+            purpose=InvoicePurpose.CREDIT,
         )
         transaction = create_debit(
             client=client,

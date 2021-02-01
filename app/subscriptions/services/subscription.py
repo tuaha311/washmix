@@ -4,7 +4,7 @@ from uuid import uuid4
 from django.conf import settings
 from django.db.transaction import atomic
 
-from billing.choices import Provider, Purpose
+from billing.choices import InvoiceProvider, InvoicePurpose
 from billing.containers import PaymentContainer
 from billing.models import Invoice
 from billing.services.card import CardService
@@ -13,7 +13,7 @@ from billing.services.payments import PaymentService
 from core.interfaces import PaymentInterfaceService
 from deliveries.models import Request
 from notifications.tasks import send_email
-from orders.choices import PaymentChoices, StatusChoices
+from orders.choices import OrderPaymentChoices, OrderStatusChoices
 from orders.containers.order import OrderContainer
 from orders.models import Basket, Order
 from subscriptions.containers import SubscriptionContainer
@@ -55,7 +55,7 @@ class SubscriptionService(PaymentInterfaceService):
             order=order,
             amount=subscription_container.amount,
             discount=subscription_container.discount,
-            purpose=Purpose.SUBSCRIPTION,
+            purpose=InvoicePurpose.SUBSCRIPTION,
         )
 
         subscription.invoice = subscription_invoice
@@ -93,7 +93,7 @@ class SubscriptionService(PaymentInterfaceService):
             payment_amount = 0
             payment_container = PaymentContainer(payment_id, payment_amount)
 
-            payment_service.confirm(payment_container, provider=Provider.WASHMIX)
+            payment_service.confirm(payment_container, provider=InvoiceProvider.WASHMIX)
         else:
             payment_service.charge()
 
@@ -134,11 +134,13 @@ class SubscriptionService(PaymentInterfaceService):
         subscription = order.subscription
 
         with atomic():
-            order.payment = PaymentChoices.PAID
+            if order.is_all_invoices_paid:
+                order.payment = OrderPaymentChoices.PAID
 
             if order.is_save_card:
                 order.card = self._client.main_card
-                order.save()
+
+            order.save()
 
             self._client.subscription = subscription
             self._client.save()
@@ -183,8 +185,8 @@ class SubscriptionService(PaymentInterfaceService):
             client=client,
             subscription=subscription,
             defaults={
-                "status": StatusChoices.ACCEPTED,
-                "payment": PaymentChoices.UNPAID,
+                "status": OrderStatusChoices.ACCEPTED,
+                "payment": OrderPaymentChoices.UNPAID,
                 "is_save_card": True,
             },
         )

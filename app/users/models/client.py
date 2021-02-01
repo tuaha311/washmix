@@ -3,7 +3,7 @@ from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.db.models import Sum
 
-from billing.choices import Kind
+from billing.choices import InvoiceKind
 from core.behaviors import Stripeable
 from core.common_models import Common
 from core.utils import get_dollars
@@ -105,8 +105,8 @@ class Client(ProxyUserInfoMixin, Stripeable, Common):
         verbose_name_plural = "clients"
 
     def _balance(self):
-        debit_transactions = self.transaction_list.filter(kind=Kind.DEBIT)
-        credit_transactions = self.transaction_list.filter(kind=Kind.CREDIT)
+        debit_transactions = self.transaction_list.filter(kind=InvoiceKind.DEBIT)
+        credit_transactions = self.transaction_list.filter(kind=InvoiceKind.CREDIT)
 
         debit_total = debit_transactions.aggregate(total=Sum("amount"))["total"] or 0
         credit_total = credit_transactions.aggregate(total=Sum("amount"))["total"] or 0

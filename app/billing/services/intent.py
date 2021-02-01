@@ -4,7 +4,7 @@ from django.db.transaction import atomic
 
 from stripe import PaymentIntent, SetupIntent
 
-from billing.choices import Purpose
+from billing.choices import InvoicePurpose
 from billing.models import Invoice
 from billing.services.invoice import InvoiceService
 from billing.services.payments import PaymentService
@@ -29,7 +29,9 @@ class IntentService:
                 amount = subscription.price
 
                 invoice_service = InvoiceService(client)
-                invoice = invoice_service.update_or_create(order, amount, Purpose.SUBSCRIPTION)
+                invoice = invoice_service.update_or_create(
+                    order, amount, InvoicePurpose.SUBSCRIPTION
+                )
 
             payment_service = PaymentService(client, invoice)
             intent = payment_service.create_intent(is_save_card)

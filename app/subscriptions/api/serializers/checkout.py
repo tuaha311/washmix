@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from api.fields import OrderField
 from billing.validators import validate_client_can_pay, validate_saved_cards
-from orders.choices import PaymentChoices
+from orders.choices import OrderPaymentChoices
 
 
 class SubscriptionCheckoutSerializer(serializers.Serializer):
@@ -25,7 +25,7 @@ class SubscriptionCheckoutSerializer(serializers.Serializer):
                 code="provide_order_for_subscription",
             )
 
-        if order.payment == PaymentChoices.PAID:
+        if order.payment == OrderPaymentChoices.PAID:
             raise serializers.ValidationError(
                 detail="Order already paid.",
                 code="order_paid",

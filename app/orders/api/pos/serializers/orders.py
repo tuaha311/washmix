@@ -7,7 +7,7 @@ from deliveries.api.pos.serializers import RequestResponseSerializer
 from deliveries.models import Request
 from locations.models import Address
 from orders.api.pos.serializers.basket import BasketSerializer
-from orders.choices import PaymentChoices
+from orders.choices import OrderPaymentChoices
 from orders.models import Order
 from users.models import Client
 
@@ -59,7 +59,7 @@ class POSOrderCheckoutSerializer(serializers.Serializer):
 
         order = value
 
-        if order.payment == PaymentChoices.PAID:
+        if order.payment == OrderPaymentChoices.PAID:
             raise serializers.ValidationError(
                 detail="Order already paid.",
                 code="order_paid",

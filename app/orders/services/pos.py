@@ -56,6 +56,8 @@ class POSService:
         doesn't have enough prepaid balance to pay for order.
         """
 
+        # TODO посмотреть на обработку PAYC
+
         client = self._client
         subscription = client.subscription
         package_name = subscription.name

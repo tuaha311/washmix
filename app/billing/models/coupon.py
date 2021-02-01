@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.timezone import localtime
 
-from billing.choices import DiscountBy
+from billing.choices import InvoiceDiscountBy
 from core.common_models import Common
 
 
@@ -25,8 +25,8 @@ class Coupon(Common):
     )
     discount_by = models.CharField(
         max_length=10,
-        choices=DiscountBy.CHOICES,
-        default=DiscountBy.AMOUNT,
+        choices=InvoiceDiscountBy.CHOICES,
+        default=InvoiceDiscountBy.AMOUNT,
     )
     value_off = models.BigIntegerField(
         verbose_name="value of discount",

@@ -1,4 +1,4 @@
-class StatusChoices:
+class OrderStatusChoices:
     # TODO add new status for new orders
     ACCEPTED = "accepted"
     IN_PROGRESS = "in_progress"
@@ -12,7 +12,7 @@ class StatusChoices:
     CHOICES = list(MAP.items())
 
 
-class PaymentChoices:
+class OrderPaymentChoices:
     UNPAID = "unpaid"
     PAID = "paid"
     FAIL = "fail"

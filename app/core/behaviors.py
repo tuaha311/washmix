@@ -59,5 +59,4 @@ def create_price_class(class_name, attribute_name):
 
 Amountable = create_price_class("Amountable", "amount")
 Priceable = create_price_class("Priceable", "price")
-Discountable = create_price_class("Discountable", "discount")
 Valuable = create_price_class("Valuable", "value")

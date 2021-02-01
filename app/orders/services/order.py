@@ -8,7 +8,7 @@ from billing.services.coupon import CouponService
 from deliveries.models import Request
 from deliveries.services.requests import RequestService
 from notifications.tasks import send_email
-from orders.choices import PaymentChoices
+from orders.choices import OrderPaymentChoices
 from orders.containers.order import OrderContainer
 from orders.models import Basket, Order
 from orders.services.basket import BasketService
@@ -136,7 +136,9 @@ class OrderService:
         self._order = order
 
         with atomic():
-            order.payment = PaymentChoices.PAID
+            if order.is_all_invoices_paid:
+                order.payment = OrderPaymentChoices.PAID
+
             order.employee = employee
 
             if order.is_save_card:
@@ -164,7 +166,7 @@ class OrderService:
         Method that handles Stripe Fail Webhook call.
         """
 
-        order.payment = PaymentChoices.FAIL
+        order.payment = OrderPaymentChoices.FAIL
         order.save()
 
         self._order = order

@@ -1,20 +1,22 @@
-class Purpose:
+class InvoicePurpose:
     SUBSCRIPTION = "subscription"
     BASKET = "basket"
     PICKUP = "pickup"
     DROPOFF = "dropoff"
     CREDIT = "credit"
+    POS = "pos"
     MAP = {
         SUBSCRIPTION: "Subscription purchase",
         BASKET: "Order processing payment",
         PICKUP: "Pickup delivery",
         DROPOFF: "Dropoff delivery",
         CREDIT: "Credit",
+        POS: "POS",
     }
     CHOICES = list(MAP.items())
 
 
-class DiscountBy:
+class InvoiceDiscountBy:
     PERCENTAGE = "percentage"
     AMOUNT = "amount"
     MAP = {
@@ -24,7 +26,7 @@ class DiscountBy:
     CHOICES = list(MAP.items())
 
 
-class Kind:
+class InvoiceKind:
     DEBIT = "debit"
     CREDIT = "credit"
     MAP = {
@@ -34,7 +36,7 @@ class Kind:
     CHOICES = list(MAP.items())
 
 
-class Provider:
+class InvoiceProvider:
     STRIPE = "stripe"
     COUPON = "coupon"
     CREDIT_BACK = "credit_back"

@@ -9,7 +9,7 @@ from rest_framework.request import Request
 from rest_framework.status import HTTP_200_OK, HTTP_403_FORBIDDEN
 from stripe import Event
 
-from billing.choices import Purpose
+from billing.choices import InvoicePurpose
 from billing.models import Invoice
 from billing.services.payments import PaymentService
 from orders.services.order import OrderService
@@ -58,6 +58,7 @@ class StripeWebhookService:
 
         payment, client, invoice, purpose = self._parse()
         order = invoice.order
+        employee = order.employee
 
         payment_service = PaymentService(client, invoice)
         subscription_service = SubscriptionService(client)
@@ -68,14 +69,17 @@ class StripeWebhookService:
                 # we are marked our invoice as paid
                 payment_service.confirm(payment)
 
-                if purpose == Purpose.SUBSCRIPTION:
+                if purpose == InvoicePurpose.SUBSCRIPTION:
                     subscription_service.finalize(order)
 
+                elif purpose == InvoicePurpose.POS:
+                    order_service.finalize(order, employee)
+
             elif event.type in self.fail_events:
-                if purpose == Purpose.SUBSCRIPTION:
+                if purpose == InvoicePurpose.SUBSCRIPTION:
                     subscription_service.fail(order)
 
-                elif purpose == Purpose.BASKET:
+                elif purpose == InvoicePurpose.BASKET:
                     order_service.fail(order)
 
     def _parse(self) -> Tuple[stripe.PaymentMethod, Client, Invoice, str]:
@@ -86,7 +90,7 @@ class StripeWebhookService:
         payment = self.payment
 
         client = Client.objects.get(stripe_id=payment.customer)
-        purpose = getattr(payment.metadata, "purpose", Purpose.SUBSCRIPTION)
+        purpose = getattr(payment.metadata, "purpose", InvoicePurpose.SUBSCRIPTION)
 
         return payment, client, self.invoice, purpose
 

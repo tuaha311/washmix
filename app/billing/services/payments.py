@@ -1,4 +1,5 @@
 import logging
+from math import ceil
 from typing import Optional, Tuple, Union
 
 from django.db.transaction import atomic
@@ -7,7 +8,7 @@ from rest_framework import serializers
 from stripe import PaymentIntent, PaymentMethod, SetupIntent
 from stripe.error import StripeError
 
-from billing.choices import Provider, Purpose
+from billing.choices import InvoiceProvider, InvoicePurpose
 from billing.containers import PaymentContainer
 from billing.models import Invoice, Transaction
 from billing.services.card import CardService
@@ -73,7 +74,7 @@ class PaymentService:
                 self._charge_card(unpaid_amount)
 
     def confirm(
-        self, payment: Union[PaymentMethod, PaymentContainer], provider=Provider.STRIPE
+        self, payment: Union[PaymentMethod, PaymentContainer], provider=InvoiceProvider.STRIPE
     ) -> Optional[Transaction]:
         """
         Last method in payment flow - it's responsible for creating payment transaction
@@ -136,6 +137,8 @@ class PaymentService:
 
     def _charge_card(self, amount: int):
         card_service = CardService(self._client)
+        invoice = self._invoice
+        purpose = invoice.purpose
         charge_successful = False
         payment = None
 
@@ -151,6 +154,8 @@ class PaymentService:
                     payment_method_id=item.stripe_id,
                     amount=amount,
                     invoice=self._invoice,
+                    # TODO сделать проброс purpose = POS
+                    purpose=purpose,
                 )
                 card_service.update_main_card(self._client, item)
 
@@ -178,7 +183,7 @@ class PaymentService:
 
         # for subscription we are always charging card
         # without charging prepaid balance
-        if invoice.purpose == Purpose.SUBSCRIPTION:
+        if invoice.purpose == InvoicePurpose.SUBSCRIPTION:
             paid_amount = 0
 
             # we are reducing to a integer number for Stripe

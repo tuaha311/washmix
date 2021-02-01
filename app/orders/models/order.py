@@ -1,7 +1,7 @@
 from django.db import models
 
 from core.common_models import Common
-from orders.choices import PaymentChoices, StatusChoices
+from orders.choices import OrderPaymentChoices, OrderStatusChoices
 
 
 class Order(Common):
@@ -62,14 +62,14 @@ class Order(Common):
     status = models.CharField(
         max_length=20,
         verbose_name="status of order",
-        choices=StatusChoices.CHOICES,
-        default=StatusChoices.ACCEPTED,
+        choices=OrderStatusChoices.CHOICES,
+        default=OrderStatusChoices.ACCEPTED,
     )
     payment = models.CharField(
         max_length=20,
         verbose_name="payment info",
-        choices=PaymentChoices.CHOICES,
-        default=PaymentChoices.UNPAID,
+        choices=OrderPaymentChoices.CHOICES,
+        default=OrderPaymentChoices.UNPAID,
     )
     note = models.TextField(
         verbose_name="note",
@@ -94,3 +94,20 @@ class Order(Common):
     @property
     def pretty_status(self):
         return self.get_status_display()
+
+    @property
+    def is_all_invoices_paid(self) -> bool:
+        basket = self.basket
+        subscription = self.subscription
+        request = self.request
+        pickup = None
+        dropoff = None
+
+        if request:
+            pickup = request.pickup
+            dropoff = request.dropoff
+
+        washmix_paid_services = [basket, subscription, pickup, dropoff]
+        invoice_list = [item.invoice for item in washmix_paid_services if item]
+
+        return all([item.is_paid for item in invoice_list])

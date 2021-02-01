@@ -1,13 +1,13 @@
 from django.db import models
 from django.db.models import Sum
 
-from billing.choices import Purpose
-from core.behaviors import Amountable, Discountable
+from billing.choices import InvoicePurpose
+from core.behaviors import Amountable
 from core.common_models import Common
 from core.mixins import CalculatedAmountWithDiscount
 
 
-class Invoice(CalculatedAmountWithDiscount, Amountable, Discountable, Common):
+class Invoice(CalculatedAmountWithDiscount, Amountable, Common):
     """
     Service-side and Client-side entity.
 
@@ -45,11 +45,14 @@ class Invoice(CalculatedAmountWithDiscount, Amountable, Discountable, Common):
         blank=True,
     )
 
+    discount = models.FloatField(
+        verbose_name="discount, in cents (¢)",
+    )
     purpose = models.CharField(
         max_length=20,
         verbose_name="purpose of this invoice",
-        default=Purpose.SUBSCRIPTION,
-        choices=Purpose.CHOICES,
+        default=InvoicePurpose.SUBSCRIPTION,
+        choices=InvoicePurpose.CHOICES,
     )
 
     class Meta:
