@@ -72,7 +72,11 @@ class StripeWebhookService:
                 if purpose == InvoicePurpose.SUBSCRIPTION:
                     subscription_service.finalize(order)
 
-                elif purpose == InvoicePurpose.POS:
+                elif purpose in [
+                    InvoicePurpose.BASKET,
+                    InvoicePurpose.PICKUP,
+                    InvoicePurpose.DROPOFF,
+                ]:
                     order_service.finalize(order, employee)
 
             elif event.type in self.fail_events:

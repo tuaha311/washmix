@@ -1,3 +1,6 @@
+from typing import Optional
+
+from django.conf import settings
 from django.db.transaction import atomic
 
 from orders.containers.order import OrderContainer
@@ -43,25 +46,33 @@ class POSService:
         client = self._client
         order = self._order
         employee = self._employee
+        # we are caching variable value, because in next steps we will charge
+        # prepaid balance
+        is_enough_balance = self._is_enough_balance
 
         order_service = OrderService(client)
         order_container = order_service.checkout(order)
-        order_service.finalize(order, employee)
+
+        if is_enough_balance:
+            order_service.finalize(order, employee)
 
         return order_container
 
-    def _purchase_subscription(self):
+    def _purchase_subscription(self) -> Optional[OrderContainer]:
         """
         Fallback handler that responsible for case, when user
         doesn't have enough prepaid balance to pay for order.
         """
 
-        # TODO посмотреть на обработку PAYC
-
         client = self._client
         subscription = client.subscription
-        package_name = subscription.name
-        package = Package.objects.get(name=package_name)
+        subscription_name = subscription.name
+        package = Package.objects.get(name=subscription_name)
+
+        # at PAYC subscription we can't have prepaid balance and
+        # subscription purchase doesn't give to us anything
+        if subscription_name == settings.PAYC:
+            return None
 
         with atomic():
             subscription_service = SubscriptionService(client)

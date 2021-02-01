@@ -127,7 +127,7 @@ class OrderService:
 
         return self.get_container()
 
-    def finalize(self, order: Order, employee: Employee) -> Order:
+    def finalize(self, order: Order, employee: Employee) -> Optional[Order]:
         """
         Last method in payment flow, that marks order as paid and
         calls success events.
@@ -135,10 +135,12 @@ class OrderService:
 
         self._order = order
 
-        with atomic():
-            if order.is_all_invoices_paid:
-                order.payment = OrderPaymentChoices.PAID
+        # if order not paid - we can't fire success events
+        if not order.is_all_invoices_paid:
+            return None
 
+        with atomic():
+            order.payment = OrderPaymentChoices.PAID
             order.employee = employee
 
             if order.is_save_card:

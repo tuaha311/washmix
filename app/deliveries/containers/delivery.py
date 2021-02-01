@@ -67,19 +67,22 @@ class DeliveryContainer(BaseAmountContainer):
         },
         Package.PLATINUM: {
             "price_list": [
-                # 0 - 2499 price 14.98$
+                # 0 - 24.99$ price 14.98$
+                # if higher than 24.99 - free delivery
                 {
                     "min": 0,
                     "max": 2499,
                     "price": 749,
                 },
-                # 2500 - 3899 price 9.90$
+                # 25.00 - 38.99$ price 9.90$
+                # if higher than 38.99$ - free delivery
                 {
                     "min": 2500,
                     "max": 3899,
                     "price": 495,
                 },
                 # 3900 - infinity price 9.90$
+                # if higher than 39.00$ - free delivery
                 {
                     "min": 3900,
                     "max": float("inf"),
