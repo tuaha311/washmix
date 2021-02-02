@@ -62,32 +62,6 @@ class PaymentService:
 
         return intent
 
-    def charge(self):
-        """
-        We are iterating via all user's card list and choosing first one
-        where we find an enough money to charge. At first successful attempt we
-        are continuing our payment flow.
-
-        In most cases, we are creating `PaymentIntent` under the hood and then waiting for
-        web hook event from Stripe to confirm and finish payment flow.
-        """
-
-        invoice = self._invoice
-        purpose = invoice.purpose
-        client = self._client
-        is_auto_billing = client.is_auto_billing
-
-        with atomic():
-            paid_amount, unpaid_amount = self.charge_prepaid_balance()
-
-            # if Client doesn't have enough prepaid balance - we should charge
-            # their card
-            if unpaid_amount > 0:
-                if is_auto_billing:
-                    self.purchase_subscription()
-                else:
-                    self.charge_card(unpaid_amount, purpose)
-
     def confirm(
         self, payment: Union[PaymentMethod, PaymentContainer], provider=InvoiceProvider.STRIPE
     ) -> Optional[Transaction]:
@@ -116,6 +90,32 @@ class PaymentService:
         )
 
         return transaction
+
+    def charge(self):
+        """
+        We are iterating via all user's card list and choosing first one
+        where we find an enough money to charge. At first successful attempt we
+        are continuing our payment flow.
+
+        In most cases, we are creating `PaymentIntent` under the hood and then waiting for
+        web hook event from Stripe to confirm and finish payment flow.
+        """
+
+        invoice = self._invoice
+        purpose = invoice.purpose
+        client = self._client
+        is_auto_billing = client.is_auto_billing
+
+        with atomic():
+            paid_amount, unpaid_amount = self.charge_prepaid_balance()
+
+            # if Client doesn't have enough prepaid balance - we should charge
+            # their card or purchase subscription
+            if unpaid_amount > 0:
+                if is_auto_billing:
+                    self.purchase_subscription()
+                else:
+                    self.charge_card(unpaid_amount, purpose)
 
     def charge_prepaid_balance(self):
         """
