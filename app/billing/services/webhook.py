@@ -13,14 +13,15 @@ from billing.choices import InvoicePurpose
 from billing.models import Invoice
 from billing.services.payments import PaymentService
 from orders.services.order import OrderService
+from orders.services.pos import POSService
 from subscriptions.services.subscription import SubscriptionService
 from users.models import Client
 
 
 class StripeWebhookService:
     enable_ip_check = False
-    success_events = ["charge.succeeded"]
-    fail_events = ["charge.failed"]
+    success_events = ["checkout.succeeded"]
+    fail_events = ["checkout.failed"]
 
     def __init__(self, request: Request, event: stripe.Event):
         self._request = request
@@ -63,15 +64,23 @@ class StripeWebhookService:
         payment_service = PaymentService(client, invoice)
         subscription_service = SubscriptionService(client)
         order_service = OrderService(client)
+        pos_service = POSService(client, order, employee)
 
         with atomic():
             if event.type in self.success_events:
                 # we are marked our invoice as paid
                 payment_service.confirm(payment)
 
-                if purpose == InvoicePurpose.SUBSCRIPTION:
+                # finish checkout of invoice and mark order as paid
+                if purpose == InvoicePurpose.POS:
+                    pos_service.checkout()
+
+                # set subscription to client, notify client
+                #  and mark order as paid
+                elif purpose == InvoicePurpose.SUBSCRIPTION:
                     subscription_service.finalize(order)
 
+                # notify client and mark order as paid
                 elif purpose in [
                     InvoicePurpose.BASKET,
                     InvoicePurpose.PICKUP,

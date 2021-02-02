@@ -4,7 +4,6 @@ import stripe
 from stripe.api_resources.payment_method import PaymentMethod
 from stripe.error import InvalidRequestError
 
-from billing.choices import InvoicePurpose
 from billing.models import Invoice
 from users.models import Client
 
@@ -73,9 +72,9 @@ class StripeHelper:
         self,
         amount: int,
         invoice: Invoice,
+        purpose: str,
         currency: str = DEFAULT_CURRENCY,
         payment_method_id: str = None,
-        purpose: str = InvoicePurpose.SUBSCRIPTION,
     ):
         """
         Use this method to immediately charge saved card on customer.

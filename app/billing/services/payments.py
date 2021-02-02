@@ -1,7 +1,7 @@
 import logging
-from math import ceil
 from typing import Optional, Tuple, Union
 
+from django.conf import settings
 from django.db.transaction import atomic
 
 from rest_framework import serializers
@@ -14,6 +14,7 @@ from billing.models import Invoice, Transaction
 from billing.services.card import CardService
 from billing.stripe_helper import StripeHelper
 from billing.utils import create_credit, create_debit
+from orders.containers.order import OrderContainer
 from subscriptions.models import Package
 from users.models import Client
 
@@ -46,11 +47,17 @@ class PaymentService:
             called `PaymentIntent`
         """
 
+        invoice = self._invoice
+        purpose = invoice.purpose
+        amount = invoice.amount_with_discount
+
         if is_save_card:
             intent = self._stripe_helper.create_setup_intent()
         else:
             intent = self._stripe_helper.create_payment_intent(
-                amount=self._invoice.amount_with_discount, invoice=self._invoice
+                amount=amount,
+                invoice=invoice,
+                purpose=purpose,
             )
 
         return intent
@@ -58,20 +65,28 @@ class PaymentService:
     def charge(self):
         """
         We are iterating via all user's card list and choosing first one
-        where we find an enough money to charge. At first successful attempt we
+        where we find an enough money to checkout. At first successful attempt we
         are continuing our payment flow.
 
         In most cases, we are creating `PaymentIntent` under the hood and then waiting for
         web hook event from Stripe to confirm and finish payment flow.
         """
 
-        with atomic():
-            paid_amount, unpaid_amount = self._charge_prepaid_balance()
+        invoice = self._invoice
+        purpose = invoice.purpose
+        client = self._client
+        is_auto_billing = client.is_auto_billing
 
-            # if Client doesn't have enough prepaid balance - we should charge
+        with atomic():
+            paid_amount, unpaid_amount = self.charge_prepaid_balance()
+
+            # if Client doesn't have enough prepaid balance - we should checkout
             # their card
             if unpaid_amount > 0:
-                self._charge_card(unpaid_amount)
+                if is_auto_billing:
+                    self.purchase_subscription()
+                else:
+                    self.charge_card(unpaid_amount, purpose)
 
     def confirm(
         self, payment: Union[PaymentMethod, PaymentContainer], provider=InvoiceProvider.STRIPE
@@ -102,26 +117,11 @@ class PaymentService:
 
         return transaction
 
-    def _purchase_subscription(self):
-        from orders.services.order import OrderService
-        from subscriptions.services.subscription import SubscriptionService
+    def charge_prepaid_balance(self):
+        """
+        Method that charges user's prepaid balance.
+        """
 
-        client = self._client
-        subscription = client.subscription
-        package_name = subscription.name
-        package = Package.objects.get(name=package_name)
-
-        with atomic():
-            subscription_service = SubscriptionService(client)
-            order_container = subscription_service.choose(package)
-            order = order_container.original
-
-            order_service = OrderService(client, order)
-            order_container = order_service.checkout(order)
-
-        return order_container
-
-    def _charge_prepaid_balance(self):
         client = self._client
         invoice = self._invoice
         paid_amount, unpaid_amount = self._calculate_paid_and_unpaid()
@@ -135,15 +135,17 @@ class PaymentService:
 
         return paid_amount, unpaid_amount
 
-    def _charge_card(self, amount: int):
+    def charge_card(self, amount: int, purpose: str):
+        """
+        Method that tries to checkout money from user's card.
+        """
+
         card_service = CardService(self._client)
-        invoice = self._invoice
-        purpose = invoice.purpose
         charge_successful = False
         payment = None
 
         for item in self._client.card_list.all():
-            # we are trying to charge the card list of client
+            # we are trying to checkout the card list of client
             # and we are stopping at first successful attempt
 
             if charge_successful:
@@ -154,7 +156,6 @@ class PaymentService:
                     payment_method_id=item.stripe_id,
                     amount=amount,
                     invoice=self._invoice,
-                    # TODO сделать проброс purpose = POS
                     purpose=purpose,
                 )
                 card_service.update_main_card(self._client, item)
@@ -172,6 +173,44 @@ class PaymentService:
             )
 
         return payment
+
+    def purchase_subscription(self) -> Optional[OrderContainer]:
+        """
+        Method that helps to buy subscription if user doesn't have enough
+        prepaid balance.
+        """
+
+        # we are forced to use inline import to avoid circular import issue -
+        # because `SubscriptionService` imports `PaymentService`
+        from subscriptions.services.subscription import SubscriptionService
+
+        request = None
+        basket = None
+        client = self._client
+        subscription = client.subscription
+        subscription_name = subscription.name
+        package = Package.objects.get(name=subscription_name)
+
+        # at PAYC subscription we can't have prepaid balance and
+        # subscription purchase doesn't give to us anything
+        if subscription_name == settings.PAYC:
+            return None
+
+        with atomic():
+            subscription_service = SubscriptionService(client)
+            order_container = subscription_service.choose(package)
+
+            order = order_container.original
+            subscription = order.subscription
+            amount = subscription.price
+
+            subscription_service.create_invoice(
+                order=order, basket=basket, request=request, subscription=subscription
+            )
+            self.charge_card(amount, purpose=InvoicePurpose.POS)
+            subscription_service.checkout(order=order, subscription=subscription)
+
+        return order_container
 
     def _calculate_paid_and_unpaid(self) -> Tuple[int, int]:
         invoice = self._invoice
@@ -196,8 +235,8 @@ class PaymentService:
             unpaid_amount = 0
 
         # but if our prepaid balance is lower that invoice amount -
-        # we charge all of prepaid balance and rest of unpaid invoice amount
-        # we should charge it from card
+        # we checkout all of prepaid balance and rest of unpaid invoice amount
+        # we should checkout it from card
         elif 0 < balance < amount_with_discount:
             paid_amount = balance
             unpaid_amount = amount_with_discount - balance
