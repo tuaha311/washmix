@@ -20,8 +20,8 @@ from users.models import Client
 
 class StripeWebhookService:
     enable_ip_check = False
-    success_events = ["checkout.succeeded"]
-    fail_events = ["checkout.failed"]
+    success_events = ["charge.succeeded"]
+    fail_events = ["charge.failed"]
 
     def __init__(self, request: Request, event: stripe.Event):
         self._request = request

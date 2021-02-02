@@ -97,6 +97,15 @@ class Order(Common):
 
     @property
     def is_all_invoices_paid(self) -> bool:
+        """
+        Order can have multiple invoices:
+            - Subscription invoice
+            - Basket invoice
+            - Request invoices (pickup, dropoff)
+
+        This property checks all invoices are paid.
+        """
+
         basket = self.basket
         subscription = self.subscription
         request = self.request
