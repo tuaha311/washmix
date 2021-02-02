@@ -80,7 +80,7 @@ class PaymentService:
         with atomic():
             paid_amount, unpaid_amount = self.charge_prepaid_balance()
 
-            # if Client doesn't have enough prepaid balance - we should checkout
+            # if Client doesn't have enough prepaid balance - we should charge
             # their card
             if unpaid_amount > 0:
                 if is_auto_billing:
@@ -145,7 +145,7 @@ class PaymentService:
         payment = None
 
         for item in self._client.card_list.all():
-            # we are trying to checkout the card list of client
+            # we are trying to charge the card list of client
             # and we are stopping at first successful attempt
 
             if charge_successful:
@@ -235,8 +235,8 @@ class PaymentService:
             unpaid_amount = 0
 
         # but if our prepaid balance is lower that invoice amount -
-        # we checkout all of prepaid balance and rest of unpaid invoice amount
-        # we should checkout it from card
+        # we charge all of prepaid balance and rest of unpaid invoice amount
+        # we should charge it from card
         elif 0 < balance < amount_with_discount:
             paid_amount = balance
             unpaid_amount = amount_with_discount - balance
