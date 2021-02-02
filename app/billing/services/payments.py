@@ -197,6 +197,7 @@ class PaymentService:
             return None
 
         with atomic():
+            # we are manually handling subscription purchase proccess
             subscription_service = SubscriptionService(client)
             order_container = subscription_service.choose(package)
 
@@ -204,6 +205,9 @@ class PaymentService:
             subscription = order.subscription
             amount = subscription.price
 
+            # 1. creating invoice
+            # 2. charging the card with purpose=POS to indicate that we are processing POS case
+            # 3. calling final hooks
             subscription_service.create_invoice(
                 order=order, basket=basket, request=request, subscription=subscription
             )
