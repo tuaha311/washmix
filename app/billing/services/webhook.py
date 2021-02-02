@@ -1,3 +1,4 @@
+import logging
 from typing import Tuple
 
 from django.conf import settings
@@ -16,6 +17,8 @@ from orders.services.order import OrderService
 from orders.services.pos import POSService
 from subscriptions.services.subscription import SubscriptionService
 from users.models import Client
+
+logger = logging.getLogger(__name__)
 
 
 class StripeWebhookService:
@@ -36,17 +39,34 @@ class StripeWebhookService:
             # don't allowing other IPs excluding Stripe's IPs
             if ip_address not in settings.STRIPE_WEBHOOK_IP_WHITELIST:
                 self.body = {
-                    "ip": ip_address,
+                    "reason": "ip_not_in_whitelist",
                 }
                 self.status = HTTP_403_FORBIDDEN
+
+                logger.info(f"IP address {ip_address} not in whitelist.")
+
                 return False
 
         try:
             invoice = self.invoice
         except ObjectDoesNotExist:
+            self.body = {
+                "reason": "invoice_doesnt_exists",
+            }
+            self.status = HTTP_403_FORBIDDEN
+
+            logger.info(f"Invoice doesn't exists.")
+
             return False
 
         if invoice.is_paid:
+            self.body = {
+                "reason": "invoice_is_paid",
+            }
+            self.status = HTTP_403_FORBIDDEN
+
+            logger.info(f"{invoice} is already paid.")
+
             return False
 
         return True
@@ -73,11 +93,13 @@ class StripeWebhookService:
 
                 # finish checkout of invoice and mark order as paid
                 if purpose == InvoicePurpose.POS:
+                    logger.info("POS invoice handling")
                     pos_service.checkout()
 
                 # set subscription to client, notify client
                 #  and mark order as paid
                 elif purpose == InvoicePurpose.SUBSCRIPTION:
+                    logger.info("Subscription invoice handling")
                     subscription_service.finalize(order)
 
                 # notify client and mark order as paid
@@ -86,6 +108,7 @@ class StripeWebhookService:
                     InvoicePurpose.PICKUP,
                     InvoicePurpose.DROPOFF,
                 ]:
+                    logger.info("Order invoice handling")
                     order_service.finalize(order, employee)
 
             elif event.type in self.fail_events:

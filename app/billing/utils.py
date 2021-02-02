@@ -49,7 +49,7 @@ create_credit = partial(
 )
 
 
-def add_credits(client: Client, amount: int, purpose=InvoiceProvider.CREDIT_BACK) -> Transaction:
+def add_credits(client: Client, amount: int, provider=InvoiceProvider.CREDIT_BACK) -> Transaction:
     """
     Helper function that creates invoice and transaction for internal credit accrue.
     """
@@ -65,7 +65,41 @@ def add_credits(client: Client, amount: int, purpose=InvoiceProvider.CREDIT_BACK
             client=client,
             invoice=invoice,
             amount=amount,
-            provider=purpose,
+            provider=provider,
         )
+
+    return transaction
+
+
+def confirm_debit(client: Client, invoice: Invoice, provider=InvoiceProvider.WASHMIX):
+    """
+    Function that confirms invoice with desired Transaction kind (debit)
+    """
+
+    amount = invoice.amount_with_discount
+
+    transaction = create_debit(
+        client=client,
+        invoice=invoice,
+        amount=amount,
+        provider=provider,
+    )
+
+    return transaction
+
+
+def confirm_credit(client: Client, invoice: Invoice, provider=InvoiceProvider.WASHMIX):
+    """
+    Function that confirms invoice with desired Transaction kind (credit)
+    """
+
+    amount = invoice.amount_with_discount
+
+    transaction = create_credit(
+        client=client,
+        invoice=invoice,
+        amount=amount,
+        provider=provider,
+    )
 
     return transaction

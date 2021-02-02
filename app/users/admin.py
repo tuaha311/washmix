@@ -112,7 +112,7 @@ class ClientAdmin(AdminWithSearch):
         credit_amount = form.cleaned_data.get("credit_amount", None)
 
         if credit_amount and credit_amount > 0:
-            add_credits(client, credit_amount, purpose=InvoiceProvider.WASHMIX)
+            add_credits(client, credit_amount, provider=InvoiceProvider.WASHMIX)
 
         return super().save_form(request, form, change)
 

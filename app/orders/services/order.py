@@ -43,19 +43,22 @@ class OrderService:
         request = order.request
         subscription = order.subscription
 
+        services = [
+            BasketService(client),
+            RequestService(client),
+            SubscriptionService(client),
+        ]
+
+        # 1. we are creating invoices for every service we are offering to client
+        # invoices should be created outside of transaction - we are writing explicitly to db
+        # if invoices will be inside transaction - when stripe webhook occurs, `.charge` method
+        # sometimes doesn't finished.
+        for item in services:
+            item.create_invoice(
+                order=order, basket=basket, request=request, subscription=subscription
+            )
+
         with atomic():
-            services = [
-                BasketService(client),
-                RequestService(client),
-                SubscriptionService(client),
-            ]
-
-            # 1. we are creating invoices for every service we are offering to client
-            for item in services:
-                item.create_invoice(
-                    order=order, basket=basket, request=request, subscription=subscription
-                )
-
             order.refresh_from_db()
             invoice_list = order.invoice_list.all()
 

@@ -8,6 +8,7 @@ from django.utils.timezone import localtime
 from billing.models import Invoice
 from billing.services.invoice import InvoiceService
 from billing.services.payments import PaymentService
+from billing.utils import confirm_credit
 from core.interfaces import PaymentInterfaceService
 from deliveries.choices import Kind, Status
 from deliveries.containers.request import RequestContainer
@@ -119,7 +120,11 @@ class RequestService(PaymentInterfaceService):
 
         for invoice in invoice_list:
             payment_service = PaymentService(client, invoice)
-            payment_service.charge()
+
+            if invoice.amount_with_discount == 0:
+                confirm_credit(client, invoice)
+            else:
+                payment_service.charge()
 
     def checkout(self, **kwargs):
         """

@@ -117,11 +117,15 @@ LOGGING = {
         "null": {
             "class": "logging.NullHandler",
         },
+        "stdout": {
+            "class": "logging.StreamHandler",
+        },
     },
     # disable drf_yasg warning stuff
     "loggers": {
         "drf_yasg": {"handlers": ["null"]},
         "inspectors": {"handlers": ["null"]},
+        "billing": {"handlers": ["stdout"]},
     },
 }
 

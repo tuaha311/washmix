@@ -104,7 +104,9 @@ class PaymentService:
         invoice = self._invoice
         purpose = invoice.purpose
         client = self._client
+        subscription = client.subscription
         is_auto_billing = client.is_auto_billing
+        is_advantage = subscription.name in [settings.GOLD, settings.PLATINUM]
 
         with atomic():
             paid_amount, unpaid_amount = self.charge_prepaid_balance()
@@ -112,7 +114,7 @@ class PaymentService:
             # if Client doesn't have enough prepaid balance - we should charge
             # their card or purchase subscription
             if unpaid_amount > 0:
-                if is_auto_billing:
+                if is_auto_billing and is_advantage:
                     self.purchase_subscription()
                 else:
                     self.charge_card(unpaid_amount, purpose)
@@ -140,6 +142,7 @@ class PaymentService:
         Method that tries to charge money from user's card.
         """
 
+        invoice = self._invoice
         card_service = CardService(self._client)
         charge_successful = False
         payment = None
@@ -159,6 +162,9 @@ class PaymentService:
                     purpose=purpose,
                 )
                 card_service.update_main_card(self._client, item)
+
+                invoice.card = item
+                invoice.save()
 
                 charge_successful = True
 
