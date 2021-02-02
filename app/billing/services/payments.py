@@ -137,7 +137,7 @@ class PaymentService:
 
     def charge_card(self, amount: int, purpose: str):
         """
-        Method that tries to checkout money from user's card.
+        Method that tries to charge money from user's card.
         """
 
         card_service = CardService(self._client)
