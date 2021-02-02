@@ -65,7 +65,7 @@ class PaymentService:
     def charge(self):
         """
         We are iterating via all user's card list and choosing first one
-        where we find an enough money to checkout. At first successful attempt we
+        where we find an enough money to charge. At first successful attempt we
         are continuing our payment flow.
 
         In most cases, we are creating `PaymentIntent` under the hood and then waiting for
