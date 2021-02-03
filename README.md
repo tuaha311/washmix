@@ -77,7 +77,6 @@ brew install python3 cairo pango gdk-pixbuf libffi
 `users` - one of the main applications, whole logic of clients, employees management stored here.
 
 
-
 ## Project layout
 All applications have a default Django layout - we are trying to stay classic and trying to use default practices.
 All views and serializers related to the application incapsulated in application package.
