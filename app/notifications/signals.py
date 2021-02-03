@@ -33,12 +33,13 @@ def on_delivery_notify_signal(
     is_created = created
     is_date_updated = False
     is_dropoff = delivery.kind == Kind.DROPOFF
+    is_pickup = delivery.kind == Kind.PICKUP
     is_completed = delivery.status == Status.COMPLETED
 
     if update_fields:
         is_date_updated = "date" in update_fields
 
-    if is_created or is_date_updated:
+    if is_pickup and (is_created or is_date_updated):
         send_sms.send(
             event=settings.NEW_DELIVERY,
             recipient_list=[number],

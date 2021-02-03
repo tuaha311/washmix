@@ -117,7 +117,7 @@ class PaymentService:
                 if is_auto_billing and is_advantage:
                     self.purchase_subscription()
                 else:
-                    self.charge_card(unpaid_amount, purpose)
+                    self.charge_card(amount=unpaid_amount, purpose=purpose, invoice=invoice)
 
     def charge_prepaid_balance(self):
         """
@@ -137,12 +137,11 @@ class PaymentService:
 
         return paid_amount, unpaid_amount
 
-    def charge_card(self, amount: int, purpose: str):
+    def charge_card(self, amount: int, purpose: str, invoice: Invoice):
         """
         Method that tries to charge money from user's card.
         """
 
-        invoice = self._invoice
         card_service = CardService(self._client)
         charge_successful = False
         payment = None
@@ -158,7 +157,7 @@ class PaymentService:
                 payment = self._stripe_helper.create_payment_intent(
                     payment_method_id=item.stripe_id,
                     amount=amount,
-                    invoice=self._invoice,
+                    invoice=invoice,
                     purpose=purpose,
                 )
                 card_service.update_main_card(self._client, item)
@@ -214,10 +213,13 @@ class PaymentService:
             # 1. creating invoice
             # 2. charging the card with purpose=POS to indicate that we are processing POS case
             # 3. calling final hooks
-            subscription_service.create_invoice(
+            invoice_list = subscription_service.create_invoice(
                 order=order, basket=basket, request=request, subscription=subscription
             )
-            self.charge_card(amount, purpose=InvoicePurpose.POS)
+
+            for invoice in invoice_list:
+                self.charge_card(amount, purpose=InvoicePurpose.POS, invoice=invoice)
+
             subscription_service.checkout(order=order, subscription=subscription)
 
         return order_container
