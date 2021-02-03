@@ -111,17 +111,17 @@ class PaymentService:
         is_advantage = subscription.name in [settings.GOLD, settings.PLATINUM]
 
         with atomic():
-            paid_amount, unpaid_amount = self.charge_prepaid_balance()
+            paid_amount, unpaid_amount = self._charge_prepaid_balance()
 
             # if Client doesn't have enough prepaid balance - we should charge
             # their card or purchase subscription
             if unpaid_amount > 0:
                 if is_auto_billing and is_advantage:
-                    self.purchase_subscription(parent_order=order)
+                    self._purchase_subscription(parent_order=order)
                 else:
-                    self.charge_card(amount=unpaid_amount, purpose=purpose, invoice=invoice)
+                    self._charge_card(amount=unpaid_amount, purpose=purpose, invoice=invoice)
 
-    def charge_prepaid_balance(self):
+    def _charge_prepaid_balance(self):
         """
         Method that charges user's prepaid balance.
         """
@@ -139,7 +139,7 @@ class PaymentService:
 
         return paid_amount, unpaid_amount
 
-    def charge_card(self, amount: int, purpose: str, invoice: Invoice):
+    def _charge_card(self, amount: int, purpose: str, invoice: Invoice):
         """
         Method that tries to charge money from user's card.
         """
@@ -181,7 +181,7 @@ class PaymentService:
 
         return payment
 
-    def purchase_subscription(self, parent_order: Order) -> Optional[OrderContainer]:
+    def _purchase_subscription(self, parent_order: Order) -> Optional[OrderContainer]:
         """
         Method that helps to buy subscription if user doesn't have enough
         prepaid balance.
@@ -223,7 +223,7 @@ class PaymentService:
             [invoice] = subscription_service.create_invoice(
                 order=order, basket=basket, request=request, subscription=subscription
             )
-            self.charge_card(amount, purpose=InvoicePurpose.POS, invoice=invoice)
+            self._charge_card(amount, purpose=InvoicePurpose.POS, invoice=invoice)
             subscription_service.checkout(order=order, subscription=subscription)
 
         return order_container

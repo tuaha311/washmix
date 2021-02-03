@@ -218,8 +218,10 @@ MAIN_TITLE = "Main"
 # DELIVERY HANDLING INFO #
 ##########################
 
+# 2 business days order handling + 1 day for delivery (delivery on the next day after handling)
 USUAL_PROCESSING_BUSINESS_DAYS = 3
 USUAL_PROCESSING_TIMEDELTA = timedelta(days=USUAL_PROCESSING_BUSINESS_DAYS)
+# 1 business day order handling + 1 day for delivery (delivery on the next day after handling)
 RUSH_PROCESSING_BUSINESS_DAYS = 2
 RUSH_PROCESSING_TIMEDELTA = timedelta(days=RUSH_PROCESSING_BUSINESS_DAYS)
 WEEKENDS_DURATION_DAYS = 2
