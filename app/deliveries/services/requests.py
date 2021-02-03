@@ -120,11 +120,14 @@ class RequestService(PaymentInterfaceService):
 
         for invoice in invoice_list:
             payment_service = PaymentService(client, invoice)
+            invoice_zero_amount = invoice.amount_with_discount == 0
 
-            if invoice.amount_with_discount == 0:
-                confirm_credit(client, invoice)
-            else:
+            if not invoice_zero_amount:
                 payment_service.charge()
+
+            # confirm invoice if amount is equal to 0 and invoice hasn't transactions
+            if invoice_zero_amount and not invoice.has_transaction:
+                confirm_credit(client, invoice)
 
     def checkout(self, **kwargs):
         """

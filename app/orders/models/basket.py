@@ -31,6 +31,10 @@ class Basket(Common):
         through="orders.Quantity",
     )
     # invoice created at the moment of Order creation
+    # this invoice is responsible for storing actual amount and
+    # discount (at the moment of purchasing), because amount and
+    # discount calculated with different business rules for every
+    # WashMix services - subscription, basket (POS), delivery
     invoice = models.OneToOneField(
         "billing.Invoice",
         verbose_name="invoice for basket",

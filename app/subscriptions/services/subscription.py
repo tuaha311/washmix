@@ -86,17 +86,17 @@ class SubscriptionService(PaymentInterfaceService):
         invoice = subscription.invoice
         client = self._client
         card_service = CardService(client)
+        payment_service = PaymentService(client, invoice)
+        is_advantage_program = subscription.name in [settings.GOLD, settings.PLATINUM]
 
-        # save payment method for PAYC
-        # and confirm payment
-        if subscription.name == settings.PAYC:
+        if is_advantage_program:
+            payment_service.charge()
+
+        # confirm invoice for PAYC and if invoice doesn't have transactions
+        if not is_advantage_program and not invoice.has_transaction:
             card = client.card_list.first()
             card_service.update_main_card(client, card)
-
             confirm_debit(client, invoice)
-        else:
-            payment_service = PaymentService(client, invoice)
-            payment_service.charge()
 
     def checkout(self, order: Order, subscription: Subscription, **kwargs):
         """
