@@ -58,6 +58,19 @@ class Order(Common):
         blank=True,
         null=True,
     )
+    # when client doesn't have enough money to pay for order in POS
+    # we are purchasing subscription (on Advantage Program) to refill balance.
+    # after refill we should finish a source order - and in this case we are
+    # using this field.
+    parent = models.ForeignKey(
+        "self",
+        verbose_name="parent order",
+        related_name="child_list",
+        on_delete=models.CASCADE,
+        editable=False,
+        blank=True,
+        null=True,
+    )
 
     status = models.CharField(
         max_length=20,

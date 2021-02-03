@@ -28,3 +28,16 @@ INTERNAL_IPS = [
 ]
 
 ALLOWED_COUNTRY_CODES = [1, 7]
+
+
+####################################
+# DJANGO REST FRAMEWORK SIMPLE JWT #
+####################################
+
+SIMPLE_JWT = {
+    "SLIDING_TOKEN_LIFETIME": timedelta(days=7),
+    "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=7),
+    "SIGNING_KEY": env.str("SIMPLE_JWT_SIGNING_KEY"),
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.SlidingToken",),
+}

@@ -15,6 +15,7 @@ from billing.services.card import CardService
 from billing.stripe_helper import StripeHelper
 from billing.utils import create_credit, create_debit
 from orders.containers.order import OrderContainer
+from orders.models import Order
 from subscriptions.models import Package
 from users.models import Client
 
@@ -102,6 +103,7 @@ class PaymentService:
         """
 
         invoice = self._invoice
+        order = invoice.order
         purpose = invoice.purpose
         client = self._client
         subscription = client.subscription
@@ -115,7 +117,7 @@ class PaymentService:
             # their card or purchase subscription
             if unpaid_amount > 0:
                 if is_auto_billing and is_advantage:
-                    self.purchase_subscription()
+                    self.purchase_subscription(parent_order=order)
                 else:
                     self.charge_card(amount=unpaid_amount, purpose=purpose, invoice=invoice)
 
@@ -179,7 +181,7 @@ class PaymentService:
 
         return payment
 
-    def purchase_subscription(self) -> Optional[OrderContainer]:
+    def purchase_subscription(self, parent_order: Order) -> Optional[OrderContainer]:
         """
         Method that helps to buy subscription if user doesn't have enough
         prepaid balance.
@@ -209,49 +211,61 @@ class PaymentService:
             order = order_container.original
             subscription = order.subscription
             amount = subscription.price
+            # let's save a parent order - order that created current subscription order
+            order.parent = parent_order
 
-            # 1. creating invoice
+            order.save()
+
+            # 1. creating invoice with list unpacking
             # 2. charging the card with purpose=POS to indicate that we are processing POS case
             # 3. calling final hooks
-            invoice_list = subscription_service.create_invoice(
+            [invoice] = subscription_service.create_invoice(
                 order=order, basket=basket, request=request, subscription=subscription
             )
-
-            for invoice in invoice_list:
-                self.charge_card(amount, purpose=InvoicePurpose.POS, invoice=invoice)
-
+            self.charge_card(amount, purpose=InvoicePurpose.POS, invoice=invoice)
             subscription_service.checkout(order=order, subscription=subscription)
 
         return order_container
 
     def _calculate_paid_and_unpaid(self) -> Tuple[int, int]:
-        invoice = self._invoice
-        amount_with_discount = invoice.amount_with_discount
-        client = self._client
-        balance = client.balance
-        paid_amount = 0
-        unpaid_amount = amount_with_discount
+        """
+        Method that calculates:
+            - paid_amount (amount of money, that we can charge from balance)
+            - unpaid_amount (rest of
+        """
 
-        # for subscription we are always charging card
+        invoice = self._invoice
+        client = self._client
+
+        amount_with_discount = invoice.amount_with_discount
+        paid_amount = invoice.paid_amount
+        unpaid_amount = amount_with_discount - paid_amount
+        balance = client.balance
+
+        prepaid_balance_will_be_charged = 0
+        card_will_be_charged = amount_with_discount - prepaid_balance_will_be_charged
+
+        # for subscription we are always charging card by full price
         # without charging prepaid balance
         if invoice.purpose == InvoicePurpose.SUBSCRIPTION:
-            paid_amount = 0
+            prepaid_balance_will_be_charged = 0
+            card_will_be_charged = invoice.amount_with_discount
 
             # we are reducing to a integer number for Stripe
-            return paid_amount, int(unpaid_amount)
+            return prepaid_balance_will_be_charged, int(card_will_be_charged)
 
         # if prepaid balance enough to pay full price - we will
         # use this money for invoice payment.
-        if balance >= amount_with_discount:
-            paid_amount = amount_with_discount
-            unpaid_amount = 0
+        if balance >= unpaid_amount:
+            prepaid_balance_will_be_charged = unpaid_amount
+            card_will_be_charged = 0
 
-        # but if our prepaid balance is lower that invoice amount -
+        # but if our prepaid balance is lower that rest of unpaid invoice amount -
         # we charge all of prepaid balance and rest of unpaid invoice amount
         # we should charge it from card
-        elif 0 < balance < amount_with_discount:
-            paid_amount = balance
-            unpaid_amount = amount_with_discount - balance
+        elif 0 < balance < unpaid_amount:
+            prepaid_balance_will_be_charged = balance
+            card_will_be_charged = unpaid_amount - balance
 
         # we are reducing to a integer number for Stripe
-        return paid_amount, int(unpaid_amount)
+        return prepaid_balance_will_be_charged, int(card_will_be_charged)

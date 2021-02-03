@@ -64,12 +64,17 @@ class Invoice(CalculatedAmountWithDiscount, Amountable, Common):
 
     @property
     def is_paid(self) -> bool:
-        transaction_list = self.transaction_list
+        paid_amount = self.paid_amount
         amount_with_discount = self.amount_with_discount
 
-        transaction_paid_amount = transaction_list.aggregate(total=Sum("amount"))["total"] or 0
+        return paid_amount >= amount_with_discount
 
-        return transaction_paid_amount >= amount_with_discount
+    @property
+    def paid_amount(self):
+        transaction_list = self.transaction_list
+        paid_amount = transaction_list.aggregate(total=Sum("amount"))["total"] or 0
+
+        return paid_amount
 
     @property
     def has_transaction(self) -> bool:

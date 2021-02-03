@@ -79,44 +79,47 @@ class StripeWebhookService:
 
         payment, client, invoice, purpose = self._parse()
         order = invoice.order
+        parent_order = order.parent
         employee = order.employee
 
         payment_service = PaymentService(client, invoice)
         subscription_service = SubscriptionService(client)
         order_service = OrderService(client)
-        pos_service = POSService(client, order, employee)
+        pos_service = POSService(client, parent_order, employee)
 
-        with atomic():
-            if event.type in self.success_events:
-                # we are marked our invoice as paid
-                payment_service.confirm(payment)
+        if event.type in self.success_events:
+            # we are marked our invoice as paid
+            payment_service.confirm(payment)
 
-                # finish checkout of invoice and mark order as paid
-                if purpose == InvoicePurpose.POS:
-                    logger.info("POS invoice handling")
-                    pos_service.checkout()
+            # complex event:
+            # - first of all, we are finishing our subscription purchase
+            # - then we are finishing a parent order that created subscription order
+            if purpose == InvoicePurpose.POS:
+                logger.info("POS invoice handling")
+                subscription_service.finalize(order)
+                pos_service.checkout()
 
-                # set subscription to client, notify client
-                #  and mark order as paid
-                elif purpose == InvoicePurpose.SUBSCRIPTION:
-                    logger.info("Subscription invoice handling")
-                    subscription_service.finalize(order)
+            # set subscription to client, notify client
+            #  and mark order as paid
+            elif purpose == InvoicePurpose.SUBSCRIPTION:
+                logger.info("Subscription invoice handling")
+                subscription_service.finalize(order)
 
-                # notify client and mark order as paid
-                elif purpose in [
-                    InvoicePurpose.BASKET,
-                    InvoicePurpose.PICKUP,
-                    InvoicePurpose.DROPOFF,
-                ]:
-                    logger.info("Order invoice handling")
-                    order_service.finalize(order, employee)
+            # notify client and mark order as paid
+            elif purpose in [
+                InvoicePurpose.BASKET,
+                InvoicePurpose.PICKUP,
+                InvoicePurpose.DROPOFF,
+            ]:
+                logger.info("Order invoice handling")
+                order_service.finalize(order, employee)
 
-            elif event.type in self.fail_events:
-                if purpose == InvoicePurpose.SUBSCRIPTION:
-                    subscription_service.fail(order)
+        elif event.type in self.fail_events:
+            if purpose == InvoicePurpose.SUBSCRIPTION:
+                subscription_service.fail(order)
 
-                elif purpose == InvoicePurpose.BASKET:
-                    order_service.fail(order)
+            elif purpose == InvoicePurpose.BASKET:
+                order_service.fail(order)
 
     def _parse(self) -> Tuple[stripe.PaymentMethod, Client, Invoice, str]:
         """
