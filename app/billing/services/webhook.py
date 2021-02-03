@@ -106,12 +106,8 @@ class StripeWebhookService:
                 subscription_service.finalize(order)
 
             # notify client and mark order as paid
-            elif purpose in [
-                InvoicePurpose.BASKET,
-                InvoicePurpose.PICKUP,
-                InvoicePurpose.DROPOFF,
-            ]:
-                logger.info("Order invoice handling")
+            elif purpose == InvoicePurpose.REFILL:
+                logger.info("One time refill handling")
                 order_service.finalize(order, employee)
 
         elif event.type in self.fail_events:

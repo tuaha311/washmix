@@ -237,6 +237,10 @@ FREE_DELIVERY_PRICE = 0
 PAYC_FREE_DELIVERY_FROM = 4900
 GOLD_PLATINUM_FREE_DELIVERY_FROM = 3900
 CREDIT_BACK_PERCENTAGE = 5
+# 20$ total for rush delivery - i.e.
+# - dropoff 10$ (1000)
+# - pickup 10$ (1000)
+RUSH_DELIVERY_PRICE = 1000
 
 
 #################

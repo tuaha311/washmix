@@ -1,17 +1,19 @@
 class InvoicePurpose:
+    CREDIT = "credit"
     SUBSCRIPTION = "subscription"
+    POS = "pos"
+    REFILL = "refill"
     BASKET = "basket"
     PICKUP = "pickup"
     DROPOFF = "dropoff"
-    CREDIT = "credit"
-    POS = "pos"
     MAP = {
+        CREDIT: "Credit by WashMix",
         SUBSCRIPTION: "Subscription purchase",
+        POS: "POS",
+        REFILL: "One time refill",
         BASKET: "Order processing payment",
         PICKUP: "Pickup delivery",
         DROPOFF: "Dropoff delivery",
-        CREDIT: "Credit",
-        POS: "POS",
     }
     CHOICES = list(MAP.items())
 
