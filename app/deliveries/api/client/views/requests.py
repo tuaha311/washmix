@@ -34,11 +34,13 @@ class RequestViewSet(ModelViewSet):
         client = self.request.user.client
         pickup_date = serializer.validated_data["pickup_date"]
         address = serializer.validated_data["address"]
+        is_rush = serializer.validated_data.get("is_rush", False)
         instructions = address.instructions
 
         service = RequestService(
             client=client,
             pickup_date=pickup_date,
+            is_rush=is_rush,
         )
         request = service.create(address=address, comment=instructions)
 
@@ -51,12 +53,16 @@ class RequestViewSet(ModelViewSet):
         if self.recalculate_fields & update_fields:
             pickup_date = serializer.validated_data["pickup_date"]
             request = serializer.instance
+            pickup_start = request.pickup_start
+            pickup_end = request.pickup_end
+            is_rush = request.is_rush
 
             service = RequestService(
                 client=client,
                 pickup_date=pickup_date,
-                pickup_start=request.pickup_start,
-                pickup_end=request.pickup_end,
+                pickup_start=pickup_start,
+                pickup_end=pickup_end,
+                is_rush=is_rush,
             )
             service.recalculate(request)
 

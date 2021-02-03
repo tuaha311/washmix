@@ -37,6 +37,7 @@ class RequestService(PaymentInterfaceService):
         pickup_date: date = None,
         pickup_start: time = None,
         pickup_end: time = None,
+        is_rush: bool = False,
     ):
         self._client = client
 
@@ -49,6 +50,7 @@ class RequestService(PaymentInterfaceService):
         self._pickup_date = pickup_date
         self._pickup_start = pickup_start
         self._pickup_end = pickup_end
+        self._is_rush = is_rush
         self._validator_service = RequestValidator(pickup_date, pickup_start, pickup_end)
 
     def create_invoice(
@@ -261,12 +263,17 @@ class RequestService(PaymentInterfaceService):
         3 business days.
         """
 
-        dropoff_date = get_dropoff_day(self._pickup_date)
+        pickup_date = self._pickup_date
+        pickup_start = self._pickup_start
+        pickup_end = self._pickup_end
+        is_rush = self._is_rush
+
+        dropoff_date = get_dropoff_day(pickup_date, is_rush)
 
         return {
             "date": dropoff_date,
-            "start": self._pickup_start,
-            "end": self._pickup_end,
+            "start": pickup_start,
+            "end": pickup_end,
         }
 
     @property

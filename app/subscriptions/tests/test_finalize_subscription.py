@@ -10,13 +10,16 @@ from subscriptions.services.subscription import SubscriptionService
 @patch("subscriptions.services.subscription.atomic")
 def test_payc_gold_platinum_subscription(atomic_mock, send_email_mock):
     client = MagicMock()
-    order = MagicMock()
     subscription = MagicMock()
     client.subscription = None
-    order.subscription = subscription
     subscription_list = [settings.PAYC, settings.GOLD, settings.PLATINUM]
 
     for item in subscription_list:
+        order = MagicMock()
+        order.subscription = subscription
+        order.is_all_invoices_paid = True
+        order.payment = OrderPaymentChoices.UNPAID
+
         subscription.name = item
         service = SubscriptionService(client)
 

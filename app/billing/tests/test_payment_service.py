@@ -1,5 +1,6 @@
 from unittest.mock import MagicMock, patch
 
+from billing.choices import InvoicePurpose
 from billing.services.payments import PaymentService
 
 
@@ -12,6 +13,7 @@ def test_charge_when_balance_greater_that_invoice(
     client = MagicMock()
     client.balance = 30000
     invoice = MagicMock()
+    invoice.paid_amount = 0
     invoice.amount_with_discount = 19900
     paid_amount = invoice.amount_with_discount
 
@@ -34,11 +36,14 @@ def test_charge_when_balance_lower_that_invoice(
     stripe_class_mock.return_value = stripe_instance_mock
     client = MagicMock()
     client.balance = 10000
+    client.is_auto_billing = True
     card = MagicMock()
     card.stripe_id = "spam"
     client.card_list.all.return_value = [card]
     invoice = MagicMock()
+    invoice.paid_amount = 0
     invoice.amount_with_discount = 19900
+    invoice.purpose = InvoicePurpose.BASKET
     paid_amount = client.balance
     unpaid_amount = invoice.amount_with_discount - client.balance
 
@@ -51,5 +56,6 @@ def test_charge_when_balance_lower_that_invoice(
         payment_method_id=card.stripe_id,
         amount=unpaid_amount,
         invoice=invoice,
+        purpose=invoice.purpose,
     )
     card_service_mock.assert_called_once()

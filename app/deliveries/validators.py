@@ -1,12 +1,9 @@
 from datetime import date, time
-from typing import Tuple
 
 from django.conf import settings
 from django.utils.timezone import localtime
 
 from rest_framework import serializers
-
-from deliveries.utils import get_dropoff_day, get_pickup_day, get_pickup_start_end
 
 
 class RequestValidator:
@@ -31,31 +28,6 @@ class RequestValidator:
         self._validate_time()
         self._validate_last_call()
         self._validate_common()
-
-    @property
-    def _pickup_start_end_auto_complete(self) -> Tuple[time, time]:
-        now = localtime()
-        return get_pickup_start_end(now)
-
-    @property
-    def _pickup_day_auto_complete(self) -> date:
-        now = localtime()
-        return get_pickup_day(now)
-
-    @property
-    def _dropoff_info(self) -> dict:
-        """
-        Usually, we processing order 2 days and delivering on the next day - i.e.
-        3 business days.
-        """
-
-        dropoff_date = get_dropoff_day(self._pickup_date)
-
-        return {
-            "dropoff_date": dropoff_date,
-            "dropoff_start": self._pickup_start,
-            "dropoff_end": self._pickup_end,
-        }
 
     def _validate_date(self):
         # we doesn't work at weekends - because we are chilling

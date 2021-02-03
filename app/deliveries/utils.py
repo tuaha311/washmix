@@ -71,7 +71,14 @@ def get_pickup_start_end(start_datetime: datetime) -> Tuple[time, time]:
     return pickup_start_datetime.time(), pickup_end_datetime.time()
 
 
-def get_dropoff_day(pickup_date: date) -> date:
-    return get_business_days_with_offset(
-        pickup_date, offset=settings.ORDER_PROCESSING_BUSINESS_DAYS
-    )
+def get_dropoff_day(pickup_date: date, is_rush: bool = False) -> date:
+    """
+    Calculates dropoff date based on pickup date and rush option.
+    """
+
+    offset = settings.USUAL_PROCESSING_BUSINESS_DAYS
+
+    if is_rush:
+        offset = settings.RUSH_PROCESSING_BUSINESS_DAYS
+
+    return get_business_days_with_offset(pickup_date, offset=offset)

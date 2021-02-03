@@ -27,3 +27,16 @@ def test_next_week():
 
     for pickup_date, result in wed_and_rest_of_week:
         assert result == get_dropoff_day(pickup_date)
+
+
+def test_is_rush():
+    mon_tue = [
+        # mon
+        [date(2020, 9, 14), date(2020, 9, 16)],
+        # tue
+        [date(2020, 9, 15), date(2020, 9, 17)],
+    ]
+
+    for pickup, result in mon_tue:
+        actual = get_dropoff_day(pickup, is_rush=True)
+        assert result == actual

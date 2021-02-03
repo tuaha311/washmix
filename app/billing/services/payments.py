@@ -212,6 +212,7 @@ class PaymentService:
             subscription = order.subscription
             amount = subscription.price
             # let's save a parent order - order that created current subscription order
+            # we will refer to this value later in StripeWebhookView
             order.parent = parent_order
 
             order.save()
