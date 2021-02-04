@@ -197,11 +197,6 @@ class PaymentService:
         subscription_name = subscription.name
         package = Package.objects.get(name=subscription_name)
 
-        # at PAYC subscription we can't have prepaid balance and
-        # subscription purchase doesn't give to us anything
-        if subscription_name == settings.PAYC:
-            return None
-
         with atomic():
             # we are manually handling subscription purchase proccess
             subscription_service = SubscriptionService(client)
