@@ -128,16 +128,16 @@ class PaymentService:
 
         client = self._client
         invoice = self._invoice
-        paid_amount, unpaid_amount = self._calculate_paid_and_unpaid()
+        charge_from_prepaid, charge_from_card = self._calculate_prepaid_and_card_charge()
 
-        if paid_amount > 0:
+        if charge_from_prepaid > 0:
             create_credit(
                 client=client,
                 invoice=invoice,
-                amount=paid_amount,
+                amount=charge_from_prepaid,
             )
 
-        return paid_amount, unpaid_amount
+        return charge_from_prepaid, charge_from_card
 
     def _charge_card(self, amount: int, purpose: str, invoice: Invoice):
         """
@@ -228,11 +228,11 @@ class PaymentService:
 
         return order_container
 
-    def _calculate_paid_and_unpaid(self) -> Tuple[int, int]:
+    def _calculate_prepaid_and_card_charge(self) -> Tuple[int, int]:
         """
         Method that calculates:
-            - paid_amount (amount of money, that we can charge from balance)
-            - unpaid_amount (rest of
+            - prepaid balance that can be charged
+            - card charge amount
         """
 
         invoice = self._invoice

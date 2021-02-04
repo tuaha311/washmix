@@ -29,7 +29,7 @@ def test_charge_when_balance_greater_that_invoice(
 @patch("billing.services.payments.create_credit")
 @patch("billing.services.payments.StripeHelper")
 @patch("billing.services.payments.CardService")
-def test_charge_when_balance_lower_that_invoice(
+def test_charge_when_balance_not_enough_for_invoice(
     card_service_mock, stripe_class_mock, create_credit_mock, atomic_mock
 ):
     stripe_instance_mock = MagicMock()
