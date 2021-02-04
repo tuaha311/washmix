@@ -39,7 +39,7 @@ def test_charge_when_balance_enough_for_basket(stripe_class_mock, create_credit_
 @patch("billing.services.payments.create_credit")
 @patch("billing.services.payments.StripeHelper")
 @patch("billing.services.payments.CardService")
-def test_charge_when_balance_not_enough_for_basket(
+def test_charge_when_balance_not_enough_for_basket_with_enabled_auto_billing(
     card_service_mock,
     stripe_class_mock,
     create_credit_mock,
@@ -51,7 +51,7 @@ def test_charge_when_balance_not_enough_for_basket(
     POS negative case:
         - client has GOLD or PLATINUM subscription with rest of 10000 balance
         - in basket items for 20000
-        - client has `is_auto_billing` option enabled
+        - client has `is_auto_billing` option ENABLED
         - doesn't have enough prepaid balance to pay
     """
 
@@ -75,7 +75,7 @@ def test_charge_when_balance_not_enough_for_basket(
 
     invoice = MagicMock()
     invoice.paid_amount = 0
-    invoice.amount_with_discount = 20000
+    invoice.amount_with_discount = 25000
     invoice.purpose = InvoicePurpose.BASKET
     paid_amount = client.balance
 
@@ -93,6 +93,58 @@ def test_charge_when_balance_not_enough_for_basket(
         amount=19900,
         invoice=subscription_invoice_mock,
         purpose=InvoicePurpose.POS,
+    )
+    card_service_mock.assert_called_once()
+
+
+@patch("billing.services.payments.atomic")
+@patch("billing.services.payments.create_credit")
+@patch("billing.services.payments.StripeHelper")
+@patch("billing.services.payments.CardService")
+def test_charge_when_balance_not_enough_for_basket_with_disabled_auto_billing(
+    card_service_mock,
+    stripe_class_mock,
+    create_credit_mock,
+    atomic_mock,
+):
+    """
+    POS negative case:
+        - client has GOLD or PLATINUM subscription with rest of 10000 balance
+        - in basket items for 25000
+        - client has `is_auto_billing` option DISABLED
+        - doesn't have enough prepaid balance to pay
+    """
+
+    subscription = MagicMock()
+    subscription.name = settings.GOLD
+    client = MagicMock()
+    client.balance = 10000
+    client.is_auto_billing = False
+    client.subscription = subscription
+
+    card = MagicMock()
+    card.stripe_id = "spam"
+    client.card_list.all.return_value = [card]
+    stripe_instance_mock = MagicMock()
+    stripe_class_mock.return_value = stripe_instance_mock
+
+    invoice = MagicMock()
+    invoice.paid_amount = 0
+    invoice.amount_with_discount = 25000
+    invoice.purpose = InvoicePurpose.BASKET
+    paid_amount = client.balance
+    unpaid_amount = invoice.amount_with_discount - client.balance
+
+    service = PaymentService(client, invoice)
+    service.charge()
+
+    atomic_mock.assert_called_once()
+    create_credit_mock.assert_called_once_with(client=client, invoice=invoice, amount=paid_amount)
+    stripe_instance_mock.create_payment_intent.assert_called_once_with(
+        payment_method_id=card.stripe_id,
+        amount=unpaid_amount,
+        invoice=invoice,
+        purpose=invoice.purpose,
     )
     card_service_mock.assert_called_once()
 
