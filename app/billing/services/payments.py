@@ -108,7 +108,7 @@ class PaymentService:
         client = self._client
         subscription = client.subscription
         is_auto_billing = client.is_auto_billing
-        is_advantage = subscription.name in [settings.GOLD, settings.PLATINUM]
+        is_advantage = subscription and (subscription.name in [settings.GOLD, settings.PLATINUM])
 
         with atomic():
             paid_amount, unpaid_amount = self._charge_prepaid_balance()

@@ -6,7 +6,6 @@ from deliveries.models import Request
 
 class RequestResponseSerializer(CommonContainerSerializer, serializers.ModelSerializer):
     is_free = serializers.BooleanField(read_only=True)
-    rush_amount = serializers.ReadOnlyField()
     dollar_rush_amount = serializers.ReadOnlyField()
 
     class Meta:

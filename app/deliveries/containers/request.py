@@ -42,13 +42,6 @@ class RequestContainer(BaseAmountContainer):
         return self.amount == self.discount
 
     @property
-    def rush_amount(self) -> int:
-        pickup_container = self.pickup_container
-        dropoff_container = self.dropoff_container
-
-        return pickup_container.rush_amount + dropoff_container.rush_amount
-
-    @property
     def dollar_rush_amount(self) -> float:
         return get_dollars(self, "rush_amount")
 

@@ -20,9 +20,13 @@ class OrderContainer(BaseAmountContainer):
     @property
     def amount(self) -> int:
         filled_container_list = self._filled_container_list
-        amount_list = [item.amount for item in filled_container_list]
+        request = self.request
+        rush_amount = [request.rush_amount]
 
-        total_amount = sum(amount_list)
+        amount_list = [item.amount for item in filled_container_list]
+        amount_with_rush = amount_list + rush_amount
+
+        total_amount = sum(amount_with_rush)
 
         return total_amount
 

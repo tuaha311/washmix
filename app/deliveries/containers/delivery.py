@@ -3,7 +3,6 @@ from typing import Dict, List, Tuple
 from django.conf import settings
 
 from core.containers import BaseAmountContainer
-from core.utils import get_dollars
 from deliveries.models import Delivery
 from orders.containers.basket import BasketContainer
 from subscriptions.choices import Package
@@ -116,20 +115,6 @@ class DeliveryContainer(BaseAmountContainer):
     @property
     def is_free(self) -> bool:
         return self.amount == self.discount
-
-    @property
-    def rush_amount(self) -> int:
-        amount = 0
-        is_rush = self.is_rush
-
-        if is_rush:
-            amount += settings.RUSH_DELIVERY_PRICE
-
-        return amount
-
-    @property
-    def dollar_rush_amount(self) -> float:
-        return get_dollars(self, "rush_amount")
 
     def _get_amount_discount(self) -> Tuple[int, int]:
         subscription = self._subscription

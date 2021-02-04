@@ -62,6 +62,10 @@ class Request(CommonScheduleRequest, Common):
         blank=True,
     )
 
+    rush_amount = models.BigIntegerField(
+        verbose_name="rush delivery price, in cents (¢)",
+    )
+
     class Meta:
         verbose_name = "request"
         verbose_name_plural = "requests"
