@@ -11,7 +11,7 @@ from billing.services.payments import PaymentService
 @patch("billing.services.payments.StripeHelper")
 def test_charge_when_balance_enough_for_basket(stripe_class_mock, create_credit_mock, atomic_mock):
     """
-    POS case:
+    POS positive case:
         - client has any subscription with rest of 30000 balance
         - in basket items for 20000
     """
@@ -48,7 +48,7 @@ def test_charge_when_balance_not_enough_for_basket(
     subscription_service_class_mock,
 ):
     """
-    POS case when client:
+    POS negative case:
         - client has GOLD or PLATINUM subscription with rest of 10000 balance
         - in basket items for 20000
         - client has `is_auto_billing` option enabled
