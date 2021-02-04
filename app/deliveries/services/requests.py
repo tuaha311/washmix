@@ -7,7 +7,6 @@ from django.utils.timezone import localtime
 
 from billing.models import Invoice
 from billing.services.invoice import InvoiceService
-from billing.services.payments import PaymentService
 from billing.utils import confirm_credit
 from core.interfaces import PaymentInterfaceService
 from deliveries.choices import Kind, Status
@@ -105,6 +104,7 @@ class RequestService(PaymentInterfaceService):
         request: Optional[Request],
         basket: Optional[Basket],
         subscription: Optional[Subscription],
+        payment_service_class: Optional,
         **kwargs,
     ):
         """
@@ -121,7 +121,7 @@ class RequestService(PaymentInterfaceService):
         invoice_list = [item.invoice for item in request.delivery_list.all()]
 
         for invoice in invoice_list:
-            payment_service = PaymentService(client, invoice)
+            payment_service = payment_service_class(client, invoice)
             invoice_zero_amount = invoice.amount_with_discount == 0
 
             if not invoice_zero_amount:

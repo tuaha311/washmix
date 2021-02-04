@@ -1,10 +1,11 @@
-from typing import List, Optional, Union
+from typing import List, Optional
 
 from django.conf import settings
 from django.db.transaction import atomic
 
 from billing.models import Coupon, Invoice
 from billing.services.coupon import CouponService
+from billing.services.payments import PaymentService
 from deliveries.models import Request
 from deliveries.services.requests import RequestService
 from notifications.tasks import send_email
@@ -69,7 +70,13 @@ class OrderService:
 
             # 3. we are charging client for every service and invoices of them
             for item in services:
-                item.charge(order=order, basket=basket, request=request, subscription=subscription)
+                item.charge(
+                    order=order,
+                    basket=basket,
+                    request=request,
+                    subscription=subscription,
+                    payment_service_class=PaymentService,
+                )
 
             # 4. we are calling last hooks
             for item in services:

@@ -6,13 +6,14 @@ from subscriptions.services.subscription import SubscriptionService
 
 
 @patch("subscriptions.services.subscription.confirm_debit")
-@patch("subscriptions.services.subscription.PaymentService")
 @patch("subscriptions.services.subscription.CardService")
-def test_payc_subscription(card_service_class_mock, payment_service_class_mock, confirm_debit_mock):
+def test_payc_subscription(card_service_class_mock, confirm_debit_mock):
     card_service_instance_mock = MagicMock()
     card_service_class_mock.return_value = card_service_instance_mock
+    payment_service_class_mock = MagicMock()
     payment_service_instance_mock = MagicMock()
     payment_service_class_mock.return_value = payment_service_instance_mock
+
     client = MagicMock()
     card = MagicMock()
     client.card_list.first.return_value = card
@@ -24,7 +25,12 @@ def test_payc_subscription(card_service_class_mock, payment_service_class_mock, 
     subscription.invoice = invoice
 
     service = SubscriptionService(client)
-    service.charge(request=None, basket=None, subscription=subscription)
+    service.charge(
+        request=None,
+        basket=None,
+        subscription=subscription,
+        payment_service_class=payment_service_class_mock,
+    )
 
     payment_service_class_mock.assert_called_once_with(client, invoice)
     card_service_class_mock.asssert_called_once_with(client)
@@ -34,13 +40,14 @@ def test_payc_subscription(card_service_class_mock, payment_service_class_mock, 
     confirm_debit_mock.assert_called_once()
 
 
-@patch("subscriptions.services.subscription.PaymentService")
 @patch("subscriptions.services.subscription.CardService")
-def test_gold_platinum_subscription(card_service_class_mock, payment_service_class_mock):
+def test_gold_platinum_subscription(card_service_class_mock):
     card_service_instance_mock = MagicMock()
     card_service_class_mock.return_value = card_service_instance_mock
+    payment_service_class_mock = MagicMock()
     payment_service_instance_mock = MagicMock()
     payment_service_class_mock.return_value = payment_service_instance_mock
+
     client = MagicMock()
     card = MagicMock()
     client.card_list.first.return_value = card
@@ -54,7 +61,12 @@ def test_gold_platinum_subscription(card_service_class_mock, payment_service_cla
         subscription.name = item
 
         service = SubscriptionService(client)
-        service.charge(request=None, basket=None, subscription=subscription)
+        service.charge(
+            request=None,
+            basket=None,
+            subscription=subscription,
+            payment_service_class=payment_service_class_mock,
+        )
 
     payment_service_class_mock.assert_called_with(client, invoice)
     card_service_class_mock.asssert_called_with(client)

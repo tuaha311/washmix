@@ -7,7 +7,6 @@ from billing.choices import InvoicePurpose
 from billing.models import Invoice
 from billing.services.card import CardService
 from billing.services.invoice import InvoiceService
-from billing.services.payments import PaymentService
 from billing.utils import confirm_debit
 from core.interfaces import PaymentInterfaceService
 from deliveries.models import Request
@@ -73,6 +72,7 @@ class SubscriptionService(PaymentInterfaceService):
         request: Optional[Request],
         basket: Optional[Basket],
         subscription: Optional[Subscription],
+        payment_service_class: Optional,
         **kwargs,
     ):
         """
@@ -86,7 +86,7 @@ class SubscriptionService(PaymentInterfaceService):
         invoice = subscription.invoice
         client = self._client
         card_service = CardService(client)
-        payment_service = PaymentService(client, invoice)
+        payment_service = payment_service_class(client, invoice)
         is_advantage_program = subscription.name in [settings.GOLD, settings.PLATINUM]
 
         if is_advantage_program:

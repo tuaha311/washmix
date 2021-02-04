@@ -17,6 +17,7 @@ from billing.utils import create_credit, create_debit
 from orders.containers.order import OrderContainer
 from orders.models import Order
 from subscriptions.models import Package
+from subscriptions.services.subscription import SubscriptionService
 from users.models import Client
 
 logger = logging.getLogger(__name__)
@@ -108,7 +109,9 @@ class PaymentService:
         client = self._client
         subscription = client.subscription
         is_auto_billing = client.is_auto_billing
-        is_advantage = subscription and (subscription.name in [settings.GOLD, settings.PLATINUM])
+        is_advantage = bool(subscription) and (
+            subscription.name in [settings.GOLD, settings.PLATINUM]
+        )
 
         with atomic():
             paid_amount, unpaid_amount = self._charge_prepaid_balance()
@@ -186,10 +189,6 @@ class PaymentService:
         Method that helps to buy subscription if user doesn't have enough
         prepaid balance.
         """
-
-        # we are forced to use inline import to avoid circular import issue -
-        # because `SubscriptionService` imports `PaymentService`
-        from subscriptions.services.subscription import SubscriptionService
 
         request = None
         basket = None

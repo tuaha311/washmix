@@ -9,7 +9,6 @@ from rest_framework import serializers
 from billing.choices import InvoicePurpose
 from billing.models import Invoice
 from billing.services.invoice import InvoiceService
-from billing.services.payments import PaymentService
 from core.interfaces import PaymentInterfaceService
 from deliveries.models import Request
 from orders.containers.basket import BasketContainer
@@ -75,6 +74,7 @@ class BasketService(PaymentInterfaceService):
         request: Optional[Request],
         basket: Optional[Basket],
         subscription: Optional[Subscription],
+        payment_service_class: Optional,
         **kwargs,
     ):
         """
@@ -90,7 +90,7 @@ class BasketService(PaymentInterfaceService):
         client = self._client
         invoice = basket.invoice
 
-        payment_service = PaymentService(client, invoice)
+        payment_service = payment_service_class(client, invoice)
         payment_service.charge()
 
     def checkout(self, **kwargs):

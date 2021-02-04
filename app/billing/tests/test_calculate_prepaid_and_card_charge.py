@@ -19,7 +19,7 @@ def test_subscription():
     assert (0, 19900) == result
 
 
-def test_when_balance_greater_that_invoice():
+def test_when_balance_enough_for_invoice():
     client = MagicMock()
     client.balance = 30000
     invoice = MagicMock()
