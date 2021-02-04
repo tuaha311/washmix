@@ -1,9 +1,16 @@
+// urls
 var CLIENT_URL = "/admin/users/client/"
 var ORDER_URL = "/admin/orders/order/"
+var DELIVERY_URL = "/admin/deliveries/delivery/"
+
+// colors
+var PAID_ORDER_COLOR = "green"
+var UNPAID_ORDER_COLOR = "red"
+var RUSH_DELIVERY_COLOR = "yellow"
 
 
 /*
-POS page
+  POS page
 */
 
 // creates button `Create Order`
@@ -90,7 +97,7 @@ function addCreateOrderButton() {
 }
 
 /*
-Orders page
+  Orders page
 */
 
 // This function works at Orders list page - /admin/orders/order/.
@@ -102,13 +109,37 @@ function fillOrderPaymentWithColor() {
   function callback(row, index) {
     var paymentField = row.querySelector('td.field-payment')
     var isPaid = paymentField.innerHTML === "Paid"
-    var rowColor = "red"
+    var rowColor = UNPAID_ORDER_COLOR
 
     if (isPaid) {
-      rowColor = "green"
+      rowColor = PAID_ORDER_COLOR
     }
 
     row.style.backgroundColor = rowColor
+  }
+
+  allRows.forEach(callback)
+}
+
+
+/*
+  Deliveries page
+*/
+
+// This function works at Deliveries list page - /admin/deliveries/delivery/.
+// We are filling rush deliveries with yellow color
+function fillRushDeliveryWithColor() {
+  var ALL_ORDER_SELECTOR = '#result_list > tbody > tr'
+  var allRows = document.querySelectorAll(ALL_ORDER_SELECTOR)
+
+  function callback(row, index) {
+    var rushField = row.querySelector('td.field-is_rush')
+    var isRush = rushField.innerHTML === "True"
+
+    if (isRush) {
+      row.style.backgroundColor = RUSH_DELIVERY_COLOR
+    }
+
   }
 
   allRows.forEach(callback)
@@ -124,5 +155,10 @@ if (window.location.pathname.search(CLIENT_URL) !== -1) {
 if (window.location.pathname === ORDER_URL) {
   // We are waiting 1s while HTML is loading
   setTimeout(fillOrderPaymentWithColor, 1000)
+}
+
+if (window.location.pathname === DELIVERY_URL) {
+  // We are waiting 1s while HTML is loading
+  setTimeout(fillRushDeliveryWithColor, 1000)
 }
 
