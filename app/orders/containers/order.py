@@ -22,11 +22,14 @@ class OrderContainer(BaseAmountContainer):
         filled_container_list = self._filled_container_list
         request = self.request
         rush_amount = [request.rush_amount]
+        is_rush = request.is_rush
 
         amount_list = [item.amount for item in filled_container_list]
-        amount_with_rush = amount_list + rush_amount
 
-        total_amount = sum(amount_with_rush)
+        if is_rush:
+            amount_list = amount_list + rush_amount
+
+        total_amount = sum(amount_list)
 
         return total_amount
 

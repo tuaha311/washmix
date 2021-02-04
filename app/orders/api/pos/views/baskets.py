@@ -17,6 +17,12 @@ from orders.services.basket import BasketService
 
 
 class POSBasketChangeItemView(GenericAPIView):
+    """
+    Method allows to:
+        - Add items to basket
+        - Remove items from basket
+    """
+
     serializer_class = POSBasketChangeItemSerializer
     response_serializer_class = OrderSerializer
     authentication_classes = default_pos_authentication
@@ -45,6 +51,10 @@ class POSBasketChangeItemView(GenericAPIView):
 
 
 class POSBasketClearView(GenericAPIView):
+    """
+    Method removes all items from basket.
+    """
+
     serializer_class = POSBasketClearSerializer
     authentication_classes = default_pos_authentication
     permission_classes = default_pos_permissions
@@ -64,6 +74,10 @@ class POSBasketClearView(GenericAPIView):
 
 
 class POSBasketSetExtraItemsView(GenericAPIView):
+    """
+    Method gives ability to add or remove some extra items to basket.
+    """
+
     serializer_class = POSBasketSetExtraItemsSerializer
     response_serializer_class = OrderSerializer
     authentication_classes = default_pos_authentication
@@ -94,6 +108,10 @@ order_params = openapi.Parameter(
 
 
 class POSBasketView(GenericAPIView):
+    """
+    Method allows to see which items inside basket.
+    """
+
     serializer_class = POSBasketClearSerializer
     response_serializer_class = OrderSerializer
     authentication_classes = default_pos_authentication
