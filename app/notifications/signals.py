@@ -51,7 +51,7 @@ def on_delivery_notify_signal(
                     "delivery_id": delivery.id,
                 },
             },
-            delay=settings.DELAY_MS_FOR_DELIVERY,
+            delay=settings.DRAMATIQ_DELAY_FOR_DELIVERY,
         )
 
         logger.info(f"Sending SMS to client {client.email}")
@@ -68,7 +68,7 @@ def on_delivery_notify_signal(
                     "delivery_id": delivery.id,
                 },
             },
-            delay=settings.DELAY_MS_FOR_DELIVERY,
+            delay=settings.DRAMATIQ_DELAY_FOR_DELIVERY,
         )
 
         logger.info(f"Sending SMS to client {client.email}")
