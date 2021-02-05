@@ -27,7 +27,7 @@ class HealthView(GenericAPIView):
         return Response({"status": "ok"})
 
 
-class RenderView(TemplateView):
+class EmailRenderView(TemplateView):
     """
     View that renders emails with defined context.
     """
