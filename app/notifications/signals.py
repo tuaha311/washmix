@@ -40,25 +40,35 @@ def on_delivery_notify_signal(
         is_date_updated = "date" in update_fields
 
     if is_pickup and (is_created or is_date_updated):
-        send_sms.send(
-            event=settings.NEW_DELIVERY,
-            recipient_list=[number],
-            extra_context={
-                "client_id": client.id,
-                "delivery_id": delivery.id,
+        # we are adding some delay to wait for database
+        # transaction commit
+        send_sms.send_with_options(
+            kwargs={
+                "event": settings.NEW_DELIVERY,
+                "recipient_list": [number],
+                "extra_context": {
+                    "client_id": client.id,
+                    "delivery_id": delivery.id,
+                },
             },
+            delay=settings.DELAY_FOR_DELIVERY,
         )
 
         logger.info(f"Sending SMS to client {client.email}")
 
     if is_dropoff and is_completed:
-        send_sms.send(
-            event=settings.DELIVERY_DROPOFF_COMPLETE,
-            recipient_list=[number],
-            extra_context={
-                "client_id": client.id,
-                "delivery_id": delivery.id,
+        # we are adding some delay to wait for database
+        # transaction commit
+        send_sms.send_with_options(
+            kwargs={
+                "event": settings.DELIVERY_DROPOFF_COMPLETE,
+                "recipient_list": [number],
+                "extra_context": {
+                    "client_id": client.id,
+                    "delivery_id": delivery.id,
+                },
             },
+            delay=settings.DELAY_FOR_DELIVERY,
         )
 
         logger.info(f"Sending SMS to client {client.email}")

@@ -16,6 +16,9 @@ class Delivery(Common):
         - Pickup or Dropoff
         - Date
         - Address
+
+    IMPORTANT: Delivery entity has a signal receiver on `post_save`.
+    Signal location - `notifications.signals`
     """
 
     employee = models.ForeignKey(

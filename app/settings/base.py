@@ -458,6 +458,8 @@ DRAMATIQ_REDIS_CLIENT = StrictRedis(
 )
 DRAMATIQ_BROKER = RedisBroker(client=DRAMATIQ_REDIS_CLIENT)
 
+DELAY_FOR_DELIVERY = 30
+
 # define list of modules with tasks
 DRAMATIQ_IMPORT_MODULES = [
     "billing.tasks",
