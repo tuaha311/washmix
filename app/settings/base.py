@@ -459,8 +459,9 @@ DRAMATIQ_REDIS_CLIENT = StrictRedis(
 DRAMATIQ_BROKER = RedisBroker(client=DRAMATIQ_REDIS_CLIENT)
 
 # 1000 ms - 1 s
-# set delay for 20 s
-DELAY_MS_FOR_DELIVERY = 1000 * 20
+# set delay for 10 s
+MS_IN_ONE_SECOND = 1000
+DELAY_MS_FOR_DELIVERY = 10 * MS_IN_ONE_SECOND
 
 # define list of modules with tasks
 DRAMATIQ_IMPORT_MODULES = [
