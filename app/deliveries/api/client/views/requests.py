@@ -1,4 +1,4 @@
-from django.db.models import Q
+from django.db.models import Q, QuerySet
 from django.utils.timezone import localtime
 
 from django_filters import rest_framework as filters
@@ -22,7 +22,7 @@ class RequestFilter(filters.FilterSet):
             "is_upcoming",
         ]
 
-    def filter_upcoming(self, queryset, name, value):
+    def filter_upcoming(self, queryset: QuerySet, name: str, value: bool):
         request_list = queryset
         today = localtime().date()
 
@@ -48,6 +48,7 @@ class RequestFilter(filters.FilterSet):
             delivery_list__status__in=[DeliveryStatus.ACCEPTED, DeliveryStatus.IN_PROGRESS]
         )
         dropoff_query = without_expired_deliveries & without_completed_deliveries
+
         filtered_result = request_list.filter(order_query & dropoff_query).distinct()
 
         return filtered_result
