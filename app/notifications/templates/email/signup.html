@@ -1,23 +1,25 @@
-{% extends "base_email.html" %}
+{% extends "base_email_with_info.html" %}
 
-{% block body %}
-  <div class="title">
-    Hello {{ client.full_name }}, Welcome to WashMix
+{% block content %}
+  <div id="instructions">
+    <b>Basic Instruction:</b>
+    <ul>
+      <li><span>For the first time, please place garments inside a bag and leave outside of your door for pick-up.</span></li>
+      <li><span><b>NO​</b> need to separate laundry from Dry Cleaning.</span></li>
+      <li><span><b>IF​</b> Wash-&-Fold, please indicate with a note inside your bag. [​<b>Note​</b>: Wash-&-Folds will need to be in a separate bag].</span></li>
+
+      <li>
+        <span>If you have any special delivery request</span>
+        <ul>
+          <li><span>(i.e. <b>k​nock on the door, do not ring the bell - OR - delivery and place in the backyard not the front door ...</b>)​. ​Please be sure to write all in the Delivery Instruction section.</span></li>
+        </ul>
+      </li>
+
+      <li><span>You will receive your Laundry Bags ​<b>for future usage</b>, ​after we deliver back your cleaned clothes.</span></li>
+    </ul>
   </div>
 
-  <div class="signup-info">
-    <p>Thank you for registering with us. As a valued member, once you log into your account, you will be able to do the following:</p>
-
-    <ul>
-      <li><span>Proceed through checkout faster when making a purchase</span></li>
-      <li><span>Check the status of orders</span></li>
-      <li><span>View past orders</span></li>
-      <li><span>Make changes to your account information</span></li>
-      <li><span>Change your password</span></li>
-      <li><span>Store alternative addresses (for shipping to multiple family members and friends!)</span></li>
-    </ul>
-
-    <p>Thanks,</p>
-    <p>WashMix</p>
+  <div id="please-note">
+    <b>PLEASE NOTE​:</b> If in a gated community, we'll need access code to promptly deliver your items.
   </div>
 {% endblock %}

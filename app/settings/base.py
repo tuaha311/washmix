@@ -529,12 +529,6 @@ EMAIL_EVENT_INFO = {
         "subject": "Welcome to WashMix Advantage Program",
         "from_email": "cs@washmix.com",
     },
-    NEW_REQUEST: {
-        "template_name": "email/new_request.html",
-        "subject": "New Request Pickup",
-        "from_email": "orders@washmix.com",
-        "reply_to": "orders@washmix.com",
-    },
     NEW_ORDER: {
         "template_name": "email/new_order.html",
         "subject": "WashMix New Order",

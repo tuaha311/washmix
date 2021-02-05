@@ -178,8 +178,6 @@ class RequestService(PaymentInterfaceService):
                 **dropoff_info,
             )
 
-        self._notify_client_on_new_request()
-
         return request
 
     def get_or_create(self, extra_query: dict, extra_defaults: dict) -> Tuple[Request, bool]:
@@ -233,18 +231,6 @@ class RequestService(PaymentInterfaceService):
         dropoff.save()
 
         return request
-
-    def _notify_client_on_new_request(self):
-        client_id = self._client.id
-        recipient_list = [self._client.email]
-
-        send_email.send(
-            event=settings.NEW_REQUEST,
-            recipient_list=recipient_list,
-            extra_context={
-                "client_id": client_id,
-            },
-        )
 
     @property
     def _pickup_start_end_auto_complete(self) -> Tuple[time, time]:
