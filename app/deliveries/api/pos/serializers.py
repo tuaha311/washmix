@@ -35,6 +35,6 @@ class RequestResponseSerializer(CommonContainerSerializer, serializers.ModelSeri
         ]
 
 
-class POSRequestRushAmountSerializer(serializers.Serializer):
+class POSRequestSetRushAmountSerializer(serializers.Serializer):
     rush_amount = serializers.IntegerField()
     order = POSOrderField()

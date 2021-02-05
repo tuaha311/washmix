@@ -4,17 +4,17 @@ from rest_framework.response import Response
 
 from api.authentication import default_pos_authentication
 from api.permissions import default_pos_permissions
-from deliveries.api.pos.serializers import POSRequestRushAmountSerializer
+from deliveries.api.pos.serializers import POSRequestSetRushAmountSerializer
 from orders.api.pos.serializers.orders import OrderSerializer
 from orders.containers.order import OrderContainer
 
 
-class POSRequestRushAmountView(GenericAPIView):
+class POSRequestSetRushAmountView(GenericAPIView):
     """
     Method gives ability to add or remove some extra items to basket.
     """
 
-    serializer_class = POSRequestRushAmountSerializer
+    serializer_class = POSRequestSetRushAmountSerializer
     response_serializer_class = OrderSerializer
     authentication_classes = default_pos_authentication
     permission_classes = default_pos_permissions
