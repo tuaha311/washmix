@@ -96,7 +96,9 @@ class Request(CommonScheduleRequest, Common):
     def pickup_date(self, value):
         pickup = self.pickup
         pickup.date = value
-        pickup.save()
+
+        # defining which fields was changed - used in Delivery signal
+        pickup.save(update_fields={"date"})
 
     @property
     def pickup_start(self):
@@ -106,7 +108,9 @@ class Request(CommonScheduleRequest, Common):
     def pickup_start(self, value):
         pickup = self.pickup
         pickup.start = value
-        pickup.save()
+
+        # defining which fields was changed - used in Delivery signal
+        pickup.save(update_fields={"start"})
 
     @property
     def pickup_end(self):
@@ -116,7 +120,9 @@ class Request(CommonScheduleRequest, Common):
     def pickup_end(self, value):
         pickup = self.pickup
         pickup.end = value
-        pickup.save()
+
+        # defining which fields was changed - used in Delivery signal
+        pickup.save(update_fields={"end"})
 
     @property
     def pickup_invoice(self):
@@ -126,7 +132,9 @@ class Request(CommonScheduleRequest, Common):
     def pickup_invoice(self, value):
         pickup = self.pickup
         pickup.invoice = value
-        pickup.save()
+
+        # defining which fields was changed - used in Delivery signal
+        pickup.save(update_fields={"invoice"})
 
     @property
     def pickup_status(self):
@@ -147,7 +155,9 @@ class Request(CommonScheduleRequest, Common):
     def dropoff_date(self, value):
         dropoff = self.dropoff
         dropoff.date = value
-        dropoff.save()
+
+        # defining which fields was changed - used in Delivery signal
+        dropoff.save(update_fields={"date"})
 
     @property
     def dropoff_start(self):
@@ -157,7 +167,9 @@ class Request(CommonScheduleRequest, Common):
     def dropoff_start(self, value):
         dropoff = self.dropoff
         dropoff.start = value
-        dropoff.save()
+
+        # defining which fields was changed - used in Delivery signal
+        dropoff.save(update_fields={"start"})
 
     @property
     def dropoff_end(self):
@@ -167,7 +179,9 @@ class Request(CommonScheduleRequest, Common):
     def dropoff_end(self, value):
         dropoff = self.dropoff
         dropoff.end = value
-        dropoff.save()
+
+        # defining which fields was changed - used in Delivery signal
+        dropoff.save(update_fields={"end"})
 
     @property
     def dropoff_invoice(self):
@@ -177,7 +191,9 @@ class Request(CommonScheduleRequest, Common):
     def dropoff_invoice(self, value):
         dropoff = self.dropoff
         dropoff.invoice = value
-        dropoff.save()
+
+        # defining which fields was changed - used in Delivery signal
+        dropoff.save(update_fields={"invoice"})
 
     @property
     def dropoff_status(self):
