@@ -1,7 +1,7 @@
 from django.db import models
 
 from core.common_models import Common
-from deliveries.choices import Kind, Status
+from deliveries.choices import DeliveryKind, DeliveryStatus
 
 
 class Delivery(Common):
@@ -58,14 +58,14 @@ class Delivery(Common):
     kind = models.CharField(
         max_length=10,
         verbose_name="kind of delivery",
-        choices=Kind.CHOICES,
-        default=Kind.PICKUP,
+        choices=DeliveryKind.CHOICES,
+        default=DeliveryKind.PICKUP,
     )
     status = models.CharField(
         max_length=20,
         verbose_name="current status",
-        choices=Status.CHOICES,
-        default=Status.ACCEPTED,
+        choices=DeliveryStatus.CHOICES,
+        default=DeliveryStatus.ACCEPTED,
     )
     date = models.DateField(
         verbose_name="date for delivery",

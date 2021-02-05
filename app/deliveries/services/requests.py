@@ -9,7 +9,7 @@ from billing.models import Invoice
 from billing.services.invoice import InvoiceService
 from billing.utils import confirm_credit
 from core.interfaces import PaymentInterfaceService
-from deliveries.choices import Kind, Status
+from deliveries.choices import DeliveryKind, DeliveryStatus
 from deliveries.containers.request import RequestContainer
 from deliveries.models import Delivery, Request
 from deliveries.utils import get_dropoff_day, get_pickup_day, get_pickup_start_end
@@ -76,7 +76,7 @@ class RequestService(PaymentInterfaceService):
 
         # we have 2 kind - Pickup, Dropoff
         # and for every of Delivery we create an invoice
-        kind_of_deliveries = Kind.MAP.keys()
+        kind_of_deliveries = DeliveryKind.MAP.keys()
         invoice_list = []
 
         for kind in kind_of_deliveries:
@@ -167,14 +167,14 @@ class RequestService(PaymentInterfaceService):
             )
             Delivery.objects.create(
                 request=request,
-                kind=Kind.PICKUP,
-                status=Status.ACCEPTED,
+                kind=DeliveryKind.PICKUP,
+                status=DeliveryStatus.ACCEPTED,
                 **pickup_info,
             )
             Delivery.objects.create(
                 request=request,
-                kind=Kind.DROPOFF,
-                status=Status.ACCEPTED,
+                kind=DeliveryKind.DROPOFF,
+                status=DeliveryStatus.ACCEPTED,
                 **dropoff_info,
             )
 
@@ -206,14 +206,14 @@ class RequestService(PaymentInterfaceService):
             )
             Delivery.objects.get_or_create(
                 request=request,
-                kind=Kind.PICKUP,
-                status=Status.ACCEPTED,
+                kind=DeliveryKind.PICKUP,
+                status=DeliveryStatus.ACCEPTED,
                 defaults=pickup_info,
             )
             Delivery.objects.get_or_create(
                 request=request,
-                kind=Kind.DROPOFF,
-                status=Status.ACCEPTED,
+                kind=DeliveryKind.DROPOFF,
+                status=DeliveryStatus.ACCEPTED,
                 defaults=dropoff_info,
             )
 

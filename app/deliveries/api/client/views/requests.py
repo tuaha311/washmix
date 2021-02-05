@@ -1,3 +1,6 @@
+from django.db.models import Q
+from django.utils.timezone import localtime
+
 from django_filters import rest_framework as filters
 from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request as DRFRequest
@@ -6,18 +9,48 @@ from rest_framework.serializers import Serializer
 from rest_framework.viewsets import ModelViewSet
 
 from deliveries.api.client.serializers.requests import RequestCheckSerializer, RequestSerializer
+from deliveries.choices import DeliveryKind, DeliveryStatus
 from deliveries.services.requests import RequestService
+from orders.choices import OrderStatusChoices
 
 
 class RequestFilter(filters.FilterSet):
-    created = filters.DateTimeFilter(lookup_expr="gte")
-    is_upcoming = filters.BooleanFilter(field_name="order", lookup_expr="isnull")
+    is_upcoming = filters.BooleanFilter(method="filter_upcoming")
 
     class Meta:
         fields = [
-            "status",
             "is_upcoming",
         ]
+
+    def filter_upcoming(self, queryset, name, value):
+        request_list = queryset
+        today = localtime().date()
+
+        if not value:
+            return request_list
+
+        # we are preparing conditions by orders:
+        #   - find requests with accepted or in progress orders
+        #   - find requests without order
+        without_orders = Q(order__isnull=True)
+        without_completed_orders = Q(
+            order__status__in=[OrderStatusChoices.ACCEPTED, OrderStatusChoices.IN_PROGRESS]
+        )
+        order_query = without_orders | without_completed_orders
+
+        # conditions by dropoffs:
+        #   - find requests with dropoffs, that have a date greater or equal to today
+        #   - find requests with deliveries, that are accepted or in progress
+        without_expired_deliveries = Q(
+            delivery_list__kind=DeliveryKind.DROPOFF, delivery_list__date__gte=today
+        )
+        without_completed_deliveries = Q(
+            delivery_list__status__in=[DeliveryStatus.ACCEPTED, DeliveryStatus.IN_PROGRESS]
+        )
+        dropoff_query = without_expired_deliveries & without_completed_deliveries
+        filtered_result = request_list.filter(order_query & dropoff_query).distinct()
+
+        return filtered_result
 
 
 class RequestViewSet(ModelViewSet):

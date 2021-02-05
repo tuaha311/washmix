@@ -4,7 +4,7 @@ from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from deliveries.choices import Kind, Status
+from deliveries.choices import DeliveryKind, DeliveryStatus
 from deliveries.models import Delivery
 from notifications.tasks import send_sms
 
@@ -32,9 +32,9 @@ def on_delivery_notify_signal(
     number = client.main_phone.number
     is_created = created
     is_date_updated = False
-    is_dropoff = delivery.kind == Kind.DROPOFF
-    is_pickup = delivery.kind == Kind.PICKUP
-    is_completed = delivery.status == Status.COMPLETED
+    is_dropoff = delivery.kind == DeliveryKind.DROPOFF
+    is_pickup = delivery.kind == DeliveryKind.PICKUP
+    is_completed = delivery.status == DeliveryStatus.COMPLETED
 
     if update_fields:
         is_date_updated = "date" in update_fields

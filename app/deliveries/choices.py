@@ -1,4 +1,4 @@
-class Status:
+class DeliveryStatus:
     CANCELLED = "cancelled"
     ACCEPTED = "accepted"
     IN_PROGRESS = "in_progress"
@@ -13,7 +13,7 @@ class Status:
     CHOICES = list(MAP.items())
 
 
-class Kind:
+class DeliveryKind:
     PICKUP = "pickup"
     DROPOFF = "dropoff"
 

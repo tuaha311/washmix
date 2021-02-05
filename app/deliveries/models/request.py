@@ -1,7 +1,7 @@
 from django.db import models
 
 from core.common_models import Common
-from deliveries.choices import Kind
+from deliveries.choices import DeliveryKind
 from deliveries.common_models import CommonScheduleRequest
 
 
@@ -86,7 +86,7 @@ class Request(CommonScheduleRequest, Common):
     #
     @property
     def pickup(self):
-        return self.delivery_list.get(kind=Kind.PICKUP)
+        return self.delivery_list.get(kind=DeliveryKind.PICKUP)
 
     @property
     def pickup_date(self):
@@ -137,7 +137,7 @@ class Request(CommonScheduleRequest, Common):
     #
     @property
     def dropoff(self):
-        return self.delivery_list.get(kind=Kind.DROPOFF)
+        return self.delivery_list.get(kind=DeliveryKind.DROPOFF)
 
     @property
     def dropoff_date(self):
