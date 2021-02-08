@@ -120,3 +120,17 @@ def prepare_stripe_metadata(invoice_id: int, webhook_kind: str) -> dict:
     }
 
     return metadata
+
+
+def get_webhook_kind(invoice: Invoice) -> str:
+    """
+    Get webhook kind based on invoice.
+    """
+
+    webhook_kind = WebhookKind.REFILL_WITH_CHARGE
+
+    # for subscription we are always set corresponding webhook kind
+    if invoice.purpose == InvoicePurpose.SUBSCRIPTION:
+        webhook_kind = WebhookKind.SUBSCRIPTION
+
+    return webhook_kind

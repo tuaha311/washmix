@@ -10,11 +10,10 @@ from stripe.error import StripeError
 
 from billing.choices import InvoiceProvider, InvoicePurpose, WebhookKind
 from billing.containers import PaymentContainer
-from billing.models import Invoice, Transaction
+from billing.models import Card, Invoice, Transaction
 from billing.services.card import CardService
 from billing.stripe_helper import StripeHelper
-from billing.utils import create_credit, create_debit
-from orders.containers.order import OrderContainer
+from billing.utils import create_credit, create_debit, get_webhook_kind
 from orders.models import Order
 from subscriptions.models import Package
 from subscriptions.services.subscription import SubscriptionService
@@ -109,16 +108,11 @@ class PaymentService:
         invoice = self._invoice
         parent_order = invoice.order
         client = self._client
-        webhook_kind = WebhookKind.REFILL_WITH_CHARGE
         subscription = client.subscription
         is_auto_billing = client.is_auto_billing
         is_advantage = bool(subscription) and (
             subscription.name in [settings.GOLD, settings.PLATINUM]
         )
-
-        # for subscription we are always set corresponding webhook kind
-        if invoice.purpose == InvoicePurpose.SUBSCRIPTION:
-            webhook_kind = WebhookKind.SUBSCRIPTION
 
         with atomic():
             paid_amount, unpaid_amount = self._charge_prepaid_balance()
@@ -129,17 +123,17 @@ class PaymentService:
             # if Client doesn't have enough prepaid balance - we should charge
             # their card or purchase subscription
             if is_auto_billing and is_advantage:
-                child_order, webhook_kind = self._purchase_subscription_with_charge()
+                webhook_kind = WebhookKind.SUBSCRIPTION_WITH_CHARGE
+                child_order = self._purchase_subscription_with_charge(webhook_kind)
             else:
-                child_order, webhook_kind = self._charge_card(
-                    amount=unpaid_amount, webhook_kind=webhook_kind, invoice=invoice
-                )
+                webhook_kind = get_webhook_kind(invoice)
+                self._charge_card(amount=unpaid_amount, webhook_kind=webhook_kind, invoice=invoice)
 
-            # let's save a parent order - order that created current child order
+                # let's save a parent order - order that created current child order
             # we will refer and use this value later in `StripeWebhookView`
             if webhook_kind in [
                 WebhookKind.SUBSCRIPTION_WITH_CHARGE,
-                WebhookKind.REFILL_WITH_CHARGE,
+                # WebhookKind.REFILL_WITH_CHARGE,
             ]:
                 child_order.parent = parent_order
                 child_order.save()
@@ -167,11 +161,10 @@ class PaymentService:
         Method that tries to charge money from user's card.
         """
 
-        card_service = CardService(self._client)
         charge_successful = False
         payment = None
 
-        for item in self._client.card_list.all():
+        for card in self._client.card_list.all():
             # we are trying to charge the card list of client
             # and we are stopping at first successful attempt
 
@@ -180,15 +173,12 @@ class PaymentService:
 
             try:
                 payment = self._stripe_helper.create_payment_intent(
-                    payment_method_id=item.stripe_id,
+                    payment_method_id=card.stripe_id,
                     amount=amount,
                     invoice=invoice,
                     webhook_kind=webhook_kind,
                 )
-                card_service.update_main_card(self._client, item)
-
-                invoice.card = item
-                invoice.save()
+                self._save_card(invoice=invoice, card=card)
 
                 charge_successful = True
 
@@ -204,7 +194,7 @@ class PaymentService:
 
         return payment
 
-    def _purchase_subscription_with_charge(self) -> Tuple[Order, str]:
+    def _purchase_subscription_with_charge(self, webhook_kind: str) -> Tuple[Order, str]:
         """
         Method that helps to buy subscription if user doesn't have enough
         prepaid balance.
@@ -215,7 +205,6 @@ class PaymentService:
         client = self._client
         subscription = client.subscription
         subscription_name = subscription.name
-        webhook_kind = WebhookKind.SUBSCRIPTION_WITH_CHARGE
         package = Package.objects.get(name=subscription_name)
 
         with atomic():
@@ -236,7 +225,18 @@ class PaymentService:
             self._charge_card(amount=amount, webhook_kind=webhook_kind, invoice=invoice)
             subscription_service.checkout(order=order, subscription=subscription)
 
-        return order, webhook_kind
+        return order
+
+    def _save_card(self, invoice: Invoice, card: Card):
+        """
+        Save card to client and into invoice.
+        """
+
+        card_service = CardService(self._client)
+        card_service.update_main_card(self._client, card)
+
+        invoice.card = card
+        invoice.save()
 
     def _calculate_prepaid_and_card_charge(self) -> Tuple[int, int]:
         """
