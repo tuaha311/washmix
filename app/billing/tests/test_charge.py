@@ -2,7 +2,7 @@ from unittest.mock import MagicMock, patch
 
 from django.conf import settings
 
-from billing.choices import InvoicePurpose
+from billing.choices import InvoicePurpose, WebhookKind
 from billing.services.payments import PaymentService
 
 
@@ -92,7 +92,7 @@ def test_charge_when_balance_not_enough_for_basket_with_enabled_auto_billing(
         payment_method_id=card.stripe_id,
         amount=19900,
         invoice=subscription_invoice_mock,
-        purpose=InvoicePurpose.POS,
+        webhook_kind=WebhookKind.SUBSCRIPTION_WITH_CHARGE,
     )
     card_service_mock.assert_called_once()
 
@@ -144,7 +144,7 @@ def test_charge_when_balance_not_enough_for_basket_with_disabled_auto_billing(
         payment_method_id=card.stripe_id,
         amount=unpaid_amount,
         invoice=invoice,
-        purpose=invoice.purpose,
+        webhook_kind=WebhookKind.REFILL_WITH_CHARGE,
     )
     card_service_mock.assert_called_once()
 
@@ -184,6 +184,6 @@ def test_charge_when_subscription_is_none(card_service_mock, stripe_class_mock, 
         payment_method_id=card.stripe_id,
         amount=unpaid_amount,
         invoice=invoice,
-        purpose=invoice.purpose,
+        webhook_kind=WebhookKind.SUBSCRIPTION,
     )
     card_service_mock.assert_called_once()

@@ -116,6 +116,10 @@ class PaymentService:
             subscription.name in [settings.GOLD, settings.PLATINUM]
         )
 
+        # for subscription we are always set corresponding webhook kind
+        if invoice.purpose == InvoicePurpose.SUBSCRIPTION:
+            webhook_kind = WebhookKind.SUBSCRIPTION
+
         with atomic():
             paid_amount, unpaid_amount = self._charge_prepaid_balance()
 
