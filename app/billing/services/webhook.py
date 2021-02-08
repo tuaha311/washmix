@@ -1,5 +1,5 @@
 import logging
-from typing import Tuple
+from typing import Optional, Tuple
 
 from django.conf import settings
 from django.db.models import ObjectDoesNotExist
@@ -9,9 +9,10 @@ from rest_framework.request import Request
 from rest_framework.status import HTTP_200_OK, HTTP_403_FORBIDDEN
 from stripe import Event
 
-from billing.choices import InvoicePurpose, WebhookKind
+from billing.choices import WebhookKind
 from billing.models import Invoice
 from billing.services.payments import PaymentService
+from orders.models import Order
 from orders.services.order import OrderService
 from orders.services.pos import POSService
 from subscriptions.services.subscription import SubscriptionService
@@ -76,33 +77,33 @@ class StripeWebhookService:
         for order.
         """
 
-        payment, client, invoice, webhook_kind = self._parse()
+        payment, client, invoice, webhook_kind, continue_with_order = self._parse()
         order = invoice.order
-        parent_order = order.parent
         employee = order.employee
 
         payment_service = PaymentService(client, invoice)
         subscription_service = SubscriptionService(client)
         order_service = OrderService(client)
-        pos_service = POSService(client, parent_order, employee)
 
         if event.type in self.success_events:
             # we are marked our invoice as paid
             payment_service.confirm(payment)
 
+            # set subscription to client, notify client
+            #  and mark order as paid
+            if webhook_kind == WebhookKind.SUBSCRIPTION:
+                logger.info("Subscription invoice handling")
+                subscription_service.finalize(order)
+
             # complex event:
             #   - first of all, we are finishing our subscription purchase
             #   - then we are finishing a parent order that created subscription order
-            if webhook_kind == WebhookKind.SUBSCRIPTION_WITH_CHARGE:
+            elif webhook_kind == WebhookKind.SUBSCRIPTION_WITH_CHARGE:
                 logger.info("POS invoice handling")
                 subscription_service.finalize(order)
-                pos_service.checkout()
 
-            # set subscription to client, notify client
-            #  and mark order as paid
-            elif webhook_kind == WebhookKind.SUBSCRIPTION:
-                logger.info("Subscription invoice handling")
-                subscription_service.finalize(order)
+                pos_service = POSService(client, continue_with_order, employee)
+                pos_service.checkout()
 
             # complex event:
             #   - we are finishing one time payment
@@ -121,7 +122,7 @@ class StripeWebhookService:
             ]:
                 order_service.fail(order)
 
-    def _parse(self) -> Tuple[stripe.PaymentMethod, Client, Invoice, str]:
+    def _parse(self) -> Tuple[stripe.PaymentMethod, Client, Invoice, str, Order]:
         """
         Parse Stripe event and retrieve backend entities.
         """
@@ -131,14 +132,26 @@ class StripeWebhookService:
         client = Client.objects.get(stripe_id=payment.customer)
         webhook_kind = getattr(payment.metadata, "webhook_kind", WebhookKind.SUBSCRIPTION)
 
-        return payment, client, self.invoice, webhook_kind
+        return payment, client, self.invoice, webhook_kind, self.continue_with_order
 
     @property
     def payment(self):
         return self._event.data.object
 
     @property
-    def invoice(self):
+    def continue_with_order(self) -> Optional[Order]:
+        payment = self.payment
+        continue_with_order = payment.metadata.continue_with_order
+
+        if not continue_with_order:
+            return None
+
+        order = Order.objects.get(pk=continue_with_order)
+
+        return order
+
+    @property
+    def invoice(self) -> Invoice:
         payment = self.payment
         invoice_id = payment.metadata.invoice_id
         invoice = Invoice.objects.get(pk=invoice_id)

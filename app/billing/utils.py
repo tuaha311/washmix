@@ -1,12 +1,14 @@
 from functools import partial
 from math import ceil
-from typing import Union
+from typing import Optional, Union
 
 from django.conf import settings
+from django.db.models import QuerySet, Sum
 from django.db.transaction import atomic
 
 from billing.choices import InvoiceKind, InvoiceProvider, InvoicePurpose, WebhookKind
 from billing.models import Invoice, Transaction
+from orders.models import Order
 from users.models import Client
 
 
@@ -109,7 +111,9 @@ def confirm_credit(
     return transaction
 
 
-def prepare_stripe_metadata(invoice_id: int, webhook_kind: str) -> dict:
+def prepare_stripe_metadata(
+    invoice_id: int, webhook_kind: str, continue_with_order: Optional[int]
+) -> dict:
     """
     Prepares Stripe's metadata.
     """
@@ -117,6 +121,7 @@ def prepare_stripe_metadata(invoice_id: int, webhook_kind: str) -> dict:
     metadata = {
         "invoice_id": invoice_id,
         "webhook_kind": webhook_kind,
+        "continue_with_order": continue_with_order,
     }
 
     return metadata
@@ -134,3 +139,24 @@ def get_webhook_kind(invoice: Invoice) -> str:
         webhook_kind = WebhookKind.SUBSCRIPTION
 
     return webhook_kind
+
+
+def aggregate_invoice_list(invoice_list: QuerySet, order: Order) -> Invoice:
+    """
+    Aggregates list of Invoices into one with total amount and discount.
+    """
+
+    first_invoice = invoice_list.first()
+    client = first_invoice.client
+    amount = invoice_list.aggregate(total=Sum("amount"))["total"] or 0
+    discount = invoice_list.aggregate(total=Sum("discount"))["total"] or 0
+
+    invoice = Invoice.objects.create(
+        client=client,
+        order=order,
+        discount=discount,
+        amount=amount,
+        purpose=InvoicePurpose.ONE_TIME_PAYMENT,
+    )
+
+    return invoice

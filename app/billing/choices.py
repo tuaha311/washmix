@@ -4,12 +4,14 @@ class InvoicePurpose:
     BASKET = "basket"
     PICKUP = "pickup"
     DROPOFF = "dropoff"
+    ONE_TIME_PAYMENT = "one_time_payment"
     MAP = {
         CREDIT: "Credit by WashMix",
         SUBSCRIPTION: "Subscription purchase",
         BASKET: "Items in basket",
         PICKUP: "Pickup delivery",
         DROPOFF: "Dropoff delivery",
+        ONE_TIME_PAYMENT: "One time payment",
     }
     CHOICES = list(MAP.items())
 

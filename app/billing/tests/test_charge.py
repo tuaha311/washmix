@@ -98,6 +98,7 @@ def test_charge_when_balance_not_enough_for_basket_with_enabled_auto_billing(
 
 
 @patch("billing.services.payments.atomic")
+@patch("billing.services.payments.Invoice")
 @patch("billing.services.payments.create_credit")
 @patch("billing.services.payments.StripeHelper")
 @patch("billing.services.payments.CardService")
@@ -106,6 +107,7 @@ def test_charge_when_balance_not_enough_for_basket_with_disabled_auto_billing(
     stripe_class_mock,
     create_credit_mock,
     atomic_mock,
+    invoice_class_mock,
 ):
     """
     POS negative case:
@@ -138,7 +140,7 @@ def test_charge_when_balance_not_enough_for_basket_with_disabled_auto_billing(
     service = PaymentService(client, invoice)
     service.charge()
 
-    atomic_mock.assert_called_once()
+    assert atomic_mock.call_count == 0
     create_credit_mock.assert_called_once_with(client=client, invoice=invoice, amount=paid_amount)
     stripe_instance_mock.create_payment_intent.assert_called_once_with(
         payment_method_id=card.stripe_id,
@@ -146,13 +148,17 @@ def test_charge_when_balance_not_enough_for_basket_with_disabled_auto_billing(
         invoice=invoice,
         webhook_kind=WebhookKind.REFILL_WITH_CHARGE,
     )
+    invoice_class_mock.objects.create.assert_called_once()
     card_service_mock.assert_called_once()
 
 
+@patch("billing.services.payments.Invoice")
 @patch("billing.services.payments.atomic")
 @patch("billing.services.payments.StripeHelper")
 @patch("billing.services.payments.CardService")
-def test_charge_when_subscription_is_none(card_service_mock, stripe_class_mock, atomic_mock):
+def test_charge_when_subscription_is_none(
+    card_service_mock, stripe_class_mock, atomic_mock, invoice_class_mock
+):
     """
     Welcome scenario case:
         - new client tries to pass through scenario
@@ -179,11 +185,12 @@ def test_charge_when_subscription_is_none(card_service_mock, stripe_class_mock, 
     service = PaymentService(client, invoice)
     service.charge()
 
-    atomic_mock.assert_called_once()
+    assert atomic_mock.call_count == 2
     stripe_instance_mock.create_payment_intent.assert_called_once_with(
         payment_method_id=card.stripe_id,
         amount=unpaid_amount,
         invoice=invoice,
         webhook_kind=WebhookKind.SUBSCRIPTION,
     )
+    invoice_class_mock.objects.create.assert_called_once()
     card_service_mock.assert_called_once()
