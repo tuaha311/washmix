@@ -8,7 +8,7 @@ from rest_framework import serializers
 from stripe import PaymentIntent, PaymentMethod, SetupIntent
 from stripe.error import StripeError
 
-from billing.choices import InvoiceProvider, InvoicePurpose
+from billing.choices import InvoiceProvider, InvoicePurpose, WebhookKind
 from billing.containers import PaymentContainer
 from billing.models import Invoice, Transaction
 from billing.services.card import CardService
@@ -39,7 +39,11 @@ class PaymentService:
         self._invoice = invoice
         self._stripe_helper = StripeHelper(client)
 
-    def create_intent(self, is_save_card: bool) -> Union[SetupIntent, PaymentIntent]:
+    def create_intent(
+        self,
+        is_save_card: bool,
+        webhook_kind: str,
+    ) -> Union[SetupIntent, PaymentIntent]:
         """
         This method used to create Stripe's `SetupIntent` or `PaymentIntent` in
         dependency of user preferences:
@@ -50,7 +54,6 @@ class PaymentService:
         """
 
         invoice = self._invoice
-        purpose = invoice.purpose
         amount = invoice.amount_with_discount
 
         if is_save_card:
@@ -59,7 +62,7 @@ class PaymentService:
             intent = self._stripe_helper.create_payment_intent(
                 amount=amount,
                 invoice=invoice,
-                purpose=purpose,
+                webhook_kind=webhook_kind,
             )
 
         return intent
@@ -105,8 +108,8 @@ class PaymentService:
 
         invoice = self._invoice
         order = invoice.order
-        purpose = invoice.purpose
         client = self._client
+        webhook_kind = WebhookKind.REFILL_WITH_CHARGE
         subscription = client.subscription
         is_auto_billing = client.is_auto_billing
         is_advantage = bool(subscription) and (
@@ -122,7 +125,9 @@ class PaymentService:
                 if is_auto_billing and is_advantage:
                     self._purchase_subscription(parent_order=order)
                 else:
-                    self._charge_card(amount=unpaid_amount, purpose=purpose, invoice=invoice)
+                    self._charge_card(
+                        amount=unpaid_amount, webhook_kind=webhook_kind, invoice=invoice
+                    )
 
     def _charge_prepaid_balance(self):
         """
@@ -142,7 +147,7 @@ class PaymentService:
 
         return charge_from_prepaid, charge_from_card
 
-    def _charge_card(self, amount: int, purpose: str, invoice: Invoice):
+    def _charge_card(self, amount: int, webhook_kind: str, invoice: Invoice):
         """
         Method that tries to charge money from user's card.
         """
@@ -163,7 +168,7 @@ class PaymentService:
                     payment_method_id=item.stripe_id,
                     amount=amount,
                     invoice=invoice,
-                    purpose=purpose,
+                    webhook_kind=webhook_kind,
                 )
                 card_service.update_main_card(self._client, item)
 
@@ -195,6 +200,7 @@ class PaymentService:
         client = self._client
         subscription = client.subscription
         subscription_name = subscription.name
+        webhook_kind = WebhookKind.SUBSCRIPTION_WITH_CHARGE
         package = Package.objects.get(name=subscription_name)
 
         with atomic():
@@ -217,7 +223,7 @@ class PaymentService:
             [invoice] = subscription_service.create_invoice(
                 order=order, basket=basket, request=request, subscription=subscription
             )
-            self._charge_card(amount, purpose=InvoicePurpose.POS, invoice=invoice)
+            self._charge_card(amount=amount, webhook_kind=webhook_kind, invoice=invoice)
             subscription_service.checkout(order=order, subscription=subscription)
 
         return order_container

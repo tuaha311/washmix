@@ -5,6 +5,7 @@ from stripe.api_resources.payment_method import PaymentMethod
 from stripe.error import InvalidRequestError
 
 from billing.models import Invoice
+from billing.utils import prepare_stripe_metadata
 from users.models import Client
 
 DEFAULT_CURRENCY = "usd"
@@ -72,7 +73,7 @@ class StripeHelper:
         self,
         amount: int,
         invoice: Invoice,
-        purpose: str,
+        webhook_kind: str,
         currency: str = DEFAULT_CURRENCY,
         payment_method_id: str = None,
     ):
@@ -83,10 +84,8 @@ class StripeHelper:
         Reference - https://stripe.com/docs/api/payment_intents/create
         """
 
-        metadata = {
-            "invoice_id": invoice.id,
-            "purpose": purpose,
-        }
+        invoice_id = invoice.id
+        metadata = prepare_stripe_metadata(invoice_id, webhook_kind)
 
         extra_kwargs = {}
         if payment_method_id:

@@ -3,14 +3,13 @@ from typing import Tuple
 
 from django.conf import settings
 from django.db.models import ObjectDoesNotExist
-from django.db.transaction import atomic
 
 import stripe
 from rest_framework.request import Request
 from rest_framework.status import HTTP_200_OK, HTTP_403_FORBIDDEN
 from stripe import Event
 
-from billing.choices import InvoicePurpose
+from billing.choices import InvoicePurpose, WebhookKind
 from billing.models import Invoice
 from billing.services.payments import PaymentService
 from orders.services.order import OrderService
@@ -77,7 +76,7 @@ class StripeWebhookService:
         for order.
         """
 
-        payment, client, invoice, purpose = self._parse()
+        payment, client, invoice, webhook_kind = self._parse()
         order = invoice.order
         parent_order = order.parent
         employee = order.employee
@@ -92,29 +91,34 @@ class StripeWebhookService:
             payment_service.confirm(payment)
 
             # complex event:
-            # - first of all, we are finishing our subscription purchase
-            # - then we are finishing a parent order that created subscription order
-            if purpose == InvoicePurpose.POS:
+            #   - first of all, we are finishing our subscription purchase
+            #   - then we are finishing a parent order that created subscription order
+            if webhook_kind == WebhookKind.SUBSCRIPTION_WITH_CHARGE:
                 logger.info("POS invoice handling")
                 subscription_service.finalize(order)
                 pos_service.checkout()
 
             # set subscription to client, notify client
             #  and mark order as paid
-            elif purpose == InvoicePurpose.SUBSCRIPTION:
+            elif webhook_kind == WebhookKind.SUBSCRIPTION:
                 logger.info("Subscription invoice handling")
                 subscription_service.finalize(order)
 
-            # notify client and mark order as paid
-            elif purpose == InvoicePurpose.REFILL:
+            # complex event:
+            #   - we are finishing one time payment
+            #   - the we are finishin a parent order that create one time payment order
+            elif webhook_kind == WebhookKind.REFILL_WITH_CHARGE:
                 logger.info("One time refill handling")
                 order_service.finalize(order, employee)
 
         elif event.type in self.fail_events:
-            if purpose == InvoicePurpose.SUBSCRIPTION:
+            if webhook_kind == WebhookKind.SUBSCRIPTION:
                 subscription_service.fail(order)
 
-            elif purpose == InvoicePurpose.BASKET:
+            elif webhook_kind in [
+                WebhookKind.SUBSCRIPTION_WITH_CHARGE,
+                WebhookKind.REFILL_WITH_CHARGE,
+            ]:
                 order_service.fail(order)
 
     def _parse(self) -> Tuple[stripe.PaymentMethod, Client, Invoice, str]:
@@ -125,9 +129,9 @@ class StripeWebhookService:
         payment = self.payment
 
         client = Client.objects.get(stripe_id=payment.customer)
-        purpose = getattr(payment.metadata, "purpose", InvoicePurpose.SUBSCRIPTION)
+        webhook_kind = getattr(payment.metadata, "webhook_kind", WebhookKind.SUBSCRIPTION)
 
-        return payment, client, self.invoice, purpose
+        return payment, client, self.invoice, webhook_kind
 
     @property
     def payment(self):

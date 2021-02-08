@@ -5,7 +5,7 @@ from typing import Union
 from django.conf import settings
 from django.db.transaction import atomic
 
-from billing.choices import InvoiceKind, InvoiceProvider, InvoicePurpose
+from billing.choices import InvoiceKind, InvoiceProvider, InvoicePurpose, WebhookKind
 from billing.models import Invoice, Transaction
 from users.models import Client
 
@@ -71,7 +71,9 @@ def add_credits(client: Client, amount: int, provider=InvoiceProvider.CREDIT_BAC
     return transaction
 
 
-def confirm_debit(client: Client, invoice: Invoice, provider=InvoiceProvider.WASHMIX):
+def confirm_debit(
+    client: Client, invoice: Invoice, provider=InvoiceProvider.WASHMIX
+) -> Transaction:
     """
     Function that confirms invoice with desired Transaction kind (debit)
     """
@@ -88,7 +90,9 @@ def confirm_debit(client: Client, invoice: Invoice, provider=InvoiceProvider.WAS
     return transaction
 
 
-def confirm_credit(client: Client, invoice: Invoice, provider=InvoiceProvider.WASHMIX):
+def confirm_credit(
+    client: Client, invoice: Invoice, provider=InvoiceProvider.WASHMIX
+) -> Transaction:
     """
     Function that confirms invoice with desired Transaction kind (credit)
     """
@@ -103,3 +107,16 @@ def confirm_credit(client: Client, invoice: Invoice, provider=InvoiceProvider.WA
     )
 
     return transaction
+
+
+def prepare_stripe_metadata(invoice_id: int, webhook_kind: str) -> dict:
+    """
+    Prepares Stripe's metadata.
+    """
+
+    metadata = {
+        "invoice_id": invoice_id,
+        "webhook_kind": webhook_kind,
+    }
+
+    return metadata
