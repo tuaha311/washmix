@@ -203,7 +203,6 @@ class PaymentService:
         Method helps to charge client's card with one time payment.
         """
 
-        order = None
         continue_with_order = None
         original_invoice = self._invoice
         invoice = original_invoice

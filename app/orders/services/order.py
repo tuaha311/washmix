@@ -44,6 +44,7 @@ class OrderService:
         basket = order.basket
         request = order.request
         subscription = order.subscription
+        purpose = InvoicePurpose.ORDER
 
         services = [
             BasketService(client),
@@ -65,12 +66,15 @@ class OrderService:
         amount = sum([item.amount for item in real_objects])
         discount = sum([item.discount for item in real_objects])
 
+        if subscription:
+            purpose = InvoicePurpose.SUBSCRIPTION
+
         with atomic():
             invoice = Invoice.objects.create(
                 client=client,
                 amount=amount,
                 discount=discount,
-                purpose=InvoicePurpose.ORDER,
+                purpose=purpose,
             )
             order.invoice = invoice
             order.save()

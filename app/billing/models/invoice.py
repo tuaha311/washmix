@@ -48,7 +48,7 @@ class Invoice(CommonAmountDiscountModel):
         verbose_name_plural = "invoices"
 
     def __str__(self):
-        return f"№ {self.id} {self.amount}"
+        return f"№ {self.id} {self.amount_with_discount}"
 
     @property
     def is_paid(self) -> bool:

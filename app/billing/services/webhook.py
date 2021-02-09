@@ -79,12 +79,16 @@ class StripeWebhookService:
 
         payment, client, invoice, webhook_kind, continue_with_order = self._parse()
         try:
-            # for WebhookKind.REFILL_WITH_CHARGE order is None
+            # for WebhookKind.REFILL_WITH_CHARGE `order` is None
             order = invoice.order
         except ObjectDoesNotExist:
             order = None
 
-        employee = continue_with_order.employee
+        try:
+            # for WebhookKind.SUBSCRIPTION `continue_with_order` is None
+            employee = continue_with_order.employee
+        except AttributeError:
+            employee = None
 
         payment_service = PaymentService(client, invoice)
         subscription_service = SubscriptionService(client)
@@ -150,7 +154,7 @@ class StripeWebhookService:
     @property
     def continue_with_order(self) -> Optional[Order]:
         payment = self.payment
-        continue_with_order = payment.metadata.continue_with_order
+        continue_with_order = getattr(payment.metadata, "continue_with_order", None)
 
         if not continue_with_order:
             return None
