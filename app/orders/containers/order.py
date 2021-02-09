@@ -21,8 +21,12 @@ class OrderContainer(BaseAmountContainer):
     def amount(self) -> int:
         filled_container_list = self._filled_container_list
         request = self.request
-        rush_amount = [request.rush_amount]
-        is_rush = request.is_rush
+
+        rush_amount = [0]
+        is_rush = False
+        if request:
+            rush_amount = [request.rush_amount]
+            is_rush = request.is_rush
 
         amount_list = [item.amount for item in filled_container_list]
 

@@ -1,5 +1,6 @@
 from functools import partial
 
+from django.conf import settings
 from django.db import models
 
 from core.utils import get_dollars
@@ -30,7 +31,7 @@ class Discountable(models.Model):
 
     discount = models.FloatField(
         verbose_name="discount, in cents (¢)",
-        default=0,
+        default=settings.DEFAULT_ZERO_DISCOUNT,
     )
 
     class Meta:
@@ -64,7 +65,7 @@ def create_price_class(class_name, attribute_name):
         "__module__": "core.behaviors",
         "Meta": Meta,
         attribute_name: models.BigIntegerField(
-            verbose_name=f"{attribute_name}, in cents (¢)", default=0
+            verbose_name=f"{attribute_name}, in cents (¢)", default=settings.DEFAULT_ZERO_AMOUNT
         ),
         dollar_propery_name: property(partial(get_dollars, attribute_name=attribute_name)),
     }

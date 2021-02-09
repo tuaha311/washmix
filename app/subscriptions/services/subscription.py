@@ -203,11 +203,11 @@ class SubscriptionService(PaymentInterfaceService):
         client = self._client
 
         # we are looking for last subscription that wasn't attached to the client
-        # and wasn't paid
+        # and wasn't prepared for payment
         subscription, _ = Subscription.objects.get_or_create(
             client=client,
-            order__isnull=True,
             active_client__isnull=True,
+            amount=settings.DEFAULT_ZERO_AMOUNT,
             defaults=package.as_dict,
         )
 
