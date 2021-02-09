@@ -6,7 +6,6 @@ from django.db.transaction import atomic
 
 from rest_framework import serializers
 
-from billing.choices import InvoicePurpose
 from billing.models import Invoice
 from billing.services.invoice import InvoiceService
 from core.interfaces import PaymentInterfaceService
@@ -31,14 +30,14 @@ class BasketService(PaymentInterfaceService):
         - See total discount on your basket
 
     Order of methods by importance:
-        - create_invoice
+        - refresh_amount_with_discount
         - charge
     """
 
     def __init__(self, client: Client):
         self._client = client
 
-    def create_invoice(
+    def refresh_amount_with_discount(
         self,
         order: Order,
         basket: Optional[Basket],
@@ -58,16 +57,13 @@ class BasketService(PaymentInterfaceService):
         invoice_service = InvoiceService(client)
         basket_container = BasketContainer(subscription, basket)  # type: ignore
 
-        basket_invoice = invoice_service.update_or_create(
-            order=order,
+        basket = invoice_service.update_amount_discount(
+            entity=basket,
             amount=basket_container.amount,
             discount=basket_container.discount,
-            purpose=InvoicePurpose.BASKET,
         )
-        basket.invoice = basket_invoice
-        basket.save()
 
-        return [basket_invoice]
+        return basket.amount_with_discount
 
     def charge(
         self,
@@ -77,21 +73,7 @@ class BasketService(PaymentInterfaceService):
         payment_service_class: Optional,
         **kwargs,
     ):
-        """
-        We are charging user for:
-            - basket amount
-            - pickup delivery amount
-            - dropoff delivery amount
-        """
-
-        if not basket:
-            return None
-
-        client = self._client
-        invoice = basket.invoice
-
-        payment_service = payment_service_class(client, invoice)
-        payment_service.charge()
+        pass
 
     def checkout(self, **kwargs):
         """

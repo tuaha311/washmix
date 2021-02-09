@@ -20,7 +20,7 @@ class PaymentInterfaceService(ABC):
         pass
 
     @abstractmethod
-    def create_invoice(
+    def refresh_amount_with_discount(
         self,
         order: Order,
         basket: Optional[Basket],

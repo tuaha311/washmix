@@ -120,6 +120,7 @@ class PaymentService:
 
         with atomic():
             paid_amount, unpaid_amount = self.charge_prepaid_balance()
+            is_need_to_auto_bill = client.balance < settings.AUTO_BILLING_LIMIT
 
             if unpaid_amount == 0:
                 return None
@@ -179,7 +180,7 @@ class PaymentService:
             # 1. creating invoice with list unpacking
             # 2. charging the card with purpose=POS to indicate that we are processing POS case
             # 3. calling final hooks
-            [invoice] = subscription_service.create_invoice(
+            [invoice] = subscription_service.refresh_amount_with_discount(
                 order=subscription_order, basket=basket, request=request, subscription=subscription
             )
             self._charge_card(

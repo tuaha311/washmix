@@ -3,11 +3,8 @@ from typing import List, Optional
 from django.conf import settings
 from django.db.transaction import atomic
 
-from billing.choices import InvoicePurpose
 from billing.models import Invoice
-from billing.services.card import CardService
 from billing.services.invoice import InvoiceService
-from billing.utils import confirm_debit
 from core.interfaces import PaymentInterfaceService
 from deliveries.models import Request
 from notifications.tasks import send_email
@@ -27,7 +24,7 @@ class SubscriptionService(PaymentInterfaceService):
         - Charging user for subscription price
 
     Order of methods by importance:
-        - create_invoice
+        - refresh_amount_with_discount
         - charge
         - checkout
         - finalize
@@ -36,7 +33,7 @@ class SubscriptionService(PaymentInterfaceService):
     def __init__(self, client: Client):
         self._client = client
 
-    def create_invoice(
+    def refresh_amount_with_discount(
         self,
         order: Order,
         basket: Optional[Basket],
@@ -55,17 +52,13 @@ class SubscriptionService(PaymentInterfaceService):
         invoice_service = InvoiceService(client)
         subscription_container = SubscriptionContainer(subscription)
 
-        subscription_invoice = invoice_service.update_or_create(
-            order=order,
+        subscription = invoice_service.update_amount_discount(
+            entity=subscription,
             amount=subscription_container.amount,
             discount=subscription_container.discount,
-            purpose=InvoicePurpose.SUBSCRIPTION,
         )
 
-        subscription.invoice = subscription_invoice
-        subscription.save()
-
-        return [subscription_invoice]
+        return subscription.amount_with_discount
 
     def charge(
         self,
@@ -75,28 +68,7 @@ class SubscriptionService(PaymentInterfaceService):
         payment_service_class: Optional,
         **kwargs,
     ):
-        """
-        For PAYC package we have a special case, where we just store a payment method.
-        For other packages - we are charging user for subscription amount.
-        """
-
-        if not subscription:
-            return None
-
-        invoice = subscription.invoice
-        client = self._client
-        card_service = CardService(client)
-        payment_service = payment_service_class(client, invoice)
-        is_advantage_program = subscription.name in [settings.GOLD, settings.PLATINUM]
-
-        if is_advantage_program:
-            payment_service.charge()
-
-        # confirm invoice for PAYC and if invoice doesn't have transactions
-        if not is_advantage_program and not invoice.has_transaction:
-            card = client.card_list.first()
-            card_service.update_main_card(client, card)
-            confirm_debit(client, invoice)
+        pass
 
     def checkout(self, order: Order, subscription: Subscription, **kwargs):
         """

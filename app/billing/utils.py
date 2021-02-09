@@ -139,24 +139,3 @@ def get_webhook_kind(invoice: Invoice) -> str:
         webhook_kind = WebhookKind.SUBSCRIPTION
 
     return webhook_kind
-
-
-def aggregate_invoice_list(invoice_list: QuerySet, order: Order) -> Invoice:
-    """
-    Aggregates list of Invoices into one with total amount and discount.
-    """
-
-    first_invoice = invoice_list.first()
-    client = first_invoice.client
-    amount = invoice_list.aggregate(total=Sum("amount"))["total"] or 0
-    discount = invoice_list.aggregate(total=Sum("discount"))["total"] or 0
-
-    invoice = Invoice.objects.create(
-        client=client,
-        order=order,
-        discount=discount,
-        amount=amount,
-        purpose=InvoicePurpose.ONE_TIME_PAYMENT,
-    )
-
-    return invoice

@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.db.models import Model
 
 from billing.models import Invoice
 from orders.models import Order
@@ -24,3 +25,13 @@ class InvoiceService:
         )
 
         return invoice
+
+    def update_amount_discount(
+        self, entity: Model, amount: int, discount: int = settings.DEFAULT_ZERO_DISCOUNT
+    ):
+        entity.amount = amount
+        entity.discount = discount
+
+        entity.save()
+
+        return entity

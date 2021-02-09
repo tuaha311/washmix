@@ -55,7 +55,7 @@ class OrderService:
         # if invoices will be inside transaction - when stripe webhook occurs, `.charge` method
         # sometimes doesn't finished.
         for item in services:
-            item.create_invoice(
+            item.refresh_amount_with_discount(
                 order=order, basket=basket, request=request, subscription=subscription
             )
 

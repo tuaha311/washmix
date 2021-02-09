@@ -125,18 +125,6 @@ class Request(CommonScheduleRequest, Common):
         pickup.save(update_fields={"end"})
 
     @property
-    def pickup_invoice(self):
-        return self.pickup.invoice
-
-    @pickup_invoice.setter
-    def pickup_invoice(self, value):
-        pickup = self.pickup
-        pickup.invoice = value
-
-        # defining which fields was changed - used in Delivery signal
-        pickup.save(update_fields={"invoice"})
-
-    @property
     def pickup_status(self):
         return self.pickup.get_status_display()
 
@@ -182,18 +170,6 @@ class Request(CommonScheduleRequest, Common):
 
         # defining which fields was changed - used in Delivery signal
         dropoff.save(update_fields={"end"})
-
-    @property
-    def dropoff_invoice(self):
-        return self.dropoff.invoice
-
-    @dropoff_invoice.setter
-    def dropoff_invoice(self, value):
-        dropoff = self.dropoff
-        dropoff.invoice = value
-
-        # defining which fields was changed - used in Delivery signal
-        dropoff.save(update_fields={"invoice"})
 
     @property
     def dropoff_status(self):

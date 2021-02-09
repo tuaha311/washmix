@@ -35,19 +35,6 @@ class Delivery(Common):
         related_name="delivery_list",
         on_delete=models.CASCADE,
     )
-    # invoice created at the moment of Order creation
-    # this invoice is responsible for storing actual amount and
-    # discount (at the moment of purchasing), because amount and
-    # discount calculated with different business rules for every
-    # WashMix services - subscription, basket (POS), delivery
-    invoice = models.OneToOneField(
-        "billing.Invoice",
-        verbose_name="invoice for delivery",
-        related_name="delivery",
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-    )
 
     note = models.TextField(
         verbose_name="note on delivery",

@@ -1,20 +1,17 @@
 from datetime import date, time
 from typing import List, Optional, Tuple
 
-from django.conf import settings
 from django.db.transaction import atomic
 from django.utils.timezone import localtime
 
 from billing.models import Invoice
 from billing.services.invoice import InvoiceService
-from billing.utils import confirm_credit
 from core.interfaces import PaymentInterfaceService
 from deliveries.choices import DeliveryKind, DeliveryStatus
 from deliveries.containers.request import RequestContainer
 from deliveries.models import Delivery, Request
 from deliveries.utils import get_dropoff_day, get_pickup_day, get_pickup_start_end
 from deliveries.validators import RequestValidator
-from notifications.tasks import send_email
 from orders.containers.basket import BasketContainer
 from orders.models import Basket, Order
 from subscriptions.models import Subscription
@@ -26,7 +23,7 @@ class RequestService(PaymentInterfaceService):
     This service is responsible for Requests / Deliveries handling.
 
     Order of methods by importance:
-        - create_invoice
+        - refresh_amount_with_discount
         - charge
     """
 
@@ -52,7 +49,7 @@ class RequestService(PaymentInterfaceService):
         self._is_rush = is_rush
         self._validator_service = RequestValidator(pickup_date, pickup_start, pickup_end)
 
-    def create_invoice(
+    def refresh_amount_with_discount(
         self,
         order: Order,
         basket: Optional[Basket],
@@ -73,31 +70,16 @@ class RequestService(PaymentInterfaceService):
         invoice_service = InvoiceService(client)
         basket_container = BasketContainer(subscription, basket)  # type: ignore
         request_container = RequestContainer(subscription, request, basket_container)  # type: ignore
+        dropoff_container = request_container.dropoff_container
+        pickup_container = request_container.pickup_container
 
-        # we have 2 kind - Pickup, Dropoff
-        # and for every of Delivery we create an invoice
-        kind_of_deliveries = DeliveryKind.MAP.keys()
-        invoice_list = []
+        request = invoice_service.update_amount_discount(
+            entity=request,
+            amount=sum([dropoff_container.amount, pickup_container.amount]),
+            discount=sum([dropoff_container.discount, pickup_container.discount]),
+        )
 
-        for kind in kind_of_deliveries:
-            delivery_container_name = f"{kind}_container"
-            delivery_container = getattr(request_container, delivery_container_name)
-
-            delivery_invoice = invoice_service.update_or_create(
-                order=order,
-                amount=delivery_container.amount,
-                discount=delivery_container.discount,
-                purpose=kind,
-            )
-
-            invoice_attribute_name = f"{kind}_invoice"
-            setattr(request, invoice_attribute_name, delivery_invoice)
-
-            invoice_list.append(delivery_invoice)
-
-        request.save()
-
-        return invoice_list
+        return request.amount_with_discount
 
     def charge(
         self,
@@ -107,29 +89,7 @@ class RequestService(PaymentInterfaceService):
         payment_service_class: Optional,
         **kwargs,
     ):
-        """
-        We are charging user for:
-            - basket amount
-            - pickup delivery amount
-            - dropoff delivery amount
-        """
-
-        if not basket or not request:
-            return None
-
-        client = self._client
-        invoice_list = [item.invoice for item in request.delivery_list.all()]
-
-        for invoice in invoice_list:
-            payment_service = payment_service_class(client, invoice)
-            invoice_zero_amount = invoice.amount_with_discount == 0
-
-            if not invoice_zero_amount:
-                payment_service.charge()
-
-            # confirm invoice if amount is equal to 0 and invoice hasn't transactions
-            if invoice_zero_amount and not invoice.has_transaction:
-                confirm_credit(client, invoice)
+        pass
 
     def checkout(self, **kwargs):
         """
