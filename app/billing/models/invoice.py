@@ -4,10 +4,10 @@ from django.db.models import Sum
 from billing.choices import InvoicePurpose
 from core.behaviors import Amountable
 from core.common_models import Common
-from core.mixins import CalculatedAmountWithDiscount
+from core.mixins import CalculatedAmountWithDiscount, CalculatedDiscountMixin
 
 
-class Invoice(CalculatedAmountWithDiscount, Amountable, Common):
+class Invoice(CalculatedAmountWithDiscount, CalculatedDiscountMixin, Amountable, Common):
     """
     Service-side and Client-side entity.
 
