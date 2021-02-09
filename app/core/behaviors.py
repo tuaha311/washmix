@@ -30,6 +30,7 @@ class Discountable(models.Model):
 
     discount = models.FloatField(
         verbose_name="discount, in cents (¢)",
+        default=0,
     )
 
     class Meta:
@@ -62,7 +63,9 @@ def create_price_class(class_name, attribute_name):
         "Also, it provides .dollar_amount property\n",
         "__module__": "core.behaviors",
         "Meta": Meta,
-        attribute_name: models.BigIntegerField(verbose_name=f"{attribute_name}, in cents (¢)"),
+        attribute_name: models.BigIntegerField(
+            verbose_name=f"{attribute_name}, in cents (¢)", default=0
+        ),
         dollar_propery_name: property(partial(get_dollars, attribute_name=attribute_name)),
     }
     base_classes = (models.Model,)

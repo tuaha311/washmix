@@ -17,7 +17,7 @@ def test_payc_gold_platinum_subscription(atomic_mock, send_email_mock):
     for item in subscription_list:
         order = MagicMock()
         order.subscription = subscription
-        order.is_all_invoices_paid = True
+        order.invoice.is_paid = True
         order.payment = OrderPaymentChoices.UNPAID
 
         subscription.name = item

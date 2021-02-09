@@ -1,8 +1,9 @@
-from typing import List, Optional
+from typing import Optional
 
 from django.conf import settings
 from django.db.transaction import atomic
 
+from billing.choices import InvoicePurpose
 from billing.models import Coupon, Invoice
 from billing.services.coupon import CouponService
 from billing.services.payments import PaymentService
@@ -49,6 +50,8 @@ class OrderService:
             RequestService(client),
             SubscriptionService(client),
         ]
+        objects = [basket, request, subscription]
+        real_objects = [item for item in objects if item]
 
         # 1. we are creating invoices for every service we are offering to client
         # invoices should be created outside of transaction - we are writing explicitly to db
@@ -59,14 +62,23 @@ class OrderService:
                 order=order, basket=basket, request=request, subscription=subscription
             )
 
+        amount = sum([item.amount for item in real_objects])
+        discount = sum([item.discount for item in real_objects])
+
         with atomic():
-            order.refresh_from_db()
-            invoice_list = order.invoice_list.all()
+            invoice = Invoice.objects.create(
+                client=client,
+                amount=amount,
+                discount=discount,
+                purpose=InvoicePurpose.ORDER,
+            )
+            order.invoice = invoice
+            order.save()
 
             # 2. we are calculating discount for client before charging
             # and persisting them in db
             if coupon:
-                self._calculate_and_apply_discount(coupon, invoice_list)
+                self._calculate_and_apply_discount(coupon, invoice)
 
             # 3. we are charging client for every service and invoices of them
             for item in services:
@@ -94,12 +106,10 @@ class OrderService:
         """
 
         client = self._client
+        invoice = order.invoice
 
-        invoice_list = order.invoice_list.all()
-
-        for invoice in invoice_list:
-            payment_service = PaymentService(client, invoice)
-            payment_service.charge_prepaid_balance()
+        payment_service = PaymentService(client, invoice)
+        payment_service.charge_prepaid_balance()
 
     def prepare(self, request: Request) -> Order:
         """
@@ -164,12 +174,13 @@ class OrderService:
 
         client = self._client
         self._order = order
+        invoice = order.invoice
 
         order.employee = employee
         order.save()
 
         # we are waiting while all invoices will be confirmed
-        if not order.is_all_invoices_paid:
+        if not invoice.is_paid:
             return None
 
         # if order is paid - no need to fire events again
@@ -212,12 +223,13 @@ class OrderService:
         self._notify_client_on_payment_fail()
         self._notify_admin_on_payment_fail()
 
-    def _calculate_and_apply_discount(self, coupon: Coupon, invoice_list: List[Invoice]):
-        for invoice in invoice_list:
-            amount = invoice.amount
-            coupon_service = CouponService(amount, coupon)
-            invoice.discount = coupon_service.apply_coupon()
-            invoice.save()
+    def _calculate_and_apply_discount(self, coupon: Coupon, invoice: Invoice):
+        amount = invoice.amount
+
+        coupon_service = CouponService(amount, coupon)
+
+        invoice.discount = coupon_service.apply_coupon()
+        invoice.save()
 
     def _notify_client_on_new_order(self):
         client_id = self._client.id

@@ -106,29 +106,3 @@ class Order(Common):
     @property
     def pretty_status(self):
         return self.get_status_display()
-
-    @property
-    def is_all_invoices_paid(self) -> bool:
-        """
-        Order can have multiple invoices:
-            - Subscription invoice
-            - Basket invoice
-            - Request invoices (pickup, dropoff)
-
-        This property checks all invoices are paid.
-        """
-
-        basket = self.basket
-        subscription = self.subscription
-        request = self.request
-        pickup = None
-        dropoff = None
-
-        if request:
-            pickup = request.pickup
-            dropoff = request.dropoff
-
-        washmix_paid_services = [basket, subscription, pickup, dropoff]
-        invoice_list = [item.invoice for item in washmix_paid_services if item]
-
-        return all([item.is_paid for item in invoice_list])

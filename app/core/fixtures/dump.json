@@ -2396,7 +2396,6 @@
       "amount": 0,
       "discount": 0,
       "client": 1,
-      "order": 1,
       "card": null,
       "purpose": "subscription"
     }
@@ -2410,7 +2409,6 @@
       "amount": 19900,
       "discount": 0,
       "client": 2,
-      "order": 2,
       "card": null,
       "purpose": "subscription"
     }
@@ -2424,7 +2422,6 @@
       "amount": 29900,
       "discount": 0,
       "client": 3,
-      "order": 3,
       "card": null,
       "purpose": "subscription"
     }
@@ -2705,7 +2702,6 @@
       "changed": "2020-12-30T04:47:40.968Z",
       "employee": null,
       "request": 1,
-      "invoice": null,
       "note": "",
       "sorting": null,
       "kind": "pickup",
@@ -2723,7 +2719,6 @@
       "changed": "2020-12-30T04:47:40.999Z",
       "employee": null,
       "request": 1,
-      "invoice": null,
       "note": "",
       "sorting": null,
       "kind": "dropoff",
@@ -2741,7 +2736,6 @@
       "changed": "2020-12-04T02:16:31.338Z",
       "employee": 4,
       "request": 2,
-      "invoice": null,
       "note": "",
       "sorting": null,
       "kind": "pickup",
@@ -2759,7 +2753,6 @@
       "changed": "2020-12-04T02:16:31.342Z",
       "employee": 4,
       "request": 2,
-      "invoice": null,
       "note": "",
       "sorting": null,
       "kind": "dropoff",
@@ -2777,7 +2770,6 @@
       "changed": "2020-12-04T02:19:08.309Z",
       "employee": null,
       "request": 3,
-      "invoice": null,
       "note": "",
       "sorting": null,
       "kind": "pickup",
@@ -2795,7 +2787,6 @@
       "changed": "2020-12-04T02:19:08.312Z",
       "employee": null,
       "request": 3,
-      "invoice": null,
       "note": "",
       "sorting": null,
       "kind": "dropoff",
@@ -2811,6 +2802,8 @@
     "fields": {
       "created": "2020-12-30T04:47:40.963Z",
       "changed": "2020-12-30T04:47:40.963Z",
+      "amount": 10000,
+      "discount": 0,
       "comment": "",
       "is_rush": false,
       "client": 1,
@@ -2824,6 +2817,8 @@
     "fields": {
       "created": "2020-12-04T02:16:31.332Z",
       "changed": "2020-12-04T02:16:31.332Z",
+      "amount": 10000,
+      "discount": 0,
       "comment": "",
       "is_rush": false,
       "client": 2,
@@ -2837,6 +2832,8 @@
     "fields": {
       "created": "2020-12-04T02:19:08.304Z",
       "changed": "2020-12-04T02:19:08.304Z",
+      "amount": 10000,
+      "discount": 0,
       "comment": "",
       "is_rush": false,
       "client": 3,
@@ -5657,6 +5654,7 @@
       "created": "2020-12-30T04:14:33.781Z",
       "changed": "2020-12-30T04:15:00.455Z",
       "client": 1,
+      "invoice": 1,
       "employee": null,
       "basket": null,
       "request": null,
@@ -5675,6 +5673,7 @@
       "created": "2020-12-04T02:14:59.502Z",
       "changed": "2020-12-04T02:15:36.691Z",
       "client": 2,
+      "invoice": 2,
       "employee": null,
       "basket": null,
       "request": null,
@@ -5693,6 +5692,7 @@
       "created": "2020-12-04T02:17:01.269Z",
       "changed": "2020-12-04T02:18:03.853Z",
       "client": 3,
+      "invoice": 3,
       "employee": null,
       "basket": null,
       "request": null,
@@ -7819,6 +7819,8 @@
     "fields": {
       "created": "2020-12-30T04:14:33.758Z",
       "changed": "2020-12-30T04:14:48.959Z",
+      "amount": 0,
+      "discount": 0,
       "price": 0,
       "dry_clean": 0,
       "laundry": 0,
@@ -7831,8 +7833,7 @@
       "has_credit_back": false,
       "is_most_popular": false,
       "client": 1,
-      "name": "payc",
-      "invoice": 1
+      "name": "payc"
     }
   },
   {
@@ -7841,6 +7842,8 @@
     "fields": {
       "created": "2020-12-04T02:14:59.485Z",
       "changed": "2020-12-04T02:15:19.497Z",
+      "amount": 19900,
+      "discount": 0,
       "price": 19900,
       "dry_clean": 10,
       "laundry": 10,
@@ -7853,8 +7856,7 @@
       "has_credit_back": false,
       "is_most_popular": false,
       "client": 2,
-      "name": "gold",
-      "invoice": 2
+      "name": "gold"
     }
   },
   {
@@ -7863,6 +7865,8 @@
     "fields": {
       "created": "2020-12-04T02:17:01.254Z",
       "changed": "2020-12-04T02:17:17.836Z",
+      "amount": 29900,
+      "discount": 0,
       "price": 29900,
       "dry_clean": 20,
       "laundry": 20,
@@ -7875,8 +7879,7 @@
       "has_credit_back": true,
       "is_most_popular": true,
       "client": 3,
-      "name": "platinum",
-      "invoice": 3
+      "name": "platinum"
     }
   },
   {

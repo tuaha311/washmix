@@ -13,6 +13,12 @@ from billing.services.webhook import StripeWebhookService
 
 
 class CreateIntentView(GenericAPIView):
+    """
+    Used in following cases:
+        - When client add a new card
+        - When client pass through a welcome scenario
+    """
+
     serializer_class = payments.CreateIntentSerializer
     response_serializer_class = payments.CreateIntentResponseSerializer
 
@@ -34,6 +40,10 @@ class CreateIntentView(GenericAPIView):
 
 
 class StripeWebhookView(GenericAPIView):
+    """
+    View that responds on Stripe's webhooks.
+    """
+
     permission_classes = [AllowAny]
 
     def post(self, request: Request, *args, **kwargs):

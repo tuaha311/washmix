@@ -58,7 +58,6 @@ class PaymentService:
         if is_save_card:
             intent = self._stripe_helper.create_setup_intent()
         else:
-
             metadata = prepare_stripe_metadata(
                 invoice_id=invoice.id,
                 webhook_kind=webhook_kind,

@@ -95,10 +95,11 @@ class SubscriptionService(PaymentInterfaceService):
         """
 
         subscription = order.subscription
+        invoice = order.invoice
         client = self._client
 
         # we are waiting while all invoices will be confirmed
-        if not order.is_all_invoices_paid:
+        if not invoice.is_paid:
             return None
 
         # if order is paid - no need to fire events again
@@ -187,7 +188,7 @@ class SubscriptionService(PaymentInterfaceService):
         # and wasn't paid
         subscription, _ = Subscription.objects.get_or_create(
             client=client,
-            invoice__isnull=True,
+            order__isnull=True,
             active_client__isnull=True,
             defaults=package.as_dict,
         )
