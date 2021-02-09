@@ -69,6 +69,7 @@ def test_charge_when_balance_not_enough_for_basket_with_enabled_auto_billing(
     stripe_class_mock.return_value = stripe_instance_mock
     subscription_service_instance_mock = MagicMock()
     subscription_invoice_mock = MagicMock()
+    subscription_invoice_mock.id = 100
     subscription_service_instance_mock.create_invoice.return_value = [subscription_invoice_mock]
     subscription_service_instance_mock.choose.return_value.original.subscription.price = 19900
     subscription_service_class_mock.return_value = subscription_service_instance_mock
@@ -77,6 +78,7 @@ def test_charge_when_balance_not_enough_for_basket_with_enabled_auto_billing(
     invoice.paid_amount = 0
     invoice.amount_with_discount = 25000
     invoice.purpose = InvoicePurpose.BASKET
+    invoice.order.pk = 200
     paid_amount = client.balance
 
     service = PaymentService(client, invoice)
@@ -91,8 +93,11 @@ def test_charge_when_balance_not_enough_for_basket_with_enabled_auto_billing(
     stripe_instance_mock.create_payment_intent.assert_called_once_with(
         payment_method_id=card.stripe_id,
         amount=19900,
-        invoice=subscription_invoice_mock,
-        webhook_kind=WebhookKind.SUBSCRIPTION_WITH_CHARGE,
+        metadata={
+            "invoice_id": 100,
+            "webhook_kind": WebhookKind.SUBSCRIPTION_WITH_CHARGE,
+            "continue_with_order": 200,
+        },
     )
     card_service_mock.assert_called_once()
 
@@ -106,8 +111,8 @@ def test_charge_when_balance_not_enough_for_basket_with_disabled_auto_billing(
     card_service_mock,
     stripe_class_mock,
     create_credit_mock,
-    atomic_mock,
     invoice_class_mock,
+    atomic_mock,
 ):
     """
     POS negative case:
@@ -134,19 +139,29 @@ def test_charge_when_balance_not_enough_for_basket_with_disabled_auto_billing(
     invoice.paid_amount = 0
     invoice.amount_with_discount = 25000
     invoice.purpose = InvoicePurpose.BASKET
+    invoice.order.pk = 200
+
+    refill_invoice = MagicMock()
+    refill_invoice.id = 500
+    refill_invoice.amount_with_discount = 25000
+    invoice_class_mock.objects.create.return_value = refill_invoice
+
     paid_amount = client.balance
     unpaid_amount = invoice.amount_with_discount - client.balance
 
     service = PaymentService(client, invoice)
     service.charge()
 
-    assert atomic_mock.call_count == 0
+    atomic_mock.assert_called_once()
     create_credit_mock.assert_called_once_with(client=client, invoice=invoice, amount=paid_amount)
     stripe_instance_mock.create_payment_intent.assert_called_once_with(
         payment_method_id=card.stripe_id,
         amount=unpaid_amount,
-        invoice=invoice,
-        webhook_kind=WebhookKind.REFILL_WITH_CHARGE,
+        metadata={
+            "invoice_id": 500,
+            "webhook_kind": WebhookKind.REFILL_WITH_CHARGE,
+            "continue_with_order": 200,
+        },
     )
     invoice_class_mock.objects.create.assert_called_once()
     card_service_mock.assert_called_once()

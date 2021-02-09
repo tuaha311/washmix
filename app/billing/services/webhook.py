@@ -79,7 +79,7 @@ class StripeWebhookService:
 
         payment, client, invoice, webhook_kind, continue_with_order = self._parse()
         order = invoice.order
-        employee = order.employee
+        employee = continue_with_order.employee
 
         payment_service = PaymentService(client, invoice)
         subscription_service = SubscriptionService(client)
@@ -93,13 +93,15 @@ class StripeWebhookService:
             #  and mark order as paid
             if webhook_kind == WebhookKind.SUBSCRIPTION:
                 logger.info("Subscription invoice handling")
+
                 subscription_service.finalize(order)
 
             # complex event:
             #   - first of all, we are finishing our subscription purchase
             #   - then we are finishing a parent order that created subscription order
             elif webhook_kind == WebhookKind.SUBSCRIPTION_WITH_CHARGE:
-                logger.info("POS invoice handling")
+                logger.info("Subscription with charge handling")
+
                 subscription_service.finalize(order)
 
                 pos_service = POSService(client, continue_with_order, employee)
@@ -109,8 +111,10 @@ class StripeWebhookService:
             #   - we are finishing one time payment
             #   - the we are finishin a parent order that create one time payment order
             elif webhook_kind == WebhookKind.REFILL_WITH_CHARGE:
-                logger.info("One time refill handling")
-                order_service.finalize(order, employee)
+                logger.info("Refill with charge handling")
+
+                pos_service = POSService(client, continue_with_order, employee)
+                pos_service.confirm()
 
         elif event.type in self.fail_events:
             if webhook_kind == WebhookKind.SUBSCRIPTION:

@@ -59,3 +59,8 @@ def accrue_credit_back_every_3_month():
             f"Credit back amount in cents {credit_back_amount} for {client.email} was accrued"
         )
         logger.info(f"End of accruing credit back for client {client.email}")
+
+
+@dramatiq.actor
+def charge_card():
+    pass

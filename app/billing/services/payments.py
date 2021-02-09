@@ -119,7 +119,7 @@ class PaymentService:
         )
 
         with atomic():
-            paid_amount, unpaid_amount = self._charge_prepaid_balance()
+            paid_amount, unpaid_amount = self.charge_prepaid_balance()
 
             if unpaid_amount == 0:
                 return None
@@ -133,7 +133,7 @@ class PaymentService:
                 webhook_kind = get_webhook_kind(invoice)
                 self._make_refill_with_charge(webhook_kind)
 
-    def _charge_prepaid_balance(self):
+    def charge_prepaid_balance(self):
         """
         Method that charges user's prepaid balance.
         """
@@ -150,6 +150,78 @@ class PaymentService:
             )
 
         return charge_from_prepaid, charge_from_card
+
+    def _make_subscription_with_charge(self, webhook_kind: str):
+        """
+        Method that helps to buy subscription if user doesn't have enough
+        prepaid balance.
+        """
+
+        request = None
+        basket = None
+        invoice = self._invoice
+
+        continue_with_order = invoice.order.pk
+        client = self._client
+        subscription = client.subscription
+        subscription_name = subscription.name
+        package = Package.objects.get(name=subscription_name)
+
+        with atomic():
+            # we are manually handling subscription purchase proccess
+            subscription_service = SubscriptionService(client)
+            order_container = subscription_service.choose(package)
+
+            subscription_order = order_container.original
+            subscription = subscription_order.subscription
+            amount = subscription.price
+
+            # 1. creating invoice with list unpacking
+            # 2. charging the card with purpose=POS to indicate that we are processing POS case
+            # 3. calling final hooks
+            [invoice] = subscription_service.create_invoice(
+                order=subscription_order, basket=basket, request=request, subscription=subscription
+            )
+            self._charge_card(
+                amount=amount,
+                webhook_kind=webhook_kind,
+                invoice=invoice,
+                continue_with_order=continue_with_order,
+            )
+            subscription_service.checkout(order=subscription_order, subscription=subscription)
+
+    def _make_refill_with_charge(self, webhook_kind: str):
+        """
+        Method helps to charge client's card with one time payment.
+        """
+
+        order = None
+        continue_with_order = None
+        original_invoice = self._invoice
+        invoice = original_invoice
+
+        if webhook_kind == WebhookKind.REFILL_WITH_CHARGE:
+            # we are preparing invoice for one time payment
+            # this invoice will receive Stripe income transaction
+            invoice = Invoice.objects.create(
+                client=original_invoice.client,
+                order=order,
+                amount=original_invoice.amount,
+                discount=original_invoice.discount,
+                purpose=InvoicePurpose.ONE_TIME_PAYMENT,
+            )
+            # we are linking original order to continue with it
+            # in StripeWebhookView
+            continue_with_order = original_invoice.order.pk
+
+        unpaid_amount = int(invoice.amount_with_discount)
+
+        self._charge_card(
+            amount=unpaid_amount,
+            webhook_kind=webhook_kind,
+            invoice=invoice,
+            continue_with_order=continue_with_order,
+        )
 
     def _charge_card(
         self, amount: int, webhook_kind: str, invoice: Invoice, continue_with_order: int
@@ -194,82 +266,6 @@ class PaymentService:
             )
 
         return payment
-
-    def _make_subscription_with_charge(self, webhook_kind: str) -> Order:
-        """
-        Method that helps to buy subscription if user doesn't have enough
-        prepaid balance.
-        """
-
-        request = None
-        basket = None
-        client = self._client
-        subscription = client.subscription
-        subscription_name = subscription.name
-        package = Package.objects.get(name=subscription_name)
-
-        with atomic():
-            # we are manually handling subscription purchase proccess
-            subscription_service = SubscriptionService(client)
-            order_container = subscription_service.choose(package)
-
-            subscription_order = order_container.original
-            subscription = subscription_order.subscription
-            amount = subscription.price
-
-            # 1. creating invoice with list unpacking
-            # 2. charging the card with purpose=POS to indicate that we are processing POS case
-            # 3. calling final hooks
-            [invoice] = subscription_service.create_invoice(
-                order=subscription_order, basket=basket, request=request, subscription=subscription
-            )
-            self._charge_card(
-                amount=amount,
-                webhook_kind=webhook_kind,
-                invoice=invoice,
-                continue_with_order=subscription_order.pk,
-            )
-            subscription_service.checkout(order=subscription_order, subscription=subscription)
-
-        return subscription_order
-
-    def _make_refill_with_charge(self, webhook_kind: str) -> Optional[Order]:
-        """
-        Method helps to charge client's card with one time payment.
-        """
-
-        order = None
-        original_invoice = self._invoice
-
-        with atomic():
-            if webhook_kind == WebhookKind.SUBSCRIPTION:
-                invoice = original_invoice
-                continue_with_order = None
-            else:
-                # we are preparing invoice for one time payment
-                # this invoice will receive Stripe income transaction
-                invoice = Invoice.objects.create(
-                    client=original_invoice.client,
-                    order=order,
-                    amount=original_invoice.amount,
-                    discount=original_invoice.discount,
-                    purpose=InvoicePurpose.ONE_TIME_PAYMENT,
-                )
-                # we are linking original order to continue with it
-                # in StripeWebhookView
-                continue_with_order = original_invoice.order
-
-        order = invoice.order
-        unpaid_amount = invoice.amount_with_discount
-
-        self._charge_card(
-            amount=unpaid_amount,
-            webhook_kind=webhook_kind,
-            invoice=invoice,
-            continue_with_order=continue_with_order.pk,
-        )
-
-        return order
 
     def _get_aggregated_invoice(self):
         pass

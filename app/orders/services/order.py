@@ -88,6 +88,19 @@ class OrderService:
 
         return self.get_container()
 
+    def confirm(self, order: Order):
+        """
+        We are trying to charge client's prepaid balance and confirm unpaid invoices.
+        """
+
+        client = self._client
+
+        invoice_list = order.invoice_list.all()
+
+        for invoice in invoice_list:
+            payment_service = PaymentService(client, invoice)
+            payment_service.charge_prepaid_balance()
+
     def prepare(self, request: Request) -> Order:
         """
         Method prepares Order entity to be ready.
@@ -152,6 +165,9 @@ class OrderService:
         client = self._client
         self._order = order
 
+        order.employee = employee
+        order.save()
+
         # we are waiting while all invoices will be confirmed
         if not order.is_all_invoices_paid:
             return None
@@ -162,7 +178,6 @@ class OrderService:
 
         with atomic():
             order.payment = OrderPaymentChoices.PAID
-            order.employee = employee
 
             if order.is_save_card:
                 order.card = client.main_card
