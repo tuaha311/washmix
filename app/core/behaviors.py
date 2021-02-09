@@ -23,6 +23,19 @@ class Stripeable(models.Model):
         abstract = True
 
 
+class Discountable(models.Model):
+    """
+    Behavior for model that defines `discount` field.
+    """
+
+    discount = models.FloatField(
+        verbose_name="discount, in cents (¢)",
+    )
+
+    class Meta:
+        abstract = True
+
+
 def create_price_class(class_name, attribute_name):
     """
     Here we are using technique called `Metaclasses`.

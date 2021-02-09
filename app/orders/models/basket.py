@@ -1,10 +1,10 @@
 from django.contrib.postgres.fields import JSONField
 from django.db import models
 
-from core.common_models import Common
+from core.common_models import CommonAmountDiscountModel
 
 
-class Basket(Common):
+class Basket(CommonAmountDiscountModel):
     """
     Employee-side and Client-side entity.
 

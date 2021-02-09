@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.db import models
 
-from core.common_models import Common
+from core.common_models import CommonAmountDiscountModel
 from core.utils import clone_from_to
 from subscriptions.common_models import CommonPackageSubscription
 
@@ -15,7 +15,7 @@ class SubscriptionManager(models.Manager):
         return subscription
 
 
-class Subscription(CommonPackageSubscription, Common):
+class Subscription(CommonPackageSubscription, CommonAmountDiscountModel):
     """
     Client-side entity.
 

@@ -1,11 +1,11 @@
 from django.db import models
 
-from core.common_models import Common
+from core.common_models import CommonAmountDiscountModel
 from deliveries.choices import DeliveryKind
 from deliveries.common_models import CommonScheduleRequest
 
 
-class Request(CommonScheduleRequest, Common):
+class Request(CommonScheduleRequest, CommonAmountDiscountModel):
     """
     Client-side entity.
 

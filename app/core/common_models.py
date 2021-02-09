@@ -11,3 +11,12 @@ class Common(models.Model):
 
     class Meta:
         abstract = True
+
+
+from core.behaviors import Amountable, Discountable
+from core.mixins import CalculatedAmountWithDiscount, CalculatedDiscountMixin
+
+
+class CommonAmountDiscountModel(Amountable, Discountable, CalculatedAmountWithDiscount, CalculatedDiscountMixin, Common):
+    class Meta:
+        abstract = True

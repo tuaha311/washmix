@@ -2,12 +2,10 @@ from django.db import models
 from django.db.models import Sum
 
 from billing.choices import InvoicePurpose
-from core.behaviors import Amountable
-from core.common_models import Common
-from core.mixins import CalculatedAmountWithDiscount, CalculatedDiscountMixin
+from core.common_models import CommonAmountDiscountModel
 
 
-class Invoice(CalculatedAmountWithDiscount, CalculatedDiscountMixin, Amountable, Common):
+class Invoice(CommonAmountDiscountModel):
     """
     Service-side and Client-side entity.
 
@@ -29,13 +27,6 @@ class Invoice(CalculatedAmountWithDiscount, CalculatedDiscountMixin, Amountable,
         on_delete=models.CASCADE,
         related_name="invoice_list",
     )
-    order = models.ForeignKey(
-        "orders.Order",
-        verbose_name="order",
-        on_delete=models.CASCADE,
-        related_name="invoice_list",
-        null=True,
-    )
     card = models.ForeignKey(
         "billing.Card",
         verbose_name="card",
@@ -45,9 +36,6 @@ class Invoice(CalculatedAmountWithDiscount, CalculatedDiscountMixin, Amountable,
         blank=True,
     )
 
-    discount = models.FloatField(
-        verbose_name="discount, in cents (¢)",
-    )
     purpose = models.CharField(
         max_length=20,
         verbose_name="purpose of this invoice",
