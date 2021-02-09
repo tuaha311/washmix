@@ -20,17 +20,6 @@ class BaseClientField(serializers.PrimaryKeyRelatedField):
         return attribute_queryset.all()
 
 
-class InvoiceField(BaseClientField):
-    attribute_name = "invoice_list"
-
-    def get_validators(self):
-        default_validators = super().get_validators()
-
-        default_validators.append(validate_paid_invoice)
-
-        return default_validators
-
-
 class RequestField(BaseClientField):
     attribute_name = "request_list"
 

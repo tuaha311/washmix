@@ -4,7 +4,9 @@ from django.conf import settings
 from django.db.transaction import atomic
 
 from billing.models import Invoice
+from billing.services.card import CardService
 from billing.services.invoice import InvoiceService
+from billing.utils import confirm_debit
 from core.interfaces import PaymentInterfaceService
 from deliveries.models import Request
 from notifications.tasks import send_email
@@ -65,10 +67,26 @@ class SubscriptionService(PaymentInterfaceService):
         request: Optional[Request],
         basket: Optional[Basket],
         subscription: Optional[Subscription],
-        payment_service_class: Optional,
+        invoice: Invoice,
         **kwargs,
     ):
-        pass
+        """
+        For PAYC package we have a special case, where we just store a payment method.
+        For other packages - we are charging user for subscription amount.
+        """
+
+        if not subscription:
+            return None
+
+        client = self._client
+        card_service = CardService(client)
+        is_advantage_program = subscription.name in [settings.GOLD, settings.PLATINUM]
+
+        # confirm invoice for PAYC and if invoice doesn't have transactions
+        if not is_advantage_program and not invoice.has_transaction:
+            card = client.card_list.first()
+            card_service.update_main_card(client, card)
+            confirm_debit(client, invoice)
 
     def checkout(self, order: Order, subscription: Subscription, **kwargs):
         """

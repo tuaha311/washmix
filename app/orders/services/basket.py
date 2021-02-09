@@ -70,7 +70,7 @@ class BasketService(PaymentInterfaceService):
         request: Optional[Request],
         basket: Optional[Basket],
         subscription: Optional[Subscription],
-        payment_service_class: Optional,
+        invoice: Invoice,
         **kwargs,
     ):
         pass

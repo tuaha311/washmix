@@ -32,7 +32,6 @@ class OrderSerializer(CommonContainerSerializer, serializers.ModelSerializer):
             "basket",
             "request",
             "subscription",
-            "invoice_list",
             "status",
             "pretty_status",
             "note",

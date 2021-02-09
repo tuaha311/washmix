@@ -87,8 +87,11 @@ class OrderService:
                     basket=basket,
                     request=request,
                     subscription=subscription,
-                    payment_service_class=PaymentService,
+                    invoice=invoice,
                 )
+
+            payment_service = PaymentService(client, invoice)
+            payment_service.charge()
 
             # 4. we are calling last hooks
             for item in services:
