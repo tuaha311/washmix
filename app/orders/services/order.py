@@ -103,7 +103,7 @@ class OrderService:
 
         return self.get_container()
 
-    def confirm(self, order: Order):
+    def charge_the_rest(self, order: Order):
         """
         We are trying to charge client's prepaid balance and confirm unpaid invoices.
         """

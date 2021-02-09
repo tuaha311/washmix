@@ -105,7 +105,7 @@ class StripeWebhookService:
                 subscription_service.finalize(order)
 
                 pos_service = POSService(client, continue_with_order, employee)
-                pos_service.checkout()
+                pos_service.confirm()
 
             # complex event:
             #   - we are finishing one time payment

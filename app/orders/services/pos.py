@@ -43,5 +43,5 @@ class POSService:
         employee = self._employee
 
         order_service = OrderService(client)
-        order_service.confirm(order)
+        order_service.charge_the_rest(order)
         order_service.finalize(order, employee)
