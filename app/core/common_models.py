@@ -1,5 +1,8 @@
 from django.db import models
 
+from core.behaviors import Amountable, Discountable
+from core.mixins import CalculatedAmountWithDiscount, CalculatedDiscountMixin
+
 
 class Common(models.Model):
     created = models.DateTimeField(
@@ -13,10 +16,12 @@ class Common(models.Model):
         abstract = True
 
 
-from core.behaviors import Amountable, Discountable
-from core.mixins import CalculatedAmountWithDiscount, CalculatedDiscountMixin
-
-
-class CommonAmountDiscountModel(Amountable, Discountable, CalculatedAmountWithDiscount, CalculatedDiscountMixin, Common):
+class CommonAmountDiscountModel(
+    Amountable,
+    Discountable,
+    CalculatedAmountWithDiscount,
+    CalculatedDiscountMixin,
+    Common,
+):
     class Meta:
         abstract = True

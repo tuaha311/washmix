@@ -176,12 +176,21 @@ class PaymentService:
             subscription = subscription_order.subscription
             amount = subscription.price
 
-            # 1. creating invoice with list unpacking
             # 2. charging the card with purpose=POS to indicate that we are processing POS case
             # 3. calling final hooks
-            [invoice] = subscription_service.refresh_amount_with_discount(
+            subscription_service.refresh_amount_with_discount(
                 order=subscription_order, basket=basket, request=request, subscription=subscription
             )
+
+            invoice = Invoice.objects.create(
+                client=client,
+                amount=subscription.amount,
+                discount=subscription.discount,
+                purpose=InvoicePurpose.SUBSCRIPTION,
+            )
+            subscription_order.invoice = invoice
+            subscription_order.save()
+
             self._charge_card(
                 amount=amount,
                 webhook_kind=webhook_kind,
