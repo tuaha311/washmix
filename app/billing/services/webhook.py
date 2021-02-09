@@ -78,7 +78,12 @@ class StripeWebhookService:
         """
 
         payment, client, invoice, webhook_kind, continue_with_order = self._parse()
-        order = invoice.order
+        try:
+            # for WebhookKind.REFILL_WITH_CHARGE order is None
+            order = invoice.order
+        except ObjectDoesNotExist:
+            order = None
+
         employee = continue_with_order.employee
 
         payment_service = PaymentService(client, invoice)

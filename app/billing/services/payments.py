@@ -14,7 +14,6 @@ from billing.models import Card, Invoice, Transaction
 from billing.services.card import CardService
 from billing.stripe_helper import StripeHelper
 from billing.utils import create_credit, create_debit, get_webhook_kind, prepare_stripe_metadata
-from orders.models import Order
 from subscriptions.models import Package
 from subscriptions.services.subscription import SubscriptionService
 from users.models import Client
@@ -214,7 +213,6 @@ class PaymentService:
             # this invoice will receive Stripe income transaction
             invoice = Invoice.objects.create(
                 client=original_invoice.client,
-                order=order,
                 amount=original_invoice.amount,
                 discount=original_invoice.discount,
                 purpose=InvoicePurpose.ONE_TIME_PAYMENT,
