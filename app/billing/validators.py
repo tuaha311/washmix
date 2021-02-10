@@ -1,6 +1,17 @@
-from rest_framework import serializers
+import logging
+from typing import Tuple
 
+from django.conf import settings
+from django.db.models import ObjectDoesNotExist
+
+import stripe
+from rest_framework import serializers
+from rest_framework.request import Request
+
+from billing.models import Invoice
 from billing.stripe_helper import StripeHelper
+
+logger = logging.getLogger(__name__)
 
 
 def validate_saved_cards(instance):
@@ -33,41 +44,48 @@ def validate_paid_invoice(instance):
         )
 
 
-def validate_stripe_event():
-    if self.enable_ip_check:
-        ip_address = self._request.META["HTTP_X_FORWARDED_FOR"]
+def validate_stripe_event(
+    payment: stripe.PaymentMethod,
+    request: Request,
+    enable_ip_check: bool = False,
+) -> Tuple[bool, dict]:
+    errors = {}
+    valid = False
+
+    if enable_ip_check:
+        ip_address = request.META["HTTP_X_FORWARDED_FOR"]
 
         # don't allowing other IPs excluding Stripe's IPs
         if ip_address not in settings.STRIPE_WEBHOOK_IP_WHITELIST:
-            self.body = {
+            errors = {
                 "reason": "ip_not_in_whitelist",
             }
-            self.status = self.error_status
 
             logger.info(f"IP address {ip_address} not in whitelist.")
 
-            return False
+            return valid, errors
 
     try:
-        invoice = self.invoice
+        invoice_id = payment.metadata.invoice_id
+        invoice = Invoice.objects.get(pk=invoice_id)
     except ObjectDoesNotExist:
-        self.body = {
+        errors = {
             "reason": "invoice_doesnt_exists",
         }
-        self.status = self.error_status
 
         logger.info(f"Invoice doesn't exists.")
 
-        return False
+        return valid, errors
 
     if invoice.is_paid:
-        self.body = {
+        errors = {
             "reason": "invoice_is_paid",
         }
-        self.status = self.error_status
 
         logger.info(f"{invoice} is already paid.")
 
-        return False
+        return valid, errors
 
-    return True
+    valid = True
+
+    return valid, errors

@@ -1,22 +1,18 @@
 import logging
-from typing import Optional, Tuple
-
-from django.conf import settings
-from django.db.models import ObjectDoesNotExist
+from typing import Tuple
 
 import stripe
 from rest_framework.request import Request
-from rest_framework.status import HTTP_200_OK, HTTP_403_FORBIDDEN
+from rest_framework.status import HTTP_200_OK
 from stripe import Event
 
 from billing.choices import WebhookKind
-from billing.models import Invoice
+from billing.containers import PaymentContainer
 from billing.services.payments import PaymentService
-from orders.models import Order
+from billing.validators import validate_stripe_event
 from orders.services.order import OrderService
 from orders.services.pos import POSService
 from subscriptions.services.subscription import SubscriptionService
-from users.models import Client
 
 logger = logging.getLogger(__name__)
 
@@ -32,6 +28,16 @@ class StripeWebhookService:
         self._event = event
         self.status = HTTP_200_OK
         self.body: dict = {}
+
+    def is_valid(self) -> Tuple[bool, dict]:
+        request = self._request
+        event = self._event
+        payment = event.data.object
+        enable_ip_check = self.enable_ip_check
+
+        is_valid, errors = validate_stripe_event(payment, request, enable_ip_check)
+
+        return is_valid, errors
 
     def accept_payment(self, event: Event):
         """
@@ -94,14 +100,17 @@ class StripeWebhookService:
             ]:
                 order_service.fail(order)
 
-    def _parse(self) -> Tuple[stripe.PaymentMethod, Client, Invoice, str, Order]:
+    def _parse(self) -> PaymentContainer:
         """
         Parse Stripe event and retrieve backend entities.
         """
 
-        payment = self.payment
+        event = self._event
 
-        client = Client.objects.get(stripe_id=payment.customer)
-        webhook_kind = getattr(payment.metadata, "webhook_kind", WebhookKind.SUBSCRIPTION)
+        payment_container = PaymentContainer(event)
 
-        return payment, client, self.invoice, webhook_kind, self.continue_with_order
+        return payment_container
+
+    @property
+    def errors(self) -> dict:
+        pass

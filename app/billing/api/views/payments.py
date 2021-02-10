@@ -5,7 +5,7 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.status import HTTP_200_OK
+from rest_framework.status import HTTP_200_OK, HTTP_403_FORBIDDEN
 
 from billing.api.serializers import payments
 from billing.services.intent import IntentService
@@ -45,6 +45,8 @@ class StripeWebhookView(GenericAPIView):
     """
 
     permission_classes = [AllowAny]
+    error_status = HTTP_200_OK
+    success_status = HTTP_200_OK
 
     def post(self, request: Request, *args, **kwargs):
         # we will use Stripe SDK to check validity of event instead
@@ -55,11 +57,10 @@ class StripeWebhookView(GenericAPIView):
 
         # we check input data on our business requirements
         # if they are not met - we are terminating processing and returning error
-        if not webhook_service.is_valid():
-            status = webhook_service.status
-            body = webhook_service.body
-            return Response(body, status=status)
+        is_valid, errors = webhook_service.is_valid()
+        if not is_valid:
+            return Response(errors, status=self.error_status)
 
         webhook_service.accept_payment(event)
 
-        return Response({}, status=HTTP_200_OK)
+        return Response({}, status=self.success_status)

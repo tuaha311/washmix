@@ -1,23 +1,13 @@
-import logging
-from dataclasses import dataclass
-from typing import Optional, Tuple
+from typing import Optional
 
-from django.conf import settings
 from django.db.models import ObjectDoesNotExist
 
 import stripe
-from rest_framework.request import Request
-from rest_framework.status import HTTP_200_OK, HTTP_403_FORBIDDEN
-from stripe import Event
 
 from billing.choices import WebhookKind
 from billing.models import Invoice
-from billing.services.payments import PaymentService
 from orders.models import Order
-from orders.services.order import OrderService
-from orders.services.pos import POSService
-from subscriptions.services.subscription import SubscriptionService
-from users.models import Client
+from users.models import Client, Employee
 
 
 class PaymentContainer:
@@ -25,23 +15,32 @@ class PaymentContainer:
     Payment container that parses Stripe.PaymentMethod to basic primitives.
     """
 
-    _event: stripe.Event
-
-    def parse(self) -> Tuple[stripe.PaymentMethod, Client, Invoice, str, Order]:
-        """
-        Parse Stripe event and retrieve backend entities.
-        """
-
-        payment = self.payment
-
-        client = Client.objects.get(stripe_id=payment.customer)
-        webhook_kind = getattr(payment.metadata, "webhook_kind", WebhookKind.SUBSCRIPTION)
-
-        return payment, client, self.invoice, webhook_kind, self.continue_with_order
+    def __init__(self, event: stripe.Event):
+        self._event = event
 
     @property
     def payment(self):
-        return self._event.data.object
+        event = self._event
+
+        payment = event.data.object
+
+        return payment
+
+    @property
+    def client(self) -> Client:
+        payment = self.payment
+
+        client = Client.objects.get(stripe_id=payment.customer)
+
+        return client
+
+    @property
+    def webhook_kind(self) -> str:
+        payment = self.payment
+
+        webhook_kind = getattr(payment.metadata, "webhook_kind", WebhookKind.SUBSCRIPTION)
+
+        return webhook_kind
 
     @property
     def invoice(self) -> Invoice:
@@ -64,7 +63,7 @@ class PaymentContainer:
         return order
 
     @property
-    def order(self):
+    def order(self) -> Optional[Order]:
         invoice = self.invoice
 
         try:
@@ -76,7 +75,7 @@ class PaymentContainer:
         return order
 
     @property
-    def employee(self):
+    def employee(self) -> Optional[Employee]:
         continue_with_order = self.continue_with_order
 
         try:
