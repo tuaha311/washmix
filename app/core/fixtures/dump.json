@@ -2802,7 +2802,7 @@
     "fields": {
       "created": "2020-12-30T04:47:40.963Z",
       "changed": "2020-12-30T04:47:40.963Z",
-      "amount": 10000,
+      "amount": 0,
       "discount": 0,
       "comment": "",
       "is_rush": false,
@@ -2817,7 +2817,7 @@
     "fields": {
       "created": "2020-12-04T02:16:31.332Z",
       "changed": "2020-12-04T02:16:31.332Z",
-      "amount": 10000,
+      "amount": 0,
       "discount": 0,
       "comment": "",
       "is_rush": false,
@@ -2832,7 +2832,7 @@
     "fields": {
       "created": "2020-12-04T02:19:08.304Z",
       "changed": "2020-12-04T02:19:08.304Z",
-      "amount": 10000,
+      "amount": 0,
       "discount": 0,
       "comment": "",
       "is_rush": false,
