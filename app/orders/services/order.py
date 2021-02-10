@@ -14,6 +14,7 @@ from orders.choices import OrderPaymentChoices
 from orders.containers.order import OrderContainer
 from orders.models import Basket, Order
 from orders.services.basket import BasketService
+from subscriptions.models import Subscription
 from subscriptions.services.subscription import SubscriptionService
 from users.models import Client, Employee
 
@@ -22,6 +23,7 @@ class OrderService:
     """
     This service is responsible for TOTAL handling of order:
         - Basket info
+        - Subscription info
         - Delivery info
     """
 
@@ -31,64 +33,47 @@ class OrderService:
 
     def checkout(self, order: Order):
         """
-        Method to charge all invoices of order.
-        At the checkout stage we are creating invoice for every part of Order and
-        than charge them:
-            - Basket
-            - Request (2 Delivery)
-            - Subscription
-        """
+        Method to charge total invoice of order.
 
-        # TODO REFACTOR
+        At the checkout stage we are:
+            - Refreshing and flushing total amount and discount for every entity (Subscription, Basket, Request)
+            - Aggregating amounts and discounts into single invoice
+            - Applying coupons (if the are exists)
+            - Calling confirming hooks on services
+            - Charging client
+            - Firing final hooks
+        """
 
         coupon = order.coupon
         client = self._client
         basket = order.basket
         request = order.request
         subscription = order.subscription
-        purpose = InvoicePurpose.ORDER
 
-        services = [
+        service_list = [
             BasketService(client),
             RequestService(client),
             SubscriptionService(client),
         ]
-        objects = [basket, request, subscription]
-        real_objects = [item for item in objects if item]
-
-        # 1. we are creating invoices for every service we are offering to client
-        # invoices should be created outside of transaction - we are writing explicitly to db
-        # if invoices will be inside transaction - when stripe webhook occurs, `.charge` method
-        # sometimes doesn't finished.
-        for item in services:
-            item.refresh_amount_with_discount(
-                order=order, basket=basket, request=request, subscription=subscription
-            )
-
-        amount = sum([item.amount for item in real_objects])
-        discount = sum([item.discount for item in real_objects])
-
-        if subscription:
-            purpose = InvoicePurpose.SUBSCRIPTION
 
         with atomic():
-            invoice = Invoice.objects.create(
-                client=client,
-                amount=amount,
-                discount=discount,
-                purpose=purpose,
+            # 1. aggregate into invoice
+            invoice = self._aggregate_into_invoice(
+                order=order,
+                basket=basket,
+                request=request,
+                subscription=subscription,
+                service_list=service_list,
             )
-            order.invoice = invoice
-            order.save()
 
             # 2. we are calculating discount for client before charging
             # and persisting them in db
             if coupon:
                 self._calculate_and_apply_discount(coupon, invoice)
 
-            # 3. we are charging client for every service and invoices of them
-            for item in services:
-                item.charge(
+            # 3. we are trying to confirm some corner cases
+            for item in service_list:
+                item.confirm(
                     order=order,
                     basket=basket,
                     request=request,
@@ -96,11 +81,12 @@ class OrderService:
                     invoice=invoice,
                 )
 
+            # 4. charge for invoice
             payment_service = PaymentService(client, invoice)
             payment_service.charge()
 
-            # 4. we are calling last hooks
-            for item in services:
+            # 5. we are calling last hooks
+            for item in service_list:
                 item.checkout(
                     order=order, basket=basket, request=request, subscription=subscription
                 )
@@ -231,6 +217,45 @@ class OrderService:
 
         self._notify_client_on_payment_fail()
         self._notify_admin_on_payment_fail()
+
+    def _aggregate_into_invoice(
+        self,
+        order: Order,
+        basket: Basket,
+        request: Request,
+        subscription: Subscription,
+        service_list: list,
+    ) -> Invoice:
+        """
+        We are calculating total amount and discount for every entity and grouping them into
+        single Invoice.
+        """
+
+        client = self._client
+        purpose = InvoicePurpose.SUBSCRIPTION if subscription else InvoicePurpose.ORDER
+        raw_entity_list = [basket, request, subscription]
+        entity_list = [item for item in raw_entity_list if item]
+
+        # 1. we are refreshing and flushing to DB total amount and discount for
+        # every paid entity and corresponding service
+        for item in service_list:
+            item.refresh_amount_with_discount(
+                order=order, basket=basket, request=request, subscription=subscription
+            )
+
+        amount = sum([item.amount for item in entity_list])
+        discount = sum([item.discount for item in entity_list])
+
+        invoice = Invoice.objects.create(
+            client=client,
+            amount=amount,
+            discount=discount,
+            purpose=purpose,
+        )
+        order.invoice = invoice
+        order.save()
+
+        return invoice
 
     def _calculate_and_apply_discount(self, coupon: Coupon, invoice: Invoice):
         amount = invoice.amount

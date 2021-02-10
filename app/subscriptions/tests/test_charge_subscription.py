@@ -25,7 +25,7 @@ def test_payc_subscription(card_service_class_mock, confirm_debit_mock):
     subscription.invoice = invoice
 
     service = SubscriptionService(client)
-    service.charge(
+    service.confirm(
         request=None,
         basket=None,
         subscription=subscription,
@@ -61,7 +61,7 @@ def test_gold_platinum_subscription(card_service_class_mock):
         subscription.name = item
 
         service = SubscriptionService(client)
-        service.charge(
+        service.confirm(
             request=None,
             basket=None,
             subscription=subscription,

@@ -59,7 +59,7 @@ class RequestService(PaymentInterfaceService):
         request: Optional[Request],
         subscription: Optional[Subscription],
         **kwargs,
-    ) -> Optional[List[Invoice]]:
+    ) -> Optional[float]:
         """
         Invoicing method, called when POS checkout occurs.
         Creates 2 invoice - for Pickup Delivery and for Dropoff Delivery.
@@ -84,7 +84,7 @@ class RequestService(PaymentInterfaceService):
 
         return request.amount_with_discount
 
-    def charge(
+    def confirm(
         self,
         request: Optional[Request],
         basket: Optional[Basket],

@@ -44,7 +44,7 @@ class BasketService(PaymentInterfaceService):
         request: Optional[Request],
         subscription: Optional[Subscription],
         **kwargs,
-    ) -> Optional[List[Invoice]]:
+    ) -> Optional[float]:
         """
         Basket invoicing method, called when POS checkout occurs.
         """
@@ -65,7 +65,7 @@ class BasketService(PaymentInterfaceService):
 
         return basket.amount_with_discount
 
-    def charge(
+    def confirm(
         self,
         request: Optional[Request],
         basket: Optional[Basket],

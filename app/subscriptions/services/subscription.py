@@ -42,7 +42,7 @@ class SubscriptionService(PaymentInterfaceService):
         request: Optional[Request],
         subscription: Optional[Subscription],
         **kwargs,
-    ) -> Optional[List[Invoice]]:
+    ) -> Optional[float]:
         """
         Creates invoice for subscription. Called on Welcome checkout.
         """
@@ -62,7 +62,7 @@ class SubscriptionService(PaymentInterfaceService):
 
         return subscription.amount_with_discount
 
-    def charge(
+    def confirm(
         self,
         request: Optional[Request],
         basket: Optional[Basket],

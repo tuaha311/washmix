@@ -9,7 +9,7 @@ from subscriptions.models import Subscription
 
 class PaymentInterfaceService(ABC):
     @abstractmethod
-    def charge(
+    def confirm(
         self,
         request: Optional[Request],
         basket: Optional[Basket],
@@ -27,7 +27,7 @@ class PaymentInterfaceService(ABC):
         request: Optional[Request],
         subscription: Optional[Subscription],
         **kwargs,
-    ) -> Optional[List[Invoice]]:
+    ) -> Optional[float]:
         pass
 
     @abstractmethod

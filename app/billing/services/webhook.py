@@ -3,7 +3,6 @@ from typing import Tuple
 
 import stripe
 from rest_framework.request import Request
-from rest_framework.status import HTTP_200_OK
 from stripe import Event
 
 from billing.choices import WebhookKind
@@ -25,8 +24,6 @@ class StripeWebhookService:
     def __init__(self, request: Request, event: stripe.Event):
         self._request = request
         self._event = event
-        self.status = HTTP_200_OK
-        self.body: dict = {}
 
     def is_valid(self) -> Tuple[bool, dict]:
         """
