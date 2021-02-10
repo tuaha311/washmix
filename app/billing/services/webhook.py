@@ -21,7 +21,6 @@ class StripeWebhookService:
     enable_ip_check = False
     success_events = ["charge.succeeded"]
     fail_events = ["charge.failed"]
-    error_status = HTTP_200_OK
 
     def __init__(self, request: Request, event: stripe.Event):
         self._request = request
@@ -30,6 +29,10 @@ class StripeWebhookService:
         self.body: dict = {}
 
     def is_valid(self) -> Tuple[bool, dict]:
+        """
+        Stripe event validity checker.
+        """
+
         request = self._request
         event = self._event
         payment = event.data.object
@@ -45,60 +48,13 @@ class StripeWebhookService:
         for order.
         """
 
-        # TODO REFACTOR
         payment_container = self._parse()
-        payment = payment_container.payment
-        client = payment_container.client
-        invoice = payment_container.invoice
-        webhook_kind = payment_container.webhook_kind
-        continue_with_order = payment_container.continue_with_order
-        order = payment_container.order
-        employee = payment_container.employee
-
-        payment_service = PaymentService(client, invoice)
-        subscription_service = SubscriptionService(client)
-        order_service = OrderService(client)
 
         if event.type in self.success_events:
-            # we are marked our invoice as paid
-            payment_service.confirm(payment)
-
-            # set subscription to client, notify client
-            #  and mark order as paid
-            if webhook_kind == WebhookKind.SUBSCRIPTION:
-                logger.info("Subscription invoice handling")
-
-                subscription_service.finalize(order)
-
-            # complex event:
-            #   - first of all, we are finishing our subscription purchase
-            #   - then we are finishing a parent order that created subscription order
-            elif webhook_kind == WebhookKind.SUBSCRIPTION_WITH_CHARGE:
-                logger.info("Subscription with charge handling")
-
-                subscription_service.finalize(order)
-
-                pos_service = POSService(client, continue_with_order, employee)
-                pos_service.confirm()
-
-            # complex event:
-            #   - we are finishing one time payment
-            #   - the we are finishin a parent order that create one time payment order
-            elif webhook_kind == WebhookKind.REFILL_WITH_CHARGE:
-                logger.info("Refill with charge handling")
-
-                pos_service = POSService(client, continue_with_order, employee)
-                pos_service.confirm()
+            self._handle_success_events(payment_container)
 
         elif event.type in self.fail_events:
-            if webhook_kind == WebhookKind.SUBSCRIPTION:
-                subscription_service.fail(order)
-
-            elif webhook_kind in [
-                WebhookKind.SUBSCRIPTION_WITH_CHARGE,
-                WebhookKind.REFILL_WITH_CHARGE,
-            ]:
-                order_service.fail(order)
+            self._handle_fail_events(payment_container)
 
     def _parse(self) -> PaymentContainer:
         """
@@ -111,6 +67,69 @@ class StripeWebhookService:
 
         return payment_container
 
-    @property
-    def errors(self) -> dict:
-        pass
+    def _handle_success_events(self, payment_container: PaymentContainer):
+        """
+        Handler for success events.
+        """
+
+        payment = payment_container.payment
+        client = payment_container.client
+        invoice = payment_container.invoice
+        webhook_kind = payment_container.webhook_kind
+        continue_with_order = payment_container.continue_with_order
+        order = payment_container.order
+        employee = payment_container.employee
+
+        payment_service = PaymentService(client, invoice)
+        subscription_service = SubscriptionService(client)
+
+        # we are marked our invoice as paid
+        payment_service.confirm(payment)
+
+        # set subscription to client, notify client
+        #  and mark order as paid
+        if webhook_kind == WebhookKind.SUBSCRIPTION:
+            logger.info("Subscription invoice handling")
+
+            subscription_service.finalize(order)
+
+        # complex event:
+        #   - first of all, we are finishing our subscription purchase
+        #   - then we are finishing a parent order that created subscription order
+        elif webhook_kind == WebhookKind.SUBSCRIPTION_WITH_CHARGE:
+            logger.info("Subscription with charge handling")
+
+            subscription_service.finalize(order)
+
+            pos_service = POSService(client, continue_with_order, employee)
+            pos_service.confirm()
+
+        # complex event:
+        #   - we are finishing one time payment
+        #   - the we are finishin a parent order that create one time payment order
+        elif webhook_kind == WebhookKind.REFILL_WITH_CHARGE:
+            logger.info("Refill with charge handling")
+
+            pos_service = POSService(client, continue_with_order, employee)
+            pos_service.confirm()
+
+    def _handle_fail_events(self, payment_container: PaymentContainer):
+        """
+        Handler for fail events.
+        """
+
+        client = payment_container.client
+        webhook_kind = payment_container.webhook_kind
+        order = payment_container.order
+
+        order_service = OrderService(client)
+        subscription_service = SubscriptionService(client)
+
+        if webhook_kind == WebhookKind.SUBSCRIPTION:
+            subscription_service.fail(order)
+
+        elif webhook_kind in [
+            WebhookKind.SUBSCRIPTION_WITH_CHARGE,
+            WebhookKind.REFILL_WITH_CHARGE,
+        ]:
+            order_service.fail(order)
