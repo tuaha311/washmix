@@ -26,7 +26,7 @@ class InvoiceService:
 
         return invoice
 
-    def update_amount_discount(
+    def refresh_amount_discount(
         self, entity: Model, amount: int, discount: int = settings.DEFAULT_ZERO_DISCOUNT
     ):
         entity.amount = amount

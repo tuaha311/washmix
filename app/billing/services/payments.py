@@ -9,7 +9,6 @@ from stripe import PaymentIntent, PaymentMethod, SetupIntent
 from stripe.error import StripeError
 
 from billing.choices import InvoiceProvider, InvoicePurpose, WebhookKind
-from billing.containers import PaymentContainer
 from billing.models import Card, Invoice, Transaction
 from billing.services.card import CardService
 from billing.stripe_helper import StripeHelper
@@ -70,7 +69,7 @@ class PaymentService:
         return intent
 
     def confirm(
-        self, payment: Union[PaymentMethod, PaymentContainer], provider=InvoiceProvider.STRIPE
+        self, payment: PaymentMethod, provider=InvoiceProvider.STRIPE
     ) -> Optional[Transaction]:
         """
         Last method in payment flow - it's responsible for creating payment transaction
@@ -158,9 +157,8 @@ class PaymentService:
 
         request = None
         basket = None
-        invoice = self._invoice
-
-        continue_with_order = invoice.order.pk
+        original_invoice = self._invoice
+        continue_with_order = original_invoice.order.pk
         client = self._client
         subscription = client.subscription
         subscription_name = subscription.name
@@ -173,10 +171,7 @@ class PaymentService:
 
             subscription_order = order_container.original
             subscription = subscription_order.subscription
-            amount = subscription.price
 
-            # 2. charging the card with purpose=POS to indicate that we are processing POS case
-            # 3. calling final hooks
             subscription_service.refresh_amount_with_discount(
                 order=subscription_order, basket=basket, request=request, subscription=subscription
             )
@@ -190,13 +185,15 @@ class PaymentService:
             subscription_order.invoice = invoice
             subscription_order.save()
 
-            self._charge_card(
-                amount=amount,
-                webhook_kind=webhook_kind,
-                invoice=invoice,
-                continue_with_order=continue_with_order,
-            )
-            subscription_service.checkout(order=subscription_order, subscription=subscription)
+        amount = int(invoice.amount_with_discount)
+        self._charge_card(
+            amount=amount,
+            webhook_kind=webhook_kind,
+            invoice=invoice,
+            continue_with_order=continue_with_order,
+        )
+
+        subscription_service.checkout(order=subscription_order, subscription=subscription)
 
     def _make_refill_with_charge(self, webhook_kind: str):
         """
@@ -209,6 +206,7 @@ class PaymentService:
 
         if webhook_kind == WebhookKind.REFILL_WITH_CHARGE:
             # we are preparing invoice for one time payment
+            # without linking to order
             # this invoice will receive Stripe income transaction
             invoice = Invoice.objects.create(
                 client=original_invoice.client,
@@ -216,14 +214,13 @@ class PaymentService:
                 discount=original_invoice.discount,
                 purpose=InvoicePurpose.ONE_TIME_PAYMENT,
             )
-            # we are linking original order to continue with it
-            # in StripeWebhookView
+            # we are saving original order to continue with it
+            # in `StripeWebhookView`
             continue_with_order = original_invoice.order.pk
 
-        unpaid_amount = int(invoice.amount_with_discount)
-
+        amount = int(invoice.amount_with_discount)
         self._charge_card(
-            amount=unpaid_amount,
+            amount=amount,
             webhook_kind=webhook_kind,
             invoice=invoice,
             continue_with_order=continue_with_order,

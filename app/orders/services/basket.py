@@ -57,7 +57,7 @@ class BasketService(PaymentInterfaceService):
         invoice_service = InvoiceService(client)
         basket_container = BasketContainer(subscription, basket)  # type: ignore
 
-        basket = invoice_service.update_amount_discount(
+        basket = invoice_service.refresh_amount_discount(
             entity=basket,
             amount=basket_container.amount,
             discount=basket_container.discount,

@@ -76,7 +76,7 @@ class RequestService(PaymentInterfaceService):
         dropoff_container = request_container.dropoff_container
         pickup_container = request_container.pickup_container
 
-        request = invoice_service.update_amount_discount(
+        request = invoice_service.refresh_amount_discount(
             entity=request,
             amount=sum([dropoff_container.amount, pickup_container.amount]),
             discount=sum([dropoff_container.discount, pickup_container.discount]),

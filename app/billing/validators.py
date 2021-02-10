@@ -31,3 +31,43 @@ def validate_paid_invoice(instance):
             detail="You already paid this invoice.",
             code="invoice_already_paid",
         )
+
+
+def validate_stripe_event():
+    if self.enable_ip_check:
+        ip_address = self._request.META["HTTP_X_FORWARDED_FOR"]
+
+        # don't allowing other IPs excluding Stripe's IPs
+        if ip_address not in settings.STRIPE_WEBHOOK_IP_WHITELIST:
+            self.body = {
+                "reason": "ip_not_in_whitelist",
+            }
+            self.status = self.error_status
+
+            logger.info(f"IP address {ip_address} not in whitelist.")
+
+            return False
+
+    try:
+        invoice = self.invoice
+    except ObjectDoesNotExist:
+        self.body = {
+            "reason": "invoice_doesnt_exists",
+        }
+        self.status = self.error_status
+
+        logger.info(f"Invoice doesn't exists.")
+
+        return False
+
+    if invoice.is_paid:
+        self.body = {
+            "reason": "invoice_is_paid",
+        }
+        self.status = self.error_status
+
+        logger.info(f"{invoice} is already paid.")
+
+        return False
+
+    return True

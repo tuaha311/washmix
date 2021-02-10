@@ -2,12 +2,12 @@ from typing import Dict
 
 from django.conf import settings
 
-from core.containers import BaseAmountContainer
+from core.containers import BaseDynamicAmountContainer
 from orders.models import Quantity, Service
 from subscriptions.models import Subscription
 
 
-class QuantityContainer(BaseAmountContainer):
+class QuantityContainer(BaseDynamicAmountContainer):
     proxy_to_object = "_quantity"
     service_list = [
         {

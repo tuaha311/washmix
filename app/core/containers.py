@@ -4,9 +4,14 @@ from typing import Any
 from core.utils import get_dollars
 
 
-class BaseAmountContainer(ABC):
+class BaseDynamicAmountContainer(ABC):
     """
     Container that adds properties of money.
+    On the fly (dynamically) calculates such fields that describes money:
+        - amount
+        - discount
+        - amount_with_discount
+
     By default, proxies all not found attributes to proxy object (model instance)
     defined via `proxy_to_object` attribute.
 

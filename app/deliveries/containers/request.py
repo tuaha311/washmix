@@ -1,4 +1,4 @@
-from core.containers import BaseAmountContainer
+from core.containers import BaseDynamicAmountContainer
 from core.utils import get_dollars
 from deliveries.containers.delivery import DeliveryContainer
 from deliveries.models import Request
@@ -6,7 +6,7 @@ from orders.containers.basket import BasketContainer
 from subscriptions.models import Subscription
 
 
-class RequestContainer(BaseAmountContainer):
+class RequestContainer(BaseDynamicAmountContainer):
     """
     Wrapper container around pickup and dropoff Delivery
     """

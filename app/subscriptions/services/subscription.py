@@ -54,7 +54,7 @@ class SubscriptionService(PaymentInterfaceService):
         invoice_service = InvoiceService(client)
         subscription_container = SubscriptionContainer(subscription)
 
-        subscription = invoice_service.update_amount_discount(
+        subscription = invoice_service.refresh_amount_discount(
             entity=subscription,
             amount=subscription_container.amount,
             discount=subscription_container.discount,

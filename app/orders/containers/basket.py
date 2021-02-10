@@ -1,11 +1,11 @@
-from core.containers import BaseAmountContainer
+from core.containers import BaseDynamicAmountContainer
 from orders.containers.extra_item import ExtraItemContainer
 from orders.containers.quantity import QuantityContainer
 from orders.models import Basket
 from subscriptions.models import Subscription
 
 
-class BasketContainer(BaseAmountContainer):
+class BasketContainer(BaseDynamicAmountContainer):
     """
     BasketContainer implements pricing logic of basket.
 

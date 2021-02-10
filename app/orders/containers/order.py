@@ -3,7 +3,7 @@ from typing import List, Optional
 from django.conf import settings
 
 from billing.services.coupon import CouponService
-from core.containers import BaseAmountContainer
+from core.containers import BaseDynamicAmountContainer
 from core.utils import get_dollars
 from deliveries.containers.request import RequestContainer
 from orders.containers.basket import BasketContainer
@@ -11,7 +11,7 @@ from orders.models import Order
 from subscriptions.containers import SubscriptionContainer
 
 
-class OrderContainer(BaseAmountContainer):
+class OrderContainer(BaseDynamicAmountContainer):
     proxy_to_object = "_order"
 
     def __init__(self, order: Order):

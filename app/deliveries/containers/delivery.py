@@ -2,14 +2,14 @@ from typing import Dict, List, Tuple
 
 from django.conf import settings
 
-from core.containers import BaseAmountContainer
+from core.containers import BaseDynamicAmountContainer
 from deliveries.models import Delivery
 from orders.containers.basket import BasketContainer
 from subscriptions.choices import Package
 from subscriptions.models import Subscription
 
 
-class DeliveryContainer(BaseAmountContainer):
+class DeliveryContainer(BaseDynamicAmountContainer):
     """
     Reference to Delivery Fees - https://washmix.evrone.app/terms-of-use
 

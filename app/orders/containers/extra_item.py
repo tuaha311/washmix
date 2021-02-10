@@ -1,7 +1,7 @@
-from core.containers import BaseAmountContainer
+from core.containers import BaseDynamicAmountContainer
 
 
-class ExtraItemContainer(BaseAmountContainer):
+class ExtraItemContainer(BaseDynamicAmountContainer):
     proxy_to_object = "_extra_item"
 
     def __init__(self, extra_item):

@@ -1,10 +1,10 @@
 from django.conf import settings
 
-from core.containers import BaseAmountContainer
+from core.containers import BaseDynamicAmountContainer
 from subscriptions.models import Subscription
 
 
-class SubscriptionContainer(BaseAmountContainer):
+class SubscriptionContainer(BaseDynamicAmountContainer):
     """
     SubscriptionContainer implements pricing logic of subscription.
 

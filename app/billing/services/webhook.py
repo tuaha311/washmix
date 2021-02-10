@@ -25,6 +25,7 @@ class StripeWebhookService:
     enable_ip_check = False
     success_events = ["charge.succeeded"]
     fail_events = ["charge.failed"]
+    error_status = HTTP_200_OK
 
     def __init__(self, request: Request, event: stripe.Event):
         self._request = request
@@ -32,63 +33,21 @@ class StripeWebhookService:
         self.status = HTTP_200_OK
         self.body: dict = {}
 
-    def is_valid(self):
-        if self.enable_ip_check:
-            ip_address = self._request.META["HTTP_X_FORWARDED_FOR"]
-
-            # don't allowing other IPs excluding Stripe's IPs
-            if ip_address not in settings.STRIPE_WEBHOOK_IP_WHITELIST:
-                self.body = {
-                    "reason": "ip_not_in_whitelist",
-                }
-                self.status = HTTP_403_FORBIDDEN
-
-                logger.info(f"IP address {ip_address} not in whitelist.")
-
-                return False
-
-        try:
-            invoice = self.invoice
-        except ObjectDoesNotExist:
-            self.body = {
-                "reason": "invoice_doesnt_exists",
-            }
-            self.status = HTTP_403_FORBIDDEN
-
-            logger.info(f"Invoice doesn't exists.")
-
-            return False
-
-        if invoice.is_paid:
-            self.body = {
-                "reason": "invoice_is_paid",
-            }
-            self.status = HTTP_403_FORBIDDEN
-
-            logger.info(f"{invoice} is already paid.")
-
-            return False
-
-        return True
-
     def accept_payment(self, event: Event):
         """
         Main handler that confirms payment and run final hooks
         for order.
         """
 
-        payment, client, invoice, webhook_kind, continue_with_order = self._parse()
-        try:
-            # for WebhookKind.REFILL_WITH_CHARGE `order` is None
-            order = invoice.order
-        except ObjectDoesNotExist:
-            order = None
-
-        try:
-            # for WebhookKind.SUBSCRIPTION `continue_with_order` is None
-            employee = continue_with_order.employee
-        except AttributeError:
-            employee = None
+        # TODO REFACTOR
+        payment_container = self._parse()
+        payment = payment_container.payment
+        client = payment_container.client
+        invoice = payment_container.invoice
+        webhook_kind = payment_container.webhook_kind
+        continue_with_order = payment_container.continue_with_order
+        order = payment_container.order
+        employee = payment_container.employee
 
         payment_service = PaymentService(client, invoice)
         subscription_service = SubscriptionService(client)
@@ -146,27 +105,3 @@ class StripeWebhookService:
         webhook_kind = getattr(payment.metadata, "webhook_kind", WebhookKind.SUBSCRIPTION)
 
         return payment, client, self.invoice, webhook_kind, self.continue_with_order
-
-    @property
-    def payment(self):
-        return self._event.data.object
-
-    @property
-    def continue_with_order(self) -> Optional[Order]:
-        payment = self.payment
-        continue_with_order = getattr(payment.metadata, "continue_with_order", None)
-
-        if not continue_with_order:
-            return None
-
-        order = Order.objects.get(pk=continue_with_order)
-
-        return order
-
-    @property
-    def invoice(self) -> Invoice:
-        payment = self.payment
-        invoice_id = payment.metadata.invoice_id
-        invoice = Invoice.objects.get(pk=invoice_id)
-
-        return invoice

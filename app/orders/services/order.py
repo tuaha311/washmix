@@ -39,6 +39,8 @@ class OrderService:
             - Subscription
         """
 
+        # TODO REFACTOR
+
         coupon = order.coupon
         client = self._client
         basket = order.basket
