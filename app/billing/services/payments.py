@@ -117,19 +117,24 @@ class PaymentService:
 
         with atomic():
             paid_amount, unpaid_amount = self.charge_prepaid_balance()
+            is_order_fully_paid = unpaid_amount == 0
             is_need_to_auto_bill = client.balance < settings.AUTO_BILLING_LIMIT
 
-            if unpaid_amount == 0:
+            if is_order_fully_paid:
+                if is_auto_billing and is_advantage and is_need_to_auto_bill:
+                    webhook_kind = WebhookKind.SUBSCRIPTION
+                    continue_with_order = None
+                    self._process_subscription(webhook_kind, continue_with_order)
+
                 return None
 
-            # if Client doesn't have enough prepaid balance - we should charge
-            # their card or purchase subscription
             if is_auto_billing and is_advantage:
                 webhook_kind = WebhookKind.SUBSCRIPTION_WITH_CHARGE
-                self._make_subscription_with_charge(webhook_kind)
+                continue_with_order = invoice.order.pk
+                self._process_subscription(webhook_kind, continue_with_order)
             else:
                 webhook_kind = get_webhook_kind(invoice)
-                self._make_refill_with_charge(webhook_kind)
+                self._process_immediate_payment(webhook_kind, unpaid_amount)
 
     def charge_prepaid_balance(self):
         """
@@ -149,16 +154,19 @@ class PaymentService:
 
         return charge_from_prepaid, charge_from_card
 
-    def _make_subscription_with_charge(self, webhook_kind: str):
+    def _process_subscription(self, webhook_kind: str, continue_with_order: Optional[int]):
         """
         Method that helps to buy subscription if user doesn't have enough
         prepaid balance.
+
+        Used in cases:
+            - If client fully paid for order, but have a balance lower than < 20$.
+            - If client doesn't fully paid for order and has option `is_auto_billing` = True and we
+            need to buy subscription and then finish our order.
         """
 
         request = None
         basket = None
-        original_invoice = self._invoice
-        continue_with_order = original_invoice.order.pk
         client = self._client
         subscription = client.subscription
         subscription_name = subscription.name
@@ -195,28 +203,30 @@ class PaymentService:
 
         subscription_service.checkout(order=subscription_order, subscription=subscription)
 
-    def _make_refill_with_charge(self, webhook_kind: str):
+    def _process_immediate_payment(self, webhook_kind: str, unpaid_amount: int):
         """
         Method helps to charge client's card with one time payment.
+
+        This method called in cases:
+            - Always for PAYC.
+            - For GOLD and PLATINUM when they have `is_auto_billing` = False.
+            - Only Subscription purchase.
         """
 
-        continue_with_order = None
+        client = self._client
         original_invoice = self._invoice
-        invoice = original_invoice
 
         if webhook_kind == WebhookKind.REFILL_WITH_CHARGE:
-            # we are preparing invoice for one time payment
-            # without linking to order
-            # this invoice will receive Stripe income transaction
             invoice = Invoice.objects.create(
-                client=original_invoice.client,
-                amount=original_invoice.amount,
-                discount=original_invoice.discount,
+                client=client,
+                amount=unpaid_amount,
+                discount=settings.DEFAULT_ZERO_DISCOUNT,
                 purpose=InvoicePurpose.ONE_TIME_PAYMENT,
             )
-            # we are saving original order to continue with it
-            # in `StripeWebhookView`
             continue_with_order = original_invoice.order.pk
+        else:
+            invoice = self._invoice
+            continue_with_order = None
 
         amount = int(invoice.amount_with_discount)
         self._charge_card(
