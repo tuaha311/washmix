@@ -62,6 +62,15 @@
           <td>${{ quantity.dollar_amount }}</td>
         </tr>
       {% endfor %}
+
+      {% for item in basket_container.extra_items %}
+        <tr>
+          <td>{{ item.title }}</td>
+          <td>{{ item.instructions }}</td>
+          <td>1</td>
+          <td>${{ item.dollar_amount }}</td>
+        </tr>
+      {% endfor %}
     </table>
 
     <table id="basket-total">
