@@ -15,6 +15,7 @@ from billing.stripe_helper import StripeHelper
 from billing.utils import create_credit, create_debit, get_webhook_kind, prepare_stripe_metadata
 from subscriptions.models import Package
 from subscriptions.services.subscription import SubscriptionService
+from subscriptions.utils import is_advantage_program
 from users.models import Client
 
 logger = logging.getLogger(__name__)
@@ -111,9 +112,7 @@ class PaymentService:
         client = self._client
         subscription = client.subscription
         is_auto_billing = client.is_auto_billing
-        is_advantage = bool(subscription) and (
-            subscription.name in [settings.GOLD, settings.PLATINUM]
-        )
+        is_advantage = bool(subscription) and is_advantage_program(subscription.name)
 
         with atomic():
             paid_amount, unpaid_amount = self.charge_prepaid_balance()

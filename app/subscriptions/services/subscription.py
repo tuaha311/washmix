@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Optional
 
 from django.conf import settings
 from django.db.transaction import atomic
@@ -15,6 +15,7 @@ from orders.containers.order import OrderContainer
 from orders.models import Basket, Order
 from subscriptions.containers import SubscriptionContainer
 from subscriptions.models import Package, Subscription
+from subscriptions.utils import is_advantage_program
 from users.models import Client
 
 
@@ -80,10 +81,10 @@ class SubscriptionService(PaymentInterfaceService):
 
         client = self._client
         card_service = CardService(client)
-        is_advantage_program = subscription.name in [settings.GOLD, settings.PLATINUM]
+        is_advantage = is_advantage_program(subscription.name)
 
         # confirm invoice for PAYC and if invoice doesn't have transactions
-        if not is_advantage_program and not invoice.has_transaction:
+        if not is_advantage and not invoice.has_transaction:
             card = client.card_list.first()
             card_service.update_main_card(client, card)
             confirm_debit(client, invoice)

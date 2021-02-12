@@ -79,20 +79,24 @@
         <th>${{ order_container.dollar_amount }}</th>
       </tr>
 
-      <tr>
-        <th id="discount">Discounts [Advantage Program]</th>
-        <th>${{ order_container.dollar_discount }}</th>
-      </tr>
+      {% if is_advantage %}
+        <tr>
+          <th id="discount">Discounts [Advantage Program]</th>
+          <th>${{ order_container.dollar_discount }}</th>
+        </tr>
+      {% endif %}
 
       <tr>
         <th>Grand Total</th>
         <th>${{ order_container.dollar_amount_with_discount }}</th>
       </tr>
 
-      <tr>
-        <th id="balance">Remaining Balance [Advantage Program]</th>
-        <th>${{ client.dollar_balance }}</th>
-      </tr>
+      {% if is_advantage %}
+        <tr>
+          <th id="balance">Remaining Balance [Advantage Program]</th>
+          <th>${{ client.dollar_balance }}</th>
+        </tr>
+      {% endif %}
     </table>
   </div>
 {% endwith %}

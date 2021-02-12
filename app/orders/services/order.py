@@ -16,6 +16,7 @@ from orders.models import Basket, Order
 from orders.services.basket import BasketService
 from subscriptions.models import Subscription
 from subscriptions.services.subscription import SubscriptionService
+from subscriptions.utils import is_advantage_program
 from users.models import Client, Employee
 
 
@@ -268,6 +269,8 @@ class OrderService:
     def _notify_client_on_new_order(self):
         client_id = self._client.id
         order_id = self._order.id
+        subscription = self._client.subscription
+        is_advantage = is_advantage_program(subscription.name)
         recipient_list = [self._client.email]
 
         send_email.send(
@@ -276,6 +279,7 @@ class OrderService:
             extra_context={
                 "client_id": client_id,
                 "order_id": order_id,
+                "is_advantage": is_advantage,
             },
         )
 
