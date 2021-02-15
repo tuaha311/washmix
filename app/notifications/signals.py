@@ -29,7 +29,12 @@ def on_delivery_notify_signal(
 
     delivery = instance
     client = delivery.client
-    number = client.main_phone.number
+    main_phone = client.main_phone
+
+    if not main_phone:
+        return None
+
+    number = main_phone.number
     is_created = created
     is_date_updated = False
     is_dropoff = delivery.kind == DeliveryKind.DROPOFF
