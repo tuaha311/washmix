@@ -14,7 +14,6 @@
 * Install [pre-commit](https://pre-commit.com).
 * Install WeasyPrint [dependencies](https://weasyprint.readthedocs.io/en/stable/install.html):
 
-
 MacOS:
 ```bash
 brew install python3 cairo pango gdk-pixbuf libffi
