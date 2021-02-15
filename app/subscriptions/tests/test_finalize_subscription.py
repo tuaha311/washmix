@@ -16,16 +16,20 @@ def test_payc_gold_platinum_subscription(atomic_mock, send_email_mock):
 
     for item in subscription_list:
         order = MagicMock()
+        invoice = MagicMock()
+        invoice.is_paid = True
+        invoice.discount = 0
+        order.invoice = invoice
         order.subscription = subscription
-        order.invoice.is_paid = True
         order.payment = OrderPaymentChoices.UNPAID
 
         subscription.name = item
-        service = SubscriptionService(client)
 
+        service = SubscriptionService(client)
         service.finalize(order)
 
         assert client.subscription.name == item
         assert order.payment == OrderPaymentChoices.PAID
+        order.save.assert_called_once()
 
     send_email_mock.send.assert_called()
