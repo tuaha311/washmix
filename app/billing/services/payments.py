@@ -12,7 +12,7 @@ from billing.choices import InvoiceProvider, InvoicePurpose, WebhookKind
 from billing.models import Card, Invoice, Transaction
 from billing.services.card import CardService
 from billing.stripe_helper import StripeHelper
-from billing.utils import create_credit, create_debit, get_webhook_kind, prepare_stripe_metadata
+from billing.utils import create_credit, create_debit, prepare_stripe_metadata
 from subscriptions.models import Package
 from subscriptions.services.subscription import SubscriptionService
 from subscriptions.utils import is_advantage_program
@@ -112,6 +112,7 @@ class PaymentService:
         client = self._client
         subscription = client.subscription
         is_auto_billing = client.is_auto_billing
+        is_subscription_purchase = invoice.purpose == InvoicePurpose.SUBSCRIPTION
         is_advantage = bool(subscription) and is_advantage_program(subscription.name)
 
         with atomic():
@@ -120,6 +121,8 @@ class PaymentService:
             is_need_to_auto_bill = client.balance < settings.AUTO_BILLING_LIMIT
 
             if is_order_fully_paid:
+                # after client paid for his order, we should purchase subscription
+                #  if he has a Advantage Program with `is_auto_billing` option enabled
                 if is_auto_billing and is_advantage and is_need_to_auto_bill:
                     webhook_kind = WebhookKind.SUBSCRIPTION
                     continue_with_order = None
@@ -127,13 +130,26 @@ class PaymentService:
 
                 return None
 
-            if is_auto_billing and is_advantage:
+            # client want to pay for subscription - this is a separate case, when we are charging
+            # client for the full price of subscription.
+            if is_subscription_purchase:
+                webhook_kind = WebhookKind.SUBSCRIPTION
+                continue_with_order = None
+                self._process_immediate_payment(webhook_kind, unpaid_amount, continue_with_order)
+
+            # client doesn't have enough money to pay for POS order with Advantage Program
+            # and have `is_auto_billing` option enabled - we are trying to purchase new subscription and
+            # charge rest of money from prepaid balance.
+            elif is_auto_billing and is_advantage:
                 webhook_kind = WebhookKind.SUBSCRIPTION_WITH_CHARGE
                 continue_with_order = invoice.order.pk
                 self._process_subscription(webhook_kind, continue_with_order)
+
+            # in all other cases, we are trying to refill prepaid balance and charge it.
             else:
-                webhook_kind = get_webhook_kind(invoice)
-                self._process_immediate_payment(webhook_kind, unpaid_amount)
+                webhook_kind = WebhookKind.REFILL_WITH_CHARGE
+                continue_with_order = invoice.order.pk
+                self._process_immediate_payment(webhook_kind, unpaid_amount, continue_with_order)
 
     def charge_prepaid_balance(self):
         """
@@ -202,7 +218,9 @@ class PaymentService:
 
         subscription_service.checkout(order=subscription_order, subscription=subscription)
 
-    def _process_immediate_payment(self, webhook_kind: str, unpaid_amount: int):
+    def _process_immediate_payment(
+        self, webhook_kind: str, unpaid_amount: int, continue_with_order: Optional[int]
+    ):
         """
         Method helps to charge client's card with one time payment.
 
@@ -213,7 +231,6 @@ class PaymentService:
         """
 
         client = self._client
-        original_invoice = self._invoice
 
         if webhook_kind == WebhookKind.REFILL_WITH_CHARGE:
             invoice = Invoice.objects.create(
@@ -222,10 +239,8 @@ class PaymentService:
                 discount=settings.DEFAULT_ZERO_DISCOUNT,
                 purpose=InvoicePurpose.ONE_TIME_PAYMENT,
             )
-            continue_with_order = original_invoice.order.pk
         else:
             invoice = self._invoice
-            continue_with_order = None
 
         amount = int(invoice.amount_with_discount)
         self._charge_card(

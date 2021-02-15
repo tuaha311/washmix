@@ -25,7 +25,7 @@ def test_when_balance_enough_for_invoice():
     invoice = MagicMock()
     invoice.paid_amount = 400
     invoice.amount_with_discount = 10000
-    invoice.purpose = InvoicePurpose.BASKET
+    invoice.purpose = InvoicePurpose.ORDER
 
     service = PaymentService(client, invoice)
     result = service._calculate_prepaid_and_card_charge()
@@ -40,7 +40,7 @@ def test_when_balance_not_enough_for_invoice():
     invoice = MagicMock()
     invoice.paid_amount = 400
     invoice.amount_with_discount = 10000
-    invoice.purpose = InvoicePurpose.BASKET
+    invoice.purpose = InvoicePurpose.ORDER
 
     service = PaymentService(client, invoice)
     result = service._calculate_prepaid_and_card_charge()
