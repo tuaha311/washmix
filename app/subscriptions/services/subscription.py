@@ -3,10 +3,11 @@ from typing import Optional
 from django.conf import settings
 from django.db.transaction import atomic
 
+from billing.choices import InvoiceProvider
 from billing.models import Invoice
 from billing.services.card import CardService
 from billing.services.invoice import InvoiceService
-from billing.utils import confirm_debit
+from billing.utils import confirm_debit, create_debit
 from core.interfaces import PaymentInterfaceService
 from deliveries.models import Request
 from notifications.tasks import send_email
@@ -111,6 +112,9 @@ class SubscriptionService(PaymentInterfaceService):
             - If user purchases PAYC subscription. PAYC is free and doesn't require any charges.
             In such case will be called by self (`SubscriptionService`).
             - If user purchases GOLD or PLATINUM subscription. Then it will be called inside `StripeWebhookService`.
+
+        If subscription processed with discount (for example, client purchases GOLD for 189$ instead of 199$ -
+        discount 10$) we should add 10$ of discount as credit balance.
         """
 
         subscription = order.subscription
@@ -135,6 +139,12 @@ class SubscriptionService(PaymentInterfaceService):
 
             client.subscription = subscription
             client.save()
+
+            if invoice.discount:
+                amount = invoice.discount
+                create_debit(
+                    client=client, invoice=invoice, amount=amount, provider=InvoiceProvider.WASHMIX
+                )
 
         self._notify_client_on_purchase_of_advantage_program(subscription)
 

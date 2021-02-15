@@ -3,12 +3,10 @@ from math import ceil
 from typing import Optional, Union
 
 from django.conf import settings
-from django.db.models import QuerySet, Sum
 from django.db.transaction import atomic
 
 from billing.choices import InvoiceKind, InvoiceProvider, InvoicePurpose, WebhookKind
 from billing.models import Invoice, Transaction
-from orders.models import Order
 from users.models import Client
 
 
