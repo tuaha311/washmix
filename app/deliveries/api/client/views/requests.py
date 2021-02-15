@@ -76,7 +76,7 @@ class RequestViewSet(ModelViewSet):
             pickup_date=pickup_date,
             is_rush=is_rush,
         )
-        request = service.create(address=address, comment=instructions)
+        request = service.create(address=address, comment=instructions, is_rush=is_rush)
 
         serializer.instance = request
 
