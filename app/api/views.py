@@ -1,3 +1,4 @@
+from django.utils.timezone import localtime
 from django.views.generic import TemplateView
 
 from rest_framework.generics import GenericAPIView
@@ -24,7 +25,9 @@ class HealthView(GenericAPIView):
     def get(self, request, *args, **kwargs):
         worker_health.send()
 
-        return Response({"status": "ok"})
+        now = localtime()
+
+        return Response({"status": "ok", "now": now})
 
 
 class EmailRenderView(TemplateView):
