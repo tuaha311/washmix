@@ -1,3 +1,5 @@
+from django.conf import settings
+
 from core.containers import BaseDynamicAmountContainer
 from core.utils import get_dollars
 from deliveries.containers.delivery import DeliveryContainer
@@ -25,17 +27,35 @@ class RequestContainer(BaseDynamicAmountContainer):
 
     @property
     def amount(self) -> int:
+        custom_amount = self.custom_amount
         pickup_container = self.pickup_container
         dropoff_container = self.dropoff_container
 
-        return pickup_container.amount + dropoff_container.amount
+        container_list = [pickup_container, dropoff_container]
+        amount_list = [item.amount for item in container_list]
+
+        total_amount = sum(amount_list)
+
+        if custom_amount:
+            total_amount = custom_amount
+
+        return total_amount
 
     @property
     def discount(self) -> int:
+        custom_amount = self.custom_amount
         pickup_container = self.pickup_container
         dropoff_container = self.dropoff_container
 
-        return pickup_container.discount + dropoff_container.discount
+        container_list = [pickup_container, dropoff_container]
+        discount_list = [item.discount for item in container_list]
+
+        total_discount = sum(discount_list)
+
+        if custom_amount:
+            total_discount = settings.DEFAULT_ZERO_DISCOUNT
+
+        return total_discount
 
     @property
     def is_free(self) -> bool:

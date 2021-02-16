@@ -1,7 +1,6 @@
 from rest_framework import serializers
 
 from api.client.serializers.common import CommonContainerSerializer
-from api.fields import POSOrderField
 from deliveries.models import Request
 
 
@@ -35,6 +34,11 @@ class RequestResponseSerializer(CommonContainerSerializer, serializers.ModelSeri
         ]
 
 
-class POSRequestSetRushAmountSerializer(serializers.Serializer):
-    rush_amount = serializers.IntegerField()
-    order = POSOrderField()
+class POSRequestUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Request
+        fields = [
+            "order",
+            "rush_amount",
+            "custom_amount",
+        ]

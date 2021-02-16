@@ -19,21 +19,25 @@ class OrderContainer(BaseDynamicAmountContainer):
 
     @property
     def amount(self) -> int:
+        """
+        NOTICE: Such approach was used because we need to show
+        explicitly default delivery price and rush delivery price.
+
+        I.e. rush delivery price shouldn't depend from default delivery price.
+
+        And this reason lead to us on implementation of rush amount inside
+        `OrderContainer` instead of `RequestContainer`.
+        """
+
         filled_container_list = self._filled_container_list
         request = self.request
 
-        rush_amount = [0]
-        is_rush = False
-        if request:
-            rush_amount = [request.rush_amount]
-            is_rush = request.is_rush
-
         amount_list = [item.amount for item in filled_container_list]
-
-        if is_rush:
-            amount_list = amount_list + rush_amount
-
         total_amount = sum(amount_list)
+
+        if request and request.is_rush:
+            rush_amount = request.rush_amount
+            total_amount += rush_amount
 
         return total_amount
 

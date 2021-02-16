@@ -1,10 +1,10 @@
 from django.urls import path
 
-from deliveries.api.pos.views import POSRequestSetRushAmountView
+from deliveries.api.pos.views import POSRequestUpdateView
 
 request_urls = (
     [
-        path("set_rush_amount/", POSRequestSetRushAmountView.as_view(), name="set-rush-amount"),
+        path("update/", POSRequestUpdateView.as_view(), name="update"),
     ],
     "request",
 )

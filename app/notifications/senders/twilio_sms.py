@@ -3,6 +3,7 @@ import logging
 from django.conf import settings
 from django.template.loader import render_to_string
 
+from twilio.base.exceptions import TwilioRestException
 from twilio.rest import Client as TwilioClient
 
 from notifications.senders.base import Sender
@@ -41,10 +42,13 @@ class TwilioSender(Sender):
         twilio_client = self._twilio_client
 
         for recipient in recipient_list:
-            response = twilio_client.messages.create(
-                to=recipient,
-                body=body,
-                from_=from_sender,
-            )
+            try:
+                response = twilio_client.messages.create(
+                    to=recipient,
+                    body=body,
+                    from_=from_sender,
+                )
+            except TwilioRestException:
+                continue
 
             logger.info(f"Twilio response - {response}")

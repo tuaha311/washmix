@@ -66,6 +66,10 @@ class Request(CommonScheduleRequest, CommonAmountDiscountModel):
         verbose_name="rush delivery price, in cents (¢)",
         default=0,
     )
+    custom_amount = models.BigIntegerField(
+        verbose_name="custom delivery price, in cents (¢)",
+        default=0,
+    )
 
     class Meta:
         verbose_name = "request"
