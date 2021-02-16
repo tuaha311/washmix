@@ -124,21 +124,9 @@ class ClientAdmin(AdminWithSearch):
         - Remove rest of relations by calling default `delete_sected` admin action.
         """
 
-        with atomic():
-            # preparation step - we are removing all protected relations
-            for client in queryset:
-                invoice_list = client.invoice_list.all()
-                transaction_list = client.transaction_list.all()
-                order_list = client.order_list.all()
+        queryset.delete()
 
-                transaction_list.delete()
-                invoice_list.delete()
-                order_list.delete()
-
-            # and finish step - we are wiping all info
-            actions.delete_selected(self, request, queryset)
-
-        self.message_user(request, "Client was removed.", messages.SUCCESS)
+        self.message_user(request, "Clients was removed.", messages.SUCCESS)
 
     full_delete_action.short_description = "Remove all client's info."  # type: ignore
 
