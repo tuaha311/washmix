@@ -8,7 +8,7 @@ from users.models import Client
 
 
 def get_extra_context(
-    client_id: int,
+    client_id: int = None,
     subscription_id: int = None,
     order_id: int = None,
     delivery_id: int = None,
@@ -19,8 +19,9 @@ def get_extra_context(
         **kwargs,
     }
 
-    client = Client.objects.get(id=client_id)
-    context["client"] = client
+    if client_id:
+        client = Client.objects.get(id=client_id)
+        context["client"] = client
 
     if subscription_id:
         subscription = Subscription.objects.get(id=subscription_id)

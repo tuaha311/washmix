@@ -487,6 +487,7 @@ PURCHASE_SUBSCRIPTION_GOLD_PLATINUM = "purchase_subscription_gold_platinum"
 NEW_REQUEST = "new_request"
 NEW_DELIVERY = "new_delivery"
 NEW_ORDER = "new_order"
+ACCOUNT_REMOVED = "account_removed"
 DELIVERY_DROPOFF_COMPLETE = "delivery_dropoff_complete"
 PAYMENT_FAIL_CLIENT = "payment_fail_client"
 PAYMENT_FAIL_ADMIN = "payment_fail_admin"
@@ -552,6 +553,12 @@ EMAIL_EVENT_INFO = {
     PAYMENT_FAIL_ADMIN: {
         "template_name": "email/payment_fail_admin.html",
         "subject": "WashMix Payment Failed",
+        "from_email": "info@washmix.com",
+        "reply_to": "info@washmix.com",
+    },
+    ACCOUNT_REMOVED: {
+        "template_name": "email/account_removed.html",
+        "subject": "WashMix Account Removed",
         "from_email": "info@washmix.com",
         "reply_to": "info@washmix.com",
     },

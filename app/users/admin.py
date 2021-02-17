@@ -1,13 +1,13 @@
 from django import forms
+from django.conf import settings
 from django.contrib import admin, messages
-from django.contrib.admin import actions
-from django.db.transaction import atomic
 
 from billing.choices import InvoiceProvider
 from billing.models import Invoice
 from billing.utils import add_credits
 from core.admin import AdminWithSearch
 from deliveries.models import Request
+from notifications.tasks import send_email
 from orders.models import Order
 from users.models import Client, Customer, Employee
 
@@ -124,11 +124,28 @@ class ClientAdmin(AdminWithSearch):
         - Remove rest of relations by calling default `delete_sected` admin action.
         """
 
+        client_info = [
+            {"email": client.email, "full_name": client.full_name} for client in queryset
+        ]
+
         queryset.delete()
+
+        for client in client_info:
+            email = client["email"]
+            full_name = client["full_name"]
+            recipient_list = [email]
+
+            send_email.send(
+                event=settings.ACCOUNT_REMOVED,
+                recipient_list=recipient_list,
+                extra_context={
+                    "full_name": full_name,
+                },
+            )
 
         self.message_user(request, "Clients was removed.", messages.SUCCESS)
 
-    full_delete_action.short_description = "Remove all client's info."  # type: ignore
+    full_delete_action.short_description = "Remove all client's info and notify them."  # type: ignore
 
 
 class CustomerAdmin(AdminWithSearch):
