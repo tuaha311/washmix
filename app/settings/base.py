@@ -297,7 +297,7 @@ TWITTER_URL = "https://twitter.com/mix_wash/"
 INSTAGRAM_URL = "https://www.instagram.com/washmix/"
 FACEBOOK_URL = "https://www.facebook.com/WASHMIXOriginal/"
 PHONE_NUMBER = "4​15-993-WASH [9724]"
-LAUNDRY_ADDRESS = "4949 Market St. San Francisco CA 94132"
+LAUNDRY_ADDRESS = "650 Castro St, #185, Mountain View"
 
 
 #########################
