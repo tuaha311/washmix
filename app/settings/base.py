@@ -525,7 +525,12 @@ SMS_EVENT_INFO = {
 SENDGRID_NO_REPLY = "no-reply@washmix.com"
 SENDGRID_FROM_EMAIL = Email("info@washmix.com")
 SENDGRID_API_KEY = env.str("SENDGRID_API_KEY", "")
-ADMIN_EMAIL_LIST = ["admin@washmix.com"]
+ADMIN_EMAIL_LIST = [
+    "admin@washmix.com",
+    "superadmin@washmix.com",
+    "ds.ionin@evrone.com",
+    "api@evrone.com",
+]
 
 EMAIL_EVENT_INFO = {
     SIGNUP: {
