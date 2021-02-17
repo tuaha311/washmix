@@ -29,6 +29,7 @@ class OrderSerializer(CommonContainerSerializer, serializers.ModelSerializer):
         model = Order
         fields = [
             "id",
+            "created",
             "basket",
             "request",
             "subscription",
