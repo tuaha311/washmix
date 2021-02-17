@@ -1,40 +1,9 @@
-{% extends "base_email_with_info.html" %}
+{% extends "base_email.html" %}
 
-{% block extra_header %}
-   <b>& W​ashMix Advantage Program​™</b>
-{% endblock %}
-
-{% block content %}
-  <div id="instructions">
-    <b>Basic Instruction:</b>
-    <ul>
-      <li><span>For the first time, please place garments inside a bag and leave outside of your door for pick-up.</span></li>
-      <li><span><b>NO​</b> need to separate laundry from Dry Cleaning.</span></li>
-      <li><span><b>IF​</b> Wash-&-Fold, please indicate with a note inside your bag. [​<b>Note​</b>: Wash-&-Folds will need to be in a separate bag].</span></li>
-
-      <li>
-        <span>If you have any special delivery request</span>
-        <ul>
-          <li><span>(i.e. <b>k​nock on the door, do not ring the bell - OR - delivery and place in the backyard not the front door ...</b>)​. ​Please be sure to write all in the Delivery Instruction section.</span></li>
-        </ul>
-      </li>
-
-      <li><span>You will receive your <b>W​elcome Box™</b> a​fter we deliver back your cleaned clothes.</span></li>
-    </ul>
-  </div>
-
-  <div id="please-note">
-    <b>PLEASE NOTE​:</b> If in a gated community, we'll need access code to promptly deliver your items.
-  </div>
-
-  <div class="large-margin-top">
-    <b>Welcome Box™:</b>
-    <p>After receiving your first order, we’ll send back your items with your unique ​<b>Welcome Box™</b> containing the material and extra laundry and Garment Bags for future usage.</p>
-  </div>
-
+{% block body %}
   <div class="large-margin-top">
     <b>WashMix Advantage Program​™:</b>
-    <p>You have signed up for the {{ subscription_container.get_name_display }}​ ​and as of today have ${{ client.dollar_balance }}​ ​available credit to use.</p>
+    <p>You have signed up for the {{ subscription_container.get_name_display }}​ ​and as of today have <b>${{ client.dollar_balance }}</b>​ ​available credit to use.</p>
   </div>
 
   <div>
