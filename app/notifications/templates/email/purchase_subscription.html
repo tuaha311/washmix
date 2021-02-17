@@ -6,7 +6,9 @@
   </header>
 
   <div class="large-margin-top">
-    <b>WashMix Advantage Program​™:</b>
+    {% if is_advantage %}
+      <b>WashMix Advantage Program​™:</b>
+    {% endif %}
     <p>You have {{ direction_of_subscription }} your account for the <b>{{ subscription_container.get_name_display }}​</b> ​and as of today have <b>${{ client.dollar_balance }}</b>​ ​available credit to use.</p>
   </div>
 

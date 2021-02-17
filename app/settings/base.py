@@ -487,7 +487,7 @@ dramatiq.set_broker(DRAMATIQ_BROKER)
 
 SIGNUP = "signup"
 FORGOT_PASSWORD = "forgot_password"
-PURCHASE_SUBSCRIPTION_GOLD_PLATINUM = "purchase_subscription_gold_platinum"
+PURCHASE_SUBSCRIPTION = "purchase_subscription"
 NEW_REQUEST = "new_request"
 NEW_DELIVERY = "new_delivery"
 NEW_ORDER = "new_order"
@@ -537,8 +537,8 @@ EMAIL_EVENT_INFO = {
         "subject": "Password Reset",
         "from_email": "security@washmix.com",
     },
-    PURCHASE_SUBSCRIPTION_GOLD_PLATINUM: {
-        "template_name": "email/purchase_gold_platinum.html",
+    PURCHASE_SUBSCRIPTION: {
+        "template_name": "email/purchase_subscription.html",
         "subject": "Welcome to WashMix Advantage Program",
         "from_email": "cs@washmix.com",
     },

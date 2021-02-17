@@ -37,7 +37,7 @@ class EmailRenderView(TemplateView):
 
     email_template_map = {
         "signup": "email/signup.html",
-        "subscription": "email/purchase_gold_platinum.html",
+        "subscription": "email/purchase_subscription.html",
         "order": "email/new_order.html",
         "payment_client": "email/payment_fail_client.html",
         "payment_admin": "email/payment_fail_admin.html",

@@ -178,21 +178,26 @@ class SubscriptionService(PaymentInterfaceService):
         client_id = self._client.id
         subscription_id = future_subscription.id
         recipient_list = [self._client.email]
+        is_first_purchase = old_subscription is None
         is_advantage = is_advantage_program(future_subscription.name)
+        is_payc = not is_advantage
         direction_of_subscription = get_direction_of_subscription(
             old_subscription, future_subscription
         )
 
-        if not is_advantage:
+        # we don't sent any email if this is a first purchase and
+        # client purchased a PAYC
+        if is_first_purchase and is_payc:
             return None
 
         send_email.send(
-            event=settings.PURCHASE_SUBSCRIPTION_GOLD_PLATINUM,
+            event=settings.PURCHASE_SUBSCRIPTION,
             recipient_list=recipient_list,
             extra_context={
                 "client_id": client_id,
                 "subscription_id": subscription_id,
                 "direction_of_subscription": direction_of_subscription,
+                "is_advantage": is_advantage,
             },
         )
 
