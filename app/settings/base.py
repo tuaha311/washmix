@@ -203,6 +203,7 @@ PACKAGE_NAME_MAP = {
     PLATINUM: "Platinum Account",
 }
 PACKAGE_NAME_CHOICES = list(PACKAGE_NAME_MAP.items())
+PACKAGE_NAME_ORDERING = list(PACKAGE_NAME_MAP.keys())
 
 BASKET_ADD = "add"
 BASKET_REMOVE = "remove"
@@ -213,6 +214,9 @@ BASKET_ACTION_MAP = {
 BASKET_ACTION_CHOICES = list(BASKET_ACTION_MAP.items())
 
 MAIN_TITLE = "Main"
+
+SUBSCRIPTION_UPGRADE = "upgrade"
+SUBSCRIPTION_DOWNGRADE = "downgrade"
 
 
 ##########################

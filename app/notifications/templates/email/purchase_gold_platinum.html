@@ -1,9 +1,13 @@
 {% extends "base_email.html" %}
 
 {% block body %}
+  <header>
+    <h4>Dear {{ client.full_name }}</h4>
+  </header>
+
   <div class="large-margin-top">
     <b>WashMix Advantage Program​™:</b>
-    <p>You have signed up for the {{ subscription_container.get_name_display }}​ ​and as of today have <b>${{ client.dollar_balance }}</b>​ ​available credit to use.</p>
+    <p>You have {{ direction_of_subscription }} your account for the <b>{{ subscription_container.get_name_display }}​</b> ​and as of today have <b>${{ client.dollar_balance }}</b>​ ​available credit to use.</p>
   </div>
 
   <div>

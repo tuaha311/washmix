@@ -16,7 +16,7 @@ from orders.containers.order import OrderContainer
 from orders.models import Basket, Order
 from subscriptions.containers import SubscriptionContainer
 from subscriptions.models import Package, Subscription
-from subscriptions.utils import is_advantage_program
+from subscriptions.utils import get_direction_of_subscription, is_advantage_program
 from users.models import Client
 
 
@@ -117,9 +117,10 @@ class SubscriptionService(PaymentInterfaceService):
         discount 10$) we should add 10$ of discount as credit balance.
         """
 
-        subscription = order.subscription
-        invoice = order.invoice
         client = self._client
+        future_subscription = order.subscription
+        old_subscription = client.subscription
+        invoice = order.invoice
 
         # we are waiting while all invoices will be confirmed
         if not invoice.is_paid:
@@ -137,7 +138,7 @@ class SubscriptionService(PaymentInterfaceService):
 
             order.save()
 
-            client.subscription = subscription
+            client.subscription = future_subscription
             client.save()
 
             if invoice.discount:
@@ -146,9 +147,9 @@ class SubscriptionService(PaymentInterfaceService):
                     client=client, invoice=invoice, amount=amount, provider=InvoiceProvider.WASHMIX
                 )
 
-        self._notify_client_on_purchase_of_advantage_program(subscription)
+        self._notify_client_on_purchase_of_advantage_program(old_subscription, future_subscription)
 
-        return subscription
+        return future_subscription
 
     def choose(self, package: Package) -> OrderContainer:
         """
@@ -171,12 +172,18 @@ class SubscriptionService(PaymentInterfaceService):
         order_service = self._get_order_service(subscription)
         order_service.fail(order)
 
-    def _notify_client_on_purchase_of_advantage_program(self, subscription: Subscription):
+    def _notify_client_on_purchase_of_advantage_program(
+        self, old_subscription: Optional[Subscription], future_subscription: Subscription
+    ):
         client_id = self._client.id
-        subscription_id = subscription.id
+        subscription_id = future_subscription.id
         recipient_list = [self._client.email]
+        is_advantage = is_advantage_program(future_subscription.name)
+        direction_of_subscription = get_direction_of_subscription(
+            old_subscription, future_subscription
+        )
 
-        if subscription.name not in [settings.GOLD, settings.PLATINUM]:
+        if not is_advantage:
             return None
 
         send_email.send(
@@ -185,6 +192,7 @@ class SubscriptionService(PaymentInterfaceService):
             extra_context={
                 "client_id": client_id,
                 "subscription_id": subscription_id,
+                "direction_of_subscription": direction_of_subscription,
             },
         )
 
