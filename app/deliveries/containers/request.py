@@ -27,6 +27,7 @@ class RequestContainer(BaseDynamicAmountContainer):
 
     @property
     def amount(self) -> int:
+        is_custom = self.is_custom
         custom_amount = self.custom_amount
         pickup_container = self.pickup_container
         dropoff_container = self.dropoff_container
@@ -36,7 +37,7 @@ class RequestContainer(BaseDynamicAmountContainer):
 
         total_amount = sum(amount_list)
 
-        if custom_amount:
+        if is_custom:
             total_amount = custom_amount
 
         return total_amount
