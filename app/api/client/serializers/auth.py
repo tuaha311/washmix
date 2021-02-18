@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 
 from rest_framework import serializers
 
+from api.utils import cleanup_email
 from core.models import Phone
 from core.utils import get_clean_number
 
@@ -14,7 +15,7 @@ class SignupSerializer(serializers.Serializer):
     phone = serializers.CharField()
 
     def validate_email(self, value):
-        email = value.strip().lower()
+        email = cleanup_email(value)
 
         if User.objects.filter(email=email).exists():
             raise serializers.ValidationError(

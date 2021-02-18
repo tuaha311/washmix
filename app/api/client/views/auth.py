@@ -1,6 +1,10 @@
 from django.contrib.auth import get_user_model
+from django.utils.timezone import now
 
+from djoser.conf import settings as djoser_settings
 from djoser.views import UserViewSet
+from rest_framework import status
+from rest_framework.decorators import action
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
@@ -8,6 +12,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainSlidingView
 
 from api.client.serializers import auth
+from api.utils import cleanup_email, get_custom_user_email
 from core.services.signup import SignupService
 from core.utils import get_clean_number
 
@@ -25,10 +30,11 @@ class SignupView(GenericAPIView):
         email = serializer.validated_data["email"]
         password = serializer.validated_data["password"]
         raw_phone = serializer.validated_data["phone"]
+        clean_email = cleanup_email(email)
         phone = get_clean_number(raw_phone)
 
         service = SignupService()
-        client = service.signup(email, password, phone)
+        client = service.signup(clean_email, password, phone)
 
         return Response({"email": client.email})
 
@@ -54,11 +60,53 @@ class ForgotPasswordView(DjoserProxyView):
     response_serializer_class = auth.EmptyResponseSerializer
     proxy_action = {"post": "reset_password"}
 
+    @action(["post"], detail=False)
+    def reset_password(self, request, *args, **kwargs):
+        """
+        Custom implementation from `djoser.views.UserViewSet.reset_password`.
+        """
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.get_user()
+
+        if user:
+            context = {"user": user}
+            email = get_custom_user_email(user)
+            clean_email = cleanup_email(email)
+            to = [clean_email]
+            djoser_settings.EMAIL.password_reset(self.request, context).send(to)
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class SetNewPasswordView(DjoserProxyView):
     empty_response = True
     response_serializer_class = auth.EmptyResponseSerializer
     proxy_action = {"post": "reset_password_confirm"}
+
+    @action(["post"], detail=False)
+    def reset_password_confirm(self, request, *args, **kwargs):
+        """
+        Custom implementation from `djoser.views.UserViewSet.reset_password_confirm`.
+        """
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        serializer.user.set_password(serializer.data["new_password"])
+        if hasattr(serializer.user, "last_login"):
+            serializer.user.last_login = now()
+        serializer.user.save()
+
+        if djoser_settings.PASSWORD_CHANGED_EMAIL_CONFIRMATION:
+            context = {"user": serializer.user}
+            email = get_custom_user_email(serializer.user)
+            clean_email = cleanup_email(email)
+            to = [clean_email]
+            djoser_settings.EMAIL.password_changed_confirmation(self.request, context).send(to)
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class LoginView(TokenObtainSlidingView):
