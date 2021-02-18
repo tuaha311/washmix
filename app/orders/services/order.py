@@ -191,7 +191,7 @@ class OrderService:
 
             order.save()
 
-        self._notify_client_on_new_order()
+        self._notify_admin_list_on_new_order()
 
         return order
 
@@ -266,12 +266,12 @@ class OrderService:
         invoice.discount = coupon_service.apply_coupon()
         invoice.save()
 
-    def _notify_client_on_new_order(self):
+    def _notify_admin_list_on_new_order(self):
         client_id = self._client.id
         order_id = self._order.id
         subscription = self._client.subscription
         is_advantage = is_advantage_program(subscription.name)
-        recipient_list = [self._client.email]
+        recipient_list = settings.ADMIN_EMAIL_LIST
 
         send_email.send(
             event=settings.NEW_ORDER,
