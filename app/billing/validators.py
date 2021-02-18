@@ -10,6 +10,7 @@ from rest_framework.request import Request
 
 from billing.models import Invoice
 from billing.stripe_helper import StripeHelper
+from users.models import Client
 
 logger = logging.getLogger(__name__)
 
@@ -74,6 +75,18 @@ def validate_stripe_event(
         }
 
         logger.info(f"Invoice doesn't exists.")
+
+        return valid, errors
+
+    try:
+        stripe_id = payment.customer
+        Client.objects.get(stripe_id=stripe_id)
+    except ObjectDoesNotExist:
+        errors = {
+            "reason": "client_doesnt_exists",
+        }
+
+        logger.info(f"Client doesn't exists.")
 
         return valid, errors
 
