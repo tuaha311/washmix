@@ -4,9 +4,8 @@ from django.db.transaction import atomic
 
 from stripe import PaymentIntent, SetupIntent
 
-from billing.choices import InvoicePurpose, WebhookKind
+from billing.choices import WebhookKind
 from billing.models import Invoice
-from billing.services.invoice import InvoiceService
 from billing.services.payments import PaymentService
 from orders.models import Order
 
@@ -25,15 +24,6 @@ class IntentService:
         webhook_kind = WebhookKind.SUBSCRIPTION
 
         with atomic():
-            if order:
-                subscription = order.subscription
-                amount = subscription.price
-
-                invoice_service = InvoiceService(client)
-                invoice = invoice_service.update_or_create(
-                    order, amount, InvoicePurpose.SUBSCRIPTION
-                )
-
             payment_service = PaymentService(client, invoice)
             intent = payment_service.create_intent(is_save_card, webhook_kind=webhook_kind)
 
