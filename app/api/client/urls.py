@@ -26,12 +26,12 @@ auth_urls = (
         path("signup/", auth.SignupView.as_view(), name="signup"),
         path(
             "forgot_password/",
-            auth.ForgotPasswordView.as_view(),
+            auth.DjoserForgotPasswordView.as_view(),
             name="forgot-password",
         ),
         path(
             "reset_new_password/",
-            auth.SetNewPasswordView.as_view(),
+            auth.DjoserSetNewPasswordView.as_view(),
             name="reset-new-password",
         ),
     ],
