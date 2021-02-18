@@ -230,6 +230,7 @@ class SubscriptionService(PaymentInterfaceService):
         # and wasn't prepared for payment
         subscription, _ = Subscription.objects.get_or_create(
             client=client,
+            order__isnull=True,
             active_client__isnull=True,
             amount=settings.DEFAULT_ZERO_AMOUNT,
             defaults=package.as_dict,
