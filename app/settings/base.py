@@ -157,6 +157,8 @@ AUTHENTICATION_BACKENDS = [
     "social_core.backends.google.GoogleOAuth2",
     # Django
     "django.contrib.auth.backends.ModelBackend",
+    # Case-insensitive email for `rest-framework-simplejwt`
+    "core.backends.CaseInsensitiveModelBackend",
 ]
 
 
