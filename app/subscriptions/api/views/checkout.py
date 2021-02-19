@@ -1,3 +1,4 @@
+from rest_framework import serializers
 from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -20,7 +21,13 @@ class SubscriptionCheckoutView(GenericAPIView):
         client = request.user.client
 
         order_service = OrderService(client, order)
-        order_container, _ = order_service.checkout(order)
+        order_container, charge_succesful = order_service.checkout(order)
+
+        if not charge_succesful:
+            raise serializers.ValidationError(
+                detail="Can't bill your card",
+                code="cant_bill_your_card",
+            )
 
         response = self.response_serializer_class(order_container).data
 
