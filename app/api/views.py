@@ -46,7 +46,7 @@ class EmailRenderView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        extra_context = get_extra_context(client_id=2, subscription_id=2, request_id=2, order_id=4)
+        extra_context = get_extra_context(client_id=2, subscription_id=2, request_id=2)
 
         return {**context, **extra_context}
 

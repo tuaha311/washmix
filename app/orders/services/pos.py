@@ -1,5 +1,7 @@
 from typing import Optional
 
+from rest_framework import serializers
+
 from orders.containers.order import OrderContainer
 from orders.models import Order
 from orders.services.order import OrderService
@@ -27,7 +29,14 @@ class POSService:
         employee = self._employee
 
         order_service = OrderService(client)
-        order_container = order_service.checkout(order)
+        order_container, charge_succesful = order_service.checkout(order)
+
+        if not charge_succesful:
+            raise serializers.ValidationError(
+                detail="Can't bill your card",
+                code="cant_bill_your_card",
+            )
+
         order_service.finalize(order, employee)
 
         return order_container

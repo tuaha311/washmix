@@ -4,7 +4,6 @@ from typing import Optional, Tuple, Union
 from django.conf import settings
 from django.db.transaction import atomic
 
-from rest_framework import serializers
 from stripe import PaymentIntent, PaymentMethod, SetupIntent
 from stripe.error import StripeError
 
@@ -36,6 +35,7 @@ class PaymentService:
         self._client = client
         self._invoice = invoice
         self._stripe_helper = StripeHelper(client)
+        self.charge_successful = False
 
     def create_intent(
         self,
@@ -121,6 +121,8 @@ class PaymentService:
             is_need_to_auto_bill = client.balance < settings.AUTO_BILLING_LIMIT
 
             if is_order_fully_paid:
+                self.charge_successful = True
+
                 # after client paid for his order, we should purchase subscription
                 #  if he has a Advantage Program with `is_auto_billing` option enabled
                 if is_auto_billing and is_advantage and is_need_to_auto_bill:
@@ -257,14 +259,13 @@ class PaymentService:
         Method that tries to charge money from user's card.
         """
 
-        charge_successful = False
         payment = None
 
         for card in self._client.card_list.all():
             # we are trying to charge the card list of client
             # and we are stopping at first successful attempt
 
-            if charge_successful:
+            if self.charge_successful:
                 break
 
             try:
@@ -280,17 +281,11 @@ class PaymentService:
                 )
                 self._save_card(invoice=invoice, card=card)
 
-                charge_successful = True
+                self.charge_successful = True
 
             except StripeError as err:
                 logger.error(err)
                 continue
-
-        if not charge_successful:
-            raise serializers.ValidationError(
-                detail="Can't bill your card.",
-                code="cant_bill_your_card",
-            )
 
         return payment
 

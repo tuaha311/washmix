@@ -118,6 +118,7 @@ class StripeWebhookService:
         client = payment_container.client
         webhook_kind = payment_container.webhook_kind
         order = payment_container.order
+        continue_with_order = payment_container.continue_with_order
 
         order_service = OrderService(client)
         subscription_service = SubscriptionService(client)
@@ -129,4 +130,4 @@ class StripeWebhookService:
             WebhookKind.SUBSCRIPTION_WITH_CHARGE,
             WebhookKind.REFILL_WITH_CHARGE,
         ]:
-            order_service.fail(order)
+            order_service.fail(continue_with_order)

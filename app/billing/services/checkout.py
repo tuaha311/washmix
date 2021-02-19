@@ -40,7 +40,7 @@ class WelcomeService:
             address = self._create_main_address(raw_address)
             billing_address = self._create_billing_address(raw_billing_address)
 
-            order_service.checkout(order)
+        order_service.checkout(order)
 
         return address, billing_address
 

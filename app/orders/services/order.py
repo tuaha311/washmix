@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Tuple
 
 from django.conf import settings
 from django.db.transaction import atomic
@@ -32,7 +32,7 @@ class OrderService:
         self._client = client
         self._order = order
 
-    def checkout(self, order: Order):
+    def checkout(self, order: Order) -> Tuple[OrderContainer, bool]:
         """
         Method to charge total invoice of order.
 
@@ -93,8 +93,9 @@ class OrderService:
                 )
 
         self._order = order
+        charge_successful = payment_service.charge_successful
 
-        return self.get_container()
+        return self.get_container(), charge_successful
 
     def charge_the_rest(self, order: Order):
         """

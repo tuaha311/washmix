@@ -20,7 +20,7 @@ class SubscriptionCheckoutView(GenericAPIView):
         client = request.user.client
 
         order_service = OrderService(client, order)
-        order_container = order_service.checkout(order)
+        order_container, _ = order_service.checkout(order)
 
         response = self.response_serializer_class(order_container).data
 
