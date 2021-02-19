@@ -497,6 +497,7 @@ ACCOUNT_REMOVED = "account_removed"
 DELIVERY_DROPOFF_COMPLETE = "delivery_dropoff_complete"
 PAYMENT_FAIL_CLIENT = "payment_fail_client"
 PAYMENT_FAIL_ADMIN = "payment_fail_admin"
+CARD_CHANGES = "card_changes"
 
 
 ##########
@@ -570,6 +571,12 @@ EMAIL_EVENT_INFO = {
     ACCOUNT_REMOVED: {
         "template_name": "email/account_removed.html",
         "subject": "WashMix Account Removed",
+        "from_email": "info@washmix.com",
+        "reply_to": "info@washmix.com",
+    },
+    CARD_CHANGES: {
+        "template_name": "email/card_changes.html",
+        "subject": "Card Update",
         "from_email": "info@washmix.com",
         "reply_to": "info@washmix.com",
     },

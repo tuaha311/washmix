@@ -1,3 +1,5 @@
+from django.conf import settings
+
 from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -6,11 +8,13 @@ from rest_framework.viewsets import ModelViewSet
 from api.client.mixins import SetMainAttributeMixin
 from billing.api.serializers.cards import CardSerializer
 from billing.services.card import CardService
+from notifications.tasks import send_email
 
 
 class CardViewSet(SetMainAttributeMixin, ModelViewSet):
     serializer_class = CardSerializer
     main_attribute = "main_card"
+    removed_text = "removed"
 
     def get_queryset(self):
         client = self.request.user.client
@@ -18,7 +22,9 @@ class CardViewSet(SetMainAttributeMixin, ModelViewSet):
 
     def perform_destroy(self, instance):
         client = self.request.user.client
+        client_id = client.id
         stripe_id = instance.stripe_id
+        recipient_list = [client.email]
 
         # in super class we have validation on
         # removing main card - and we are running it first
@@ -28,6 +34,15 @@ class CardViewSet(SetMainAttributeMixin, ModelViewSet):
         # from Stripe account
         service = CardService(client)
         service.remove_card(stripe_id)
+
+        send_email.send(
+            event=settings.CARD_CHANGES,
+            recipient_list=recipient_list,
+            extra_context={
+                "client_id": client_id,
+                "action": self.removed_text,
+            },
+        )
 
 
 class CardRefreshView(GenericAPIView):
