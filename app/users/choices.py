@@ -1,4 +1,4 @@
-class Starch:
+class ClientStarch:
     NONE = "none"
     LIGHT = "light"
     MEDIUM = "medium"
@@ -12,14 +12,14 @@ class Starch:
     CHOICES = list(MAP.items())
 
 
-class Crease:
+class ClientCrease:
     ALL_PANTS = "all_pants"
     JEANS_ONLY = "jeans_only"
     MAP = {ALL_PANTS: "All Pants", JEANS_ONLY: "Jeans Only"}
     CHOICES = list(MAP.items())
 
 
-class Detergents:
+class ClientDetergents:
     SCENTED = "scented"
     HYPO_ALLERGENIC = "hypo_allergenic"
     MAP = {

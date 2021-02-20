@@ -7,7 +7,7 @@ from billing.choices import InvoiceKind
 from core.behaviors import Stripeable
 from core.common_models import Common
 from core.utils import get_dollars
-from users.choices import Crease, Detergents, Starch
+from users.choices import ClientCrease, ClientDetergents, ClientStarch
 from users.managers import ClientManager
 from users.mixins import ProxyUserInfoMixin
 
@@ -68,29 +68,31 @@ class Client(ProxyUserInfoMixin, Stripeable, Common):
     )
 
     # Preferences
-    detergents = models.CharField(
-        max_length=20,
-        choices=Detergents.CHOICES,
-        blank=True,
-    )
     starch = models.CharField(
         max_length=20,
         verbose_name="starch",
-        choices=Starch.CHOICES,
+        choices=ClientStarch.CHOICES,
+        default=ClientStarch.NONE,
         blank=True,
     )
     no_crease = models.CharField(
         max_length=20,
         verbose_name="no crease",
-        choices=Crease.CHOICES,
+        choices=ClientCrease.CHOICES,
+        default=ClientCrease.ALL_PANTS,
+        blank=True,
+    )
+    fix_tears = models.BooleanField(
+        verbose_name="fix tears, rips",
+        default=True,
+    )
+    detergents = models.CharField(
+        max_length=20,
+        choices=ClientDetergents.CHOICES,
         blank=True,
     )
     fabric_softener = models.BooleanField(
         verbose_name="fabric softener",
-        default=False,
-    )
-    fix_tears = models.BooleanField(
-        verbose_name="fix tears, rips",
         default=False,
     )
     is_auto_billing = models.BooleanField(

@@ -8091,11 +8091,11 @@
         "zip_code": "95103",
         "address_line_1": "New Jersey"
       },
+      "starch": "none",
+      "no_crease": "all_pants",
+      "fix_tears": true,
       "detergents": "",
-      "starch": "",
-      "no_crease": "",
       "fabric_softener": false,
-      "fix_tears": false,
       "is_auto_billing": true
     }
   },
@@ -8117,11 +8117,11 @@
         "zip_code": "95103",
         "address_line_1": "Boston"
       },
+      "starch": "none",
+      "no_crease": "all_pants",
+      "fix_tears": true,
       "detergents": "",
-      "starch": "",
-      "no_crease": "",
       "fabric_softener": false,
-      "fix_tears": false,
       "is_auto_billing": true
     }
   },
@@ -8143,11 +8143,11 @@
         "zip_code": "95103",
         "address_line_1": "Oklahoma"
       },
+      "starch": "none",
+      "no_crease": "all_pants",
+      "fix_tears": true,
       "detergents": "",
-      "starch": "",
-      "no_crease": "",
       "fabric_softener": false,
-      "fix_tears": false,
       "is_auto_billing": true
     }
   },
@@ -8169,11 +8169,11 @@
         "zip_code": "95103",
         "address_line_1": "Oklahoma"
       },
+      "starch": "none",
+      "no_crease": "all_pants",
+      "fix_tears": true,
       "detergents": "",
-      "starch": "",
-      "no_crease": "",
       "fabric_softener": false,
-      "fix_tears": false,
       "is_auto_billing": true
     }
   },
