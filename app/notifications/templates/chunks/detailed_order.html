@@ -75,6 +75,26 @@
 
     <table id="basket-total">
       <tr>
+        <th id="delivery">Basket</th>
+        <th>${{ order_container.basket.dollar_amount }}</th>
+      </tr>
+
+      <tr>
+        <th id="delivery">Delivery</th>
+        <th>${{ order_container.request.dollar_amount }}</th>
+      </tr>
+
+      <tr>
+        <th id="rush">Rush Delivery</th>
+        <th>${{ order_container.request.dollar_rush_amount }}</th>
+      </tr>
+
+      <tr>
+        <th><div class="divider"></div></th>
+        <th><div class="divider"></div></th>
+      </tr>
+
+      <tr>
         <th>Subtotal</th>
         <th>${{ order_container.dollar_amount }}</th>
       </tr>
