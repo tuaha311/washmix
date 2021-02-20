@@ -36,10 +36,16 @@ class BasketContainer(BaseDynamicAmountContainer):
 
     @property
     def discount(self) -> int:
-        # here we are just calculating discount of default items
-        # without worrying about extra items, because extra items
-        # doesn't have a discount
-        return self._calculate_sum("discount")
+        items_discount = self._calculate_sum("discount")
+
+        # then we are adding extra items discount
+        extra_items = self.extra_items
+        extra_items_discount = sum([item.discount for item in extra_items])
+
+        # let's calculate total
+        total = items_discount + extra_items_discount
+
+        return total
 
     @property
     def quantity_container_list(self):
@@ -55,8 +61,9 @@ class BasketContainer(BaseDynamicAmountContainer):
     def extra_items(self):
         basket = self._basket
         extra_items = basket.extra_items
+        subscription = self._subscription
 
-        extra_items_container = [ExtraItemContainer(item) for item in extra_items]
+        extra_items_container = [ExtraItemContainer(subscription, item) for item in extra_items]
 
         return extra_items_container
 
