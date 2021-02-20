@@ -31,10 +31,10 @@ class SignupView(GenericAPIView):
         password = serializer.validated_data["password"]
         raw_phone = serializer.validated_data["phone"]
         clean_email = cleanup_email(email)
-        phone = get_clean_number(raw_phone)
+        clean_phone = get_clean_number(raw_phone)
 
         service = SignupService()
-        client = service.signup(clean_email, password, phone)
+        client = service.signup(clean_email, password, clean_phone)
 
         return Response({"email": client.email})
 
