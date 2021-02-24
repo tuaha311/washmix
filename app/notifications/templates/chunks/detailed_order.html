@@ -36,7 +36,7 @@
             {% if order_container.request.is_free %}
               Free
             {% else %}
-              ${{ order_container.request.dollar_amount }}
+              ${{ order_container.request.dollar_total }}
             {% endif %}
           </div>
         </td>
@@ -81,7 +81,7 @@
 
       <tr>
         <th id="delivery">Delivery</th>
-        <th>${{ order_container.request.dollar_amount }}</th>
+        <th>${{ order_container.request.dollar_amount_with_discount }}</th>
       </tr>
 
       <tr>

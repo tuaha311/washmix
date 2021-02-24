@@ -8,6 +8,7 @@ from weasyprint import HTML
 from core.utils import generate_pdf_report_path
 from notifications.utils import get_extra_context
 from orders.models import Order
+from subscriptions.utils import is_advantage_program
 
 
 def generate_pdf_from_html(order_id: int) -> Path:
@@ -16,10 +17,14 @@ def generate_pdf_from_html(order_id: int) -> Path:
     """
 
     order = Order.objects.get(id=order_id)
-    client_id = order.client_id
+    client = order.client
+    client_id = client.id
+    subscription = client.subscription
+    is_advantage = is_advantage_program(subscription.name)
+
     event = settings.NEW_ORDER
     event_info = settings.EMAIL_EVENT_INFO[event]
-    context = get_extra_context(client_id, order_id=order_id)
+    context = get_extra_context(client_id, order_id=order_id, is_advantage=is_advantage)
 
     template_name = event_info["template_name"]
     html_content = render_to_string(template_name, context=context)

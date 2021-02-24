@@ -7,6 +7,7 @@ from deliveries.models import Request
 class RequestResponseSerializer(CommonContainerSerializer, serializers.ModelSerializer):
     is_free = serializers.BooleanField(read_only=True)
     dollar_rush_amount = serializers.ReadOnlyField()
+    dollar_custom_amount = serializers.ReadOnlyField()
 
     class Meta:
         model = Request
@@ -31,6 +32,8 @@ class RequestResponseSerializer(CommonContainerSerializer, serializers.ModelSeri
             "dollar_amount_with_discount",
             "rush_amount",
             "dollar_rush_amount",
+            "custom_amount",
+            "dollar_custom_amount",
         ]
 
 

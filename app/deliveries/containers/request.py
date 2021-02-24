@@ -27,44 +27,147 @@ class RequestContainer(BaseDynamicAmountContainer):
 
     @property
     def amount(self) -> int:
+        """
+        Default delivery price.
+        This price doesn't depends from `is_rush` option.
+
+        We have 2 cases here:
+            - By default, this price is auto-calculated based on subscription.
+            - Admin can provide custom delivery price in some cases and then this price will
+            be used in calculation.
+        """
+
         is_custom = self.is_custom
+        calculated_amount = self.calculated_amount
         custom_amount = self.custom_amount
+        amount = calculated_amount
+
+        if is_custom:
+            amount = custom_amount
+
+        return amount
+
+    @property
+    def discount(self) -> int:
+        """
+        Default delivery discount.
+        This discount doesn't depends from `is_rush` option.
+
+        We have 2 cases here:
+            - By default, this discount is auto-calculated based on subscription.
+            - If admin privided custom delivery price, than discount will be equal to 0.
+        """
+
+        is_custom = self.is_custom
+        discount = self.calculated_discount
+
+        if is_custom:
+            discount = settings.DEFAULT_ZERO_DISCOUNT
+
+        return discount
+
+    @property
+    def calculated_amount(self) -> int:
+        """
+        This is the part of automatically calculated amount based on
+        subscription and basket .
+        """
+
         pickup_container = self.pickup_container
         dropoff_container = self.dropoff_container
 
         container_list = [pickup_container, dropoff_container]
         amount_list = [item.amount for item in container_list]
 
-        total_amount = sum(amount_list)
+        calculated_amount = sum(amount_list)
 
-        if is_custom:
-            total_amount = custom_amount
-
-        return total_amount
+        return calculated_amount
 
     @property
-    def discount(self) -> int:
-        custom_amount = self.custom_amount
+    def dollar_calculated_amount(self) -> float:
+        return get_dollars(self, "calculated_amount")
+
+    @property
+    def calculated_discount(self) -> float:
+        """
+        This is the part of automatically calculated discount based on
+        subscription and basket .
+        """
+
         pickup_container = self.pickup_container
         dropoff_container = self.dropoff_container
 
         container_list = [pickup_container, dropoff_container]
         discount_list = [item.discount for item in container_list]
 
-        total_discount = sum(discount_list)
+        calculated_discount = sum(discount_list)
 
-        if custom_amount:
-            total_discount = settings.DEFAULT_ZERO_DISCOUNT
-
-        return total_discount
+        return calculated_discount
 
     @property
-    def is_free(self) -> bool:
-        return self.amount == self.discount
+    def dollar_calculated_discount(self) -> float:
+        return get_dollars(self, "calculated_discount")
+
+    @property
+    def custom_amount(self) -> int:
+        """
+        If Request has option `is_custom` enabled - than admin can provide
+        custom delivery price.
+        If option is disabled - then price will be equal to 0.
+        """
+
+        is_custom = self.is_custom
+        original = self.original
+        custom_amount = original.custom_amount
+
+        if is_custom:
+            return custom_amount
+        return settings.DEFAULT_ZERO_AMOUNT
+
+    @property
+    def dollar_custom_amount(self) -> float:
+        return get_dollars(self, "custom_amount")
+
+    @property
+    def rush_amount(self) -> int:
+        """
+        If Request has option `is_rush` enabled - than admin can provide
+        custom rush delivery price.
+        If option is disabled - then price will be equal to 0.
+        """
+
+        is_rush = self.is_rush
+        original = self.original
+        rush_amount = original.rush_amount
+
+        if is_rush:
+            return rush_amount
+        return settings.DEFAULT_ZERO_AMOUNT
 
     @property
     def dollar_rush_amount(self) -> float:
         return get_dollars(self, "rush_amount")
+
+    @property
+    def total(self) -> float:
+        amount_with_discount = self.amount_with_discount
+        rush_amount = self.rush_amount
+
+        total = amount_with_discount + rush_amount
+
+        return total
+
+    @property
+    def dollar_total(self) -> float:
+        return get_dollars(self, "total")
+
+    @property
+    def is_free(self) -> bool:
+        total = self.total
+        is_paid = bool(total)
+        is_free = not is_paid
+
+        return is_free
 
     @property
     def pickup_container(self) -> DeliveryContainer:

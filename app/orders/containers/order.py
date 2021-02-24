@@ -30,16 +30,16 @@ class OrderContainer(BaseDynamicAmountContainer):
         """
 
         filled_container_list = self._filled_container_list
-        request = self.request
+        request_container = self.request
 
         amount_list = [item.amount for item in filled_container_list]
-        total_amount = sum(amount_list)
+        amount = sum(amount_list)
 
-        if request and request.is_rush:
-            rush_amount = request.rush_amount
-            total_amount += rush_amount
+        if request_container:
+            request_total = request_container.total
+            amount += request_total
 
-        return total_amount
+        return amount
 
     @property
     def discount(self) -> int:
@@ -113,10 +113,9 @@ class OrderContainer(BaseDynamicAmountContainer):
     @property
     def _filled_container_list(self) -> List:
         basket_container = self.basket
-        request_container = self.request
         subscription_container = self.subscription
 
-        container_list = [basket_container, request_container, subscription_container]
+        container_list = [basket_container, subscription_container]
         filled_container_list = [item for item in container_list if item]
 
         return filled_container_list
