@@ -39,6 +39,7 @@ class POSRequestUpdateSerializer(serializers.ModelSerializer):
         model = Request
         fields = [
             "order",
+            "is_rush",
             "rush_amount",
             "is_custom",
             "custom_amount",
