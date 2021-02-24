@@ -104,7 +104,7 @@ class SubscriptionService(PaymentInterfaceService):
         if subscription.name == settings.PAYC:
             self.finalize(order)
 
-    def finalize(self, order: Order) -> Optional[Subscription]:
+    def finalize(self, order: Order, is_replenished: bool = False) -> Optional[Subscription]:
         """
         Final hook that sets subscription on client after payment (checkout).
 
@@ -147,7 +147,9 @@ class SubscriptionService(PaymentInterfaceService):
                     client=client, invoice=invoice, amount=amount, provider=InvoiceProvider.WASHMIX
                 )
 
-        self._notify_client_on_purchase_of_advantage_program(old_subscription, future_subscription)
+        self._notify_client_on_purchase_of_advantage_program(
+            old_subscription, future_subscription, is_replenished
+        )
 
         return future_subscription
 
@@ -173,7 +175,10 @@ class SubscriptionService(PaymentInterfaceService):
         order_service.fail(order)
 
     def _notify_client_on_purchase_of_advantage_program(
-        self, old_subscription: Optional[Subscription], future_subscription: Subscription
+        self,
+        old_subscription: Optional[Subscription],
+        future_subscription: Subscription,
+        is_replenished: bool,
     ):
         client_id = self._client.id
         subscription_id = future_subscription.id
@@ -182,7 +187,9 @@ class SubscriptionService(PaymentInterfaceService):
         is_advantage = is_advantage_program(future_subscription.name)
         is_payc = not is_advantage
         direction_of_subscription = get_direction_of_subscription(
-            old_subscription, future_subscription
+            old_subscription,
+            future_subscription,
+            is_replenished,
         )
 
         # we don't sent any email if this is a first purchase and

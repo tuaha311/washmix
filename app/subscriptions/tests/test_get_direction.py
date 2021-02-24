@@ -46,3 +46,15 @@ def test_subscription_is_downgrading():
     result = get_direction_of_subscription(old_subscription, future_subscription)
 
     assert result == settings.SUBSCRIPTION_DOWNGRADE
+
+
+def test_subscription_is_replenished():
+    old_subscription = MagicMock()
+    old_subscription.name = settings.PLATINUM
+    future_subscription = MagicMock()
+    future_subscription.name = settings.PLATINUM
+    is_replenish = True
+
+    result = get_direction_of_subscription(old_subscription, future_subscription, is_replenish)
+
+    assert result == settings.SUBSCRIPTION_REPLENISHED

@@ -292,6 +292,7 @@ MAIN_TITLE = "Main"
 
 SUBSCRIPTION_UPGRADE = "upgrade"
 SUBSCRIPTION_DOWNGRADE = "downgrade"
+SUBSCRIPTION_REPLENISHED = "replenished"
 
 
 ################################

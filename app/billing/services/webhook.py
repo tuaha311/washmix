@@ -96,7 +96,8 @@ class StripeWebhookService:
         elif webhook_kind == WebhookKind.SUBSCRIPTION_WITH_CHARGE:
             logger.info("Subscription with charge handling")
 
-            subscription_service.finalize(order)
+            is_replenished = True
+            subscription_service.finalize(order, is_replenished)
 
             pos_service = POSService(client, continue_with_order, employee)
             pos_service.confirm()

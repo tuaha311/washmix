@@ -16,11 +16,16 @@ def is_advantage_program(name: str) -> bool:
 
 
 def get_direction_of_subscription(
-    old_subscription: Optional[Subscription], future_subscription: Subscription
+    old_subscription: Optional[Subscription],
+    future_subscription: Subscription,
+    is_replenished: bool = False,
 ):
     """
     Get direction of upgrade or downgrade subscriptions by client.
     """
+
+    if is_replenished:
+        return settings.SUBSCRIPTION_REPLENISHED
 
     if not old_subscription:
         return settings.SUBSCRIPTION_UPGRADE
