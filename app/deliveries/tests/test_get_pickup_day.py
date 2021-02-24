@@ -27,9 +27,9 @@ def test_friday_and_weekends():
     fri_and_weekends = [
         # fri, same day and next
         [datetime(2020, 9, 18, 7, 30), date(2020, 9, 18)],
-        [datetime(2020, 9, 18, 14, 30), date(2020, 9, 21)],
+        [datetime(2020, 9, 18, 14, 30), date(2020, 9, 19)],
         # sat, same day and next
-        [datetime(2020, 9, 19, 7, 30), date(2020, 9, 21)],
+        [datetime(2020, 9, 19, 7, 30), date(2020, 9, 19)],
         [datetime(2020, 9, 19, 14, 30), date(2020, 9, 21)],
         # sun, same day and next
         [datetime(2020, 9, 20, 7, 30), date(2020, 9, 21)],
