@@ -10,4 +10,4 @@ ALLOWED_HOSTS = [
     "washmix-back.herokuapp.com",
 ]
 
-ALLOWED_COUNTRY_CODES = [1]
+ALLOWED_COUNTRY_CODES = [USA_COUNTRY_CODE]

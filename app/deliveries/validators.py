@@ -17,7 +17,7 @@ class RequestValidator:
         self._pickup_start = pickup_start
         self._pickup_end = pickup_end
 
-        if self._pickup_date.isoweekday() in settings.NON_WORKING_ISO_WEEKENDS:
+        if self._pickup_date.isoweekday() in settings.NON_WORKING_DAYS:
             raise serializers.ValidationError(
                 detail="Pickup day can't be at weekends.",
                 code="cant_pickup_at_weekends",
@@ -31,7 +31,7 @@ class RequestValidator:
 
     def _validate_date(self):
         # we doesn't work at weekends - because we are chilling
-        if self._pickup_date.isoweekday() in settings.NON_WORKING_ISO_WEEKENDS:
+        if self._pickup_date.isoweekday() in settings.NON_WORKING_DAYS:
             raise serializers.ValidationError(
                 detail="Delivery doesn't work at weekends.",
                 code="pickup_date_is_weekends",

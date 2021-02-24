@@ -180,13 +180,86 @@ SECONDS_IN_HOUR = SECONDS_IN_MINUTE * 60
 SESSION_COOKIE_AGE = SECONDS_IN_HOUR * 2
 
 
+###############
+# SOME PRICES #
+###############
+
+FREE_DELIVERY_PRICE = 0
+PAYC_FREE_DELIVERY_FROM = 4900
+GOLD_PLATINUM_FREE_DELIVERY_FROM = 3900
+CREDIT_BACK_PERCENTAGE = 5
+# 20$ total for rush delivery - i.e.
+# - dropoff 10$ (1000)
+# - pickup 10$ (1000)
+RUSH_DELIVERY_PRICE = 1000
+
+
+#################
+# WORKING HOURS #
+#################
+
+TODAY_DELIVERY_CUT_OFF_TIME = time(hour=9)
+DELIVERY_START_WORKING = time(hour=13)
+DELIVERY_END_WORKING = time(hour=19)
+
+PICKUP_SAME_DAY_START_TIMEDELTA = timedelta(hours=4)
+PICKUP_SAME_DAY_END_TIMEDELTA = timedelta(hours=2)
+
+
+############
+# DELIVERY #
+############
+
+# 2 business days order handling + 1 day for delivery (delivery on the next day after handling)
+USUAL_PROCESSING_BUSINESS_DAYS = 3
+USUAL_PROCESSING_TIMEDELTA = timedelta(days=USUAL_PROCESSING_BUSINESS_DAYS)
+
+# 1 business day order handling + 1 day for delivery (delivery on the next day after handling)
+RUSH_PROCESSING_BUSINESS_DAYS = 2
+RUSH_PROCESSING_TIMEDELTA = timedelta(days=RUSH_PROCESSING_BUSINESS_DAYS)
+
+MON = 1
+TUE = 2
+WED = 3
+THU = 4
+FRI = 5
+SAT = 6
+SUN = 7
+DELIVERY_DAYS_MAP = {
+    MON: "Monday",
+    TUE: "Tuesday",
+    WED: "Wednesday",
+    THU: "Thursday",
+    FRI: "Friday",
+    SAT: "Saturday",
+}
+DELIVERY_DAY_CHOICES = list(DELIVERY_DAYS_MAP.items())
+
+WORKING_DAYS = set(DELIVERY_DAYS_MAP.keys())
+FULL_WEEK_DAYS = set([MON, TUE, WED, THU, FRI, SAT, SUN])
+NON_WORKING_DAYS = list(FULL_WEEK_DAYS - WORKING_DAYS)
+
+WEEKENDS_DURATION_DAYS = len(NON_WORKING_DAYS)
+WEEKENDS_DURATION_TIMEDELTA = timedelta(days=WEEKENDS_DURATION_DAYS)
+
+ACTIVE = "active"
+PAUSED = "paused"
+DELIVERY_STATUS_MAP = {
+    ACTIVE: "Active recurring delivery",
+    PAUSED: "Paused recurring delivery",
+}
+DELIVERY_STATUS_CHOICES = list(DELIVERY_STATUS_MAP.items())
+
+
 #####################################
 # APPLICATION_DATA (BUSINESS RULES) #
 #####################################
 
 DEFAULT_PHONE_REGION = "US"
 DEFAULT_PHONE_FORMAT = PhoneNumberFormat.E164
-ALLOWED_COUNTRY_CODES = [1, 7]
+RUSSIA_COUNTRY_CODE = 1
+USA_COUNTRY_CODE = 7
+ALLOWED_COUNTRY_CODES = [RUSSIA_COUNTRY_CODE, USA_COUNTRY_CODE]
 
 CENTS_IN_DOLLAR = 100
 PERCENTAGE = 100
@@ -221,80 +294,10 @@ SUBSCRIPTION_UPGRADE = "upgrade"
 SUBSCRIPTION_DOWNGRADE = "downgrade"
 
 
-##########################
-# DELIVERY HANDLING INFO #
-##########################
-
-# 2 business days order handling + 1 day for delivery (delivery on the next day after handling)
-USUAL_PROCESSING_BUSINESS_DAYS = 3
-USUAL_PROCESSING_TIMEDELTA = timedelta(days=USUAL_PROCESSING_BUSINESS_DAYS)
-# 1 business day order handling + 1 day for delivery (delivery on the next day after handling)
-RUSH_PROCESSING_BUSINESS_DAYS = 2
-RUSH_PROCESSING_TIMEDELTA = timedelta(days=RUSH_PROCESSING_BUSINESS_DAYS)
-WEEKENDS_DURATION_DAYS = 2
-WEEKENDS_DURATION_TIMEDELTA = timedelta(days=WEEKENDS_DURATION_DAYS)
-NON_WORKING_ISO_WEEKENDS = [6, 7]
-
-
-###############
-# SOME PRICES #
-###############
-
-FREE_DELIVERY_PRICE = 0
-PAYC_FREE_DELIVERY_FROM = 4900
-GOLD_PLATINUM_FREE_DELIVERY_FROM = 3900
-CREDIT_BACK_PERCENTAGE = 5
-# 20$ total for rush delivery - i.e.
-# - dropoff 10$ (1000)
-# - pickup 10$ (1000)
-RUSH_DELIVERY_PRICE = 1000
-
-
-#################
-# WORKING HOURS #
-#################
-
-TODAY_DELIVERY_CUT_OFF_TIME = time(hour=9)
-DELIVERY_START_WORKING = time(hour=13)
-DELIVERY_END_WORKING = time(hour=19)
-
-PICKUP_SAME_DAY_START_TIMEDELTA = timedelta(hours=4)
-PICKUP_SAME_DAY_END_TIMEDELTA = timedelta(hours=2)
-
-
-############
-# DELIVERY #
-############
-
-MON = 1
-TUE = 2
-WED = 3
-THU = 4
-FRI = 5
-DELIVERY_DAYS_MAP = {
-    MON: "Monday",
-    TUE: "Tuesday",
-    WED: "Wednesday",
-    THU: "Thursday",
-    FRI: "Friday",
-}
-DELIVERY_DAY_CHOICES = list(DELIVERY_DAYS_MAP.items())
-
-ACTIVE = "active"
-PAUSED = "paused"
-DELIVERY_STATUS_MAP = {
-    ACTIVE: "Active recurring delivery",
-    PAUSED: "Paused recurring delivery",
-}
-DELIVERY_STATUS_CHOICES = list(DELIVERY_STATUS_MAP.items())
-
-
 ################################
 # APPLICATION GLOBAL VARIABLES #
 ################################
 
-BUSINESS_DAYS = 5
-FULL_WEEK_LENGTH = 7
 NEXT_DAY = 1
 DAYS_IN_YEAR = 365
 CREDIT_BACK_PERIOD = 90

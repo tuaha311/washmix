@@ -12,7 +12,7 @@ def get_business_days_with_offset(start_date: date, offset: int) -> date:
 
     days = [start_date + timedelta(days=index + 1) for index in range(settings.DAYS_IN_YEAR)]
     business_only_days = [
-        item for item in days if item.isoweekday() not in settings.NON_WORKING_ISO_WEEKENDS
+        item for item in days if item.isoweekday() not in settings.NON_WORKING_DAYS
     ]
 
     return business_only_days[offset - 1]
@@ -32,7 +32,7 @@ def get_pickup_day(start_datetime: datetime) -> date:
     pickup_date = start_datetime.date()
     pickup_weekday = pickup_date.isoweekday()
 
-    if pickup_weekday in settings.NON_WORKING_ISO_WEEKENDS:
+    if pickup_weekday in settings.NON_WORKING_DAYS:
         pickup_date = get_business_days_with_offset(pickup_date, offset=settings.NEXT_DAY)
 
     elif pickup_time > settings.TODAY_DELIVERY_CUT_OFF_TIME:

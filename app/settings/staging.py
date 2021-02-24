@@ -12,7 +12,10 @@ ALLOWED_HOSTS = [
     "washmix-back.herokuapp.com",
 ]
 
-ALLOWED_COUNTRY_CODES = [1, 7]
+ALLOWED_COUNTRY_CODES = [
+    RUSSIA_COUNTRY_CODE,
+    USA_COUNTRY_CODE,
+]
 
 
 SENTRY_DSN = env.str("SENTRY_DSN")

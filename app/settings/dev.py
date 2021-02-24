@@ -27,7 +27,7 @@ INTERNAL_IPS = [
     "127.0.0.1",
 ]
 
-ALLOWED_COUNTRY_CODES = [1, 7]
+ALLOWED_COUNTRY_CODES = [RUSSIA_COUNTRY_CODE, USA_COUNTRY_CODE]
 
 
 ####################################
