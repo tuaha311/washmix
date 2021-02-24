@@ -121,14 +121,14 @@ class PaymentService:
             is_need_to_auto_bill = client.balance < settings.AUTO_BILLING_LIMIT
 
             if is_order_fully_paid:
-                self.charge_successful = True
-
                 # after client paid for his order, we should purchase subscription
                 #  if he has a Advantage Program with `is_auto_billing` option enabled
                 if is_auto_billing and is_advantage and is_need_to_auto_bill:
                     webhook_kind = WebhookKind.SUBSCRIPTION
                     continue_with_order = None
                     self._process_subscription(webhook_kind, continue_with_order)
+                else:
+                    self.charge_successful = True
 
                 return None
 
