@@ -30,9 +30,11 @@ class RequestAdmin(AdminWithSearch):
 class DeliveryAdmin(AdminWithSearch):
     readonly_fields = [
         "order",
+        "client",
     ]
     list_display = [
         "__str__",
+        "client",
         "date",
         "sorting",
         "employee",
