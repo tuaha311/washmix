@@ -1,6 +1,10 @@
+import re
+
 from django.conf import settings
+from django.urls import re_path
 from django.utils.timezone import localtime
 from django.views.generic import TemplateView
+from django.views.static import serve
 
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny
@@ -61,3 +65,14 @@ class EmailRenderView(TemplateView):
         template_name = self.email_template_map[email_kind]
 
         return [template_name]
+
+
+def static_server(prefix, view=serve, **kwargs):
+    """
+    Static server view that was inspired by default
+    `django.conf.urls.static`.
+    """
+
+    return [
+        re_path(r"^%s(?P<path>.*)$" % re.escape(prefix.lstrip("/")), view, kwargs=kwargs),
+    ]

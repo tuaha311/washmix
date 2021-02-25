@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.conf.urls import include
-from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
 
@@ -8,7 +7,7 @@ from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 
 from api.generators import WashMixSchemaGenerator
-from api.views import EmailRenderView
+from api.views import EmailRenderView, static_server
 
 urlpatterns = []
 
@@ -56,6 +55,6 @@ urlpatterns += [
     path("jet/", include("jet.urls", "jet")),
     path("admin/", admin.site.urls),
     # Static files serving
-    *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
-    *static(settings.STATIC_URL, document_root=settings.STATIC_ROOT),
+    *static_server(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
+    *static_server(settings.STATIC_URL, document_root=settings.STATIC_ROOT),
 ]

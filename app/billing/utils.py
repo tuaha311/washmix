@@ -49,9 +49,11 @@ create_credit = partial(
 )
 
 
-def add_credits(client: Client, amount: int, provider=InvoiceProvider.CREDIT_BACK) -> Transaction:
+def add_money_to_balance(
+    client: Client, amount: int, provider=InvoiceProvider.CREDIT_BACK
+) -> Transaction:
     """
-    Helper function that creates invoice and transaction for internal credit accrue.
+    Helper function that creates invoice and transaction in debit direction.
     """
 
     with atomic():
@@ -62,6 +64,30 @@ def add_credits(client: Client, amount: int, provider=InvoiceProvider.CREDIT_BAC
             purpose=InvoicePurpose.CREDIT,
         )
         transaction = create_debit(
+            client=client,
+            invoice=invoice,
+            amount=amount,
+            provider=provider,
+        )
+
+    return transaction
+
+
+def remove_money_from_balance(
+    client: Client, amount: int, provider=InvoiceProvider.CREDIT_BACK
+) -> Transaction:
+    """
+    Helper function that creates invoice and transaction in credit direction.
+    """
+
+    with atomic():
+        invoice = Invoice.objects.create(
+            client=client,
+            amount=amount,
+            discount=settings.DEFAULT_ZERO_DISCOUNT,
+            purpose=InvoicePurpose.CREDIT,
+        )
+        transaction = create_credit(
             client=client,
             invoice=invoice,
             amount=amount,
