@@ -12,7 +12,7 @@ then
 elif [ "$action" = "migrations" ]
 then
   echo "Running migrations"
-  python manage.py migrate --settings settings.staging --noinput
+  python manage.py migrate --noinput
 
 elif [ "$action" = "scheduler" ]
 then
@@ -21,7 +21,7 @@ then
 
 else
   echo "Running django application"
-  python manage.py collectstatic --settings settings.staging --noinput
+  python manage.py collectstatic --noinput
   python manage.py loaddata dump.json --settings settings.staging
   ###Added for use in Heroku
   if [ -n "$PORT" ]
