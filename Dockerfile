@@ -32,4 +32,5 @@ WORKDIR /app
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 
+
 CMD ["/docker-entrypoint.sh"]
