@@ -5,8 +5,6 @@ from settings.base import *
 
 DEBUG = False
 
-SECURE_SSL_REDIRECT = True
-
 ALLOWED_HOSTS = [
     "washmix.com",
     "washmix.herokuapp.com",
