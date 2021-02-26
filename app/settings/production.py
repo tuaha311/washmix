@@ -7,9 +7,11 @@ DEBUG = False
 
 SHOW_OPENAPI_SCHEMA = False
 
+DOMAIN = "washmix.herokuapp.com"
+
 ALLOWED_HOSTS = [
+    DOMAIN,
     "washmix.com",
-    "washmix.herokuapp.com",
     "washmix-back.herokuapp.com",
 ]
 
