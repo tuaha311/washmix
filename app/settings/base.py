@@ -536,7 +536,7 @@ ADMIN_EMAIL_LIST = [
     "admin@washmix.com",
     "superadmin@washmix.com",
     "ds.ionin@evrone.com",
-    "api@evrone.com",
+    "michael.beheshtaien@gmail.com",
 ]
 
 EMAIL_EVENT_INFO = {

@@ -132,6 +132,7 @@ class SubscriptionService(PaymentInterfaceService):
 
         with atomic():
             order.payment = OrderPaymentChoices.PAID
+            order.status = OrderStatusChoices.COMPLETED
 
             if order.is_save_card:
                 order.card = client.main_card

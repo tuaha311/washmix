@@ -2379,7 +2379,7 @@
     "model": "billing.card",
     "pk": 4,
     "fields": {
-      "stripe_id": "card_1IMOpCEIZcTcPHNv5NFygSR3",
+      "stripe_id": "card_1IOx7LEIZcTcPHNv4ENoU4CP",
       "created": "2021-02-19T05:53:01.009Z",
       "changed": "2021-02-19T05:53:01.009Z",
       "client": 4,
