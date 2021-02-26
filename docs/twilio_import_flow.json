@@ -74,7 +74,7 @@
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
         "body": "{\"message\": \"{{trigger.message.Body}}\", \"phone\": \"{{trigger.message.ChannelAttributes.from}}\"}",
-        "url": "https://washmix.evrone.app/api/client/sms/delivery/"
+        "url": "https://washmix.herokuapp.com/api/client/sms/delivery/"
       }
     },
     {
@@ -142,7 +142,7 @@
         "workflow": "WWbe46409b0a5491baca791783a119e95a",
         "channel": "TC26544bc251241b67bfa9d3239f0f07f2",
         "attributes": "{\"tag\": \"new-customer\"}",
-        "timeout": "86400"
+        "timeout": "600"
       }
     },
     {
@@ -338,7 +338,7 @@
         "workflow": "WWbe46409b0a5491baca791783a119e95a",
         "channel": "TC26544bc251241b67bfa9d3239f0f07f2",
         "attributes": "{\"tag\": \"customer-support\"}",
-        "timeout": "86400"
+        "timeout": "600"
       }
     },
     {
@@ -363,7 +363,7 @@
         "workflow": "WWbe46409b0a5491baca791783a119e95a",
         "channel": "TC26544bc251241b67bfa9d3239f0f07f2",
         "attributes": "{\"tag\": \"something-else\"}",
-        "timeout": "86400"
+        "timeout": "600"
       }
     },
     {
@@ -386,7 +386,7 @@
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
         "body": "{\"sid\": \"WSf4478ac8ee039cb8fbcd416ecd762a9f\"}",
-        "url": "https://washmix.evrone.app/api/client/sms/online_workers/"
+        "url": "https://washmix.herokuapp.com/api/client/sms/online_workers/"
       }
     },
     {
@@ -479,7 +479,7 @@
         "workflow": "WWbe46409b0a5491baca791783a119e95a",
         "channel": "TC26544bc251241b67bfa9d3239f0f07f2",
         "attributes": "{\"tag\": \"other\"}",
-        "timeout": "86400"
+        "timeout": "600"
       }
     },
     {
