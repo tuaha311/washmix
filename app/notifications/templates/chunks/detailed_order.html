@@ -116,6 +116,11 @@
           <th id="balance">Remaining Balance [Advantage Program]</th>
           <th>${{ client.dollar_balance }}</th>
         </tr>
+      {% elif client.balance %}
+        <tr>
+          <th id="balance">Remaining Balance</th>
+          <th>${{ client.dollar_balance }}</th>
+        </tr>
       {% endif %}
     </table>
   </div>

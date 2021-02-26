@@ -10,7 +10,26 @@ from subscriptions.models import Subscription
 
 class RequestContainer(BaseDynamicAmountContainer):
     """
-    Wrapper container around pickup and dropoff Delivery
+    Wrapper container around pickup and dropoff Delivery.
+
+    Delivery can be:
+        - usual (default time)
+        - rush (more faster order handling and delivery)
+
+    Request has a complex pricing system - price is consists from
+    3 different parts:
+        - Auto-calculated usual delivery price based on client's subscription and basket.
+        - Custom delivery price that can be set via POS by admin.
+        - Rush delivery price that can be set via POS by admin.
+
+    Request has only 1 discount (rush delivery doesn't have any discount):
+        - discount = default delivery discount
+
+    Total of request price can be calculated in 2 ways (different totals used in different cases):
+        - amount_with_discount + rush_amount = total (price of default delivery with discount and rush price)
+        - amount + rush_amount = price of default without discount and rush price
+
+    It works in such manner because we faced with a lot of new business requirements.
     """
 
     proxy_to_object = "_request"
@@ -133,6 +152,9 @@ class RequestContainer(BaseDynamicAmountContainer):
         """
         If Request has option `is_rush` enabled - than admin can provide
         custom rush delivery price.
+        This amount doesn't depends from default delivery price.
+        Rush delivery doesn't have any discounts.
+
         If option is disabled - then price will be equal to 0.
         """
 
