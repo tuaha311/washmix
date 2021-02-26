@@ -5,6 +5,8 @@ from settings.base import *
 
 DEBUG = False
 
+SHOW_OPENAPI_SCHEMA = False
+
 ALLOWED_HOSTS = [
     "washmix.com",
     "washmix.herokuapp.com",

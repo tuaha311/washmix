@@ -76,15 +76,12 @@ class POSOrderAlreadyFormedView(GenericAPIView):
         serializer = self.serializer_class(data=request.query_params, context={"request": request})
         serializer.is_valid(raise_exception=True)
 
-        formed = False
         client = serializer.validated_data["client"]
         request = serializer.validated_data["request"]
 
         service = OrderService(client)
-        order = service.already_formed(request)
-
-        if order and order.employee and order.basket and order.payment == OrderPaymentChoices.PAID:
-            formed = True
+        order = service.get_order_by_request(request)
+        formed = service.is_formed(order)
 
         response = self.response_serializer_class({"formed": formed, "order": order}).data
         return Response(response)

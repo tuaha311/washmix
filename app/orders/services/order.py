@@ -59,7 +59,7 @@ class OrderService:
 
         with atomic():
             # 1. aggregate into invoice
-            invoice = self._aggregate_into_invoice(
+            invoice = self._create_and_attach_aggregated_invoice(
                 order=order,
                 basket=basket,
                 request=request,
@@ -196,7 +196,11 @@ class OrderService:
 
         return order
 
-    def already_formed(self, request: Request) -> Optional[Order]:
+    def get_order_by_request(self, request: Request) -> Optional[Order]:
+        """
+        Try to find order by client and request.
+        """
+
         client = self._client
         order = None
 
@@ -206,6 +210,20 @@ class OrderService:
             pass
 
         return order
+
+    def is_formed(self, order: Order) -> bool:
+        """
+        Method that checks order for different indicators to show it was already formed or not:
+            - If order found
+            - If Order has invoice
+        """
+
+        formed = False
+
+        if order and order.invoice:
+            formed = True
+
+        return formed
 
     def fail(self, order: Order):
         """
@@ -220,7 +238,7 @@ class OrderService:
         self._notify_client_on_payment_fail()
         self._notify_admin_on_payment_fail()
 
-    def _aggregate_into_invoice(
+    def _create_and_attach_aggregated_invoice(
         self,
         order: Order,
         basket: Basket,
