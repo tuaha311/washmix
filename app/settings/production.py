@@ -5,6 +5,8 @@ from settings.base import *
 
 DEBUG = False
 
+SECURE_SSL_REDIRECT = True
+
 SHOW_OPENAPI_SCHEMA = False
 
 ALLOWED_HOSTS = [
