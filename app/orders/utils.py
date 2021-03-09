@@ -11,6 +11,17 @@ from orders.models import Order
 from subscriptions.utils import is_advantage_program
 
 
+def convert_html_to_pdf(html_content: str, pdf_path: Path):
+    """
+    Convert HTML-string into PDF-file and write it.
+    """
+
+    html = HTML(string=html_content, media_type="all")
+    html.write_pdf(
+        pdf_path,
+    )
+
+
 def generate_pdf_from_html(order_id: int) -> Path:
     """
     Generates PDF report for Order based on HTML-template.
@@ -31,7 +42,6 @@ def generate_pdf_from_html(order_id: int) -> Path:
 
     absolute_pdf_path = generate_pdf_report_path(order_id)
 
-    html = HTML(string=html_content)
-    html.write_pdf(absolute_pdf_path)
+    convert_html_to_pdf(html_content, absolute_pdf_path)
 
     return absolute_pdf_path
