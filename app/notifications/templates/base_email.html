@@ -8,6 +8,13 @@
     <meta name="viewport" content="width=device-width, maximum-scale=1" />
     <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
     <style media="all" type="text/css">
+      {% if is_pdf %}
+        @page {
+          margin: 0;
+          size: A4;
+        }
+      {% endif %}
+
       * {
         color: #666666;
       }
@@ -17,7 +24,11 @@
         height: 100%;
         margin: 0 auto;
         padding: 0;
-        background-color: #e4e4e4;
+        {% if is_pdf %}
+          background-color: white;
+        {% else %}
+          background-color: #e4e4e4;
+        {% endif %}
         font-family: 'Montserrat', sans-serif;
         -webkit-font-smoothing: antialiased;
       }
@@ -54,13 +65,18 @@
         display: flex;
         align-items: center;
         flex-direction: column;
-        width: 100%;
+        width: 800px;
         background-color: #fafafa;
+        {% if is_pdf %}
+          height: 400px;
+        {% endif %}
       }
 
-      .socials {
+      .socials, .receiver, .address, .support {
         display: flex;
         align-items: center;
+        justify-content: center;
+        width: 800px;
       }
 
       .social-icon {
@@ -89,6 +105,11 @@
 
       .margin-top {
         margin-top: 10px;
+      }
+
+      .receiver-link {
+        margin-left: 5px;
+        margin-right: 5px;
       }
 
       .margin-bottom {
@@ -167,7 +188,9 @@
         </a>
       </div>
 
-      <div class="receiver large-margin-bottom">This message was sent to <a href="mailto:{{ client.email }}">{{ client.email }}</a> by WashMix.</div>
+      <div class="receiver large-margin-bottom">
+        This message was sent to <a href="mailto:{{ client.email }}" class="receiver-link"> {{ client.email }}</a> by WashMix.
+      </div>
 
       <a href="https://{{ washmix.domain }}" class="large-margin-bottom" target="_blank">
         <img src="{% full_static 'images/logo.png' %}" alt="logo" style="border: none;" width="48"/>

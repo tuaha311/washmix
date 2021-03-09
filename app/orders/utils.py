@@ -31,11 +31,14 @@ def generate_pdf_from_html(order_id: int) -> Path:
     client = order.client
     client_id = client.id
     subscription = client.subscription
+    is_pdf = True
     is_advantage = is_advantage_program(subscription.name)
 
     event = settings.NEW_ORDER
     event_info = settings.EMAIL_EVENT_INFO[event]
-    context = get_extra_context(client_id, order_id=order_id, is_advantage=is_advantage)
+    context = get_extra_context(
+        client_id, order_id=order_id, is_advantage=is_advantage, is_pdf=is_pdf
+    )
 
     template_name = event_info["template_name"]
     html_content = render_to_string(template_name, context=context)
