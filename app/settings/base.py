@@ -95,8 +95,43 @@ ROOT_URLCONF = "settings.urls"
 LANGUAGE_CODE = "en-AU"
 TIME_ZONE = "America/Los_Angeles"
 USE_I18N = True
-USE_L10N = True
+USE_L10N = False
 USE_TZ = True
+
+
+# first element of list controls appearance in `django-jet` admin of date field
+# via jet.templatetags.jet_get_date_format
+DATE_INPUT_FORMATS = [
+    "%m/%d/%Y",  # '10/25/2006'
+    "%m/%d/%y",  # '10/25/06'
+    "%Y-%m-%d",  # '2006-10-25'
+    "%b %d %Y",  # 'Oct 25 2006'
+    "%b %d, %Y",  # 'Oct 25, 2006'
+    "%d %b %Y",  # '25 Oct 2006'
+    "%d %b, %Y",  # '25 Oct, 2006'
+    "%B %d %Y",  # 'October 25 2006'
+    "%B %d, %Y",  # 'October 25, 2006'
+    "%d %B %Y",  # '25 October 2006'
+    "%d %B, %Y",  # '25 October, 2006'
+]
+
+
+# first element of list controls appearance in `django-jet` admin of datetime field
+# via jet.templatetags.jet_get_datetime_format
+DATETIME_INPUT_FORMATS = [
+    "%m/%d/%Y %H:%M:%S",  # '10/25/2006 14:30:59'
+    "%m/%d/%Y %H:%M:%S.%f",  # '10/25/2006 14:30:59.000200'
+    "%m/%d/%Y %H:%M",  # '10/25/2006 14:30'
+    "%m/%d/%Y",  # '10/25/2006'
+    "%m/%d/%y %H:%M:%S",  # '10/25/06 14:30:59'
+    "%m/%d/%y %H:%M:%S.%f",  # '10/25/06 14:30:59.000200'
+    "%m/%d/%y %H:%M",  # '10/25/06 14:30'
+    "%m/%d/%y",  # '10/25/06'
+    "%Y-%m-%d %H:%M:%S",  # '2006-10-25 14:30:59'
+    "%Y-%m-%d %H:%M:%S.%f",  # '2006-10-25 14:30:59.000200'
+    "%Y-%m-%d %H:%M",  # '2006-10-25 14:30'
+    "%Y-%m-%d",  # '2006-10-25'
+]
 
 
 STATIC_URL = "/assets/"
