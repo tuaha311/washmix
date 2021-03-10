@@ -10,6 +10,9 @@ class Phone(Common):
     Client-side entity.
 
     Phone number of our clients.
+
+    IMPORTANT: Phone entity has a signal receiver on `post_save`.
+    Signal location - `core.signals`
     """
 
     client = models.ForeignKey(

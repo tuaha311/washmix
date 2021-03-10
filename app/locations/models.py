@@ -56,6 +56,9 @@ class Address(Common):
     Client-side entity.
 
     Addresses of our clients.
+
+    IMPORTANT: Address entity has a signal receiver on `post_save`.
+    Signal location - `locations.signals`
     """
 
     client = models.ForeignKey(

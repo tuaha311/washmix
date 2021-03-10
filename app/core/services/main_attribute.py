@@ -11,13 +11,15 @@ class MainAttributeService:
         self._client = client
 
     def create(self, serializer: Serializer):
+        main_attribute = self._main_attribute
+
         with atomic():
             instance = serializer.save(client=self._client)
-            main_attribute_value = getattr(self._client, self._main_attribute)
+            main_attribute_value = getattr(self._client, main_attribute)
 
             if not main_attribute_value:
-                setattr(self._client, self._main_attribute, instance)
-                self._client.save()
+                setattr(self._client, main_attribute, instance)
+                self._client.save(update_fields={main_attribute})
 
         return instance
 
