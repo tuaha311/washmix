@@ -85,7 +85,7 @@ def update_user_stripe_info(
     stripe_id = client.stripe_id
     stripe_helper = StripeHelper(client)
 
-    if {"first_name", "last_name"} & update_fields:
+    if settings.UPDATE_FIELDS_FOR_USER & update_fields:
         full_name = client.full_name
         stripe_helper.update_customer_info(stripe_id, name=full_name)
 

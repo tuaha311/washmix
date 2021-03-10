@@ -1,3 +1,5 @@
+from django.conf import settings
+
 from rest_framework.viewsets import ModelViewSet
 
 from api.client.mixins import PreventDeletionOfMainAttributeMixin, SetMainAttributeMixin
@@ -20,10 +22,18 @@ class PhoneViewSet(PreventDeletionOfMainAttributeMixin, SetMainAttributeMixin, M
         super().perform_create(serializer)
 
     def perform_update(self, serializer):
+        phone = serializer.instance
         phone_service = PhoneNumberService(serializer)
         serializer = phone_service.cleanup_phone_number()
 
+        update_fields = {}
+        unique_fields = set(serializer.validated_data.keys())
+        if settings.UPDATE_FIELDS_FOR_PHONE & unique_fields:
+            update_fields = settings.UPDATE_FIELDS_FOR_PHONE
+
         super().perform_update(serializer)
+
+        phone.save(update_fields=update_fields)
 
     def get_queryset(self):
         client = self.request.user.client

@@ -215,6 +215,15 @@ SECONDS_IN_HOUR = SECONDS_IN_MINUTE * 60
 SESSION_COOKIE_AGE = SECONDS_IN_HOUR * 2
 
 
+###########
+# SIGNALS #
+###########
+
+UPDATE_FIELDS_FOR_PHONE = {"number"}
+UPDATE_FIELDS_FOR_ADDRESS = {"address_line_1", "address_line_2", "zip_code"}
+UPDATE_FIELDS_FOR_USER = {"first_name", "last_name"}
+
+
 ###############
 # SOME PRICES #
 ###############

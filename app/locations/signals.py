@@ -45,7 +45,7 @@ def update_address_stripe_info(
         logger.info("No update fields")
         return None
 
-    if {"address_line_1", "address_line_2"} & update_fields:
+    if settings.UPDATE_FIELDS_FOR_ADDRESS & update_fields:
         address = {
             "line1": address.address_line_1,
             "line2": address.address_line_2,

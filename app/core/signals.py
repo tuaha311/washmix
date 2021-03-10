@@ -1,5 +1,6 @@
 import logging
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -46,7 +47,7 @@ def update_phone_stripe_info(
         logger.info("No update fields")
         return None
 
-    if "number" in update_fields:
+    if settings.UPDATE_FIELDS_FOR_PHONE & update_fields:
         number = phone.number
         stripe_helper.update_customer_info(stripe_id, phone=number)
 
