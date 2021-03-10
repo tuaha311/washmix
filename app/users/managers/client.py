@@ -29,6 +29,7 @@ class ClientManager(models.Manager):
 
                 client.main_phone = phone
                 client.save()
+
         except IntegrityError:
             user = User.objects.get(email=email)
             client = user.client

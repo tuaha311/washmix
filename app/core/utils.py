@@ -9,10 +9,13 @@ from rest_framework import serializers
 
 def get_dollars(self, attribute_name: str):
     """
-    Returns amount in dollars.
+    Read a attribute of class instance in cents (¢) and
+    transform it to dollars ($).
     """
-    amount_value = getattr(self, attribute_name)
-    dollar_amount = amount_value / settings.CENTS_IN_DOLLAR
+
+    cent_amount = getattr(self, attribute_name)
+    dollar_amount = cent_amount / settings.CENTS_IN_DOLLAR
+
     return round(dollar_amount, 2)
 
 

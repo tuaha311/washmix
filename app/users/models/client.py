@@ -22,6 +22,9 @@ class Client(ProxyUserInfoMixin, Stripeable, Common):
     To this client we can offer a full-featured web-application without any
     restrictions. This kind of client can login into application, because they
     have an relation with authentication data (AUTH_USER_MODEL).
+
+    IMPORTANT: Client entity has a signal receiver on `post_save`.
+    Signal location - `users.signals`
     """
 
     user = models.OneToOneField(

@@ -73,13 +73,13 @@ class RequestService(PaymentInterfaceService):
         invoice_service = InvoiceService(client)
         basket_container = BasketContainer(subscription, basket)  # type: ignore
         request_container = RequestContainer(subscription, request, basket_container)  # type: ignore
-        dropoff_container = request_container.dropoff_container
-        pickup_container = request_container.pickup_container
+        amount = request_container.amount + request_container.rush_amount
+        discount = request_container.discount
 
         request = invoice_service.refresh_amount_discount(
             entity=request,
-            amount=sum([dropoff_container.amount, pickup_container.amount]),
-            discount=sum([dropoff_container.discount, pickup_container.discount]),
+            amount=amount,
+            discount=discount,
         )
 
         return request.amount_with_discount

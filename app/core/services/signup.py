@@ -20,7 +20,7 @@ class SignupService:
             customer = stripe_helper.customer
 
             client.stripe_id = customer["id"]
-            client.save()
+            client.save(update_fields={"stripe_id", "main_phone"})
 
         send_email.send(
             event=settings.SIGNUP,

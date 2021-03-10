@@ -4,7 +4,7 @@ from django.contrib import admin, messages
 
 from billing.choices import InvoiceProvider
 from billing.models import Invoice
-from billing.utils import add_credits
+from billing.utils import add_money_to_balance, remove_money_from_balance
 from core.admin import AdminWithSearch
 from deliveries.models import Request
 from notifications.tasks import send_email
@@ -80,11 +80,36 @@ class RequestInlineAdmin(admin.TabularInline):
 # Client Admin
 #
 class ClientForm(forms.ModelForm):
-    credit_amount = forms.IntegerField(required=False, label="Add credits, in cents (¢)")
+    add_money_amount = forms.IntegerField(
+        required=False,
+        label="Add credits, in cents (¢)",
+        min_value=settings.DEFAULT_ZERO_AMOUNT,
+    )
+    remove_money_amount = forms.IntegerField(
+        required=False,
+        label="Remove credits, in cents (¢)",
+        min_value=settings.DEFAULT_ZERO_AMOUNT,
+    )
 
     class Meta:
         model = Client
         fields = "__all__"
+
+    def clean_remove_money_amount(self):
+        """
+        Cleaner method that will check for client's balance is enough.
+        """
+
+        cleaned_data = self.cleaned_data
+
+        client = self.instance
+        balance = client.balance
+        remove_money_amount = cleaned_data.get("remove_money_amount", None)
+
+        if remove_money_amount and balance < remove_money_amount:
+            raise forms.ValidationError("Not enough money.", code="not_enough_money")
+
+        return remove_money_amount
 
 
 class ClientAdmin(AdminWithSearch):
@@ -109,10 +134,14 @@ class ClientAdmin(AdminWithSearch):
         """
 
         client = form.instance
-        credit_amount = form.cleaned_data.get("credit_amount", None)
+        add_money_amount = form.cleaned_data.get("add_money_amount", None)
+        remove_money_amount = form.cleaned_data.get("remove_money_amount", None)
 
-        if credit_amount and credit_amount > 0:
-            add_credits(client, credit_amount, provider=InvoiceProvider.WASHMIX)
+        if add_money_amount and add_money_amount > 0:
+            add_money_to_balance(client, add_money_amount, provider=InvoiceProvider.WASHMIX)
+
+        if remove_money_amount and remove_money_amount > 0:
+            remove_money_from_balance(client, remove_money_amount, provider=InvoiceProvider.WASHMIX)
 
         return super().save_form(request, form, change)
 

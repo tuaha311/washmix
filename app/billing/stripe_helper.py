@@ -127,3 +127,12 @@ class StripeHelper:
         payment_method = stripe.PaymentMethod.detach(payment_method_id)
 
         return payment_method
+
+    def update_customer_info(self, customer_id: str, **kwargs):
+        """
+        Reference - https://stripe.com/docs/api/customers/update
+        """
+
+        customer = stripe.Customer.modify(sid=customer_id, **kwargs)
+
+        return customer

@@ -5,15 +5,20 @@ from settings.base import *
 
 DEBUG = False
 
-SECURE_SSL_REDIRECT = True
+SHOW_OPENAPI_SCHEMA = False
+
+DOMAIN = "washmix.herokuapp.com"
 
 ALLOWED_HOSTS = [
+    DOMAIN,
     "washmix.com",
-    "washmix.herokuapp.com",
     "washmix-back.herokuapp.com",
 ]
 
-ALLOWED_COUNTRY_CODES = [USA_COUNTRY_CODE]
+ALLOWED_COUNTRY_CODES = [
+    RUSSIA_COUNTRY_CODE,
+    USA_COUNTRY_CODE,
+]
 
 
 SENTRY_DSN = env.str("SENTRY_DSN")
