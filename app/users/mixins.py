@@ -18,7 +18,7 @@ class ProxyUserInfoMixin:
     @first_name.setter
     def first_name(self, value: str):
         self.user.first_name = value
-        self.user.save()
+        self.user.save(update_fields={"first_name"})
 
     @property
     def last_name(self):
@@ -27,7 +27,7 @@ class ProxyUserInfoMixin:
     @last_name.setter
     def last_name(self, value: str):
         self.user.last_name = value
-        self.user.save()
+        self.user.save(update_fields={"last_name"})
 
     #
     # properties
