@@ -2,6 +2,7 @@ import logging
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.db.models import ObjectDoesNotExist
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
@@ -80,8 +81,12 @@ def update_user_stripe_info(
         logger.info("No update fields")
         return None
 
-    user = instance
-    client = user.client
+    try:
+        user = instance
+        client = user.client
+    except ObjectDoesNotExist:
+        return None
+
     stripe_id = client.stripe_id
     stripe_helper = StripeHelper(client)
 
