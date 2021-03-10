@@ -46,3 +46,4 @@ venv
 
 # media files
 */media/reports/*
+*.tmp

@@ -1,7 +1,4 @@
 version: 2.1
-orbs:
-  docker: circleci/docker@1.4.0
-  helm: circleci/helm@1.1.2
 
 executors:
   build-executor:
@@ -11,50 +8,12 @@ aliases:
   - &build_environment
     executor: build-executor
 
-  - &build_docker_image
-    - checkout
-    - build_and_push_docker_image
-
-  - &deploy_helm_chart
-    - checkout
-    - run:
-        command: |
-          mkdir -p $(dirname $KUBECONFIG) && \
-          echo $KUBECONFIG_TOKEN | base64 -d > $KUBECONFIG
-    - deploy_helm_chart
-
   - &deploy_to_heroku
     - checkout
     - deploy_to_heroku
 
 # Commands
 commands:
-  build_and_push_docker_image:
-    description: "Build docker image for ultra marketing"
-    steps:
-      - docker/check
-      - docker/build:
-          image: "evrone/washmix-back"
-          tag: "${CIRCLE_SHA1}"
-      - docker/build:
-          image: "evrone/washmix-back"
-          tag: "latest"
-      - docker/push:
-          image: "evrone/washmix-back"
-          tag: "${CIRCLE_SHA1}"
-      - docker/push:
-          image: "evrone/washmix-back"
-          tag: "latest"
-
-  deploy_helm_chart:
-    description: "Deploy applicaton chart with Helm"
-    steps:
-      - helm/install-helm-client:
-          version: "v3.2.4"
-      - run:
-          command: |
-            helm version && .charts/update.sh
-
   deploy_to_heroku:
     description: "Deploy applicaton to Heroku"
     steps:
@@ -63,14 +22,6 @@ commands:
             git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git ${CIRCLE_BRANCH}:master
 
 jobs:
-  "Build docker image":
-    <<: *build_environment
-    steps: *build_docker_image
-
-  "Deploy Helm chart":
-    <<: *build_environment
-    steps: *deploy_helm_chart
-
   "Deploy to Heroku":
     <<: *build_environment
     steps: *deploy_to_heroku
@@ -80,24 +31,13 @@ jobs:
 _release-filters: &release-filters
   branches:
     only:
-      - dev
+      - heroku-test
+      - master
+
 
 workflows:
-  build-n-push-images:
-    jobs:
-      - "Build docker image":
-          filters:
-            <<: *release-filters
-      - "Deploy Helm chart":
-          requires:
-            - "Build docker image"
-          filters:
-            <<: *release-filters
   deploy-to-heroku:
     jobs:
       - "Deploy to Heroku":
           filters:
-            branches:
-              only:
-                - heroku-test
-                - master
+            <<: *release-filters
