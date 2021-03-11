@@ -74,7 +74,7 @@ class TwilioFlexOnlineWorkersWebhookView(GenericAPIView):
     parser_classes = [FormParser, JSONParser]
     serializer_class = TwilioFlexOnlineWorkersWebhookSerializer
 
-    def get(self, request: Request, *args, **kwargs):
+    def post(self, request: Request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data, context={"request": request})
         serializer.is_valid(raise_exception=True)
 
