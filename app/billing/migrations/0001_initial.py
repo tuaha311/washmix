@@ -153,7 +153,7 @@ class Migration(migrations.Migration):
                 "verbose_name_plural": "invoices",
             },
             bases=(
-                core.mixins.CalculatedAmountWithDiscount,
+                core.mixins.CalculatedAmountWithDiscountMixin,
                 core.mixins.CalculatedDiscountMixin,
                 models.Model,
             ),

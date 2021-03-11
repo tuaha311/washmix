@@ -5,6 +5,7 @@ from django.contrib.auth.models import Permission
 from djangoql.admin import DjangoQLSearchMixin
 from social_django.models import Association, Nonce, UserSocialAuth
 
+from core.mixins import AdminUpdateFieldsMixin
 from core.models import Phone
 
 
@@ -12,7 +13,11 @@ class AdminWithSearch(DjangoQLSearchMixin, admin.ModelAdmin):
     pass
 
 
-registered_models = [[Phone, AdminWithSearch]]
+class PhoneAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
+    pass
+
+
+registered_models = [[Phone, PhoneAdmin]]
 for item in registered_models:
     admin.site.register(*item)
 

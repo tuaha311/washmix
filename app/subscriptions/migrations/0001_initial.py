@@ -212,7 +212,7 @@ class Migration(migrations.Migration):
                 "verbose_name_plural": "subscriptions",
             },
             bases=(
-                core.mixins.CalculatedAmountWithDiscount,
+                core.mixins.CalculatedAmountWithDiscountMixin,
                 core.mixins.CalculatedDiscountMixin,
                 models.Model,
             ),

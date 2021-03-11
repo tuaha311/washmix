@@ -1,15 +1,20 @@
 from django import forms
 from django.conf import settings
 from django.contrib import admin, messages
+from django.contrib.admin.sites import AlreadyRegistered, NotRegistered
+from django.contrib.auth import get_user_model
 
 from billing.choices import InvoiceProvider
 from billing.models import Invoice
 from billing.utils import add_money_to_balance, remove_money_from_balance
 from core.admin import AdminWithSearch
+from core.mixins import AdminUpdateFieldsMixin
 from deliveries.models import Request
 from notifications.tasks import send_email
 from orders.models import Order
 from users.models import Client, Customer, Employee
+
+User = get_user_model()
 
 
 #
@@ -112,7 +117,7 @@ class ClientForm(forms.ModelForm):
         return remove_money_amount
 
 
-class ClientAdmin(AdminWithSearch):
+class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
     readonly_fields = [
         "balance",
         "stripe_id",
@@ -190,6 +195,10 @@ class CustomerAdmin(AdminWithSearch):
     list_filter = ["kind"]
 
 
+class UserAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
+    pass
+
+
 models = [
     [Client, ClientAdmin],
     [Employee, AdminWithSearch],
@@ -197,3 +206,12 @@ models = [
 ]
 for item in models:
     admin.site.register(*item)
+
+# here we are trying to override Admin Panel for NamedEmailUser model
+# that was provided by 3-rd party library
+try:
+    admin.site.unregister(User)
+except NotRegistered:
+    pass
+finally:
+    admin.site.register(User, UserAdmin)

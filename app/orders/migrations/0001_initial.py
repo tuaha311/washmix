@@ -46,7 +46,7 @@ class Migration(migrations.Migration):
                 "ordering": ["-created"],
             },
             bases=(
-                core.mixins.CalculatedAmountWithDiscount,
+                core.mixins.CalculatedAmountWithDiscountMixin,
                 core.mixins.CalculatedDiscountMixin,
                 models.Model,
             ),

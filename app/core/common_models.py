@@ -1,7 +1,7 @@
 from django.db import models
 
 from core.behaviors import Amountable, Discountable
-from core.mixins import CalculatedAmountWithDiscount, CalculatedDiscountMixin
+from core.mixins import CalculatedAmountWithDiscountMixin, CalculatedDiscountMixin
 
 
 class Common(models.Model):
@@ -19,7 +19,7 @@ class Common(models.Model):
 class CommonAmountDiscountModel(
     Amountable,
     Discountable,
-    CalculatedAmountWithDiscount,
+    CalculatedAmountWithDiscountMixin,
     CalculatedDiscountMixin,
     Common,
 ):
