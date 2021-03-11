@@ -74,13 +74,12 @@ class TwilioFlexOnlineWorkersWebhookView(GenericAPIView):
     parser_classes = [FormParser, JSONParser]
     serializer_class = TwilioFlexOnlineWorkersWebhookSerializer
 
-    def post(self, request: Request, *args, **kwargs):
+    def get(self, request: Request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data, context={"request": request})
         serializer.is_valid(raise_exception=True)
 
-        sid = serializer.validated_data["sid"]
-
         service = TwilioFlexService()
+        sid = settings.TWILIO_WORKSPACE_SID
         is_workers_online = service.is_workers_online(sid)
         body = {"online": is_workers_online}
 

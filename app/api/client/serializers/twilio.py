@@ -186,4 +186,4 @@ class TwilioFlexOnlineWorkersWebhookSerializer(serializers.Serializer):
     Request data from Twilio Flex Widget.
     """
 
-    sid = serializers.CharField()
+    pass
