@@ -1,5 +1,5 @@
 from deliveries.models import Delivery
-from notifications.context import email_context
+from notifications.context import washmix_context
 from orders.containers.order import OrderContainer
 from orders.models import Order
 from subscriptions.containers import SubscriptionContainer
@@ -15,7 +15,7 @@ def get_extra_context(
     **kwargs,
 ):
     context: dict = {
-        "washmix": email_context,
+        "washmix": washmix_context,
         **kwargs,
     }
 

@@ -10,4 +10,4 @@ class WashmixEmailContext:
     laundry_address = settings.LAUNDRY_ADDRESS
 
 
-email_context = WashmixEmailContext()
+washmix_context = WashmixEmailContext()

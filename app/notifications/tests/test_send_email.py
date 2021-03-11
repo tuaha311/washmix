@@ -2,7 +2,7 @@ from unittest.mock import MagicMock, patch
 
 from django.conf import settings
 
-from notifications.context import email_context
+from notifications.context import washmix_context
 from notifications.tasks import send_email
 
 
@@ -28,7 +28,7 @@ def test_send_email_no_extra_context(send_grid_sender_class_mock, client_class_m
         event=settings.SIGNUP,
         context={
             "client": client_instance_mock,
-            "washmix": email_context,
+            "washmix": washmix_context,
         },
     )
 
@@ -67,7 +67,7 @@ def test_send_email_with_subscription_context(
         event=settings.SIGNUP,
         context={
             "client": client_instance_mock,
-            "washmix": email_context,
+            "washmix": washmix_context,
             "subscription_container": subscription_container_instance_mock,
         },
     )
@@ -99,7 +99,7 @@ def test_send_email_with_extra_context(
         event=settings.SIGNUP,
         context={
             "client": client_instance_mock,
-            "washmix": email_context,
+            "washmix": washmix_context,
             "foo": 100,
         },
     )

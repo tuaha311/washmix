@@ -5,9 +5,10 @@ from settings.base import *
 
 DEBUG = True
 
+
 ALLOWED_HOSTS = [
     DOMAIN,
-    "localhost",
+    "washmix.com",
     "washmix.herokuapp.com",
     "washmix-back.herokuapp.com",
 ]

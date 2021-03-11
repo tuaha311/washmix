@@ -11,7 +11,7 @@ from subscriptions.models import Subscription
 
 class DeliveryContainer(BaseDynamicAmountContainer):
     """
-    Reference to Delivery Fees - https://washmix.evrone.app/terms-of-use
+    Reference to Delivery Fees - https://washmix.com/terms-of-use
 
     DeliveryContainer implements pricing logic of delivery.
     Pricing on delivery depends on:

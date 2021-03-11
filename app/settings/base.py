@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).parents[1]
 # DJANGO #
 ##########
 
-DOMAIN = "washmix.evrone.app"
+DOMAIN = "washmix.herokuapp.com"
 ALLOWED_HOSTS = ["*"]
 
 SECRET_KEY = env.str("SECRET_KEY")

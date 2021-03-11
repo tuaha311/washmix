@@ -5,6 +5,8 @@ from django.http import HttpResponseRedirect
 from django.urls import path
 from django.views.generic.base import TemplateResponse
 
+from notifications.context import washmix_context
+
 
 class WashmixAdminSite(AdminSite):
     """
@@ -53,6 +55,7 @@ class WashmixAdminSite(AdminSite):
         context = {
             **self.each_context(request),
             "title": self.index_title,
+            "washmix": washmix_context,
             **(extra_context or {}),
         }
         # end of copied part

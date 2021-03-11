@@ -26,12 +26,21 @@ class StripeHelper:
     def customer(self):
         """
         Convenient property around Customer that will create or get
-        Customer based on our Client's ID.
+        Customer based on our Client's email.
         """
 
+        client = self._client
+
         try:
-            customer = stripe.Customer.retrieve(self._client.stripe_id)
-        except InvalidRequestError:
+            if client.stripe_id:
+                # this code can raise InvalidRequestError
+                customer = stripe.Customer.retrieve(self._client.stripe_id)
+            else:
+                customer_list = stripe.Customer.list(email=client.email)
+                # this code can raise IndexError
+                customer = customer_list["data"][0]
+
+        except (InvalidRequestError, IndexError):
             customer = stripe.Customer.create(
                 email=self._client.email,
                 metadata={"id": self._client.id},
