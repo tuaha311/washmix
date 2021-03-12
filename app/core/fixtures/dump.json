@@ -4209,7 +4209,7 @@
       "changed": "2020-10-01T01:59:44.234Z",
       "title": "Pants",
       "image": "Pants.jpeg",
-      "is_visible": false
+      "is_visible": true
     }
   },
   {
@@ -4231,7 +4231,7 @@
       "changed": "2020-10-01T01:59:44.322Z",
       "title": "Polo",
       "image": "",
-      "is_visible": false
+      "is_visible": true
     }
   },
   {
@@ -4242,7 +4242,7 @@
       "changed": "2020-10-01T01:59:44.442Z",
       "title": "Shirt",
       "image": "Shirt-Regular.jpg",
-      "is_visible": false
+      "is_visible": true
     }
   },
   {
@@ -4251,7 +4251,7 @@
     "fields": {
       "created": "2020-10-01T01:59:43.423Z",
       "changed": "2020-10-01T01:59:43.423Z",
-      "title": "Shirt [Press + Hang] [Cotton]",
+      "title": "Shirt [Reg]",
       "image": "",
       "is_visible": true
     }
@@ -4262,7 +4262,7 @@
     "fields": {
       "created": "2020-10-01T01:59:43.473Z",
       "changed": "2020-10-01T01:59:43.473Z",
-      "title": "Shirt [Press + Fold] [Cotton]",
+      "title": "Shirt [FOLD]",
       "image": "",
       "is_visible": true
     }
@@ -4297,7 +4297,7 @@
       "changed": "2020-10-01T01:59:43.608Z",
       "title": "Tuxedo Shirt",
       "image": "",
-      "is_visible": false
+      "is_visible": true
     }
   },
   {
@@ -4394,7 +4394,7 @@
     "fields": {
       "created": "2020-10-01T01:59:44.078Z",
       "changed": "2020-10-01T01:59:44.078Z",
-      "title": "Dress [Gown] [Min price $29.95]",
+      "title": "Dress [Gown] [Start from $29.95]",
       "image": "Dress - Gown.jpg",
       "is_visible": false
     }
@@ -4416,7 +4416,7 @@
     "fields": {
       "created": "2020-10-01T01:59:44.200Z",
       "changed": "2020-10-01T01:59:44.200Z",
-      "title": "Jacket [Leather] [Min price $49.95]",
+      "title": "Jacket [Leather] [Start from $49.95]",
       "image": "Jacket - Medium- Leather.jpg",
       "is_visible": true
     }
@@ -4867,7 +4867,7 @@
     "fields": {
       "created": "2020-10-01T01:59:46.502Z",
       "changed": "2020-10-01T01:59:46.502Z",
-      "title": "Sofa Cover",
+      "title": "Sofa Cover [Small] [Start from $39.95]",
       "image": "Sofa - Mediu.jpg",
       "is_visible": true
     }
@@ -4955,7 +4955,7 @@
     "fields": {
       "created": "2020-10-01T01:59:46.947Z",
       "changed": "2020-10-01T01:59:46.947Z",
-      "title": "Button Replacement [Special] [Min Price $9.95]",
+      "title": "Button Replacement [Special] [Start from $9.95]",
       "image": "",
       "is_visible": false
     }
@@ -5461,7 +5461,7 @@
     "fields": {
       "created": "2020-10-01T01:59:49.213Z",
       "changed": "2020-10-01T01:59:49.213Z",
-      "title": "Zipper Replaced [Min price $20]",
+      "title": "Zipper Replaced [Start from $20]",
       "image": "",
       "is_visible": true
     }
@@ -5472,7 +5472,7 @@
     "fields": {
       "created": "2020-10-01T01:59:49.262Z",
       "changed": "2020-10-01T01:59:49.262Z",
-      "title": "Sleeves Shortened [Min Price $25]",
+      "title": "Sleeves Shortened [Start from $25]",
       "image": "",
       "is_visible": true
     }
@@ -5483,7 +5483,7 @@
     "fields": {
       "created": "2020-10-01T01:59:49.309Z",
       "changed": "2020-10-01T01:59:49.309Z",
-      "title": "Meding [Tears or Misc] [Min Price $10]",
+      "title": "Meding [Tears or Misc] [Start from $10]",
       "image": "",
       "is_visible": true
     }
@@ -5736,7 +5736,7 @@
     "fields": {
       "created": "2020-10-01T01:59:50.420Z",
       "changed": "2020-10-01T01:59:50.420Z",
-      "title": "Clean Only",
+      "title": "Clean Only [Start from $149]",
       "image": "",
       "is_visible": true
     }
@@ -5747,7 +5747,7 @@
     "fields": {
       "created": "2020-10-01T01:59:50.466Z",
       "changed": "2020-10-01T01:59:50.466Z",
-      "title": "Clean + Preservation",
+      "title": "Clean + Preservation [Start from $299.95]",
       "image": "",
       "is_visible": true
     }
@@ -5769,7 +5769,7 @@
     "fields": {
       "created": "2020-10-01T01:59:50.587Z",
       "changed": "2020-10-01T01:59:50.587Z",
-      "title": "Machine Made [Min price $99]",
+      "title": "Machine Made [Start from $99]",
       "image": "Rug Reg.jpeg",
       "is_visible": true
     }
@@ -5780,7 +5780,7 @@
     "fields": {
       "created": "2020-10-01T01:59:50.636Z",
       "changed": "2020-10-01T01:59:50.636Z",
-      "title": "Handmade Rug [Persian/Indian] [Min Price $99]",
+      "title": "Handmade Rug [Persian/Indian] [Start from $99]",
       "image": "Rug - Persian.jpg",
       "is_visible": true
     }
@@ -5791,7 +5791,7 @@
     "fields": {
       "created": "2020-10-01T01:59:50.685Z",
       "changed": "2020-10-01T01:59:50.685Z",
-      "title": "Cowhide Rug [Min Price 99$]",
+      "title": "Cowhide Rug [Start from 99$]",
       "image": "",
       "is_visible": true
     }
