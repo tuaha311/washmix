@@ -9,8 +9,11 @@ DEBUG = True
 ALLOWED_HOSTS = [
     DOMAIN,
     "washmix.com",
+    "www.washmix.com",
     "washmix.herokuapp.com",
+    "www.washmix.herokuapp.com",
     "washmix-back.herokuapp.com",
+    "www.washmix-back.herokuapp.com",
 ]
 
 ALLOWED_COUNTRY_CODES = [

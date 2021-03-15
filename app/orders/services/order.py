@@ -92,6 +92,10 @@ class OrderService:
                     order=order, basket=basket, request=request, subscription=subscription
                 )
 
+            # 6. let's save a client's current subscription that used on this order
+            order.discount_by_subscription = client.subscription
+            order.save()
+
         self._order = order
         charge_successful = payment_service.charge_successful
 

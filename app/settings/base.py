@@ -73,6 +73,7 @@ DATABASES = {
         "PASSWORD": env.str("DB_PASSWORD", "wm_pass"),
         "HOST": env.str("DB_HOST", "localhost"),
         "PORT": env.str("DB_PORT", "5432"),
+        "CONN_MAX_AGE": 10,
     }
 }
 

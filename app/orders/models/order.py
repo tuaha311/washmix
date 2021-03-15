@@ -70,6 +70,16 @@ class Order(Common):
         on_delete=models.CASCADE,
         null=True,
     )
+    # this relation used to save a subscription that provided discount
+    # on basket and request
+    discount_by_subscription = models.ForeignKey(
+        "subscriptions.Subscription",
+        verbose_name="subscription that used for discount by package",
+        related_name="+",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
 
     status = models.CharField(
         max_length=20,
