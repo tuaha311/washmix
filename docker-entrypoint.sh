@@ -7,7 +7,7 @@ action=$1
 if [ "$action" = "worker" ]
 then
   echo "Running dramatiq worker"
-  dramatiq -v settings.dramatiq
+  dramatiq --threads 1 --processes 1 -v settings.dramatiq
 
 elif [ "$action" = "migrations" ]
 then
