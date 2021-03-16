@@ -1,8 +1,7 @@
 from typing import Dict
 
-from django.conf import settings
-
 from core.containers import BaseDynamicAmountContainer
+from orders.helpers import calculate_discount
 from orders.models import Quantity, Service
 from subscriptions.models import Subscription
 
@@ -27,6 +26,7 @@ class QuantityContainer(BaseDynamicAmountContainer):
             "title": "Wash & Folds",
         },
     ]
+    default_attribute_name = "dry_clean"
 
     def __init__(self, subscription: Subscription, quantity: Quantity):
         self._subscription = subscription
@@ -47,18 +47,15 @@ class QuantityContainer(BaseDynamicAmountContainer):
         """
 
         quantity = self._quantity
+        amount = self.amount
         service = quantity.price.service
         service_map = self._service_map
         subscription = self._subscription
+        attribute_name = service_map.get(service, self.default_attribute_name)
 
-        try:
-            attribute_name = service_map[service]
-            subscription_discount_for_service = getattr(subscription, attribute_name)
-            discount = self.amount * subscription_discount_for_service / settings.PERCENTAGE
-        except (KeyError, AttributeError):
-            discount = settings.DEFAULT_ZERO_DISCOUNT
-        finally:
-            return discount
+        discount = calculate_discount(amount, subscription, attribute_name)
+
+        return discount
 
     @property
     def _service_map(self) -> Dict[Service, str]:

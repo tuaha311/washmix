@@ -1,6 +1,5 @@
-from django.conf import settings
-
 from core.containers import BaseDynamicAmountContainer
+from orders.helpers import calculate_discount
 
 
 class ExtraItemContainer(BaseDynamicAmountContainer):
@@ -14,16 +13,12 @@ class ExtraItemContainer(BaseDynamicAmountContainer):
     @property
     def discount(self) -> float:
         subscription = self._subscription
-        subscription_attribute_name = self.subscription_attribute_name
+        attribute_name = self.subscription_attribute_name
         amount = self.amount
 
-        try:
-            subscription_discount_for_service = getattr(subscription, subscription_attribute_name)
-            discount = amount * subscription_discount_for_service / settings.PERCENTAGE
-        except (KeyError, AttributeError):
-            discount = settings.DEFAULT_ZERO_DISCOUNT
-        finally:
-            return discount
+        discount = calculate_discount(amount, subscription, attribute_name)
+
+        return discount
 
     @property
     def amount(self):
