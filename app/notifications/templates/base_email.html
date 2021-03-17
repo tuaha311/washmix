@@ -33,9 +33,14 @@
         -webkit-font-smoothing: antialiased;
       }
 
-      header {
+      table {
+        border-spacing: 0;
+      }
+
+      .container .header {
         width: 100%;
         margin-bottom: 40px;
+        text-align: left;
       }
 
       .footer {
@@ -109,6 +114,10 @@
         padding-bottom: 20px;
       }
 
+      .padding-top {
+        padding-top: 10px;
+      }
+
       .margin-top {
         margin-top: 10px;
       }
@@ -166,20 +175,24 @@
   </head>
 
   <body>
-    <div class="container">
-      <header>
-        <a href="https://{{ washmix.domain }}" target="_blank">
-          <img src="{% full_static 'images/logo_with_text.png' %}" alt="logo" style="border: none;" width="160"/>
-        </a>
-      </header>
+    <table class="container">
+      <tr>
+        <th class="header">
+          <a href="https://{{ washmix.domain }}" target="_blank">
+            <img src="{% full_static 'images/logo_with_text.png' %}" alt="logo" style="border: none;" width="160"/>
+          </a>
+        </th>
+      </tr>
 
       {% block body %}
       {% endblock %}
 
-      <div class="highlight-background margin-top instructions padding-around">
-        If you have any questions about your account or any other matter, please feel free to contact us at ​<a href="mailto:cs@washmix.com">cs@washmix.com</a>.​ OR call us directly at <b>{{ washmix.phone_number }}</b>
-      </div>
-    </div>
+      <tr>
+        <td class="highlight-background padding-top instructions padding-around">
+          If you have any questions about your account or any other matter, please feel free to contact us at ​<a href="mailto:cs@washmix.com">cs@washmix.com</a>.​ OR call us directly at <b>{{ washmix.phone_number }}</b>
+        </td>
+      </tr>
+    </table>
 
     <table class="socials-table">
       <tr>

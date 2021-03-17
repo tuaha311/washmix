@@ -25,17 +25,34 @@
 {% endblock %}
 
 {% block body %}
-  <div class="divider"></div>
+  <tr>
+    <td>
+      <div class="divider"></div>
+    </td>
+  </tr>
 
-  <h2 class="red centered">PAYMENT FAILED ON ORDER # {{ order_container.id }}</h2>
+  <tr>
+    <td>
+      <h2 class="red centered">PAYMENT FAILED ON ORDER # {{ order_container.id }}</h2>
+    </td>
+  </tr>
 
-  <div class="divider"></div>
+  <tr>
+    <td>
+      <div class="divider"></div>
+    </td>
+  </tr>
 
-  <h3>Customer information</h3>
-  <div id="billing-information">
-    <p>Name - {{ client.full_name }}</p>
-    <p>Email - <a href="mailto:{{ client.email }}">{{ client.email }}</a></p>
-    <p>Stripe ID - {{ client.stripe_id }}</p>
-  </div>
+  <tr>
+    <td>
+      <h3>Customer information</h3>
+      <div id="billing-information">
+        <p>Name - {{ client.full_name }}</p>
+        <p>Email - <a href="mailto:{{ client.email }}">{{ client.email }}</a></p>
+        <p>Stripe ID - {{ client.stripe_id }}</p>
+      </div>
+    </td>
+  </tr>
+
   {% include "chunks/detailed_order.html" %}
 {% endblock %}

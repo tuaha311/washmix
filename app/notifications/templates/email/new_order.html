@@ -25,9 +25,11 @@
 {% endblock %}
 
 {% block content %}
-  <div>
-    <h3>Your invoice for Order #{{ order_container.id }}</h3>
-  </div>
+  <tr>
+    <td>
+      <h3>Your invoice for Order #{{ order_container.id }}</h3>
+    </td>
+  </tr>
 
   {% include "chunks/detailed_order.html" %}
 {% endblock %}

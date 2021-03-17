@@ -1,33 +1,51 @@
 {% extends "base_email.html" %}
 
 {% block body %}
-  <div class="title">
-    <h4>Hello, {{ client.full_name }}</h4>
-    <p>We tried processing your order and charging the card on file, but unfortunately we could not proceed. The card used may be Expired, changed or any other related issues.</p>
-  </div>
+  <tr>
+    <td class="title">
+      <h4>Hello, {{ client.full_name }}</h4>
+      <p>We tried processing your order and charging the card on file, but unfortunately we could not proceed. The card used may be Expired, changed or any other related issues.</p>
+    </td>
+  </tr>
 
-  <div class="red bold italic">
-    We are unable to process the transaction at this moment, and there may be a delay in delivery of your order as if your account is in negative standing.
-  </div>
+  <tr>
+    <td class="red bold italic">
+      We are unable to process the transaction at this moment, and there may be a delay in delivery of your order as if your account is in negative standing.
+    </td>
+  </tr>
 
-  <div class="divider"></div>
+  <tr>
+    <td>
+      <div class="divider"></div>
+    </td>
+  </tr>
 
-  <div id="to-update-information">
-    <p>To update your information:</p>
-    <ul>
-      <li>
-        <a href="https://{{ washmix.domain }}/login/" target="_blank">L​ogin</a> to your account and proceed to ​“​Billing​”
-      </li>
-    </ul>
-  </div>
+  <tr>
+    <td id="to-update-information">
+      <p>To update your information:</p>
+      <ul>
+        <li>
+          <a href="https://{{ washmix.domain }}/login/" target="_blank">L​ogin</a> to your account and proceed to ​“​Billing​”
+        </li>
+      </ul>
+    </td>
+  </tr>
 
-  <div class="divider"></div>
+  <tr>
+    <td>
+      <div class="divider"></div>
+    </td>
+  </tr>
 
-  <div class="red bold margin-bottom">
-    To avoid delay in delivery of your current and future order(s), please update your card and information as soon as possible.​
-  </div>
+  <tr>
+    <td class="red bold margin-bottom">
+      To avoid delay in delivery of your current and future order(s), please update your card and information as soon as possible.​
+    </td>
+  </tr>
 
-  <div id="thanks">
-    Thank you for being a part of WashMix.com family,
-  </div>
+  <tr>
+    <td id="thanks">
+      Thank you for being a part of WashMix.com family,
+    </td>
+  </tr>
 {% endblock %}

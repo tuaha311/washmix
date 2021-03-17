@@ -42,18 +42,26 @@ class EmailRenderView(TemplateView):
     """
 
     email_template_map = {
-        "signup": "email/signup.html",
-        "subscription": "email/purchase_subscription.html",
+        "account_removed": "email/account_removed.html",
+        "card_changes": "email/card_changes.html",
         "order": "email/new_order.html",
-        "payment_client": "email/payment_fail_client.html",
         "payment_admin": "email/payment_fail_admin.html",
+        "payment_client": "email/payment_fail_client.html",
+        "subscription": "email/purchase_subscription.html",
+        "signup": "email/signup.html",
     }
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
         extra_context = get_extra_context(
-            client_id=2, subscription_id=2, request_id=2, order_id=5, is_advantage=True
+            client_id=2,
+            subscription_id=2,
+            request_id=2,
+            order_id=5,
+            is_advantage=True,
+            full_name="Bob Brown",
+            action="removed",
         )
 
         return {**context, **extra_context}

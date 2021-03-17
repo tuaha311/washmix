@@ -1,18 +1,24 @@
 {% extends "base_email.html" %}
 
 {% block body %}
-  <header>
-    <h4>Dear {{ client.full_name }}</h4>
-  </header>
+  <tr>
+    <td>
+      <h4>Dear {{ client.full_name }}</h4>
+    </td>
+  </tr>
 
-  <div class="large-margin-top">
-    {% if is_advantage %}
-      <b>WashMix Advantage Program​™:</b>
-    {% endif %}
-    <p>You have {{ direction_of_subscription }} your account for the <b>{{ subscription_container.get_name_display }}​</b> ​and as of today have <b>${{ client.dollar_balance }}</b>​ ​available credit to use.</p>
-  </div>
+  <tr>
+    <td class="large-margin-top">
+      {% if is_advantage %}
+        <b>WashMix Advantage Program​™:</b>
+      {% endif %}
+      <p>You have {{ direction_of_subscription }} your account for the <b>{{ subscription_container.get_name_display }}​</b> ​and as of today have <b>${{ client.dollar_balance }}</b>​ ​available credit to use.</p>
+    </td>
+  </tr>
 
-  <div>
-    Simply use and when you’re done with your available credit, reload your account and continue.
-  </div>
+  <tr>
+    <td>
+      Simply use and when you’re done with your available credit, reload your account and continue.
+    </td>
+  </tr>
 {% endblock %}
