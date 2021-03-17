@@ -78,8 +78,8 @@ class OrderContainer(BaseDynamicAmountContainer):
         if not basket:
             return None
 
-        if order.discount_by_subscription:
-            subscription = order.discount_by_subscription
+        if order.bought_with_subscription:
+            subscription = order.bought_with_subscription
 
         container = BasketContainer(subscription, basket)
 
@@ -96,8 +96,8 @@ class OrderContainer(BaseDynamicAmountContainer):
         if not request or not basket:
             return None
 
-        if order.discount_by_subscription:
-            subscription = order.discount_by_subscription
+        if order.bought_with_subscription:
+            subscription = order.bought_with_subscription
 
         basket_container = BasketContainer(subscription, basket)
         request_container = RequestContainer(subscription, request, basket_container)

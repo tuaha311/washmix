@@ -38,13 +38,14 @@
         margin-bottom: 40px;
       }
 
-      footer {
-        display: flex;
-        align-items: center;
-        justify-content: center;
+      .footer {
         height: 40px;
         width: 100%;
         background-color: #39b6ed;
+        color: #fff;
+      }
+
+      .footer-row {
         color: #fff;
       }
 
@@ -61,26 +62,23 @@
         padding: 50px;
       }
 
-      .info {
-        display: flex;
-        align-items: center;
-        flex-direction: column;
+      .info-table {
         width: 800px;
         background-color: #fafafa;
-        {% if is_pdf %}
-          height: 400px;
-        {% endif %}
       }
 
-      .socials, .receiver, .address, .support {
-        display: flex;
-        align-items: center;
-        justify-content: center;
+      .info-row {
+        text-align: center;
+      }
+
+      .socials-table {
         width: 800px;
+        background-color: #fafafa;
       }
 
       .social-icon {
         margin-right: 20px;
+        text-decoration: none;
       }
 
       .divider {
@@ -99,8 +97,16 @@
         margin-top: 20px;
       }
 
+      .large-padding-top {
+        padding-top: 20px;
+      }
+
       .large-margin-bottom {
         margin-bottom: 20px;
+      }
+
+      .large-padding-bottom {
+        padding-bottom: 20px;
       }
 
       .margin-top {
@@ -175,33 +181,56 @@
       </div>
     </div>
 
-    <div class="info">
-      <div class="socials large-margin-bottom large-margin-top">
-        <a href="{{ washmix.facebook_url }}" target="_blank" class="social-icon">
-          <img src="{% full_static 'images/facebook.png' %}" alt="facebook" style="border: none;" width="22"/>
-        </a>
-        <a href="{{ washmix.twitter_url }}" target="_blank" class="social-icon">
-          <img src="{% full_static 'images/twitter.png' %}" alt="twitter" style="border: none;" width="22"/>
-        </a>
-        <a href="{{ washmix.instagram_url }}" target="_blank" class="social-icon">
-          <img src="{% full_static 'images/instagram.png' %}" alt="instagram" style="border: none;" width="22"/>
-        </a>
-      </div>
+    <table class="socials-table">
+      <tr>
+        <td class="info-row"></td>
 
-      <div class="receiver large-margin-bottom">
-        This message was sent to <a href="mailto:{{ client.email }}" class="receiver-link"> {{ client.email }}</a> by WashMix.
-      </div>
+        <td class="info-row large-padding-bottom large-padding-top">
+          <a href="{{ washmix.facebook_url }}" target="_blank" class="social-icon">
+            <img src="{% full_static 'images/facebook.png' %}" alt="facebook" style="border: none;" width="22"/>
+          </a>
+          <a href="{{ washmix.twitter_url }}" target="_blank" class="social-icon">
+            <img src="{% full_static 'images/twitter.png' %}" alt="twitter" style="border: none;" width="22"/>
+          </a>
+          <a href="{{ washmix.instagram_url }}" target="_blank" class="social-icon">
+            <img src="{% full_static 'images/instagram.png' %}" alt="instagram" style="border: none;" width="22"/>
+          </a>
+        </td>
 
-      <a href="https://{{ washmix.domain }}" class="large-margin-bottom" target="_blank">
-        <img src="{% full_static 'images/logo.png' %}" alt="logo" style="border: none;" width="48"/>
-      </a>
+        <td class="info-row"></td>
+      </tr>
+    </table>
 
-      <div class="address large-margin-bottom">{{ washmix.laundry_address }}</div>
-      <div class="support large-margin-bottom"><a href="mailto:info@washmix.com">info@washmix.com</a></div>
-    </div>
+    <table class="info-table">
+      <tr>
+        <td class="info-row large-padding-bottom">This message was sent to <a href="mailto:{{ client.email }}" class="receiver-link"> {{ client.email }}</a> by WashMix.</td>
+      </tr>
 
-    <footer>
-      © 2021 WashMix, Inc. All Rights Reserved.
-    </footer>
+      <tr>
+        <td class="info-row large-padding-bottom">
+          <a href="https://{{ washmix.domain }}" class="large-margin-bottom" target="_blank">
+            <img src="{% full_static 'images/logo.png' %}" alt="logo" style="border: none;" width="48"/>
+          </a>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="info-row large-padding-bottom">
+          {{ washmix.laundry_address }}
+        </td>
+      </tr>
+
+      <tr>
+        <td class="info-row large-padding-bottom">
+          <a href="mailto:info@washmix.com">info@washmix.com</a>
+        </td>
+      </tr>
+
+      <tr class="footer">
+        <td class="info-row footer-row">
+          © 2021 WashMix, Inc. All Rights Reserved.
+        </td>
+      </tr>
+    </table>
   </body>
 </html>

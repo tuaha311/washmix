@@ -93,7 +93,7 @@ class OrderService:
                 )
 
             # 6. let's save a client's current subscription that used on this order
-            order.discount_by_subscription = client.subscription
+            order.bought_with_subscription = client.subscription
             order.save()
 
         self._order = order

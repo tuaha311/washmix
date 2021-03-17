@@ -72,9 +72,9 @@ class Order(Common):
     )
     # this relation used to save a subscription that provided discount
     # on basket and request
-    discount_by_subscription = models.ForeignKey(
+    bought_with_subscription = models.ForeignKey(
         "subscriptions.Subscription",
-        verbose_name="subscription that used for discount by package",
+        verbose_name="subscription that used for purchase this order",
         related_name="+",
         on_delete=models.SET_NULL,
         null=True,
