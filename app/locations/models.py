@@ -102,7 +102,3 @@ class Address(Common):
 
     def __str__(self):
         return f"{self.zip_code}, {self.address_line_1}"
-
-    @property
-    def city(self):
-        return self.zip_code.city
