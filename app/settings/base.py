@@ -450,9 +450,9 @@ PROTOCOL = "https"
 SITE_NAME = "WashMix"
 
 
-###############
-# SOCIAL AUTH #
-###############
+#################################
+# SOCIAL AUTH (LEGACY NOT USED) #
+#################################
 
 SOCIAL_AUTH_POSTGRES_JSONFIELD = True
 

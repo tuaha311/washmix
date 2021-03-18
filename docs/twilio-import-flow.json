@@ -10,6 +10,7 @@
           "event": "incomingMessage"
         },
         {
+          "next": "Voice-make-HTTP-workers-request",
           "event": "incomingCall"
         },
         {
@@ -385,7 +386,6 @@
         },
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
-        "body": "{\"sid\": \"WSf4478ac8ee039cb8fbcd416ecd762a9f\"}",
         "url": "https://washmix.herokuapp.com/api/client/sms/online_workers/"
       }
     },
@@ -525,6 +525,142 @@
           "x": -390,
           "y": 1400
         }
+      }
+    },
+    {
+      "name": "Route-voice-to-Flex",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1510,
+          "y": 640
+        },
+        "workflow": "WWbe46409b0a5491baca791783a119e95a",
+        "channel": "TCc27695c76ab15d6774e2dccc30548ae5",
+        "attributes": "{\"tag\": \"voice\"}"
+      }
+    },
+    {
+      "name": "Voice-make-HTTP-workers-request",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "Voice-is-workers-online-voice",
+          "event": "success"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1470,
+          "y": 40
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "url": "https://washmix.herokuapp.com/api/client/sms/online_workers/"
+      }
+    },
+    {
+      "name": "Voice-is-workers-online-voice",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "event": "noMatch"
+        },
+        {
+          "next": "Route-voice-to-Flex",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to true",
+              "arguments": [
+                "{{widgets.Voice-make-HTTP-workers-request.parsed.online}}"
+              ],
+              "type": "equal_to",
+              "value": "true"
+            }
+          ]
+        },
+        {
+          "next": "No-active-workers-please-voicemail",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to false",
+              "arguments": [
+                "{{widgets.Voice-make-HTTP-workers-request.parsed.online}}"
+              ],
+              "type": "equal_to",
+              "value": "false"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.Voice-make-HTTP-workers-request.parsed.online}}",
+        "offset": {
+          "x": 1810,
+          "y": 300
+        }
+      }
+    },
+    {
+      "name": "No-active-workers-please-voicemail",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "Record-voicemail",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "voice": "alice",
+        "offset": {
+          "x": 2340,
+          "y": 690
+        },
+        "loop": 1,
+        "say": "Dear client, currently we doesn't have active operators - please record a Voicemail.",
+        "language": "en-US"
+      }
+    },
+    {
+      "name": "Record-voicemail",
+      "type": "record-voicemail",
+      "transitions": [
+        {
+          "event": "recordingComplete"
+        },
+        {
+          "event": "noAudio"
+        },
+        {
+          "event": "hangup"
+        }
+      ],
+      "properties": {
+        "transcribe": false,
+        "offset": {
+          "x": 2320,
+          "y": 940
+        },
+        "trim": "trim-silence",
+        "play_beep": "true",
+        "timeout": 5,
+        "max_length": 900
       }
     }
   ],
