@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).parents[1]
 # DJANGO #
 ##########
 
-DOMAIN = "washmix.herokuapp.com"
+DOMAIN = "www.washmix.com"
 ALLOWED_HOSTS = ["*"]
 
 SECRET_KEY = env.str("SECRET_KEY")
@@ -243,7 +243,7 @@ RUSH_DELIVERY_PRICE = 1000
 # WORKING HOURS #
 #################
 
-TODAY_DELIVERY_CUT_OFF_TIME = time(hour=9)
+TODAY_DELIVERY_CUT_OFF_TIME = time(hour=8)
 DELIVERY_START_WORKING = time(hour=13)
 DELIVERY_END_WORKING = time(hour=19)
 
@@ -320,8 +320,8 @@ GOLD = "gold"
 PLATINUM = "platinum"
 PACKAGE_NAME_MAP = {
     PAYC: "Pay As You Clean",
-    GOLD: "Gold Account",
-    PLATINUM: "Platinum Account",
+    GOLD: "Gold Tier",
+    PLATINUM: "Platinum Tier",
 }
 PACKAGE_NAME_CHOICES = list(PACKAGE_NAME_MAP.items())
 PACKAGE_NAME_ORDERING = list(PACKAGE_NAME_MAP.keys())
@@ -352,7 +352,7 @@ CREDIT_BACK_PERIOD = 90
 TWITTER_URL = "https://twitter.com/mix_wash/"
 INSTAGRAM_URL = "https://www.instagram.com/washmix/"
 FACEBOOK_URL = "https://www.facebook.com/WASHMIXOriginal/"
-PHONE_NUMBER = "4​15-993-WASH [9724]"
+PHONE_NUMBER = "4​15-993-WASH [9274]"
 LAUNDRY_ADDRESS = "650 Castro St, #185, Mountain View"
 
 

@@ -61,7 +61,7 @@ class EmailRenderView(TemplateView):
             order_id=5,
             is_advantage=True,
             full_name="Bob Brown",
-            action="removed",
+            action="removed from",
         )
 
         return {**context, **extra_context}

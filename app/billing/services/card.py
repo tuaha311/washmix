@@ -18,7 +18,7 @@ class CardService:
         - Update main card
     """
 
-    added_text = "added"
+    added_text = "added to"
 
     def __init__(self, client: Client):
         self._client = client

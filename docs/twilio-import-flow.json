@@ -75,7 +75,7 @@
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
         "body": "{\"message\": \"{{trigger.message.Body}}\", \"phone\": \"{{trigger.message.ChannelAttributes.from}}\"}",
-        "url": "https://washmix.herokuapp.com/api/client/sms/delivery/"
+        "url": "https://www.washmix.com/api/client/sms/delivery/"
       }
     },
     {
@@ -386,7 +386,7 @@
         },
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
-        "url": "https://washmix.herokuapp.com/api/client/sms/online_workers/"
+        "url": "https://www.washmix.com/api/client/sms/online_workers/"
       }
     },
     {
@@ -570,7 +570,7 @@
         },
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
-        "url": "https://washmix.herokuapp.com/api/client/sms/online_workers/"
+        "url": "https://www.washmix.com/api/client/sms/online_workers/"
       }
     },
     {

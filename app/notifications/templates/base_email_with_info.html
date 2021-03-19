@@ -25,31 +25,38 @@
 
   <tr>
     <td id="sms">
-      <b>SMS [Text]:</b> ​Save this Phone Number {{ washmix.phone_number }}
       <ul>
         <li>
-          <span>To schedule your Next Pickup, simply send a request to this number via text</span>
-          <ul>
-            <li><span>[​Text & Data charges may/will be applied by your service provider]​</span></li>
-          </ul>
-        </li>
-
-        <li>
-          <b>Commands</b>
-          <ul>
-            <li><span>To Request a Pickup → Text <b>“​Pickup”</b></span></li>
-          </ul>
-        </li>
-
-        <li>
-          <b>Cut Off time</b>
+          <b>SMS [Text]:</b> ​
           <ul>
             <li>
-              <span>Monday-Saturday</span>
-              <ul>
-                <li><span>Text sent ​<b>BEFORE</b> 9​ am <b>[​Same-Day Pickup]</b></span></li>
-                <li><span>Text sent ​<b>AFTER</b> ​9am ​<b>[Next-Day Pickup]</b></span></li>
-              </ul>
+              <span>Save this number in your phone  {{ washmix.phone_number }}</span>
+            </li>
+          </ul>
+        </li>
+
+        <li>
+          <b>To Request a Pickup:</b>
+          <ul>
+            <li><span>Text the word “Pickup” to {{ washmix.phone_number }}</span></li>
+            <li>
+              <span><b>IMPORTANT</b>: Text from the phone number you used to register your account. Our system will not recognize other numbers unless it's the same number as it is in your profile.</span>
+            </li>
+            <li><span>* Message & Data rates may be applied by your cell phone plan carrier.</span></li>
+          </ul>
+        </li>
+
+        <li>
+          <b>Cut Off Time:</b>
+          <ul>
+            <li>
+              <span><b>Monday-Saturday</b></span>
+            </li>
+            <li>
+              <span>Text sent ​<b>BEFORE 8 am [​Same Day Pickup]</b></span>
+            </li>
+            <li>
+              <span>Text sent ​<b>AFTER ​8 am ​[Next Day Pickup]</b></span>
             </li>
           </ul>
         </li>

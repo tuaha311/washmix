@@ -14,7 +14,7 @@ from notifications.tasks import send_email
 class CardViewSet(SetMainAttributeMixin, ModelViewSet):
     serializer_class = CardSerializer
     main_attribute = "main_card"
-    removed_text = "removed"
+    removed_text = "removed from"
 
     def get_queryset(self):
         client = self.request.user.client
