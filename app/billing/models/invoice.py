@@ -3,6 +3,7 @@ from django.db.models import Sum
 
 from billing.choices import InvoicePurpose
 from core.common_models import CommonAmountDiscountModel
+from core.utils import get_dollars
 
 
 class Invoice(CommonAmountDiscountModel):
@@ -63,6 +64,19 @@ class Invoice(CommonAmountDiscountModel):
         paid_amount = transaction_list.aggregate(total=Sum("amount"))["total"] or 0
 
         return paid_amount
+
+    @property
+    def unpaid_amount(self) -> float:
+        paid_amount = self.paid_amount
+        amount_with_discount = self.amount_with_discount
+
+        unpaid_amount = amount_with_discount - paid_amount
+
+        return unpaid_amount
+
+    @property
+    def dollar_unpaid_amount(self) -> float:
+        return get_dollars(self, "unpaid_amount")
 
     @property
     def has_transaction(self) -> bool:

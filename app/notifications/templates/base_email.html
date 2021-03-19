@@ -63,9 +63,13 @@
       }
 
       .container {
-        width: 800px;
         background-color: #fff;
         padding: 50px;
+        {% if is_pdf %}
+          width: 700px;
+        {% else %}
+          width: 800px;
+        {% endif %}
       }
 
       .info-table {

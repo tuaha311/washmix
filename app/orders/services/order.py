@@ -322,6 +322,7 @@ class OrderService:
         client_id = self._client.id
         order_id = self._order.id
         recipient_list = settings.ADMIN_EMAIL_LIST
+        is_unpaid = True
 
         send_email.send(
             event=settings.PAYMENT_FAIL_ADMIN,
@@ -329,6 +330,7 @@ class OrderService:
             extra_context={
                 "client_id": client_id,
                 "order_id": order_id,
+                "is_unpaid": is_unpaid,
             },
         )
 

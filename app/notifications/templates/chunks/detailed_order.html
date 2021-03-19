@@ -125,6 +125,13 @@
             <th>${{ client.dollar_balance }}</th>
           </tr>
         {% endif %}
+
+        {% if is_unpaid or order_container.invoice.dollar_unpaid_amount %}
+          <tr>
+            <th id="unpaid">Unpaid</th>
+            <th>${{ order_container.invoice.dollar_unpaid_amount }}</th>
+          </tr>
+        {% endif %}
       </table>
     </td>
   </tr>
