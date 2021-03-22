@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.db.models import Sum
 
@@ -71,6 +72,9 @@ class Invoice(CommonAmountDiscountModel):
         amount_with_discount = self.amount_with_discount
 
         unpaid_amount = amount_with_discount - paid_amount
+
+        if unpaid_amount <= 0:
+            return settings.DEFAULT_ZERO_AMOUNT
 
         return unpaid_amount
 

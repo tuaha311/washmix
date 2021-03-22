@@ -16,7 +16,7 @@ class OrderListView(ListAPIView):
 
     def get_queryset(self):
         client = self.request.user.client
-        order_list = client.order_list.exclude(payment=OrderPaymentChoices.FAIL)
+        order_list = client.order_list.filter(payment=OrderPaymentChoices.PAID)
 
         return [OrderContainer(item) for item in order_list]
 
