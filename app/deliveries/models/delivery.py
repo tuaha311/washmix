@@ -18,7 +18,7 @@ class Delivery(Common):
         - Address
 
     IMPORTANT: Delivery entity has a signal receiver on `post_save`.
-    Signal location - `notifications.signals`
+    Signal location - `deliveries.signals`
     """
 
     employee = models.ForeignKey(
@@ -83,7 +83,7 @@ class Delivery(Common):
     def pretty_date(self) -> str:
         date = self.date
 
-        pretty_date = date.strftime("%d %B, %Y")
+        pretty_date = date.strftime("%B %d, %Y")
 
         return pretty_date
 

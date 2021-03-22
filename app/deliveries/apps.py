@@ -1,5 +1,8 @@
 from django.apps import AppConfig
 
 
-class PickupsConfig(AppConfig):
+class DeliveriesConfig(AppConfig):
     name = "deliveries"
+
+    def ready(self):
+        from deliveries import signals
