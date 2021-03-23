@@ -1,8 +1,10 @@
 from django import forms
 from django.conf import settings
 from django.contrib import admin, messages
-from django.contrib.admin.sites import AlreadyRegistered, NotRegistered
+from django.contrib.admin.sites import NotRegistered
 from django.contrib.auth import get_user_model
+from django.db.models import QuerySet
+from django.http.request import HttpRequest
 
 from billing.choices import InvoiceProvider
 from billing.models import Invoice
@@ -133,7 +135,7 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
     ]
     actions = ["full_delete_action"]
 
-    def save_form(self, request, form, change):
+    def save_form(self, request: HttpRequest, form: forms.BaseForm, change):
         """
         Method that helps to add credits for some client.
         """
@@ -150,19 +152,23 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
 
         return super().save_form(request, form, change)
 
-    def full_delete_action(self, request, queryset):
+    def full_delete_action(self, request: HttpRequest, client_queryset: QuerySet):
         """
         Method that performs full client's info deletion:
         - Removing all billing related stuff (because this relations are protected).
         - Removing all orders relations (the are also protected).
         - Remove rest of relations by calling default `delete_sected` admin action.
+        - Remove all User's information.
         """
 
         client_info = [
-            {"email": client.email, "full_name": client.full_name} for client in queryset
+            {"email": client.email, "full_name": client.full_name} for client in client_queryset
         ]
 
-        queryset.delete()
+        user_queryset = User.objects.filter(client__in=client_queryset)
+
+        user_queryset.delete()
+        client_queryset.delete()
 
         for client in client_info:
             email = client["email"]
