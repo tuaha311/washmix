@@ -26,8 +26,8 @@ else
   ###Added for use in Heroku
   if [ -n "$PORT" ]
   then
-    gunicorn --bind 0.0.0.0:${PORT} --workers 2 settings.wsgi:application
+    gunicorn --bind 0.0.0.0:${PORT} --workers 4 settings.wsgi:application
   else
-    gunicorn --bind 0.0.0.0:8000 --workers 2 settings.wsgi:application
+    gunicorn --bind 0.0.0.0:8000 --workers 4 settings.wsgi:application
   fi
 fi
