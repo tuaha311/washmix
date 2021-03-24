@@ -89,3 +89,12 @@ class WashmixAdminSite(AdminSite):
         context["site_url"] = None
 
         return context
+
+    @property
+    def actions(self):
+        """
+        Here we are hiding default `delete_selected` action.
+        I.e. we are hiding Actions selector at bottom of page.
+        """
+
+        return []
