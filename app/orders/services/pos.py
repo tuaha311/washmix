@@ -2,6 +2,7 @@ from typing import Optional
 
 from rest_framework import serializers
 
+from billing.models import Invoice
 from billing.services.payments import PaymentService
 from orders.containers.order import OrderContainer
 from orders.models import Order
@@ -14,10 +15,17 @@ class POSService:
     POS service that handles orders.
     """
 
-    def __init__(self, client: Client, order: Order, employee: Optional[Employee]):
+    def __init__(
+        self,
+        client: Client,
+        order: Order,
+        employee: Optional[Employee],
+        invoice: Optional[Invoice] = None,
+    ):
         self._client = client
         self._order = order
         self._employee = employee
+        self._invoice = invoice
 
     def checkout(self) -> OrderContainer:
         """
@@ -62,7 +70,7 @@ class POSService:
         """
 
         client = self._client
-        invoice = self._order.invoice
+        invoice = self._invoice
 
         payment_service = PaymentService(client, invoice)
         payment_service.check_balance_and_purchase_subscription()

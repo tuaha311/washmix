@@ -115,7 +115,7 @@ class StripeWebhookService:
 
         # sometimes, after charge client's balance can be lower than AUTO_BILLING_LIMIT
         # and we should check this case
-        pos_service = POSService(client, order, employee)
+        pos_service = POSService(client, order, employee, invoice)
         pos_service.check_balance_and_purchase_subscription()
 
     def _handle_fail_events(self, payment_container: PaymentContainer):
