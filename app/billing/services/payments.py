@@ -111,6 +111,9 @@ class PaymentService:
         invoice = self._invoice
         client = self._client
         subscription = client.subscription
+        subscription_price = (
+            subscription.amount_with_discount if subscription else settings.DEFAULT_ZERO_AMOUNT
+        )
         is_auto_billing = client.is_auto_billing
         is_subscription_purchase = invoice.purpose == InvoicePurpose.SUBSCRIPTION
         is_advantage = bool(subscription) and is_advantage_program(subscription.name)
@@ -118,40 +121,73 @@ class PaymentService:
         with atomic():
             paid_amount, unpaid_amount = self.charge_prepaid_balance()
             is_order_fully_paid = unpaid_amount == 0
-            is_need_to_auto_bill = client.balance < settings.AUTO_BILLING_LIMIT
+            is_subscription_price_enough_for_order_amount = subscription_price >= unpaid_amount
 
+            # most easiest case:
+            # client has enough money to pay for order
             if is_order_fully_paid:
-                # after client paid for his order, we should purchase subscription
-                #  if he has a Advantage Program with `is_auto_billing` option enabled
-                if is_auto_billing and is_advantage and is_need_to_auto_bill:
-                    webhook_kind = WebhookKind.SUBSCRIPTION
-                    continue_with_order = None
-                    self._process_subscription(webhook_kind, continue_with_order)
-                else:
-                    self.charge_successful = True
+                self.check_balance_and_purchase_subscription()
 
-                return None
-
-            # client want to pay for subscription - this is a separate case, when we are charging
-            # client for the full price of subscription.
-            if is_subscription_purchase:
+            # simple case:
+            # client want to pay for subscription - we are charging for the full price of subscription.
+            elif is_subscription_purchase:
                 webhook_kind = WebhookKind.SUBSCRIPTION
                 continue_with_order = None
                 self._process_immediate_payment(webhook_kind, unpaid_amount, continue_with_order)
 
+            # complex case:
             # client doesn't have enough money to pay for POS order with Advantage Program
-            # and have `is_auto_billing` option enabled - we are trying to purchase new subscription and
-            # charge rest of money from prepaid balance.
-            elif is_auto_billing and is_advantage:
+            # and have `is_auto_billing` option enabled and also Order amount not greater than Subscription price.
+            # i.e. for example Order amount is 189$ and Subscription price is 199$ - in such case 1 Subscription
+            #  purchase fully cover Order amount and this is the way.
+            # we are trying to purchase new subscription and charge rest of money from prepaid balance.
+            elif is_auto_billing and is_advantage and is_subscription_price_enough_for_order_amount:
                 webhook_kind = WebhookKind.SUBSCRIPTION_WITH_CHARGE
                 continue_with_order = invoice.order.pk
                 self._process_subscription(webhook_kind, continue_with_order)
 
+            # complex case:
+            # client doesn't have enough money to pay for POS order with Advantage Program
+            # and have `is_auto_billing` option enabled, but Order amount is higher that subscription price.
+            # i.e. Order amount is 211$ and Subscription price is 199$ - in such case we need to charge 211$
+            # by one-time payment and purchase Subscription for 199$.
+            # we are trying to perform one-time payment refill here, and then in StripeWebhookView we have
+            # additional logic that will handle Subscription purchase.
+            elif (
+                is_auto_billing
+                and is_advantage
+                and not is_subscription_price_enough_for_order_amount
+            ):
+                webhook_kind = WebhookKind.REFILL_WITH_CHARGE
+                continue_with_order = invoice.order.pk
+                self._process_immediate_payment(webhook_kind, unpaid_amount, continue_with_order)
+
+            # complex case:
             # in all other cases, we are trying to refill prepaid balance and charge it.
             else:
                 webhook_kind = WebhookKind.REFILL_WITH_CHARGE
                 continue_with_order = invoice.order.pk
                 self._process_immediate_payment(webhook_kind, unpaid_amount, continue_with_order)
+
+    def check_balance_and_purchase_subscription(self):
+        """
+        Check client balance and purchase Subscription if balance is lower than AUTO_BILLING_LIMIT
+        """
+
+        client = self._client
+        subscription = client.subscription
+        is_auto_billing = client.is_auto_billing
+        is_need_to_auto_bill = client.balance < settings.AUTO_BILLING_LIMIT
+        is_advantage = bool(subscription) and is_advantage_program(subscription.name)
+
+        # after client paid for his order, we should purchase subscription
+        #  if he has a Advantage Program with `is_auto_billing` option enabled
+        if is_auto_billing and is_advantage and is_need_to_auto_bill:
+            webhook_kind = WebhookKind.SUBSCRIPTION
+            continue_with_order = None
+            self._process_subscription(webhook_kind, continue_with_order)
+        else:
+            self.charge_successful = True
 
     def charge_prepaid_balance(self):
         """

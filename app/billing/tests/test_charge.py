@@ -18,6 +18,7 @@ def test_charge_when_balance_enough_for_basket(stripe_class_mock, create_credit_
 
     client = MagicMock()
     client.balance = 30000
+    client.subscription.amount_with_discount = 29900
 
     invoice = MagicMock()
     invoice.paid_amount = 0
@@ -58,6 +59,7 @@ def test_charge_when_balance_not_enough_for_basket_with_enabled_auto_billing(
 
     subscription = MagicMock()
     subscription.name = settings.GOLD
+    subscription.amount_with_discount = 19900
     client = MagicMock()
     client.balance = 10000
     client.is_auto_billing = True
@@ -129,6 +131,7 @@ def test_charge_when_balance_not_enough_for_basket_with_disabled_auto_billing(
 
     subscription = MagicMock()
     subscription.name = settings.GOLD
+    subscription.amount_with_discount = 19900
     client = MagicMock()
     client.balance = 10000
     client.is_auto_billing = False
@@ -170,6 +173,79 @@ def test_charge_when_balance_not_enough_for_basket_with_disabled_auto_billing(
     card_service_mock.assert_called_once()
 
 
+@patch("billing.services.payments.Invoice")
+@patch("billing.services.payments.SubscriptionService")
+@patch("billing.services.payments.Package")
+@patch("billing.services.payments.atomic")
+@patch("billing.services.payments.create_credit")
+@patch("billing.services.payments.StripeHelper")
+@patch("billing.services.payments.CardService")
+def test_charge_when_balance_not_enough_for_basket_with_enabled_auto_billing_and_subscription_purchase(
+    card_service_mock,
+    stripe_class_mock,
+    create_credit_mock,
+    atomic_mock,
+    package_class_mock,
+    subscription_service_class_mock,
+    invoice_class_mock,
+):
+    """
+    POS negative case:
+        - client has GOLD or PLATINUM subscription with rest of 10000 balance
+        - in basket items for 20000
+        - client has `is_auto_billing` option ENABLED
+        - doesn't have enough prepaid balance to pay
+    """
+
+    subscription = MagicMock()
+    subscription.name = settings.GOLD
+    subscription.amount_with_discount = 19900
+    client = MagicMock()
+    client.balance = 10000
+    client.is_auto_billing = True
+    client.subscription = subscription
+
+    card = MagicMock()
+    card.stripe_id = "spam"
+    client.card_list.all.return_value = [card]
+    stripe_instance_mock = MagicMock()
+    stripe_class_mock.return_value = stripe_instance_mock
+    subscription_service_instance_mock = MagicMock()
+    subscription_invoice_mock = MagicMock()
+    subscription_invoice_mock.id = 100
+    subscription_service_instance_mock.create_invoice.return_value = [subscription_invoice_mock]
+    subscription_service_instance_mock.choose.return_value.original.subscription.price = 19900
+    subscription_service_class_mock.return_value = subscription_service_instance_mock
+
+    invoice = MagicMock()
+    invoice.paid_amount = 0
+    invoice.amount_with_discount = 45000
+    invoice.purpose = InvoicePurpose.ORDER
+    invoice.order.pk = 200
+
+    subscription_invoice = MagicMock()
+    subscription_invoice.id = 500
+    subscription_invoice.amount_with_discount = 19900
+    invoice_class_mock.objects.create.return_value = subscription_invoice
+
+    service = PaymentService(client, invoice)
+    service.charge()
+
+    assert atomic_mock.call_count == 1
+    create_credit_mock.assert_called_once_with(client=client, invoice=invoice, amount=10000)
+    stripe_instance_mock.create_payment_intent.assert_called_once_with(
+        payment_method_id=card.stripe_id,
+        amount=19900,
+        metadata={
+            "invoice_id": 500,
+            "webhook_kind": WebhookKind.REFILL_WITH_CHARGE,
+            "continue_with_order": 200,
+        },
+    )
+    invoice_class_mock.objects.create.assert_called_once()
+    card_service_mock.assert_called_once()
+
+
 @patch("billing.services.payments.Package")
 @patch("billing.services.payments.SubscriptionService")
 @patch("billing.services.payments.atomic")
@@ -196,6 +272,7 @@ def test_charge_subscription_purchase_when_order_is_fully_paid(
 
     subscription = MagicMock()
     subscription.name = settings.GOLD
+    subscription.amount_with_discount = 19900
     client = MagicMock()
     client.balance = 1800
     client.is_auto_billing = True
@@ -301,6 +378,7 @@ def test_charge_when_subscription_upgrade_to_platinum(
 
     subscription = MagicMock()
     subscription.name = settings.GOLD
+    subscription.amount_with_discount = 19900
 
     client = MagicMock()
     client.balance = 19900

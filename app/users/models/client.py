@@ -98,6 +98,8 @@ class Client(ProxyUserInfoMixin, Stripeable, Common):
         verbose_name="fabric softener",
         default=False,
     )
+    # this flag used for automatic subscription purchase
+    # when balance is lower than AUTO_BILLING_LIMIT
     is_auto_billing = models.BooleanField(
         verbose_name="automatically bill subscription",
         default=True,

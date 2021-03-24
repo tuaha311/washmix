@@ -2,6 +2,7 @@ from typing import Optional
 
 from rest_framework import serializers
 
+from billing.services.payments import PaymentService
 from orders.containers.order import OrderContainer
 from orders.models import Order
 from orders.services.order import OrderService
@@ -41,7 +42,7 @@ class POSService:
 
         return order_container
 
-    def confirm(self):
+    def charge_the_rest(self):
         """
         Method that finishes created order in POS after one time payment +
         pays for the rest of order.
@@ -54,3 +55,14 @@ class POSService:
         order_service = OrderService(client)
         order_service.charge_the_rest(order)
         order_service.finalize(order, employee)
+
+    def check_balance_and_purchase_subscription(self):
+        """
+        Check client's balance.
+        """
+
+        client = self._client
+        invoice = self._order.invoice
+
+        payment_service = PaymentService(client, invoice)
+        payment_service.check_balance_and_purchase_subscription()

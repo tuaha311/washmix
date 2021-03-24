@@ -83,8 +83,10 @@ class StripeWebhookService:
         # we are marked our invoice as paid
         payment_service.confirm(payment)
 
-        # set subscription to client, notify client
-        #  and mark order as paid
+        # simple event:
+        #   - set subscription to client
+        #   - notify client
+        #   - and mark order as paid
         if webhook_kind == WebhookKind.SUBSCRIPTION:
             logger.info("Subscription invoice handling")
 
@@ -100,16 +102,21 @@ class StripeWebhookService:
             subscription_service.finalize(order, is_replenished)
 
             pos_service = POSService(client, continue_with_order, employee)
-            pos_service.confirm()
+            pos_service.charge_the_rest()
 
         # complex event:
-        #   - we are finishing one time payment
-        #   - the we are finishin a parent order that create one time payment order
+        #   - refill on a rest of unpaid amount
+        #   - charge the rest of unpaid amount of order
         elif webhook_kind == WebhookKind.REFILL_WITH_CHARGE:
             logger.info("Refill with charge handling")
 
             pos_service = POSService(client, continue_with_order, employee)
-            pos_service.confirm()
+            pos_service.charge_the_rest()
+
+        # sometimes, after charge client's balance can be lower than AUTO_BILLING_LIMIT
+        # and we should check this case
+        pos_service = POSService(client, order, employee)
+        pos_service.check_balance_and_purchase_subscription()
 
     def _handle_fail_events(self, payment_container: PaymentContainer):
         """
