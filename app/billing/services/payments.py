@@ -1,4 +1,5 @@
 import logging
+from math import ceil
 from typing import Optional, Tuple, Union
 
 from django.conf import settings
@@ -246,7 +247,7 @@ class PaymentService:
             subscription_order.invoice = invoice
             subscription_order.save()
 
-        amount = int(invoice.amount_with_discount)
+        amount = ceil(invoice.amount_with_discount)
         self._charge_card(
             amount=amount,
             webhook_kind=webhook_kind,
@@ -280,7 +281,7 @@ class PaymentService:
         else:
             invoice = self._invoice
 
-        amount = int(invoice.amount_with_discount)
+        amount = ceil(invoice.amount_with_discount)
         self._charge_card(
             amount=amount,
             webhook_kind=webhook_kind,
@@ -361,10 +362,10 @@ class PaymentService:
         # without charging prepaid balance
         if invoice.purpose == InvoicePurpose.SUBSCRIPTION:
             prepaid_balance_will_be_charged = 0
-            card_will_be_charged = invoice.amount_with_discount
+            card_will_be_charged = ceil(invoice.amount_with_discount)
 
-            # we are reducing to a integer number for Stripe
-            return prepaid_balance_will_be_charged, int(card_will_be_charged)
+            # we are ceiling to a integer number for Stripe
+            return prepaid_balance_will_be_charged, card_will_be_charged
 
         # if prepaid balance enough to pay full price - we will
         # use this money for invoice payment.
@@ -377,7 +378,7 @@ class PaymentService:
         # we should charge it from card
         elif 0 < balance < unpaid_amount:
             prepaid_balance_will_be_charged = balance
-            card_will_be_charged = unpaid_amount - balance
+            card_will_be_charged = ceil(unpaid_amount - balance)
 
-        # we are reducing to a integer number for Stripe
-        return prepaid_balance_will_be_charged, int(card_will_be_charged)
+        # we are ceiling to a integer number for Stripe
+        return prepaid_balance_will_be_charged, card_will_be_charged
