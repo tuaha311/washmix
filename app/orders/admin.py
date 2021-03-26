@@ -50,6 +50,10 @@ class OrderAdmin(AdminWithSearch):
         """
         Shows a relative to media root URL of PDF-report.
         PDF-path only accessible for POS orders.
+
+        IMPORTANT: our backend application wrapped in Docker-container.
+        Because of it, when container restart all temporary data is wiped out - and we
+        are forced to create report every time when user go to Order details view.
         """
 
         if order.subscription:
