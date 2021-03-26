@@ -487,17 +487,29 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ["profile", "email", "openid"]
 # REDIS #
 #########
 
+REDIS_DEFAULT_EXPIRATION_TIME = 60 * 60 * 23
+
 REDIS_HOST = env.str("REDIS_HOST", "localhost")
 REDIS_PORT = env.str("REDIS_PORT", "6379")
 REDIS_PASSWORD = env.str("REDIS_PASSWORD", None)
 REDIS_DB = 0
-REDIS_CLIENT = StrictRedis(
-    host=REDIS_HOST,
-    port=REDIS_PORT,
-    db=REDIS_DB,
-    password=REDIS_PASSWORD,
-)
-REDIS_DEFAULT_EXPIRATION_TIME = 60 * 60 * 23
+
+REDIS_SSL = env.bool("REDIS_SSL", False)
+REDIS_URL = env.str("REDIS_URL", None)
+
+if not REDIS_URL:
+    REDIS_CLIENT = StrictRedis(
+        host=REDIS_HOST,
+        port=REDIS_PORT,
+        db=REDIS_DB,
+        password=REDIS_PASSWORD,
+        ssl=REDIS_SSL,
+    )
+else:
+    REDIS_CLIENT = StrictRedis.from_url(
+        url=REDIS_URL,
+        db=REDIS_DB,
+    )
 
 
 ############
@@ -510,12 +522,20 @@ MS_IN_ONE_SECOND = 1000
 DRAMATIQ_DB = 1
 DRAMATIQ_MAX_RETRIES = 3
 DRAMATIQ_MAX_AGE = SECONDS_IN_HOUR * MS_IN_ONE_SECOND
-DRAMATIQ_REDIS_CLIENT = StrictRedis(
-    host=REDIS_HOST,
-    port=REDIS_PORT,
-    db=DRAMATIQ_DB,
-    password=REDIS_PASSWORD,
-)
+
+if not REDIS_URL:
+    DRAMATIQ_REDIS_CLIENT = StrictRedis(
+        host=REDIS_HOST,
+        port=REDIS_PORT,
+        db=DRAMATIQ_DB,
+        password=REDIS_PASSWORD,
+    )
+else:
+    DRAMATIQ_REDIS_CLIENT = StrictRedis.from_url(
+        url=REDIS_URL,
+        db=DRAMATIQ_DB,
+    )
+
 DRAMATIQ_BROKER = RedisBroker(client=DRAMATIQ_REDIS_CLIENT)
 
 # set delay for 10 s
