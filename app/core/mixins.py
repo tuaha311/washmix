@@ -1,3 +1,5 @@
+from django.db.models import ManyToManyField
+
 from core.utils import get_dollars
 
 
@@ -50,6 +52,18 @@ class AdminUpdateFieldsMixin:
         Given a model instance save it to the database.
         """
 
-        update_fields = set(form.changed_data)
+        # if object doesn't have a `.pk` Primary Key
+        # it means, that object created right now and we can't emit signal.
+        if not obj.pk:
+            obj.save()
 
-        obj.save(update_fields=update_fields)
+        update_fields = set(form.changed_data)
+        model_fields = obj._meta.get_fields()
+
+        model_fields_without_m2m = [
+            item for item in model_fields if not isinstance(item, ManyToManyField)
+        ]
+        model_unique_fields = set([item.name for item in model_fields_without_m2m])
+        model_updated_fields = update_fields & model_unique_fields
+
+        obj.save(update_fields=model_updated_fields)
