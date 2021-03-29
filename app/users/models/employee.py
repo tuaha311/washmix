@@ -57,4 +57,4 @@ class Employee(ProxyUserInfoMixin, Common):
         verbose_name_plural = "employees"
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name} - {self.get_position_display()}"
+        return f"{self.email} - {self.first_name} {self.last_name} - {self.get_position_display()}"

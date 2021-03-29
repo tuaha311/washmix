@@ -6,14 +6,20 @@ from django.contrib.auth import get_user_model
 from django.db.models import QuerySet
 from django.http.request import HttpRequest
 
+from swap_user.admin import BaseUserAdmin
+from swap_user.to_named_email.forms import (
+    NamedUserEmailOptionalFieldsForm,
+    NamedUserEmailRequiredFieldsForm,
+)
+
 from billing.choices import InvoiceProvider
 from billing.models import Invoice
 from billing.utils import add_money_to_balance, remove_money_from_balance
 from core.admin import AdminWithSearch
 from core.mixins import AdminUpdateFieldsMixin
 from deliveries.models import Request
-from notifications.tasks import send_email
 from orders.models import Order
+from users.helpers import remove_user_relation_with_all_info
 from users.models import Client, Customer, Employee
 
 User = get_user_model()
@@ -161,27 +167,8 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
         - Remove all User's information.
         """
 
-        client_info = [
-            {"email": client.email, "full_name": client.full_name} for client in client_queryset
-        ]
-
-        user_queryset = User.objects.filter(client__in=client_queryset)
-
-        user_queryset.delete()
-        client_queryset.delete()
-
-        for client in client_info:
-            email = client["email"]
-            full_name = client["full_name"]
-            recipient_list = [email]
-
-            send_email.send(
-                event=settings.ACCOUNT_REMOVED,
-                recipient_list=recipient_list,
-                extra_context={
-                    "full_name": full_name,
-                },
-            )
+        filter_query = {"client__in": client_queryset}
+        remove_user_relation_with_all_info(client_queryset, filter_query)
 
         self.message_user(request, "Clients was removed.", messages.SUCCESS)
 
@@ -201,13 +188,35 @@ class CustomerAdmin(AdminWithSearch):
     list_filter = ["kind"]
 
 
-class UserAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
-    pass
+class UserAdmin(
+    AdminUpdateFieldsMixin,
+    AdminWithSearch,
+    BaseUserAdmin,
+):
+    add_form_class = NamedUserEmailRequiredFieldsForm
+    change_form_class = NamedUserEmailOptionalFieldsForm
+
+
+class EmployeeAdmin(AdminWithSearch):
+    actions = ["full_delete_action"]
+
+    def full_delete_action(self, request: HttpRequest, employee_queryset: QuerySet):
+        """
+        Method that performs full employee's info deletion:
+        - Remove all User's information.
+        """
+
+        filter_query = {"employee__in": employee_queryset}
+        remove_user_relation_with_all_info(employee_queryset, filter_query)
+
+        self.message_user(request, "Employees was removed.", messages.SUCCESS)
+
+    full_delete_action.short_description = "Remove all employee's info and notify them."  # type: ignore
 
 
 models = [
     [Client, ClientAdmin],
-    [Employee, AdminWithSearch],
+    [Employee, EmployeeAdmin],
     [Customer, CustomerAdmin],
 ]
 for item in models:
