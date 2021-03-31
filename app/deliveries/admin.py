@@ -54,6 +54,7 @@ class DeliveryAdmin(AdminWithSearch):
     list_filter = [
         "status",
         "kind",
+        "employee",
     ]
 
     def save_model(self, request, obj, form, change):

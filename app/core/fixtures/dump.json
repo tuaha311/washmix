@@ -2042,6 +2042,26 @@
           "request"
         ],
         [
+          "add_delivery",
+          "deliveries",
+          "delivery"
+        ],
+        [
+          "change_delivery",
+          "deliveries",
+          "delivery"
+        ],
+        [
+          "delete_delivery",
+          "deliveries",
+          "delivery"
+        ],
+        [
+          "view_delivery",
+          "deliveries",
+          "delivery"
+        ],
+        [
           "add_basket",
           "orders",
           "basket"
