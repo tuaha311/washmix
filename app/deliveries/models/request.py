@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.functional import cached_property
 
 from core.common_models import CommonAmountDiscountModel
 from deliveries.choices import DeliveryKind
@@ -92,7 +93,7 @@ class Request(CommonScheduleRequest, CommonAmountDiscountModel):
     #
     # pickup proxy fields
     #
-    @property
+    @cached_property
     def pickup(self):
         return self.delivery_list.get(kind=DeliveryKind.PICKUP)
 
@@ -139,7 +140,7 @@ class Request(CommonScheduleRequest, CommonAmountDiscountModel):
     #
     # dropoff proxy fields
     #
-    @property
+    @cached_property
     def dropoff(self):
         return self.delivery_list.get(kind=DeliveryKind.DROPOFF)
 

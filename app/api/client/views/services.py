@@ -14,4 +14,4 @@ class ServiceListView(ListAPIView):
 
     permission_classes = [AllowAny]
     serializer_class = ServiceSerializer
-    queryset = Service.objects.all()
+    queryset = Service.objects.all().prefetch_related("price_list__item")

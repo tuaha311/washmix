@@ -14,6 +14,7 @@ from orders.api.pos.serializers.basket import (
 from orders.api.pos.serializers.orders import OrderSerializer
 from orders.containers.order import OrderContainer
 from orders.services.basket import BasketService
+from orders.utils import prepare_order_prefetch_queryset
 
 
 class POSBasketChangeItemView(GenericAPIView):
@@ -33,6 +34,7 @@ class POSBasketChangeItemView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
 
         order = serializer.validated_data["order"]
+        order_pk = order.pk
         client = order.client
         basket = order.basket
         price = serializer.validated_data["price"]
@@ -43,8 +45,8 @@ class POSBasketChangeItemView(GenericAPIView):
         method = getattr(service, f"{action}_item")
         method(basket=basket, price=price, count=count)
 
-        order.refresh_from_db()
-        order_container = OrderContainer(order)
+        refreshed_order = prepare_order_prefetch_queryset().get(pk=order_pk)
+        order_container = OrderContainer(refreshed_order)
         response = self.response_serializer_class(order_container).data
 
         return Response(response)
@@ -88,6 +90,7 @@ class POSBasketSetExtraItemsView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
 
         order = serializer.validated_data["order"]
+        order_pk = order.pk
         extra_items = serializer.validated_data["extra_items"]
         client = order.client
         basket = order.basket
@@ -95,8 +98,8 @@ class POSBasketSetExtraItemsView(GenericAPIView):
         service = BasketService(client)
         service.set_extra_items(basket, extra_items)
 
-        order.refresh_from_db()
-        order_container = OrderContainer(order)
+        refreshed_order = prepare_order_prefetch_queryset().get(pk=order_pk)
+        order_container = OrderContainer(refreshed_order)
         response = self.response_serializer_class(order_container).data
 
         return Response(response)

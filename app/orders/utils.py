@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from django.conf import settings
+from django.db.models import QuerySet
 from django.template.loader import render_to_string
 
 from weasyprint import HTML
@@ -9,6 +10,18 @@ from core.utils import generate_pdf_report_path
 from notifications.utils import get_extra_context
 from orders.models import Order
 from subscriptions.utils import is_advantage_program
+
+
+def prepare_order_prefetch_queryset() -> QuerySet:
+    """
+    Prepare Order queryset with `prefetch_related` and `select_related` options
+    """
+
+    return Order.objects.prefetch_related(
+        "basket__quantity_list__price__service",
+        "basket__quantity_list__price__item",
+        "request__delivery_list",
+    ).select_related("subscription", "employee", "coupon", "invoice")
 
 
 def convert_html_to_pdf(html_content: str, pdf_path: Path):

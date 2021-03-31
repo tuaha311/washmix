@@ -1,8 +1,7 @@
 from rest_framework import serializers
 
-from billing.validators import validate_paid_invoice
 from deliveries.models import Request
-from orders.models import Order
+from orders.utils import prepare_order_prefetch_queryset
 from users.models import Client
 
 
@@ -40,7 +39,7 @@ class BasketField(BaseClientField):
 # POS application fields
 #
 class POSOrderField(serializers.PrimaryKeyRelatedField):
-    queryset = Order.objects.all()
+    queryset = prepare_order_prefetch_queryset().all()
 
 
 class POSClientField(serializers.PrimaryKeyRelatedField):

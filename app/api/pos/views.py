@@ -35,6 +35,6 @@ class POSServiceListView(ListAPIView):
     """
 
     serializer_class = POSServiceSerializer
-    queryset = Service.objects.all()
+    queryset = Service.objects.all().prefetch_related("price_list__item")
     authentication_classes = default_pos_authentication
     permission_classes = default_pos_permissions

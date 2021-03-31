@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from orders.api.pos.serializers.orders import OrderSerializer
 from orders.choices import OrderPaymentChoices
 from orders.containers.order import OrderContainer
+from orders.utils import prepare_order_prefetch_queryset
 
 
 class OrderListView(ListAPIView):
@@ -16,7 +17,10 @@ class OrderListView(ListAPIView):
 
     def get_queryset(self):
         client = self.request.user.client
-        order_list = client.order_list.filter(payment=OrderPaymentChoices.PAID)
+
+        order_list = prepare_order_prefetch_queryset().filter(
+            payment=OrderPaymentChoices.PAID, client=client
+        )
 
         return [OrderContainer(item) for item in order_list]
 

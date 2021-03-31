@@ -11,10 +11,9 @@ from orders.api.pos.serializers.orders import (
     POSOrderPrepareResponseSerializer,
     POSOrderPrepareSerializer,
 )
-from orders.choices import OrderPaymentChoices
 from orders.containers.order import OrderContainer
-from orders.models import Order
 from orders.services.order import OrderService
+from orders.utils import prepare_order_prefetch_queryset
 
 
 class POSOrderPrepareView(GenericAPIView):
@@ -50,7 +49,7 @@ class POSOrderUpdateView(UpdateAPIView):
     """
 
     serializer_class = OrderSerializer
-    queryset = Order.objects.all()
+    queryset = prepare_order_prefetch_queryset().all()
     authentication_classes = default_pos_authentication
     permission_classes = default_pos_permissions
 
