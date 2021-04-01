@@ -7,6 +7,17 @@ import phonenumbers
 from rest_framework import serializers
 
 
+def convert_cent_to_dollars(cent_amount: int):
+    """
+    Converts cents to dollars.
+    145 ¢ = 1.45 $
+    """
+
+    dollar_amount = cent_amount / settings.CENTS_IN_DOLLAR
+
+    return round(dollar_amount, 2)
+
+
 def get_dollars(self, attribute_name: str):
     """
     Read a attribute of class instance in cents (¢) and
@@ -14,9 +25,10 @@ def get_dollars(self, attribute_name: str):
     """
 
     cent_amount = getattr(self, attribute_name)
-    dollar_amount = cent_amount / settings.CENTS_IN_DOLLAR
 
-    return round(dollar_amount, 2)
+    dollars = convert_cent_to_dollars(cent_amount)
+
+    return dollars
 
 
 def get_clean_number(raw_number: str):

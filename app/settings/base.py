@@ -558,26 +558,17 @@ DRAMATIQ_BROKER.add_middleware(PeriodiqMiddleware(skip_delay=30))
 dramatiq.set_broker(DRAMATIQ_BROKER)
 
 
-#######################
-# NOTIFICATION EVENTS #
-#######################
+###########################
+# SMS NOTIFICATION EVENTS #
+###########################
 
-SIGNUP = "signup"
-FORGOT_PASSWORD = "forgot_password"
-PURCHASE_SUBSCRIPTION = "purchase_subscription"
-NEW_REQUEST = "new_request"
 NEW_DELIVERY = "new_delivery"
-NEW_ORDER = "new_order"
-ACCOUNT_REMOVED = "account_removed"
 DELIVERY_DROPOFF_COMPLETE = "delivery_dropoff_complete"
-PAYMENT_FAIL_CLIENT = "payment_fail_client"
-PAYMENT_FAIL_ADMIN = "payment_fail_admin"
-CARD_CHANGES = "card_changes"
 
 
-##########
-# TWILIO #
-##########
+#############################
+# TWILIO WITH SMS TEMPLATES #
+#############################
 
 TWILIO_WORKSPACE_SID = "WSf4478ac8ee039cb8fbcd416ecd762a9f"
 TWILIO_NUMBER = env.str("TWILIO_NUMBER", "")
@@ -597,9 +588,25 @@ SMS_EVENT_INFO = {
 }
 
 
-############
-# SENDGRID #
-############
+#############################
+# EMAIL NOTIFICATION EVENTS #
+#############################
+
+SIGNUP = "signup"
+FORGOT_PASSWORD = "forgot_password"
+PURCHASE_SUBSCRIPTION = "purchase_subscription"
+NEW_REQUEST = "new_request"
+NEW_ORDER = "new_order"
+ACCOUNT_REMOVED = "account_removed"
+PAYMENT_FAIL_CLIENT = "payment_fail_client"
+PAYMENT_FAIL_ADMIN = "payment_fail_admin"
+CARD_CHANGES = "card_changes"
+ACCRUE_CREDIT_BACK = "accrue_credit_back"
+
+
+#################################
+# SENDGRID WITH EMAIL TEMPLATES #
+#################################
 
 SENDGRID_NO_REPLY = "no-reply@washmix.com"
 SENDGRID_FROM_EMAIL = Email("info@washmix.com")
@@ -653,6 +660,12 @@ EMAIL_EVENT_INFO = {
     CARD_CHANGES: {
         "template_name": "email/card_changes.html",
         "subject": "Card Update",
+        "from_email": "info@washmix.com",
+        "reply_to": "info@washmix.com",
+    },
+    ACCRUE_CREDIT_BACK: {
+        "template_name": "email/accrue_credit_back.html",
+        "subject": "Cash Back",
         "from_email": "info@washmix.com",
         "reply_to": "info@washmix.com",
     },

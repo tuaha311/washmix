@@ -48,6 +48,7 @@ class EmailRenderView(TemplateView):
         "payment_admin": "email/payment_fail_admin.html",
         "payment_client": "email/payment_fail_client.html",
         "subscription": "email/purchase_subscription.html",
+        "credit_back": "email/accrue_credit_back.html",
         "signup": "email/signup.html",
     }
 
@@ -63,6 +64,7 @@ class EmailRenderView(TemplateView):
             is_unpaid=True,
             full_name="Bob Brown",
             action="removed from",
+            dollar_credit_back=9.89,
         )
 
         return {**context, **extra_context}

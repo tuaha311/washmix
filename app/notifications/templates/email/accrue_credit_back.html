@@ -1,0 +1,10 @@
+{% extends "base_email.html" %}
+
+{% block body %}
+  <tr>
+    <td>
+      <h4>Dear {{ client.full_name }}</h4>
+      <p>You have been awarded a Cash Back from <a href="https://{{ washmix.domain }}" target="_blank">WashMix.com</a> in amount of <b>${{ dollar_credit_back }}</b>. At today moment you have <b>${{ client.dollar_balance }}</b>​ ​available credit to use.</p>
+    </td>
+  </tr>
+{% endblock %}

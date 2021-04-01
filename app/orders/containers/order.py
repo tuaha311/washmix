@@ -60,9 +60,14 @@ class OrderContainer(BaseDynamicAmountContainer):
 
     @property
     def credit_back(self) -> int:
-        amount_with_discount = self.amount_with_discount
+        # we are calculating credit back only for POS orders
+        if self.subscription:
+            return settings.DEFAULT_ZERO_AMOUNT
 
-        return amount_with_discount * settings.CREDIT_BACK_PERCENTAGE / 100
+        amount_with_discount = self.amount_with_discount
+        credit_back = amount_with_discount * settings.CREDIT_BACK_PERCENTAGE / 100
+
+        return credit_back
 
     @property
     def dollar_credit_back(self) -> float:

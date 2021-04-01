@@ -8,7 +8,8 @@ import dramatiq
 from periodiq import cron
 
 from billing.utils import add_money_to_balance
-from core.utils import add_to_execution_cache, exists_in_execution_cache
+from core.utils import add_to_execution_cache, convert_cent_to_dollars, exists_in_execution_cache
+from notifications.tasks import send_email
 from orders.containers.order import OrderContainer
 from users.models import Client
 
@@ -27,6 +28,8 @@ def accrue_credit_back_every_3_month():
     moment_of_3_month_ago = now - timedelta(days=credit_back_period)
 
     for client in Client.objects.all():
+        client_id = client.id
+        recipient_list = [client.email]
         delta_days = (now - client.created).days
         subscription = client.subscription
 
@@ -44,23 +47,28 @@ def accrue_credit_back_every_3_month():
 
         order_list = client.order_list.filter(created__gte=moment_of_3_month_ago)
         order_container_list = [OrderContainer(item) for item in order_list]
-        order_total_amount = sum(item.amount_with_discount for item in order_container_list)
+        total_credit_back = sum(item.credit_back for item in order_container_list)
 
-        if order_total_amount == 0:
+        if total_credit_back == 0:
             continue
 
-        credit_back_amount = order_total_amount * settings.CREDIT_BACK_PERCENTAGE / 100
+        add_money_to_balance(client, total_credit_back)
 
-        add_money_to_balance(client, credit_back_amount)
+        client.refresh_from_db()
+        dollar_credit_back = convert_cent_to_dollars(total_credit_back)
+        dollar_balance = client.dollar_balance
+
+        send_email.send(
+            event=settings.ACCRUE_CREDIT_BACK,
+            recipient_list=recipient_list,
+            extra_context={
+                "client_id": client_id,
+                "dollar_credit_back": dollar_credit_back,
+                "dollar_balance": dollar_balance,
+            },
+        )
 
         add_to_execution_cache(key)
 
-        logger.info(
-            f"Credit back amount in cents {credit_back_amount} for {client.email} was accrued"
-        )
+        logger.info(f"Credit back amount in $ {dollar_credit_back} for {client.email} was accrued")
         logger.info(f"End of accruing credit back for client {client.email}")
-
-
-@dramatiq.actor
-def charge_card():
-    pass
