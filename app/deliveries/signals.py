@@ -28,10 +28,17 @@ def on_delivery_notify_signal(
         return None
 
     delivery = instance
+    delivery_id = delivery.id
     client = delivery.client
     main_phone = client.main_phone
 
     if not main_phone:
+        return None
+
+    # when Delivery created from Admin Panel - it triggers signal 2 times:
+    # 1. with Delivery without ID
+    # 2. with created Delivery with ID (only this case is valid)
+    if not delivery_id:
         return None
 
     number = main_phone.number
