@@ -665,7 +665,7 @@ EMAIL_EVENT_INFO = {
     },
     ACCRUE_CREDIT_BACK: {
         "template_name": "email/accrue_credit_back.html",
-        "subject": "Cash Back",
+        "subject": "Credit Back",
         "from_email": "info@washmix.com",
         "reply_to": "info@washmix.com",
     },

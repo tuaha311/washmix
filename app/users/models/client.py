@@ -132,5 +132,14 @@ class Client(ProxyUserInfoMixin, Stripeable, Common):
 
         return ", ".join(values)
 
+    @property
+    def full_name(self):
+        full_name = f"{self.first_name} {self.last_name}"
+
+        if full_name == " ":
+            full_name = "Customer"
+
+        return full_name
+
     def __str__(self):
         return self.email
