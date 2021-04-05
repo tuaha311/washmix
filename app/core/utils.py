@@ -104,8 +104,7 @@ def add_to_execution_cache(key: str, expiration_time: int = settings.REDIS_DEFAU
 def recursive_getattr(object_, name: str, default=None):
     parts = name.split(".")
 
-    first_element = parts[0]
-    rest = parts[1:]
+    first_element, *rest = parts
 
     new_name = ".".join(rest)
     new_object = getattr(object_, first_element, default)

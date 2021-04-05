@@ -52,7 +52,7 @@ class TwilioFlexDeliveryWebhookView(GenericAPIView):
                 "code": settings.TWILIO_PICKUP_CODE,
             }
         except ValidationError as e:
-            error_detail = e.detail[0]
+            error_detail, *rest = e.detail
             body = {
                 "message": error_detail,
                 "event": settings.TWILIO_FAIL,

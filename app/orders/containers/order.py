@@ -60,8 +60,28 @@ class OrderContainer(BaseDynamicAmountContainer):
 
     @property
     def credit_back(self) -> int:
+        subscription = self.subscription
+        bought_with_subscription = self.bought_with_subscription
+        invoice = self.invoice
+
         # we are calculating credit back only for POS orders
-        if self.subscription:
+        if subscription:
+            return settings.DEFAULT_ZERO_AMOUNT
+
+        # if this field doesn't exists - we don't know with which subscription kind
+        # order was purchased
+        if not bought_with_subscription:
+            return settings.DEFAULT_ZERO_AMOUNT
+
+        # if order not paid - we should't have a credit back
+        if not invoice or not invoice.is_paid:
+            return settings.DEFAULT_ZERO_AMOUNT
+
+        bought_with_subscription = self.bought_with_subscription
+
+        # if client's subscription doesn't provide a credit back option -
+        # no way to give a credit back
+        if not bought_with_subscription.has_credit_back:
             return settings.DEFAULT_ZERO_AMOUNT
 
         amount_with_discount = self.amount_with_discount

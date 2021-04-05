@@ -31,10 +31,6 @@ def accrue_credit_back_every_3_month():
         client_id = client.id
         recipient_list = [client.email]
         delta_days = (now - client.created).days
-        subscription = client.subscription
-
-        if not subscription or not subscription.has_credit_back:
-            continue
 
         if delta_days % credit_back_period != 0:
             continue
