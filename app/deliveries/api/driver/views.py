@@ -1,3 +1,6 @@
+from django.conf import settings
+from django.utils.timezone import localtime
+
 from django_filters import rest_framework as filters
 from rest_framework.viewsets import ModelViewSet
 
@@ -15,5 +18,10 @@ class DeliveryViewSet(ModelViewSet):
     )
 
     def get_queryset(self):
+        now = localtime()
         employee = self.request.user.employee
-        return employee.delivery_list.all()
+
+        one_week_ago = now - settings.FULL_WEEK_DURATION_TIMEDELTA
+        delivery_list = employee.delivery_list.filter(date__gte=one_week_ago)
+
+        return delivery_list
