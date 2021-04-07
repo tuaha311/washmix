@@ -24,11 +24,7 @@ schema_view = get_schema_view(
 
 
 if settings.DEBUG:
-    import debug_toolbar
-
     local_patterns = [
-        # Django Debug Toolbar
-        path("__debug__/", include(debug_toolbar.urls)),
         # Email render view
         path("render/<str:email_kind>/", EmailRenderView.as_view()),
     ]
