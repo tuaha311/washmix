@@ -30,6 +30,7 @@ RUN pip install poetry \
 COPY app /app
 WORKDIR /app
 
+
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 
 CMD ["/docker-entrypoint.sh"]
