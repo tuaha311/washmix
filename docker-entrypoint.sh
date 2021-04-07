@@ -22,7 +22,6 @@ then
 else
   echo "Running django application"
   python manage.py collectstatic --noinput
-  python manage.py loaddata dump.json --settings settings.staging
   ###Added for use in Heroku
   if [ -n "$PORT" ]
   then
