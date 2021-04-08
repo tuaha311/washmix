@@ -56,6 +56,17 @@ brew install python3 cairo pango gdk-pixbuf libffi
 * Enjoy!
 
 
+## Testing
+We are using `pytest` for unit testing purposes. It can be executed via following steps:
+* Go to `app` folder:
+  ```bash
+  cd app
+  ```
+* Run test cases:
+  ```bash
+  pytest
+  ```
+
 
 ## Applications
 `api` - REST API views, serializers and common handlers for Django REST Framework.
