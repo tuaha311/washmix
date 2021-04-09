@@ -10,16 +10,16 @@ class CouponService:
         self._amount = amount
         self._coupon = coupon
 
-    def apply_coupon(self):
+    def calculate_coupon_discount(self):
         if not self._coupon:
             return settings.DEFAULT_ZERO_DISCOUNT
 
-        coupon_handler = getattr(self, f"_apply_by_{self._coupon.discount_by}")
+        coupon_handler = getattr(self, f"_calculate_by_{self._coupon.discount_by}")
         discount = coupon_handler()
 
         return discount
 
-    def _apply_by_amount(self) -> float:
+    def _calculate_by_amount(self) -> float:
         amount = self._amount
         discount = self._coupon.value_off
 
@@ -29,7 +29,7 @@ class CouponService:
 
         return discount
 
-    def _apply_by_percentage(self) -> float:
+    def _calculate_by_percentage(self) -> float:
         amount = self._amount
         discount = amount * self._coupon.value_off / PERCENTAGE
 

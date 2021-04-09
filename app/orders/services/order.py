@@ -283,10 +283,14 @@ class OrderService:
 
     def _calculate_and_apply_discount(self, coupon: Coupon, invoice: Invoice):
         amount = invoice.amount
+        discount = invoice.discount
 
         coupon_service = CouponService(amount, coupon)
+        coupon_discount = coupon_service.calculate_coupon_discount()
 
-        invoice.discount = coupon_service.apply_coupon()
+        total_discount = discount + coupon_discount
+
+        invoice.discount = total_discount
         invoice.save()
 
     def _notify_admin_list_on_new_order(self):

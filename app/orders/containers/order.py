@@ -50,7 +50,7 @@ class OrderContainer(BaseDynamicAmountContainer):
         if coupon:
             amount = self.amount
             coupon_service = CouponService(amount, coupon)
-            coupon_discount = coupon_service.apply_coupon()
+            coupon_discount = coupon_service.calculate_coupon_discount()
 
         filled_container_list = self._filled_container_list
         subscription_discount_list = [item.discount for item in filled_container_list]
