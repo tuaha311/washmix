@@ -38,9 +38,9 @@ class POSService:
         employee = self._employee
 
         order_service = OrderService(client)
-        order_container, charge_succesful = order_service.checkout(order)
+        order_container, charge_successful = order_service.checkout(order)
 
-        if not charge_succesful:
+        if not charge_successful:
             raise serializers.ValidationError(
                 detail="Can't bill your card",
                 code="cant_bill_your_card",
