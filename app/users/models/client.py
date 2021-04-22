@@ -141,5 +141,12 @@ class Client(ProxyUserInfoMixin, Stripeable, Common):
 
         return full_name
 
+    @property
+    def has_card(self):
+        card_list = self.card_list.all()
+        has_card = card_list.exists()
+
+        return has_card
+
     def __str__(self):
         return self.email

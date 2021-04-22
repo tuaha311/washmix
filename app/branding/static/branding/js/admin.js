@@ -7,6 +7,7 @@ var DELIVERY_URL = "/admin/deliveries/delivery/"
 var PAID_ORDER_COLOR = "green"
 var UNPAID_ORDER_COLOR = "red"
 var RUSH_DELIVERY_COLOR = "yellow"
+var CLIENT_WITHOUT_CARD_COLOR = "red"
 
 
 /*
@@ -46,7 +47,6 @@ function createLink(orderId) {
 }
 
 
-
 // handles button or link creation on Client's page
 function handleOrderIsAlreadyFormed(clientId, requestId, parent) {
   jQuery.get(
@@ -72,6 +72,10 @@ function handleOrderIsAlreadyFormed(clientId, requestId, parent) {
 }
 
 
+/*
+  Client's page
+*/
+
 // This function adds a `Create Order` button on Client's Requests Tab.
 // If order is not formed - we are adding `Create Button`. When user clicks on this button
 // - we are redirecting him to POS system.
@@ -95,6 +99,26 @@ function addCreateOrderButton() {
 
   allRows.forEach(callback)
 }
+
+// This function works at Deliveries list page - /admin/deliveries/delivery/.
+// We are filling rush deliveries with yellow color
+function fillClientWithoutCardWithColor() {
+  var ALL_ORDER_SELECTOR = '#result_list > tbody > tr'
+  var allRows = document.querySelectorAll(ALL_ORDER_SELECTOR)
+
+  function callback(row, index) {
+    var cardField = row.querySelector('td.field-has_card')
+    var hasNotCard = cardField.innerHTML === "False"
+
+    if (hasNotCard) {
+      row.style.backgroundColor = CLIENT_WITHOUT_CARD_COLOR
+    }
+
+  }
+
+  allRows.forEach(callback)
+}
+
 
 /*
   Orders page
@@ -150,6 +174,7 @@ function fillRushDeliveryWithColor() {
 if (window.location.pathname.search(CLIENT_URL) !== -1) {
   // We are waiting 1s while HTML is loading
   setTimeout(addCreateOrderButton, 1000)
+  setTimeout(fillClientWithoutCardWithColor, 1000)
 }
 
 if (window.location.pathname === ORDER_URL) {
@@ -161,4 +186,3 @@ if (window.location.pathname === DELIVERY_URL) {
   // We are waiting 1s while HTML is loading
   setTimeout(fillRushDeliveryWithColor, 1000)
 }
-

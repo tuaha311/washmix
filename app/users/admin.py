@@ -138,6 +138,7 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
         "main_phone",
         "subscription",
         "main_address",
+        "has_card",
     ]
     actions = ["full_delete_action"]
 
