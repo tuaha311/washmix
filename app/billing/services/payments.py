@@ -150,7 +150,8 @@ class PaymentService:
             # complex case:
             # client doesn't have enough money to pay for POS order with Advantage Program
             # and have `is_auto_billing` option enabled, but Order amount is higher that subscription price.
-            # i.e. Order amount is 211$ and Subscription price is 199$ - in such case we need to charge 211$
+            # i.e. Client has a balance 50$, Order amount is 439$ and Subscription price is 199$
+            # - in such case we need to charge 50$ from balance, then 240$
             # by one-time payment and purchase Subscription for 199$.
             # we are trying to perform one-time payment refill here, and then in StripeWebhookView we have
             # additional logic that will handle Subscription purchase.

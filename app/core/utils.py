@@ -2,6 +2,7 @@ import os
 from pathlib import PosixPath
 
 from django.conf import settings
+from django.db.models import Model
 
 import phonenumbers
 from rest_framework import serializers
@@ -81,14 +82,16 @@ def clone_from_to(from_object, to_object, exclude_fields: list):
     Clones one object in another.
     """
 
-    for field in from_object._meta.get_fields():
+    from_object_fields = from_object._meta.get_fields()
+
+    for field in from_object_fields:
         field_name = field.name
 
         if field_name in exclude_fields:
             continue
 
-        package_field_value = getattr(from_object, field_name)
-        setattr(to_object, field_name, package_field_value)
+        from_object_field_value = getattr(from_object, field_name)
+        setattr(to_object, field_name, from_object_field_value)
 
     return to_object
 
@@ -151,3 +154,14 @@ def generate_pdf_report_path(order_pk: int) -> PosixPath:
     pdf_path = pdf_reports_root / pdf_name
 
     return pdf_path
+
+
+def clone_instance(instance: Model) -> Model:
+    """
+    Clone the instance and return duplicate.
+    """
+
+    instance.pk = None
+    instance.save()
+
+    return instance

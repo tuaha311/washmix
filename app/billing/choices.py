@@ -3,11 +3,13 @@ class InvoicePurpose:
     SUBSCRIPTION = "subscription"
     ORDER = "order"
     ONE_TIME_PAYMENT = "one_time_payment"
+    REFUND = "refund"
     MAP = {
         CREDIT: "Credit by WashMix",
         SUBSCRIPTION: "Subscription purchase",
         ORDER: "POS order",
         ONE_TIME_PAYMENT: "One time payment",
+        REFUND: "Refund",
     }
     CHOICES = list(MAP.items())
 

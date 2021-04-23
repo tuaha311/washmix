@@ -5,8 +5,9 @@ from typing import Optional, Union
 from django.conf import settings
 from django.db.transaction import atomic
 
-from billing.choices import InvoiceKind, InvoiceProvider, InvoicePurpose, WebhookKind
+from billing.choices import InvoiceKind, InvoiceProvider, InvoicePurpose
 from billing.models import Invoice, Transaction
+from core.utils import clone_from_to
 from users.models import Client
 
 
@@ -133,6 +134,44 @@ def confirm_credit(
     )
 
     return transaction
+
+
+def make_refund(invoice: Invoice):
+    """
+    Helper function that performs refund:
+        - Creates Invoice with REFUND purpose.
+        - Clones all Transactions from original Invoice with reverted `.kind` field.
+    """
+
+    common_exclude_fields = [
+        "id",
+        "created",
+        "changed",
+    ]
+    exclude_fields_of_invoice = [*common_exclude_fields, "transaction_list", "order"]
+
+    with atomic():
+        # 1. let's clone an invoice
+        cloned_invoice = Invoice()
+
+        clone_from_to(invoice, cloned_invoice, exclude_fields_of_invoice)
+
+        cloned_invoice.purpose = InvoicePurpose.REFUND
+        cloned_invoice.save()
+
+        # 2. then we are cloning all transaction list
+        for transaction in invoice.transaction_list.all():
+            cloned_transaction = Transaction()
+
+            clone_from_to(transaction, cloned_transaction, common_exclude_fields)
+
+            cloned_transaction.invoice = cloned_invoice
+            kind = InvoiceKind.DEBIT
+            if transaction.kind == InvoiceKind.DEBIT:
+                kind = InvoiceKind.CREDIT
+            cloned_transaction.kind = kind
+
+            cloned_transaction.save()
 
 
 def prepare_stripe_metadata(

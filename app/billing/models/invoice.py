@@ -2,7 +2,7 @@ from django.conf import settings
 from django.db import models
 from django.db.models import Sum
 
-from billing.choices import InvoicePurpose
+from billing.choices import InvoiceProvider, InvoicePurpose
 from core.common_models import CommonAmountDiscountModel
 from core.utils import get_dollars
 
@@ -50,7 +50,9 @@ class Invoice(CommonAmountDiscountModel):
         verbose_name_plural = "invoices"
 
     def __str__(self):
-        return f"№ {self.id} {self.amount_with_discount}"
+        pretty_purpose = self.get_purpose_display()
+
+        return f"№ {self.id} {self.amount_with_discount} - {pretty_purpose}"
 
     @property
     def is_paid(self) -> bool:
@@ -85,5 +87,11 @@ class Invoice(CommonAmountDiscountModel):
     @property
     def has_transaction(self) -> bool:
         transaction_list = self.transaction_list
+
+        return transaction_list.exists()
+
+    @property
+    def has_stripe_transaction(self) -> bool:
+        transaction_list = self.transaction_list.filter(provider=InvoiceProvider.STRIPE)
 
         return transaction_list.exists()
