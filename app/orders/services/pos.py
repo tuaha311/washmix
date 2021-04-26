@@ -36,9 +36,16 @@ class POSService:
         client = self._client
         order = self._order
         employee = self._employee
+        client_has_card = client.has_card
 
         order_service = OrderService(client)
         order_container, charge_successful = order_service.checkout(order)
+
+        # in case when client doesn't have a card list - we can't charge them
+        # via Stripe and consequently Stripe will not notify us about failed charge with
+        # webhook. such cases we should handle manually.
+        if not client_has_card and not charge_successful:
+            order_service.fail(order)
 
         if not charge_successful:
             raise serializers.ValidationError(

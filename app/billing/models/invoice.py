@@ -81,6 +81,10 @@ class Invoice(CommonAmountDiscountModel):
         return unpaid_amount
 
     @property
+    def dollar_paid_amount(self) -> float:
+        return get_dollars(self, "paid_amount")
+
+    @property
     def dollar_unpaid_amount(self) -> float:
         return get_dollars(self, "unpaid_amount")
 

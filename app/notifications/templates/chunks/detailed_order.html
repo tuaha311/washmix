@@ -128,8 +128,13 @@
 
         {% if is_unpaid or order_container.invoice.dollar_unpaid_amount %}
           <tr>
-            <th id="unpaid">Unpaid</th>
-            <th>${{ order_container.invoice.dollar_unpaid_amount }}</th>
+            <th id="paid">Paid amount</th>
+            <th id="paid">${{ order_container.invoice.dollar_paid_amount }}</th>
+          </tr>
+
+          <tr>
+            <th id="unpaid">Unpaid amount</th>
+            <th id="unpaid">${{ order_container.invoice.dollar_unpaid_amount }}</th>
           </tr>
         {% endif %}
       </table>

@@ -22,8 +22,17 @@
       color: blueviolet;
     }
 
+    #unpaid, #paid {
+      font-weight: 800;
+      font-size: 24px;
+    }
+
     #unpaid {
       color: red;
+    }
+
+    #paid {
+      color: green;
     }
   </style>
 {% endblock %}
@@ -43,6 +52,16 @@
 
   <tr>
     <td>
+      {% if client.has_card %}
+        <h3 class="red centered">CARD NOT WORKING</h3>
+      {% else %}
+        <h3 class="red centered">CARD NOT PRESENT</h3>
+      {% endif %}
+    </td>
+  </tr>
+
+  <tr>
+    <td>
       <div class="divider"></div>
     </td>
   </tr>
@@ -54,6 +73,7 @@
         <p>Name - {{ client.full_name }}</p>
         <p>Email - <a href="mailto:{{ client.email }}">{{ client.email }}</a></p>
         <p>Stripe ID - {{ client.stripe_id }}</p>
+        <p>Phone Number - {{ client.main_phone.number }}</p>
       </div>
     </td>
   </tr>
