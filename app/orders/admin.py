@@ -8,7 +8,7 @@ from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 
 from billing.choices import InvoicePurpose
-from billing.utils import make_refund
+from billing.utils import perform_refund
 from core.admin import AdminWithSearch
 from orders.models import Basket, Item, Order, Price, Quantity, Service
 from orders.utils import generate_pdf_from_html
@@ -50,9 +50,9 @@ class OrderAdmin(AdminWithSearch):
     list_editable = [
         "employee",
     ]
-    actions = ["cancel_pos_order"]
+    actions = ["cancel_unpaid_order"]
 
-    def cancel_pos_order(self, request: HttpRequest, order_queryset: QuerySet):
+    def cancel_unpaid_order(self, request: HttpRequest, order_queryset: QuerySet):
         """
         This action helps to make refund on unpaid orders with some restrictions:
             - Order should be a POS order
@@ -61,25 +61,31 @@ class OrderAdmin(AdminWithSearch):
         """
 
         cancelled_order_list = []
+        allowed_for_refund_purposes = [InvoicePurpose.ORDER, InvoicePurpose.SUBSCRIPTION]
 
         with atomic():
             for order in order_queryset:
                 invoice = order.invoice
+                purpose = invoice.purpose
                 basket = order.basket
+                subscription = order.subscription
+                is_refundable = invoice.purpose in allowed_for_refund_purposes
 
-                if (
-                    invoice.is_paid
-                    or invoice.has_stripe_transaction
-                    or invoice.purpose != InvoicePurpose.ORDER
-                ):
+                if invoice.is_paid or invoice.has_stripe_transaction or not is_refundable:
                     continue
 
-                make_refund(invoice)
+                # if we charge some credits for this invoice - let's refund them
+                if invoice.paid_amount:
+                    perform_refund(invoice)
 
-                basket.delete()
+                if purpose == InvoicePurpose.ORDER:
+                    basket.delete()
+                elif purpose == InvoicePurpose.SUBSCRIPTION:
+                    subscription.delete()
 
                 # if we will remove order in place, then it will mutate order_queryset
-                # such behavior can lead to unexpected results
+                # such behavior can lead to unexpected results - because of it we are forming
+                # list of order that will be removed
                 cancelled_order_list.append(order.pk)
 
             # then we are removing all orders that meet our criteria
@@ -89,7 +95,7 @@ class OrderAdmin(AdminWithSearch):
             request, f"Orders was cancelled - {cancelled_order_list}", messages.SUCCESS
         )
 
-    cancel_pos_order.short_description = "Cancel unpaid POS order and make refund."  # type: ignore
+    cancel_unpaid_order.short_description = "Cancel unpaid order and perform refund."  # type: ignore
 
     def pdf_path(self, order: Order):
         """
@@ -114,6 +120,10 @@ class OrderAdmin(AdminWithSearch):
     pdf_path.short_description = "PDF path"  # type: ignore
 
     def _generate_pdf_report(self, order: Order):
+        """
+        PDF-report generator method.
+        """
+
         order_id = order.id
         base_dir = settings.BASE_DIR
 

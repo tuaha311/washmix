@@ -136,7 +136,7 @@ def confirm_credit(
     return transaction
 
 
-def make_refund(invoice: Invoice):
+def perform_refund(invoice: Invoice):
     """
     Helper function that performs refund:
         - Creates Invoice with REFUND purpose.
