@@ -86,7 +86,13 @@ class OrderService:
             payment_service = PaymentService(client, invoice)
             payment_service.charge()
 
-            # 5. we are calling last hooks
+            # 5. check auto billing and purchase subscription if required
+            fully_paid = payment_service.fully_paid
+            if fully_paid:
+                payment_service = PaymentService(client, invoice)
+                payment_service.charge_subscription_with_auto_billing()
+
+            # 6. we are calling last hooks
             for item in service_list:
                 item.checkout(
                     order=order, basket=basket, request=request, subscription=subscription
@@ -97,9 +103,8 @@ class OrderService:
             order.save()
 
         self._order = order
-        charge_successful = payment_service.charge_successful
 
-        return self.get_container(), charge_successful
+        return self.get_container(), fully_paid
 
     def charge_the_rest(self, order: Order):
         """

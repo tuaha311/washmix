@@ -24,6 +24,7 @@ logger = logging.getLogger(__name__)
 class PaymentService:
     """
     Main payment service, that responsible for accepting and providing billing.
+    Create a new instance of PaymentService - per one charge.
 
     This service main core capabilities:
         - Save user's card in Stripe
@@ -36,7 +37,7 @@ class PaymentService:
         self._client = client
         self._invoice = invoice
         self._stripe_helper = StripeHelper(client)
-        self.charge_successful = False
+        self.fully_paid = False
 
     def create_intent(
         self,
@@ -127,7 +128,7 @@ class PaymentService:
             # most easiest case:
             # client has enough money to pay for order
             if is_order_fully_paid:
-                self.check_balance_and_purchase_subscription()
+                self.fully_paid = True
 
             # simple case:
             # client want to pay for subscription - we are charging for the full price of subscription.
@@ -171,7 +172,7 @@ class PaymentService:
                 continue_with_order = invoice.order.pk
                 self._process_immediate_payment(webhook_kind, unpaid_amount, continue_with_order)
 
-    def check_balance_and_purchase_subscription(self):
+    def charge_subscription_with_auto_billing(self):
         """
         Check client balance and purchase Subscription if balance is lower than AUTO_BILLING_LIMIT
         """
@@ -188,8 +189,6 @@ class PaymentService:
             webhook_kind = WebhookKind.SUBSCRIPTION
             continue_with_order = None
             self._process_subscription(webhook_kind, continue_with_order)
-        else:
-            self.charge_successful = True
 
     def charge_prepaid_balance(self):
         """
@@ -198,16 +197,16 @@ class PaymentService:
 
         client = self._client
         invoice = self._invoice
-        charge_from_prepaid, charge_from_card = self._calculate_prepaid_and_card_charge()
+        paid_amount, unpaid_amount = self._calculate_prepaid_and_card_charge()
 
-        if charge_from_prepaid > 0:
+        if paid_amount > 0:
             create_credit(
                 client=client,
                 invoice=invoice,
-                amount=charge_from_prepaid,
+                amount=paid_amount,
             )
 
-        return charge_from_prepaid, charge_from_card
+        return paid_amount, unpaid_amount
 
     def _process_subscription(self, webhook_kind: str, continue_with_order: Optional[int]):
         """
@@ -303,7 +302,7 @@ class PaymentService:
             # we are trying to charge the card list of client
             # and we are stopping at first successful attempt
 
-            if self.charge_successful:
+            if self.fully_paid:
                 break
 
             try:
@@ -319,16 +318,13 @@ class PaymentService:
                 )
                 self._save_card(invoice=invoice, card=card)
 
-                self.charge_successful = True
+                self.fully_paid = True
 
             except StripeError as err:
                 logger.error(err)
                 continue
 
         return payment
-
-    def _get_aggregated_invoice(self):
-        pass
 
     def _save_card(self, invoice: Invoice, card: Card):
         """
