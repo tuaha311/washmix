@@ -15,7 +15,7 @@ from billing.services.payments import PaymentService
 @patch("billing.services.payments.create_credit")
 @patch("billing.services.payments.StripeHelper")
 @patch("billing.services.payments.CardService")
-def test_charge_subscription_purchase_when_order_is_fully_paid(
+def test_charge_subscription_purchase_when_order_is_is_fully_paid(
     card_service_mock,
     stripe_class_mock,
     create_credit_mock,
@@ -66,12 +66,12 @@ def test_charge_subscription_purchase_when_order_is_fully_paid(
     service = PaymentService(client, invoice)
     service.charge()
 
-    fully_paid = service.fully_paid
-    if fully_paid:
+    is_fully_paid = service.is_fully_paid
+    if is_fully_paid:
         service = PaymentService(client, invoice)
         service.charge_subscription_with_auto_billing()
 
-    assert fully_paid is True
+    assert is_fully_paid is True
     assert atomic_mock.call_count == 2
     create_credit_mock.assert_called_once_with(client=client, invoice=invoice, amount=1200)
     stripe_instance_mock.create_payment_intent.assert_called_once_with(
@@ -97,7 +97,7 @@ def test_charge_subscription_purchase_when_order_is_fully_paid(
 @patch("billing.services.payments.create_credit")
 @patch("billing.services.payments.StripeHelper")
 @patch("billing.services.payments.CardService")
-def test_charge_subscription_purchase_when_order_is_fully_paid_with_auto_billing_but_no_card(
+def test_charge_subscription_purchase_when_order_is_is_fully_paid_with_auto_billing_but_no_card(
     card_service_mock,
     stripe_class_mock,
     create_credit_mock,
@@ -146,12 +146,12 @@ def test_charge_subscription_purchase_when_order_is_fully_paid_with_auto_billing
     service = PaymentService(client, invoice)
     service.charge()
 
-    fully_paid = service.fully_paid
-    if fully_paid:
+    is_fully_paid = service.is_fully_paid
+    if is_fully_paid:
         service = PaymentService(client, invoice)
         service.charge_subscription_with_auto_billing()
 
-    assert fully_paid is True
+    assert is_fully_paid is True
     assert atomic_mock.call_count == 2
     create_credit_mock.assert_called_once_with(client=client, invoice=invoice, amount=1200)
     stripe_instance_mock.create_payment_intent.assert_not_called()
@@ -222,12 +222,12 @@ def test_charge_when_balance_not_enough_for_basket_and_card_is_invalid(
     service = PaymentService(client, invoice)
     service.charge()
 
-    fully_paid = service.fully_paid
-    if fully_paid:
+    is_fully_paid = service.is_fully_paid
+    if is_fully_paid:
         service = PaymentService(client, invoice)
         service.charge_subscription_with_auto_billing()
 
-    assert fully_paid is False
+    assert is_fully_paid is False
     assert atomic_mock.call_count == 2
     subscription_service_instance_mock.choose.assert_called_once()
     subscription_service_instance_mock.checkout.assert_called_once()

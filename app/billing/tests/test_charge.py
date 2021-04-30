@@ -29,9 +29,9 @@ def test_charge_when_balance_enough_for_basket(stripe_class_mock, create_credit_
 
     service = PaymentService(client, invoice)
     service.charge()
-    fully_paid = service.fully_paid
+    is_fully_paid = service.is_fully_paid
 
-    assert fully_paid is True
+    assert is_fully_paid is True
     atomic_mock.assert_called_once()
     create_credit_mock.assert_called_once_with(client=client, invoice=invoice, amount=20000)
     stripe_class_mock.assert_called_once()
@@ -95,9 +95,9 @@ def test_charge_when_balance_not_enough_for_basket_with_enabled_auto_billing(
 
     service = PaymentService(client, invoice)
     service.charge()
-    fully_paid = service.fully_paid
+    is_fully_paid = service.is_fully_paid
 
-    assert fully_paid is True
+    assert is_fully_paid is True
     assert atomic_mock.call_count == 2
     subscription_service_instance_mock.choose.assert_called_once()
     subscription_service_instance_mock.checkout.assert_called_once()
@@ -165,9 +165,9 @@ def test_charge_when_balance_not_enough_for_basket_with_disabled_auto_billing(
 
     service = PaymentService(client, invoice)
     service.charge()
-    fully_paid = service.fully_paid
+    is_fully_paid = service.is_fully_paid
 
-    assert fully_paid is True
+    assert is_fully_paid is True
     atomic_mock.assert_called_once()
     create_credit_mock.assert_called_once_with(client=client, invoice=invoice, amount=10000)
     stripe_instance_mock.create_payment_intent.assert_called_once_with(
@@ -242,9 +242,9 @@ def test_charge_when_balance_not_enough_for_basket_and_card_is_invalid(
 
     service = PaymentService(client, invoice)
     service.charge()
-    fully_paid = service.fully_paid
+    is_fully_paid = service.is_fully_paid
 
-    assert fully_paid is False
+    assert is_fully_paid is False
     assert atomic_mock.call_count == 2
     subscription_service_instance_mock.choose.assert_called_once()
     subscription_service_instance_mock.checkout.assert_called_once()
@@ -321,9 +321,9 @@ def test_charge_when_balance_not_enough_for_basket_with_enabled_auto_billing_and
 
     service = PaymentService(client, invoice)
     service.charge()
-    fully_paid = service.fully_paid
+    is_fully_paid = service.is_fully_paid
 
-    assert fully_paid is True
+    assert is_fully_paid is True
     assert atomic_mock.call_count == 1
     create_credit_mock.assert_called_once_with(client=client, invoice=invoice, amount=10000)
     stripe_instance_mock.create_payment_intent.assert_called_once_with(
@@ -368,9 +368,9 @@ def test_charge_when_first_subscription_purchase(card_service_mock, stripe_class
 
     service = PaymentService(client, invoice)
     service.charge()
-    fully_paid = service.fully_paid
+    is_fully_paid = service.is_fully_paid
 
-    assert fully_paid is True
+    assert is_fully_paid is True
     assert atomic_mock.call_count == 1
     stripe_instance_mock.create_payment_intent.assert_called_once_with(
         payment_method_id=card.stripe_id,
@@ -419,9 +419,9 @@ def test_charge_when_subscription_upgrade_to_platinum(
 
     service = PaymentService(client, invoice)
     service.charge()
-    fully_paid = service.fully_paid
+    is_fully_paid = service.is_fully_paid
 
-    assert fully_paid is True
+    assert is_fully_paid is True
     assert atomic_mock.call_count == 1
     stripe_instance_mock.create_payment_intent.assert_called_once_with(
         payment_method_id=card.stripe_id,

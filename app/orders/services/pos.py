@@ -39,15 +39,15 @@ class POSService:
         client_has_card = client.has_card
 
         order_service = OrderService(client)
-        order_container, fully_paid = order_service.checkout(order)
+        order_container, is_fully_paid = order_service.checkout(order)
 
         # in case when client doesn't have a card list - we can't charge them
         # via Stripe and consequently Stripe will not notify us about failed charge with
         # webhook. such cases we should handle manually.
-        if not client_has_card and not fully_paid:
+        if not client_has_card and not is_fully_paid:
             order_service.fail(order)
 
-        if not fully_paid:
+        if not is_fully_paid:
             raise serializers.ValidationError(
                 detail="Can't bill your card",
                 code="cant_bill_your_card",

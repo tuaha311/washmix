@@ -37,7 +37,8 @@ class PaymentService:
         self._client = client
         self._invoice = invoice
         self._stripe_helper = StripeHelper(client)
-        self.fully_paid = False
+        self.is_fully_paid = False
+        self.is_fully_paid_by_credits = False
 
     def create_intent(
         self,
@@ -122,13 +123,14 @@ class PaymentService:
 
         with atomic():
             paid_amount, unpaid_amount = self.charge_prepaid_balance()
-            is_order_fully_paid = unpaid_amount == 0
+            is_order_is_fully_paid = unpaid_amount == 0
             is_subscription_price_enough_for_order_amount = subscription_price >= unpaid_amount
 
             # most easiest case:
-            # client has enough money to pay for order
-            if is_order_fully_paid:
-                self.fully_paid = True
+            # client has enough credits to pay for order
+            if is_order_is_fully_paid:
+                self.is_fully_paid = True
+                self.is_fully_paid_by_credits = True
 
             # simple case:
             # client want to pay for subscription - we are charging for the full price of subscription.
@@ -302,7 +304,7 @@ class PaymentService:
             # we are trying to charge the card list of client
             # and we are stopping at first successful attempt
 
-            if self.fully_paid:
+            if self.is_fully_paid:
                 break
 
             try:
@@ -318,7 +320,7 @@ class PaymentService:
                 )
                 self._save_card(invoice=invoice, card=card)
 
-                self.fully_paid = True
+                self.is_fully_paid = True
 
             except StripeError as err:
                 logger.error(err)

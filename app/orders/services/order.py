@@ -87,8 +87,12 @@ class OrderService:
             payment_service.charge()
 
             # 5. check auto billing and purchase subscription if required
-            fully_paid = payment_service.fully_paid
-            if fully_paid:
+            # we need to handle such cases when order paid by credits - in case of Stripe
+            # transaction, it will be race condition when WebhookKind.SUBSCRIPTION_WITH_CHARGE
+            # reference - app/billing/services/payments.py:148
+            is_fully_paid = payment_service.is_fully_paid
+            is_fully_paid_by_credits = payment_service.is_fully_paid_by_credits
+            if is_fully_paid and is_fully_paid_by_credits:
                 payment_service = PaymentService(client, invoice)
                 payment_service.charge_subscription_with_auto_billing()
 
@@ -104,7 +108,7 @@ class OrderService:
 
         self._order = order
 
-        return self.get_container(), fully_paid
+        return self.get_container(), is_fully_paid
 
     def charge_the_rest(self, order: Order):
         """
