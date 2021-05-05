@@ -6,6 +6,7 @@ from billing.services.coupon import CouponService
 from core.containers import BaseDynamicAmountContainer
 from core.utils import get_dollars
 from deliveries.containers.request import RequestContainer
+from orders.choices import OrderPaymentChoices
 from orders.containers.basket import BasketContainer
 from orders.models import Order
 from subscriptions.containers import SubscriptionContainer
@@ -63,6 +64,7 @@ class OrderContainer(BaseDynamicAmountContainer):
         subscription = self.subscription
         bought_with_subscription = self.bought_with_subscription
         invoice = self.invoice
+        payment_status = self.payment
 
         # we are calculating credit back only for POS orders
         if subscription:
@@ -75,6 +77,10 @@ class OrderContainer(BaseDynamicAmountContainer):
 
         # if order not paid - we should't have a credit back
         if not invoice or not invoice.is_paid:
+            return settings.DEFAULT_ZERO_AMOUNT
+
+        # if order not marked as paid - we shouldn't have a credit back
+        if payment_status != OrderPaymentChoices.PAID:
             return settings.DEFAULT_ZERO_AMOUNT
 
         bought_with_subscription = self.bought_with_subscription
