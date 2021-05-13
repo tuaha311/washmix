@@ -60,7 +60,7 @@ class WelcomeService:
 
         client.billing_address = raw_billing_address
 
-        client.save()
+        client.save(update_fields={"billing_address"})
 
         return client.billing_address
 
