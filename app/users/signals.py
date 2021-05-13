@@ -37,7 +37,7 @@ def update_client_stripe_info(
     client = instance
     main_phone = client.main_phone
     stripe_id = client.stripe_id
-    main_address = client.main_address
+    billing_address = client.billing_address
     stripe_helper = StripeHelper(client)
 
     if not stripe_id:
@@ -50,16 +50,16 @@ def update_client_stripe_info(
 
         logger.info(f"Updating phone info for {client.email}")
 
-    if "main_address" in update_fields and main_address:
+    if "billing_address" in update_fields and billing_address:
         address = {
-            "line1": main_address.address_line_1,
-            "line2": main_address.address_line_2,
-            "postal_code": main_address.zip_code.value,
+            "line1": billing_address.get("address_line_1", ""),
+            "line2": billing_address.get("address_line_2", ""),
+            "postal_code": billing_address.get("zip_code", ""),
             "country": settings.DEFAULT_COUNTRY,
         }
         stripe_helper.update_customer_info(stripe_id, address=address)
 
-        logger.info(f"Updating address info for {client.email}")
+        logger.info(f"Updating billing address info for {client.email}")
 
 
 @receiver(post_save, sender=User, dispatch_uid="update_user_stripe_info")

@@ -66,7 +66,7 @@ router.register("requests", requests.RequestViewSet, basename="requests")
 
 urlpatterns = [
     # closed methods that require authorization
-    path("profile/", profile.ProfileView.as_view(), name="profile"),
+    path("profile/", profile.ProfileRetrieveUpdateView.as_view(), name="profile"),
     path("zip_codes/", zip_codes.ZipCodeListView.as_view(), name="zip-code-list"),
     path("sms/", include(sms_urls)),
     path("welcome/", include(welcome_urls)),
