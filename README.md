@@ -248,3 +248,4 @@ Valid body for working with Twilio Studio
 ```json
 {"message": "{{trigger.message.Body}}", "phone": "{{trigger.message.From}}"}
 ```
+
