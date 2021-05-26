@@ -291,10 +291,10 @@ class OrderService:
         return invoice
 
     def _calculate_and_apply_discount(self, coupon: Coupon, invoice: Invoice):
-        amount = invoice.amount
+        amount_with_discount = invoice.amount_with_discount
         discount = invoice.discount
 
-        coupon_service = CouponService(amount, coupon)
+        coupon_service = CouponService(amount_with_discount, coupon)
         coupon_discount = coupon_service.calculate_coupon_discount()
 
         total_discount = discount + coupon_discount
