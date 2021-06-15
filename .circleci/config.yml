@@ -19,7 +19,8 @@ commands:
     steps:
       - run:
           command: |
-            git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git ${CIRCLE_BRANCH}:master
+            echo "Moved to Github Actions"
+            # git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git ${CIRCLE_BRANCH}:master
 
 jobs:
   "Deploy to Heroku":
