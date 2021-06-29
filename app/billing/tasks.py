@@ -29,7 +29,7 @@ def accrue_credit_back_every_3_month():
 
     for client in Client.objects.all():
         client_id = client.id
-        recipient_list = [client.email]
+        recipient_list = [*settings.ADMIN_EMAIL_LIST, client.email]
         delta_days = (now - client.created).days
 
         if delta_days == 0:
