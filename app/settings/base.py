@@ -564,7 +564,7 @@ dramatiq.set_broker(DRAMATIQ_BROKER)
 ###########################
 # SMS NOTIFICATION EVENTS #
 ###########################
-
+USER_SIGNUP = "user_signup"
 NEW_DELIVERY = "new_delivery"
 DELIVERY_DROPOFF_COMPLETE = "delivery_dropoff_complete"
 
@@ -582,6 +582,9 @@ TWILIO_FAIL = "fail"
 TWILIO_PICKUP_CODE = "pickup_scheduled"
 
 SMS_EVENT_INFO = {
+    USER_SIGNUP: {
+        "template_name": "sms/user_signup.html",
+    },
     NEW_DELIVERY: {
         "template_name": "sms/new_delivery.html",
     },
