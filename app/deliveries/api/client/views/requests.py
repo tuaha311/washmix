@@ -1,7 +1,11 @@
+import datetime
+
+from django.conf import settings
 from django.db.models import Q, QuerySet
-from django.utils.timezone import localtime
+from django.utils import timezone
 
 from django_filters import rest_framework as filters
+from rest_framework import status
 from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request as DRFRequest
 from rest_framework.response import Response
@@ -10,8 +14,11 @@ from rest_framework.viewsets import ModelViewSet
 
 from deliveries.api.client.serializers.requests import RequestCheckSerializer, RequestSerializer
 from deliveries.choices import DeliveryKind, DeliveryStatus
+from deliveries.models import Delivery
 from deliveries.services.requests import RequestService
+from notifications.tasks import send_sms
 from orders.choices import OrderStatusChoices
+from settings.base import ALLOW_DELIVERY_CANCELLATION_TIMEDELTA, DELIVERY_DAYS_MAP
 
 
 class RequestFilter(filters.FilterSet):
@@ -24,7 +31,7 @@ class RequestFilter(filters.FilterSet):
 
     def filter_upcoming(self, queryset: QuerySet, name: str, value: bool):
         request_list = queryset
-        today = localtime().date()
+        today = timezone.localtime().date()
 
         if not value:
             return request_list
@@ -64,6 +71,21 @@ class RequestViewSet(ModelViewSet):
         client = self.request.user.client
         return client.request_list.all()
 
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        if Delivery.objects.filter(
+            request__client=self.request.user.client,
+            status__in=[DeliveryStatus.ACCEPTED, DeliveryStatus.IN_PROGRESS],
+        ).exists():
+            return Response(
+                {"message": "You already have a pickup request made"},
+                status=status.HTTP_412_PRECONDITION_FAILED,
+            )
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
     def perform_create(self, serializer: Serializer):
         client = self.request.user.client
         pickup_date = serializer.validated_data["pickup_date"]
@@ -101,6 +123,42 @@ class RequestViewSet(ModelViewSet):
             service.recalculate(request)
 
         serializer.save()
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        time_now = timezone.now()
+        created_at = instance.created
+
+        if time_now > created_at + ALLOW_DELIVERY_CANCELLATION_TIMEDELTA:
+            client = request.user.client
+            number = client.main_phone.number
+            pickup_date = instance.pickup_date
+
+            send_sms.send_with_options(
+                kwargs={
+                    "event": settings.UNABLE_TO_CANCEL_PICKUP_REQUEST,
+                    "recipient_list": [number],
+                    "extra_context": {
+                        "date_pickup": pickup_date.strftime("%B %d, %Y"),
+                        "day_pickup": pickup_date.strftime("%A"),
+                    },
+                },
+                delay=settings.DRAMATIQ_DELAY_FOR_DELIVERY,
+            )
+            return Response(
+                {
+                    "message": "We have already scheduled this pickup - unfortunately, it’s now too late to cancel this request. Please email cs@washmix.com"
+                },
+                status=status.HTTP_412_PRECONDITION_FAILED,
+            )
+
+        deliveries = Delivery.objects.filter(request=instance.pk)
+
+        for delivery in deliveries:
+            delivery.status = DeliveryStatus.CANCELLED
+            delivery.save()
+
+        return Response({"message": "request canceled"}, status=status.HTTP_200_OK)
 
 
 class RequestCheckView(GenericAPIView):

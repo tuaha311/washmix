@@ -37,7 +37,7 @@ if settings.SHOW_OPENAPI_SCHEMA:
         # OpenAPI docs
         path(
             "openapi/",
-            schema_view.without_ui(cache_timeout=0),
+            schema_view.with_ui(cache_timeout=0),
             name="openapi-schema",
         ),
     ]
