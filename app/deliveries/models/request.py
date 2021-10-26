@@ -183,4 +183,3 @@ class Request(CommonScheduleRequest, CommonAmountDiscountModel):
     @property
     def dropoff_status(self):
         return self.dropoff.get_status_display()
-
