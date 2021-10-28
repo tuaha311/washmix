@@ -2,11 +2,10 @@ from django import forms
 from django.conf import settings
 from django.contrib import admin
 from django.db.models.signals import post_save
-from django.utils.timezone import localtime
 
 from core.admin import AdminWithSearch
+from deliveries.choices import DeliveryKind, DeliveryStatus
 from deliveries.models import Delivery, Request, Schedule
-from settings.base import DISPLAY_REQUEST_DELIVERIES_TIMEDELTA
 
 
 class DeliveryInlineAdmin(admin.TabularInline):
@@ -30,7 +29,8 @@ class RequestAdmin(AdminWithSearch):
 
     def get_queryset(self, request):
         return Request.objects.filter(
-            created__gte=localtime() - DISPLAY_REQUEST_DELIVERIES_TIMEDELTA
+            delivery_list__kind=DeliveryKind.DROPOFF,
+            delivery_list__status__in=[DeliveryStatus.ACCEPTED, DeliveryStatus.IN_PROGRESS],
         )
 
 
@@ -66,7 +66,7 @@ class DeliveryAdmin(AdminWithSearch):
 
     def get_queryset(self, request):
         return Delivery.objects.filter(
-            created__gte=localtime() - DISPLAY_REQUEST_DELIVERIES_TIMEDELTA
+            status__in=[DeliveryStatus.ACCEPTED, DeliveryStatus.IN_PROGRESS]
         )
 
     def save_model(self, request, obj, form, change):
