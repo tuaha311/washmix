@@ -567,7 +567,7 @@ dramatiq.set_broker(DRAMATIQ_BROKER)
 USER_SIGNUP = "user_signup"
 NEW_DELIVERY = "new_delivery"
 DELIVERY_DROPOFF_COMPLETE = "delivery_dropoff_complete"
-
+PICKUP_DUE_TOMORROW = "pickup_due_tomorrow"
 
 #############################
 # TWILIO WITH SMS TEMPLATES #
@@ -590,6 +590,9 @@ SMS_EVENT_INFO = {
     },
     DELIVERY_DROPOFF_COMPLETE: {
         "template_name": "sms/dropoff_complete.html",
+    },
+    PICKUP_DUE_TOMORROW: {
+        "template_name": "sms/pickup_due_tomorrow.html",
     },
 }
 
