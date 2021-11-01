@@ -129,3 +129,4 @@ class Delivery(Common):
 
         request = self.request
         return request.comment
+

@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     "notifications",
     "deliveries",
     "subscriptions",
+    "archived",
     # inside core app we are unregistering some models
     # it should be lower that branding apps to be last application and apply
     # last changes for admin
@@ -262,6 +263,7 @@ USUAL_PROCESSING_TIMEDELTA = timedelta(days=USUAL_PROCESSING_BUSINESS_DAYS)
 # 1 business day order handling + 1 day for delivery (delivery on the next day after handling)
 RUSH_PROCESSING_BUSINESS_DAYS = 2
 RUSH_PROCESSING_TIMEDELTA = timedelta(days=RUSH_PROCESSING_BUSINESS_DAYS)
+
 
 MON = 1
 TUE = 2
