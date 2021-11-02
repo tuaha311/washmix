@@ -50,6 +50,7 @@ urlpatterns += [
     path("api/", include("api.urls")),
     path("jet/", include("jet.urls", "jet")),
     path("admin/", admin.site.urls),
+    path("notifications/", include("notifications.urls")),
     # Static files serving
     *static_server(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
     *static_server(settings.STATIC_URL, document_root=settings.STATIC_ROOT),

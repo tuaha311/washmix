@@ -27,3 +27,9 @@ td.field-date {
     align-items: center;
     height: 100% !important;
 }
+
+
+.bell {
+    margin-top: 5px;
+    text-align: center;
+}

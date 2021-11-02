@@ -16,6 +16,7 @@ from deliveries.api.client.serializers.requests import RequestCheckSerializer, R
 from deliveries.choices import DeliveryKind, DeliveryStatus
 from deliveries.models import Delivery
 from deliveries.services.requests import RequestService
+from notifications.models import Notification, NotificationTypes
 from notifications.tasks import send_sms
 from orders.choices import OrderStatusChoices
 from settings.base import ALLOW_DELIVERY_CANCELLATION_TIMEDELTA, DELIVERY_DAYS_MAP
@@ -101,6 +102,7 @@ class RequestViewSet(ModelViewSet):
         request = service.create(address=address, comment=instructions, is_rush=is_rush)
 
         serializer.instance = request
+        Notification.create_notification(client, NotificationTypes.NEW_PICKUP_REQUEST)
 
     def perform_update(self, serializer: Serializer):
         update_fields = set(serializer.validated_data.keys())
@@ -123,14 +125,18 @@ class RequestViewSet(ModelViewSet):
             service.recalculate(request)
 
         serializer.save()
+        pretty_date = pickup_date.strftime("%B %d, %Y")
+        Notification.create_notification(
+            client, NotificationTypes.PICKUP_DATE_CHANGE, description=f"to {pretty_date}"
+        )
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         time_now = timezone.now()
         created_at = instance.created
+        client = request.user.client
 
         if time_now > created_at + ALLOW_DELIVERY_CANCELLATION_TIMEDELTA:
-            client = request.user.client
             number = client.main_phone.number
             pickup_date = instance.pickup_date
 
@@ -157,6 +163,8 @@ class RequestViewSet(ModelViewSet):
         for delivery in deliveries:
             delivery.status = DeliveryStatus.CANCELLED
             delivery.save()
+
+        Notification.create_notification(client, NotificationTypes.PICKUP_REQUEST_CANCELED)
 
         return Response({"message": "request canceled"}, status=status.HTTP_200_OK)
 
