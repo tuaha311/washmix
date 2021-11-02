@@ -264,6 +264,8 @@ USUAL_PROCESSING_TIMEDELTA = timedelta(days=USUAL_PROCESSING_BUSINESS_DAYS)
 RUSH_PROCESSING_BUSINESS_DAYS = 2
 RUSH_PROCESSING_TIMEDELTA = timedelta(days=RUSH_PROCESSING_BUSINESS_DAYS)
 
+ALLOW_DELIVERY_CANCELLATION_HOURS = 1
+ALLOW_DELIVERY_CANCELLATION_TIMEDELTA = timedelta(hours=ALLOW_DELIVERY_CANCELLATION_HOURS)
 
 MON = 1
 TUE = 2
@@ -569,6 +571,8 @@ dramatiq.set_broker(DRAMATIQ_BROKER)
 USER_SIGNUP = "user_signup"
 NEW_DELIVERY = "new_delivery"
 DELIVERY_DROPOFF_COMPLETE = "delivery_dropoff_complete"
+PICKUP_REQUEST_CANCELED = "pickup_request_canceled"
+UNABLE_TO_CANCEL_PICKUP_REQUEST = "unable_to_cancel_pickup_request"
 PICKUP_DUE_TOMORROW = "pickup_due_tomorrow"
 
 #############################
@@ -592,6 +596,12 @@ SMS_EVENT_INFO = {
     },
     DELIVERY_DROPOFF_COMPLETE: {
         "template_name": "sms/dropoff_complete.html",
+    },
+    PICKUP_REQUEST_CANCELED: {
+        "template_name": "sms/pickup_request_canceled.html",
+    },
+    UNABLE_TO_CANCEL_PICKUP_REQUEST: {
+        "template_name": "sms/unable_to_cancel_pickup_request.html",
     },
     PICKUP_DUE_TOMORROW: {
         "template_name": "sms/pickup_due_tomorrow.html",
