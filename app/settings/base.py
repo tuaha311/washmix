@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     "notifications",
     "deliveries",
     "subscriptions",
+    "archived",
     # inside core app we are unregistering some models
     # it should be lower that branding apps to be last application and apply
     # last changes for admin
@@ -567,12 +568,12 @@ dramatiq.set_broker(DRAMATIQ_BROKER)
 ###########################
 # SMS NOTIFICATION EVENTS #
 ###########################
-
+USER_SIGNUP = "user_signup"
 NEW_DELIVERY = "new_delivery"
 DELIVERY_DROPOFF_COMPLETE = "delivery_dropoff_complete"
 PICKUP_REQUEST_CANCELED = "pickup_request_canceled"
 UNABLE_TO_CANCEL_PICKUP_REQUEST = "unable_to_cancel_pickup_request"
-
+PICKUP_DUE_TOMORROW = "pickup_due_tomorrow"
 
 #############################
 # TWILIO WITH SMS TEMPLATES #
@@ -587,6 +588,9 @@ TWILIO_FAIL = "fail"
 TWILIO_PICKUP_CODE = "pickup_scheduled"
 
 SMS_EVENT_INFO = {
+    USER_SIGNUP: {
+        "template_name": "sms/user_signup.html",
+    },
     NEW_DELIVERY: {
         "template_name": "sms/new_delivery.html",
     },
@@ -598,6 +602,8 @@ SMS_EVENT_INFO = {
     },
     UNABLE_TO_CANCEL_PICKUP_REQUEST: {
         "template_name": "sms/unable_to_cancel_pickup_request.html",
+    PICKUP_DUE_TOMORROW: {
+        "template_name": "sms/pickup_due_tomorrow.html",
     },
 }
 

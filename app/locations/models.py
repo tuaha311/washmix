@@ -101,4 +101,6 @@ class Address(Common):
         verbose_name_plural = "addresses"
 
     def __str__(self):
+        if self.address_line_2:
+            return f"{self.zip_code}, {self.address_line_1}, {self.address_line_2}"
         return f"{self.zip_code}, {self.address_line_1}"

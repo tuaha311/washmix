@@ -4,6 +4,7 @@ from django.contrib import admin
 from django.db.models.signals import post_save
 
 from core.admin import AdminWithSearch
+from deliveries.choices import DeliveryKind, DeliveryStatus
 from deliveries.models import Delivery, Request, Schedule
 
 
@@ -25,6 +26,12 @@ class RequestAdmin(AdminWithSearch):
         "dropoff_date",
         "dropoff_status",
     ]
+
+    def get_queryset(self, request):
+        return Request.objects.filter(
+            delivery_list__kind=DeliveryKind.DROPOFF,
+            delivery_list__status__in=[DeliveryStatus.ACCEPTED, DeliveryStatus.IN_PROGRESS],
+        )
 
 
 class DeliveryAdmin(AdminWithSearch):
@@ -56,6 +63,11 @@ class DeliveryAdmin(AdminWithSearch):
         "kind",
         "employee",
     ]
+
+    def get_queryset(self, request):
+        return Delivery.objects.filter(
+            status__in=[DeliveryStatus.ACCEPTED, DeliveryStatus.IN_PROGRESS]
+        )
 
     def save_model(self, request, obj, form, change):
         """
