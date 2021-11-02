@@ -602,6 +602,7 @@ SMS_EVENT_INFO = {
     },
     UNABLE_TO_CANCEL_PICKUP_REQUEST: {
         "template_name": "sms/unable_to_cancel_pickup_request.html",
+    },
     PICKUP_DUE_TOMORROW: {
         "template_name": "sms/pickup_due_tomorrow.html",
     },
