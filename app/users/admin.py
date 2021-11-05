@@ -3,6 +3,7 @@ from django.conf import settings
 from django.contrib import admin, messages
 from django.contrib.admin.sites import NotRegistered
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from django.db.models import QuerySet
 from django.http.request import HttpRequest
 
@@ -19,6 +20,9 @@ from core.admin import AdminWithSearch
 from core.mixins import AdminUpdateFieldsMixin
 from deliveries.models import Request
 from orders.models import Order
+from orders.services.order import OrderService
+from subscriptions.models import Package
+from subscriptions.services.subscription import SubscriptionService
 from users.helpers import remove_user_relation_with_all_info
 from users.models import Client, Customer, Employee
 
@@ -104,6 +108,12 @@ class ClientForm(forms.ModelForm):
         min_value=settings.DEFAULT_ZERO_AMOUNT,
     )
 
+    change_client_subscription = forms.CharField(
+        label="Change Client Subscription",
+        required=False,
+        widget=forms.Select(choices=[(None, "--------")] + settings.PACKAGE_NAME_CHOICES),
+    )
+
     class Meta:
         model = Client
         fields = "__all__"
@@ -123,6 +133,28 @@ class ClientForm(forms.ModelForm):
             raise forms.ValidationError("Not enough money.", code="not_enough_money")
 
         return remove_money_amount
+
+    def clean_change_client_subscription(self):
+        cleaned_data = self.cleaned_data
+        client = self.instance
+
+        change_client_subscription = cleaned_data.get("change_client_subscription", None)
+        current_subscription = client.subscription.name
+
+        if change_client_subscription and current_subscription != change_client_subscription:
+            package = Package.objects.get(name=change_client_subscription)
+            try:
+                subscription_service = SubscriptionService(client)
+                order_container = subscription_service.choose(package)
+
+                order = Order.objects.get(pk=order_container.pk)
+                order_service = OrderService(client, order)
+                order_container, charge_succesful = order_service.checkout(order)
+            except ValidationError:
+                raise forms.ValidationError("Can't bill client's card")
+
+            if not charge_succesful:
+                raise forms.ValidationError("Can't bill client's card")
 
 
 class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
