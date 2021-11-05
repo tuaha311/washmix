@@ -23,70 +23,73 @@ class DeliveryContainer(BaseDynamicAmountContainer):
     price_map = {
         Package.PAYC: {
             "price_list": [
-                # 0 - 2999 price 19.90$
+                # $1-$48 [$19.90 Delivery FEE]
+                #
+                # $49-$69 [$9.90 Delivery FEE]
+                #
+                # FREE Delivery with $69
                 {
                     "min": 0,
-                    "max": 2999,
+                    "max": 4899,
                     "price": 995,
                 },
-                # 3000 - 4899 price 9.90$
-                {
-                    "min": 3000,
-                    "max": 4899,
-                    "price": 495,
-                },
-                # 4900 - infinity price 9.90$
                 {
                     "min": 4900,
-                    "max": float("inf"),
+                    "max": 6899,
                     "price": 495,
+                },
+                {
+                    "min": 6900,
+                    "max": float("inf"),
+                    "price": 0,
                 },
             ],
         },
         Package.GOLD: {
             "price_list": [
-                # 0 - 2499 price 14.98$
+                # $1-$48 [$14.90 Delivery FEE]
+                #
+                # $49-$59 [$9.90 Delivery FEE]
+                #
+                # FREE Delivery with $59
                 {
                     "min": 0,
-                    "max": 2499,
-                    "price": 749,
+                    "max": 4899,
+                    "price": 745,
                 },
-                # 2500 - 3899 price 9.90$
                 {
-                    "min": 2500,
-                    "max": 3899,
+                    "min": 4900,
+                    "max": 5899,
                     "price": 495,
                 },
-                # 3900 - infinity price 9.90$
                 {
-                    "min": 3900,
+                    "min": 5900,
                     "max": float("inf"),
-                    "price": 495,
+                    "price": 0,
                 },
             ],
         },
         Package.PLATINUM: {
             "price_list": [
-                # 0 - 24.99$ price 14.98$
-                # if higher than 24.99 - free delivery
+                # $1-$28 [$14.90 Delivery FEE]
+                #
+                # $29-$49 [$9.90 Delivery FEE]
+                #
+                # FREE Delivery with $49
                 {
                     "min": 0,
-                    "max": 2499,
-                    "price": 749,
+                    "max": 2899,
+                    "price": 745,
                 },
-                # 25.00 - 38.99$ price 9.90$
-                # if higher than 38.99$ - free delivery
                 {
-                    "min": 2500,
-                    "max": 3899,
+                    "min": 2900,
+                    "max": 4899,
                     "price": 495,
                 },
-                # 3900 - infinity price 9.90$
-                # if higher than 39.00$ - free delivery
                 {
-                    "min": 3900,
+                    "min": 4900,
                     "max": float("inf"),
-                    "price": 495,
+                    "price": 0,
                 },
             ],
         },
