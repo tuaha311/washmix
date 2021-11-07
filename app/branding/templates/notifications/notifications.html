@@ -7,12 +7,60 @@
 {% endblock %}
 
 {% block pretitle %}
-<div class="notifications-container">
-    <div class="toast__container">
-        <form method="POST">
-            {% csrf_token %}
+    <div class="notifications-container">
+        <div class="toast__container">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="toast__cell">
+                    <h1>New Notifications</h1>
+                    {% for notification in notifications %}
+                        <div class="toast toast--blue add-margin">
+                            <div class="toast__icon">
+                                <svg version="1.1" class="toast__svg" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+                                     viewBox="0 0 32 32" style="enable-background:new 0 0 32 32;" xml:space="preserve">
+                    <g>
+                        <g id="info">
+                            <g>
+                                <path d="M10,16c1.105,0,2,0.895,2,2v8c0,1.105-0.895,2-2,2H8v4h16v-4h-1.992c-1.102,0-2-0.895-2-2L20,12H8     v4H10z"></path>
+                                <circle cx="16" cy="4" r="4"></circle>
+                            </g>
+                        </g>
+                    </g>
+                </svg>
+                            </div>
+                            <div class="toast__content">
+                                <p class="toast__type">{{ notification.user_triggered }}</p>
+                                {% if notification.description %}
+                                    <p class="toast__message">{{ notification.user_triggered }} {{ notification.message }} {{ notification.description }}</p>
+                                {% else %}
+                                    <p class="toast__message">{{ notification.user_triggered }} {{ notification.message }}</p>
+                                {% endif %}
+                            </div>
+                            <div class="toast__close">
+                                <button name="primary-key" value="{{ notification.pk }}" type="submit" class="submit-button">
+                                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.642 15.642"
+                                         enable-background="new 0 0 15.642 15.642">
+                                        <path fill-rule="evenodd"
+                                              d="M8.882,7.821l6.541-6.541c0.293-0.293,0.293-0.768,0-1.061  c-0.293-0.293-0.768-0.293-1.061,0L7.821,6.76L1.28,0.22c-0.293-0.293-0.768-0.293-1.061,0c-0.293,0.293-0.293,0.768,0,1.061  l6.541,6.541L0.22,14.362c-0.293,0.293-0.293,0.768,0,1.061c0.147,0.146,0.338,0.22,0.53,0.22s0.384-0.073,0.53-0.22l6.541-6.541  l6.541,6.541c0.147,0.146,0.338,0.22,0.53,0.22c0.192,0,0.384-0.073,0.53-0.22c0.293-0.293,0.293-0.768,0-1.061L8.882,7.821z"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    {% if not notifications %}
+                        <div>
+                            There are no new notifications at this time.
+                        </div>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+        <br/>
+        <br/>
+        <div class="toast__container">
             <div class="toast__cell">
-                {% for notification in notifications %}
+                <h1>Archived Notifications</h1>
+                {% for read in read_notifications %}
                     <div class="toast toast--blue add-margin">
                         <div class="toast__icon">
                             <svg version="1.1" class="toast__svg" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
@@ -28,34 +76,23 @@
                 </svg>
                         </div>
                         <div class="toast__content">
-                            <input type="hidden" name="primary-key" value="{{ notification.pk }}">
-                            <p class="toast__type">{{ notification.user_triggered }}</p>
-                            {% if notification.description %}
-                                <p class="toast__message">{{ notification.user_triggered }} {{ notification.message }} {{ notification.description }}</p>
+                            <p class="toast__type">{{ read.user_triggered }}</p>
+                            {% if read.description %}
+                                <p class="toast__message">{{ read.user_triggered }} {{ read.message }} {{ read.description }}</p>
                             {% else %}
-                                <p class="toast__message">{{ notification.user_triggered }} {{ notification.message }}</p>
+                                <p class="toast__message">{{ read.user_triggered }} {{ read.message }}</p>
                             {% endif %}
-                        </div>
-                        <div class="toast__close">
-                            <button type="submit" class="submit-button">
-                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.642 15.642"
-                                     enable-background="new 0 0 15.642 15.642">
-                                    <path fill-rule="evenodd"
-                                          d="M8.882,7.821l6.541-6.541c0.293-0.293,0.293-0.768,0-1.061  c-0.293-0.293-0.768-0.293-1.061,0L7.821,6.76L1.28,0.22c-0.293-0.293-0.768-0.293-1.061,0c-0.293,0.293-0.293,0.768,0,1.061  l6.541,6.541L0.22,14.362c-0.293,0.293-0.293,0.768,0,1.061c0.147,0.146,0.338,0.22,0.53,0.22s0.384-0.073,0.53-0.22l6.541-6.541  l6.541,6.541c0.147,0.146,0.338,0.22,0.53,0.22c0.192,0,0.384-0.073,0.53-0.22c0.293-0.293,0.293-0.768,0-1.061L8.882,7.821z"></path>
-                                </svg>
-                            </button>
                         </div>
                     </div>
                 {% endfor %}
-                {% if not notifications %}
+                {% if not read_notifications %}
                     <div>
-                        There are no new notifications at this time.
+                        There are no archived notifications at this time.
                     </div>
                 {% endif %}
             </div>
-        </form>
+        </div>
     </div>
-</div>
 {% endblock %}
 
 </html>

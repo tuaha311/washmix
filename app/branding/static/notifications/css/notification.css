@@ -1,20 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i');
 
-notifications-container {
-    font-family: 'Raleway', sans-serif;
-    background-color: #efefef;
-    display: table;
-}
-
-.toast__container {
-    display: table-cell;
-    vertical-align: middle;
-}
-
-.toast__cell {
-    display: inline-block;
-}
-
 .add-margin {
     margin-top: 20px;
 }
@@ -89,28 +74,12 @@ notifications-container {
     transform: translateY(-50%);
 }
 
-.toast--green .toast__icon {
-    background-color: #2BDE3F;
-}
-
-.toast--green:before {
-    background-color: #2BDE3F;
-}
-
 .toast--blue .toast__icon {
     background-color: #1D72F3;
 }
 
 .toast--blue:before {
     background-color: #1D72F3;
-}
-
-.toast--yellow .toast__icon {
-    background-color: #FFC007;
-}
-
-.toast--yellow:before {
-    background-color: #FFC007;
 }
 
 .submit-button {
