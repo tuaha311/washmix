@@ -231,8 +231,8 @@ UPDATE_FIELDS_FOR_USER = {"first_name", "last_name", "billing_address"}
 ###############
 
 FREE_DELIVERY_PRICE = 0
-PAYC_FREE_DELIVERY_FROM = 4900
-GOLD_PLATINUM_FREE_DELIVERY_FROM = 3900
+PAYC_FREE_DELIVERY_FROM = 6900
+GOLD_PLATINUM_FREE_DELIVERY_FROM = 5900
 CREDIT_BACK_PERCENTAGE = 5
 # 20$ total for rush delivery - i.e.
 # - dropoff 10$ (1000)
