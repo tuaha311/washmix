@@ -1,13 +1,13 @@
 import logging
 
-from django.contrib.auth import get_user_model
 from django.utils.timezone import localtime
 
 import dramatiq
 from periodiq import cron
 
+from archived.models import ArchivedCustomer
 from settings.base import DELETE_USER_AFTER_TIMEDELTA
-from users.models import Client, Customer
+from users.models import Client
 
 logger = logging.getLogger(__name__)
 
@@ -22,8 +22,8 @@ def periodic_scheduler_health():
     logger.info("Periodic scheduler health - OK")
 
 
-# every hour
-@dramatiq.actor(periodic=cron("0 * * * *"))
+# every 10 minutes
+@dramatiq.actor(periodic=cron("*/10 * * * *"))
 def archive_not_signedup_users():
     """
     Deleting the users that were unable to signup after 6 hours of user creation
@@ -51,7 +51,7 @@ def archive_not_signedup_users():
             if user.first_name:
                 full_name = f"{user.first_name} {user.last_name}"
 
-            Customer.objects.get_or_create(
+            ArchivedCustomer.objects.get_or_create(
                 email=user.email,
                 defaults={
                     "phone": phone,

@@ -139,22 +139,23 @@ class ClientForm(forms.ModelForm):
         client = self.instance
 
         change_client_subscription = cleaned_data.get("change_client_subscription", None)
-        current_subscription = client.subscription.name
 
-        if change_client_subscription and current_subscription != change_client_subscription:
-            package = Package.objects.get(name=change_client_subscription)
-            try:
-                subscription_service = SubscriptionService(client)
-                order_container = subscription_service.choose(package)
+        if change_client_subscription:
+            current_subscription = client.subscription.name
+            if current_subscription != change_client_subscription:
+                package = Package.objects.get(name=change_client_subscription)
+                try:
+                    subscription_service = SubscriptionService(client)
+                    order_container = subscription_service.choose(package)
 
-                order = Order.objects.get(pk=order_container.pk)
-                order_service = OrderService(client, order)
-                order_container, charge_succesful = order_service.checkout(order)
-            except ValidationError:
-                raise forms.ValidationError("Can't bill client's card")
+                    order = Order.objects.get(pk=order_container.pk)
+                    order_service = OrderService(client, order)
+                    order_container, charge_succesful = order_service.checkout(order)
+                except ValidationError:
+                    raise forms.ValidationError("Can't bill client's card")
 
-            if not charge_succesful:
-                raise forms.ValidationError("Can't bill client's card")
+                if not charge_succesful:
+                    raise forms.ValidationError("Can't bill client's card")
 
 
 class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):

@@ -1,6 +1,7 @@
 from django.contrib import admin
 
-from archived.models import ArchivedDelivery, ArchivedRequest
+from archived.models import ArchivedCustomer, ArchivedDelivery, ArchivedRequest
+from core.admin import AdminWithSearch
 from deliveries.admin import DeliveryAdmin, RequestAdmin
 from deliveries.choices import DeliveryKind, DeliveryStatus
 from deliveries.models import Delivery, Request
@@ -21,7 +22,24 @@ class ArchivedRequestsAdmin(RequestAdmin):
         )
 
 
-models = [[ArchivedDelivery, ArchivedDeliveriesAdmin], [ArchivedRequest, ArchivedRequestsAdmin]]
+class ArchivedCustomerAdmin(AdminWithSearch):
+    list_display = [
+        "__str__",
+        "full_name",
+        "email",
+        "phone",
+        "zip_code",
+        "address",
+        "kind",
+    ]
+    list_filter = ["kind"]
+
+
+models = [
+    [ArchivedDelivery, ArchivedDeliveriesAdmin],
+    [ArchivedRequest, ArchivedRequestsAdmin],
+    [ArchivedCustomer, ArchivedCustomerAdmin],
+]
 
 for item in models:
     admin.site.register(*item)
