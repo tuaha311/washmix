@@ -1,5 +1,3 @@
-import datetime
-
 from django.conf import settings
 from django.db.models import Q, QuerySet
 from django.utils import timezone
@@ -19,7 +17,7 @@ from deliveries.services.requests import RequestService
 from notifications.models import Notification, NotificationTypes
 from notifications.tasks import send_sms
 from orders.choices import OrderStatusChoices
-from settings.base import ALLOW_DELIVERY_CANCELLATION_TIMEDELTA, DELIVERY_DAYS_MAP
+from settings.base import ALLOW_DELIVERY_CANCELLATION_TIMEDELTA
 
 
 class RequestFilter(filters.FilterSet):
@@ -75,10 +73,30 @@ class RequestViewSet(ModelViewSet):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        client = self.request.user.client
         if Delivery.objects.filter(
-            request__client=self.request.user.client,
+            request__client=client,
             status__in=[DeliveryStatus.ACCEPTED, DeliveryStatus.IN_PROGRESS],
         ).exists():
+            pickup = Delivery.objects.filter(
+                request__client=client,
+                status__in=[DeliveryStatus.ACCEPTED, DeliveryStatus.IN_PROGRESS],
+                kind=DeliveryKind.PICKUP,
+            )[0]
+            pickup_date = pickup.date
+
+            number = client.main_phone.number
+            send_sms.send_with_options(
+                kwargs={
+                    "event": settings.UNABLE_TO_CREATE_MULTIPLE_REQUEST,
+                    "recipient_list": [number],
+                    "extra_context": {
+                        "date_pickup": pickup_date.strftime("%B %d, %Y"),
+                        "day_pickup": pickup_date.strftime("%A"),
+                    },
+                },
+                delay=settings.DRAMATIQ_DELAY_FOR_DELIVERY,
+            )
             return Response(
                 {"message": "You already have a pickup request made"},
                 status=status.HTTP_412_PRECONDITION_FAILED,
@@ -137,20 +155,7 @@ class RequestViewSet(ModelViewSet):
         client = request.user.client
 
         if time_now > created_at + ALLOW_DELIVERY_CANCELLATION_TIMEDELTA:
-            number = client.main_phone.number
-            pickup_date = instance.pickup_date
 
-            send_sms.send_with_options(
-                kwargs={
-                    "event": settings.UNABLE_TO_CANCEL_PICKUP_REQUEST,
-                    "recipient_list": [number],
-                    "extra_context": {
-                        "date_pickup": pickup_date.strftime("%B %d, %Y"),
-                        "day_pickup": pickup_date.strftime("%A"),
-                    },
-                },
-                delay=settings.DRAMATIQ_DELAY_FOR_DELIVERY,
-            )
             return Response(
                 {
                     "message": "We have already scheduled this pickup - unfortunately, it’s now too late to cancel this request. Please email cs@washmix.com"
