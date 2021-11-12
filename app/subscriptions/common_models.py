@@ -8,22 +8,22 @@ class CommonPackageSubscription(Priceable, models.Model):
     dry_clean = models.IntegerField(
         verbose_name="discount on dry clean + press",
         help_text="in percents",
-        validators=[MinValueValidator(1), MaxValueValidator(100)],
+        validators=[MinValueValidator(0), MaxValueValidator(100)],
     )
     laundry = models.IntegerField(
         verbose_name="discount on laundry + press",
         help_text="in percents",
-        validators=[MinValueValidator(1), MaxValueValidator(100)],
+        validators=[MinValueValidator(0), MaxValueValidator(100)],
     )
     alterations = models.IntegerField(
         verbose_name="alterations discount",
         help_text="in percents",
-        validators=[MinValueValidator(1), MaxValueValidator(100)],
+        validators=[MinValueValidator(0), MaxValueValidator(100)],
     )
     wash_fold = models.IntegerField(
         verbose_name="discount on wash & fold",
         help_text="in percents",
-        validators=[MinValueValidator(1), MaxValueValidator(100)],
+        validators=[MinValueValidator(0), MaxValueValidator(100)],
     )
     delivery_free_from = models.IntegerField(
         verbose_name="free delivery starts from",

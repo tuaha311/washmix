@@ -77,6 +77,10 @@ def send_sms_if_pickup_due_tomorrow():
         client = delivery.request.client
         number = client.main_phone.number
 
+        if client.schedule_list.values():
+            logger.info(f"Delivery # {delivery.pk} do not send sms because already has a schedule")
+            continue
+
         if delivery.date - timedelta(days=1) != localtime().date():
             logger.info(f"Delivery # {delivery.pk} pickup not due for tomorrow")
             continue
