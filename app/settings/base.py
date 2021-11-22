@@ -629,7 +629,7 @@ PAYMENT_FAIL_CLIENT = "payment_fail_client"
 PAYMENT_FAIL_ADMIN = "payment_fail_admin"
 CARD_CHANGES = "card_changes"
 ACCRUE_CREDIT_BACK = "accrue_credit_back"
-
+SEND_ADMIN_CLIENT_INFORMATION = "send_admin_client_information"
 
 #################################
 # SENDGRID WITH EMAIL TEMPLATES #
@@ -638,7 +638,7 @@ ACCRUE_CREDIT_BACK = "accrue_credit_back"
 SENDGRID_NO_REPLY = "no-reply@washmix.com"
 SENDGRID_FROM_EMAIL = Email("info@washmix.com")
 SENDGRID_API_KEY = env.str("SENDGRID_API_KEY", "")
-ADMIN_EMAIL_LIST = env.list("ADMIN_EMAIL_LIST", ["michael.beheshtaien@gmail.com"])
+ADMIN_EMAIL_LIST = env.list("ADMIN_EMAIL_LIST", ["michael@washmix.com"])
 
 EMAIL_EVENT_INFO = {
     SIGNUP: {
@@ -688,6 +688,12 @@ EMAIL_EVENT_INFO = {
     ACCRUE_CREDIT_BACK: {
         "template_name": "email/accrue_credit_back.html",
         "subject": "Credit Back",
+        "from_email": "info@washmix.com",
+        "reply_to": "info@washmix.com",
+    },
+    SEND_ADMIN_CLIENT_INFORMATION: {
+        "template_name": "email/send_admin_client_information.html",
+        "subject": "New User Activity",
         "from_email": "info@washmix.com",
         "reply_to": "info@washmix.com",
     },

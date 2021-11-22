@@ -1,0 +1,67 @@
+{% extends "base_email.html" %}
+
+{% block extra_style %}
+    <style media="all" type="text/css">
+        #order-table, #basket-table, #basket-total {
+            width: 100%;
+        }
+
+        #order-table th, #basket-table th {
+            width: 25%;
+        }
+
+        #basket-total th {
+            width: 50%;
+        }
+
+        #discount {
+            color: blue;
+        }
+
+        #balance {
+            color: blueviolet;
+        }
+
+        #unpaid, #paid {
+            font-weight: 800;
+            font-size: 24px;
+        }
+
+        #unpaid {
+            color: red;
+        }
+
+        #paid {
+            color: green;
+        }
+    </style>
+{% endblock %}
+
+
+{% block body %}
+
+    <tr>
+        <td>
+            <h3 class="centered">{{ event_type }}</h3>
+        </td>
+    </tr>
+
+    <tr>
+        <td>
+            <div class="divider"></div>
+        </td>
+    </tr>
+
+    <tr>
+        <td>
+            <h3>Customer information</h3>
+            <div id="billing-information">
+                <p>Name - {{ client.full_name }}</p>
+                <p>Email - <a href="mailto:{{ client.email }}">{{ client.email }}</a></p>
+                <p>Address - {{ client.main_address.address_line_1 }} {{ client.main_address.address_line_2 }}</p>
+                <p>Phone Number - {{ client.main_phone.number }}</p>
+            </div>
+        </td>
+    </tr>
+
+{% endblock %}

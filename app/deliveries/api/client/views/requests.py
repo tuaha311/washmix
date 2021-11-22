@@ -15,7 +15,7 @@ from deliveries.choices import DeliveryKind, DeliveryStatus
 from deliveries.models import Delivery
 from deliveries.services.requests import RequestService
 from notifications.models import Notification, NotificationTypes
-from notifications.tasks import send_sms
+from notifications.tasks import send_admin_client_information, send_sms
 from orders.choices import OrderStatusChoices
 from settings.base import ALLOW_DELIVERY_CANCELLATION_TIMEDELTA
 
@@ -120,6 +120,9 @@ class RequestViewSet(ModelViewSet):
         request = service.create(address=address, comment=instructions, is_rush=is_rush)
 
         serializer.instance = request
+
+        send_admin_client_information(client.id, "A New Pickup Request is created by Customer")
+
         Notification.create_notification(client, NotificationTypes.NEW_PICKUP_REQUEST)
 
     def perform_update(self, serializer: Serializer):
@@ -168,6 +171,8 @@ class RequestViewSet(ModelViewSet):
         for delivery in deliveries:
             delivery.status = DeliveryStatus.CANCELLED
             delivery.save()
+
+        send_admin_client_information(client.id, "A Customer has Canceled the Pickup Request")
 
         Notification.create_notification(client, NotificationTypes.PICKUP_REQUEST_CANCELED)
 

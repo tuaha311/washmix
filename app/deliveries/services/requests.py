@@ -14,7 +14,8 @@ from deliveries.containers.request import RequestContainer
 from deliveries.models import Delivery, Request
 from deliveries.utils import get_dropoff_day, get_pickup_day, get_pickup_start_end
 from deliveries.validators import RequestValidator
-from notifications.tasks import send_email
+from notifications.models import Notification, NotificationTypes
+from notifications.tasks import send_admin_client_information, send_email
 from orders.containers.basket import BasketContainer
 from orders.models import Basket, Order
 from subscriptions.models import Subscription
@@ -141,6 +142,10 @@ class RequestService(PaymentInterfaceService):
                 **dropoff_info,
             )
 
+            send_admin_client_information(
+                self._client.id, "A New (Recurring) Pickup Request is Created"
+            )
+            Notification.create_notification(self._client, NotificationTypes.NEW_PICKUP_REQUEST)
         return request
 
     def get_or_create(self, extra_query: dict, extra_defaults: dict) -> Tuple[Request, bool]:
