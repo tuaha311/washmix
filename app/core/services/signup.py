@@ -4,7 +4,7 @@ from django.db.transaction import atomic
 
 from billing.stripe_helper import StripeHelper
 from notifications.models import Notification, NotificationTypes
-from notifications.tasks import send_email, send_sms
+from notifications.tasks import send_admin_client_information, send_email, send_sms
 from users.models import Client
 
 User = get_user_model()
@@ -31,6 +31,8 @@ class SignupService:
                 "client_id": client_id,
             },
         )
+
+        send_admin_client_information(client.id, "New User Signed Up")
 
         send_sms.send_with_options(
             kwargs={

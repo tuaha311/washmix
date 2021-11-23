@@ -78,3 +78,15 @@ def send_sms(event: str, recipient_list: list, extra_context: dict = None):
     )
 
     logger.info(f"Sent SMS via Twilio to {recipient_list}")
+
+
+def send_admin_client_information(client_id, event_type):
+
+    send_email.send(
+        event=settings.SEND_ADMIN_CLIENT_INFORMATION,
+        recipient_list=settings.ADMIN_EMAIL_LIST,
+        extra_context={
+            "client_id": client_id,
+            "event_type": event_type,
+        },
+    )
