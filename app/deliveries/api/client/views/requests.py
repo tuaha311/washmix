@@ -77,6 +77,7 @@ class RequestViewSet(ModelViewSet):
         if Delivery.objects.filter(
             request__client=client,
             status__in=[DeliveryStatus.ACCEPTED, DeliveryStatus.IN_PROGRESS],
+            kind=DeliveryKind.PICKUP,
         ).exists():
             pickup = Delivery.objects.filter(
                 request__client=client,
@@ -121,10 +122,6 @@ class RequestViewSet(ModelViewSet):
 
         serializer.instance = request
 
-        send_admin_client_information(client.id, "A New Pickup Request is created by Customer")
-
-        Notification.create_notification(client, NotificationTypes.NEW_PICKUP_REQUEST)
-
     def perform_update(self, serializer: Serializer):
         update_fields = set(serializer.validated_data.keys())
         client = self.request.user.client
@@ -158,7 +155,6 @@ class RequestViewSet(ModelViewSet):
         client = request.user.client
 
         if time_now > created_at + ALLOW_DELIVERY_CANCELLATION_TIMEDELTA:
-
             return Response(
                 {
                     "message": "We have already scheduled this pickup - unfortunately, it’s now too late to cancel this request. Please email cs@washmix.com"
