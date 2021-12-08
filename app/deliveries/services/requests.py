@@ -1,13 +1,11 @@
 from datetime import date, time
-from typing import List, Optional, Tuple
+from typing import Optional, Tuple
 
-from django.conf import settings
 from django.db.transaction import atomic
 from django.utils.timezone import localtime
 
 from billing.models import Invoice
 from billing.services.invoice import InvoiceService
-from billing.utils import confirm_credit
 from core.interfaces import PaymentInterfaceService
 from deliveries.choices import DeliveryKind, DeliveryStatus
 from deliveries.containers.request import RequestContainer
@@ -15,7 +13,7 @@ from deliveries.models import Delivery, Request
 from deliveries.utils import get_dropoff_day, get_pickup_day, get_pickup_start_end
 from deliveries.validators import RequestValidator
 from notifications.models import Notification, NotificationTypes
-from notifications.tasks import send_admin_client_information, send_email
+from notifications.tasks import send_admin_client_information
 from orders.containers.basket import BasketContainer
 from orders.models import Basket, Order
 from subscriptions.models import Subscription
@@ -143,7 +141,10 @@ class RequestService(PaymentInterfaceService):
             )
 
             send_admin_client_information(
-                self._client.id, "A New (Recurring) Pickup Request is Created"
+                self._client.id,
+                "A New Pickup Request is Created",
+                is_pickup=True,
+                pickup_date=pickup_info.get("date").strftime("%B %d, %Y"),
             )
             Notification.create_notification(self._client, NotificationTypes.NEW_PICKUP_REQUEST)
         return request

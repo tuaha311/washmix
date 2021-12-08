@@ -43,6 +43,9 @@
     <tr>
         <td>
             <h3 class="centered">{{ event_type }}</h3>
+            {% if pickup_date %}
+                <h4 class="centered">Pickup Date: {{ pickup_date }}</h4>
+            {% endif %}
         </td>
     </tr>
 
