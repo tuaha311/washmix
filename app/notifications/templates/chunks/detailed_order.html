@@ -1,3 +1,4 @@
+{% load full_static %}
 {% with basket_container=order_container.basket %}
     <tr>
         <td id="order-wrapper">
@@ -106,17 +107,57 @@
                     <th>${{ order_container.dollar_amount }}</th>
                 </tr>
 
-                {% if order_container.dollar_discount > 0 %}
-                    {% if is_advantage %}
+
+                {% if is_advantage %}
+                    {% if order_container.coupon %}
+                        {% if order_container.coupon.discount_by == "percentage" %}
+                            <tr>
+                                <th id="discount">Discounts [Advantage Program]</th>
+                                <th>
+                                    ${% subtract_percentage_discount order_container.dollar_discount order_container.coupon.value_off order_container.dollar_amount %}</th>
+                            </tr>
+                            <tr>
+                                <th id="discount">Discount
+                                    [{{ order_container.coupon.code }}] {{ order_container.coupon.value_off }}%
+                                </th>
+                                <th>
+                                    ${% get_percentage_discount order_container.dollar_amount order_container.coupon.value_off %}</th>
+                            </tr>
+                        {% elif order_container.coupon.discount_by == "amount" %}
+                            <tr>
+                                <th id="discount">Discounts [Advantage Program]</th>
+                                <th>
+                                    ${% subtract_value_discount order_container.dollar_discount order_container.coupon.value_off %}</th>
+                            </tr>
+                            <tr>
+                                <th id="discount">Discount [{{ order_container.coupon.code }}]</th>
+                                <th>
+                                    ${% get_value_discount order_container.dollar_discount order_container.coupon.value_off %}</th>
+                            </tr>
+                        {% endif %}
+                    {% else %}
                         <tr>
                             <th id="discount">Discounts [Advantage Program]</th>
                             <th>${{ order_container.dollar_discount }}</th>
                         </tr>
-                    {% else %}
-                        <tr>
-                            <th id="discount">Discount</th>
-                            <th>${{ order_container.dollar_discount }}</th>
-                        </tr>
+                    {% endif %}
+                {% else %}
+                    {% if order_container.coupon %}
+                        {% if order_container.coupon.discount_by == "percentage" %}
+                            <tr>
+                                <th id="discount">Discount
+                                    [{{ order_container.coupon.code }}] {{ order_container.coupon.value_off }}%
+                                </th>
+                                <th>
+                                    ${% get_percentage_discount order_container.dollar_amount order_container.coupon.value_off %}</th>
+                            </tr>
+                        {% elif order_container.coupon.discount_by == "amount" %}
+                            <tr>
+                                <th id="discount">Discount [{{ order_container.coupon.code }}]</th>
+                                <th>
+                                    ${% get_value_discount order_container.dollar_discount order_container.coupon.value_off %}</th>
+                            </tr>
+                        {% endif %}
                     {% endif %}
                 {% endif %}
 
