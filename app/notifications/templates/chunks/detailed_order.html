@@ -1,143 +1,195 @@
+{% load full_static %}
 {% with basket_container=order_container.basket %}
-  <tr>
-    <td id="order-wrapper">
-      <table id="order-table">
-        <tr>
-          <th class="highlight-background">Billing Information</th>
-          <th class="highlight-background">Payment Method</th>
-          <th class="highlight-background">Delivery Information</th>
-          <th class="highlight-background">Pickup & Delivery Method</th>
-        </tr>
+    <tr>
+        <td id="order-wrapper">
+            <table id="order-table">
+                <tr>
+                    <th class="highlight-background">Billing Information</th>
+                    <th class="highlight-background">Payment Method</th>
+                    <th class="highlight-background">Delivery Information</th>
+                    <th class="highlight-background">Pickup & Delivery Method</th>
+                </tr>
 
-        <tr>
-          <td>
-            <div id="billing-information">
-              <p>{{ client.full_name }}</p>
-              <p>{{ client.pretty_billing_address }}</p>
-            </div>
-          </td>
-          <td>
-            <div id="payment-method">
-              <p>**** {{ client.main_card.last }}</p>
-              <p>{{ client.main_card.expiration_month }}/{{ client.main_card.expiration_year }}</p>
-            </div>
-          </td>
-          <td>
-            <div id="delivery-information">
-              <p>{{ client.full_name }}</p>
-              <p>{{ order_container.request.address.zip_code.value }}</p>
-              <p>{{ order_container.request.address.address_line_1 }}</p>
-              <p>{{ order_container.request.address.address_line_2 }}</p>
-              <p>{{ client.main_phone.number }}</p>
-            </div>
-          </td>
-          <td>
-            <div id="pickup-delivery-method">
-              Door-to-Door Service:
-              {% if order_container.request.is_free %}
-                Free
-              {% else %}
-                ${{ order_container.request.dollar_total }}
-              {% endif %}
-            </div>
-          </td>
-        </tr>
-      </table>
-    </td>
-  </tr>
+                <tr>
+                    <td>
+                        <div id="billing-information">
+                            <p>{{ client.full_name }}</p>
+                            <p>{{ client.pretty_billing_address }}</p>
+                        </div>
+                    </td>
+                    <td>
+                        <div id="payment-method">
+                            <p>**** {{ client.main_card.last }}</p>
+                            <p>{{ client.main_card.expiration_month }}/{{ client.main_card.expiration_year }}</p>
+                        </div>
+                    </td>
+                    <td>
+                        <div id="delivery-information">
+                            <p>{{ client.full_name }}</p>
+                            <p>{{ order_container.request.address.zip_code.value }}</p>
+                            <p>{{ order_container.request.address.address_line_1 }}</p>
+                            <p>{{ order_container.request.address.address_line_2 }}</p>
+                            <p>{{ client.main_phone.number }}</p>
+                        </div>
+                    </td>
+                    <td>
+                        <div id="pickup-delivery-method">
+                            Door-to-Door Service:
+                            {% if order_container.request.is_free %}
+                                Free
+                            {% else %}
+                                ${{ order_container.request.dollar_total }}
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
 
-  <tr>
-    <td id="basket-wrapper">
-      <h3>Basket information</h3>
-      <table id="basket-table">
-        <tr>
-          <th class="highlight-background">Item</th>
-          <th class="highlight-background">Service</th>
-          <th class="highlight-background">Quantity</th>
-          <th class="highlight-background">Subtotal</th>
-        </tr>
+    <tr>
+        <td id="basket-wrapper">
+            <h3>Basket information</h3>
+            <table id="basket-table">
+                <tr>
+                    <th class="highlight-background">Item</th>
+                    <th class="highlight-background">Service</th>
+                    <th class="highlight-background">Quantity</th>
+                    <th class="highlight-background">Subtotal</th>
+                </tr>
 
-        {% for quantity in basket_container.quantity_container_list %}
-          <tr>
-            <td>{{ quantity.price.item.title }}</td>
-            <td>{{ quantity.price.service.title }}</td>
-            <td>{{ quantity.count }}</td>
-            <td>${{ quantity.dollar_amount }}</td>
-          </tr>
-        {% endfor %}
+                {% for quantity in basket_container.quantity_container_list %}
+                    <tr>
+                        <td>{{ quantity.price.item.title }}</td>
+                        <td>{{ quantity.price.service.title }}</td>
+                        <td>{{ quantity.count }}</td>
+                        <td>${{ quantity.dollar_amount }}</td>
+                    </tr>
+                {% endfor %}
 
-        {% for item in basket_container.extra_items %}
-          <tr>
-            <td>{{ item.title }}</td>
-            <td>{{ item.instructions }}</td>
-            <td>1</td>
-            <td>${{ item.dollar_amount }}</td>
-          </tr>
-        {% endfor %}
-      </table>
+                {% for item in basket_container.extra_items %}
+                    <tr>
+                        <td>{{ item.title }}</td>
+                        <td>{{ item.instructions }}</td>
+                        <td>1</td>
+                        <td>${{ item.dollar_amount }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
 
-      <table id="basket-total">
-        <tr>
-          <th id="delivery">Basket</th>
-          <th>${{ order_container.basket.dollar_amount }}</th>
-        </tr>
+            <table id="basket-total">
+                <tr>
+                    <th id="delivery">Basket</th>
+                    <th>${{ order_container.basket.dollar_amount }}</th>
+                </tr>
 
-        <tr>
-          <th id="delivery">Delivery</th>
-          <th>${{ order_container.request.dollar_amount_with_discount }}</th>
-        </tr>
+                <tr>
+                    <th id="delivery">Delivery</th>
+                    <th>${{ order_container.request.dollar_amount_with_discount }}</th>
+                </tr>
 
-        <tr>
-          <th id="rush">Rush Delivery</th>
-          <th>${{ order_container.request.dollar_rush_amount }}</th>
-        </tr>
+                <tr>
+                    <th id="rush">Rush Delivery</th>
+                    <th>${{ order_container.request.dollar_rush_amount }}</th>
+                </tr>
 
-        <tr>
-          <th><div class="divider"></div></th>
-          <th><div class="divider"></div></th>
-        </tr>
+                <tr>
+                    <th>
+                        <div class="divider"></div>
+                    </th>
+                    <th>
+                        <div class="divider"></div>
+                    </th>
+                </tr>
 
-        <tr>
-          <th>Subtotal</th>
-          <th>${{ order_container.dollar_amount }}</th>
-        </tr>
+                <tr>
+                    <th>Subtotal</th>
+                    <th>${{ order_container.dollar_amount }}</th>
+                </tr>
 
-        {% if is_advantage %}
-          <tr>
-            <th id="discount">Discounts [Advantage Program]</th>
-            <th>${{ order_container.dollar_discount }}</th>
-          </tr>
-        {% endif %}
 
-        <tr>
-          <th>Grand Total</th>
-          <th>${{ order_container.dollar_amount_with_discount }}</th>
-        </tr>
+                {% if is_advantage %}
+                    {% if order_container.coupon %}
+                        {% if order_container.coupon.discount_by == "percentage" %}
+                            <tr>
+                                <th id="discount">Discounts [Advantage Program]</th>
+                                <th>
+                                    ${% subtract_coupon_discount order_container.basket.dollar_amount order_container.coupon order_container.dollar_discount %}</th>
+                            </tr>
+                            <tr>
+                                <th id="discount">Coupon
+                                    [{{ order_container.coupon.code }}] {{ order_container.coupon.value_off }}%
+                                </th>
+                                <th>
+                                    ${% get_coupon_discount order_container.basket.dollar_amount order_container.coupon %}</th>
+                            </tr>
+                        {% elif order_container.coupon.discount_by == "amount" %}
+                            <tr>
+                                <th id="discount">Discounts [Advantage Program]</th>
+                                <th>
+                                    ${% subtract_coupon_discount order_container.basket.dollar_amount order_container.coupon order_container.dollar_discount %}</th>
+                            </tr>
+                            <tr>
+                                <th id="discount">Coupon [{{ order_container.coupon.code }}]</th>
+                                <th>
+                                    ${% get_coupon_discount order_container.basket.dollar_amount order_container.coupon %}</th>
+                            </tr>
+                        {% endif %}
+                    {% else %}
+                        <tr>
+                            <th id="discount">Discounts [Advantage Program]</th>
+                            <th>${{ order_container.dollar_discount }}</th>
+                        </tr>
+                    {% endif %}
+                {% else %}
+                    {% if order_container.coupon %}
+                        {% if order_container.coupon.discount_by == "percentage" %}
+                            <tr>
+                                <th id="discount">Coupon
+                                    [{{ order_container.coupon.code }}] {{ order_container.coupon.value_off }}%
+                                </th>
+                                <th>
+                                    ${% get_coupon_discount order_container.basket.dollar_amount order_container.coupon %}</th>
+                            </tr>
+                        {% elif order_container.coupon.discount_by == "amount" %}
+                            <tr>
+                                <th id="discount">Coupon [{{ order_container.coupon.code }}]</th>
+                                <th>
+                                    ${% get_coupon_discount order_container.basket.dollar_amount order_container.coupon %}</th>
+                            </tr>
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
 
-        {% if is_advantage %}
-          <tr>
-            <th id="balance">Remaining Balance [Advantage Program]</th>
-            <th>${{ client.dollar_balance }}</th>
-          </tr>
-        {% elif client.balance %}
-          <tr>
-            <th id="balance">Remaining Balance</th>
-            <th>${{ client.dollar_balance }}</th>
-          </tr>
-        {% endif %}
+                <tr>
+                    <th>Grand Total</th>
+                    <th>${{ order_container.dollar_amount_with_discount }}</th>
+                </tr>
 
-        {% if is_unpaid or order_container.invoice.dollar_unpaid_amount %}
-          <tr>
-            <th id="paid">Paid amount</th>
-            <th id="paid">${{ order_container.invoice.dollar_paid_amount }}</th>
-          </tr>
+                {% if is_advantage %}
+                    <tr>
+                        <th id="balance">Remaining Balance [Advantage Program]</th>
+                        <th>${{ client.dollar_balance }}</th>
+                    </tr>
+                {% elif client.balance %}
+                    <tr>
+                        <th id="balance">Remaining Balance</th>
+                        <th>${{ client.dollar_balance }}</th>
+                    </tr>
+                {% endif %}
 
-          <tr>
-            <th id="unpaid">Unpaid amount</th>
-            <th id="unpaid">${{ order_container.invoice.dollar_unpaid_amount }}</th>
-          </tr>
-        {% endif %}
-      </table>
-    </td>
-  </tr>
+                {% if is_unpaid or order_container.invoice.dollar_unpaid_amount %}
+                    <tr>
+                        <th id="paid">Paid amount</th>
+                        <th id="paid">${{ order_container.invoice.dollar_paid_amount }}</th>
+                    </tr>
+
+                    <tr>
+                        <th id="unpaid">Unpaid amount</th>
+                        <th id="unpaid">${{ order_container.invoice.dollar_unpaid_amount }}</th>
+                    </tr>
+                {% endif %}
+            </table>
+        </td>
+    </tr>
 {% endwith %}
