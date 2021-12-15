@@ -22,8 +22,12 @@ class OrderSerializer(CommonContainerSerializer, serializers.ModelSerializer):
     coupon = serializers.SlugRelatedField(
         slug_field="code", allow_null=True, queryset=Coupon.objects.all()
     )
+    coupon_discount = serializers.ReadOnlyField()
+    subscription_discount = serializers.ReadOnlyField()
     credit_back = serializers.ReadOnlyField()
     dollar_credit_back = serializers.ReadOnlyField()
+    coupon_discount_type = serializers.ReadOnlyField()
+    discount_percent = serializers.ReadOnlyField()
 
     class Meta:
         model = Order
@@ -46,6 +50,10 @@ class OrderSerializer(CommonContainerSerializer, serializers.ModelSerializer):
             "amount_with_discount",
             "dollar_amount_with_discount",
             "coupon",
+            "coupon_discount",
+            "subscription_discount",
+            "coupon_discount_type",
+            "discount_percent",
         ]
 
 
