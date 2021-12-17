@@ -166,15 +166,20 @@
                     <th>${{ order_container.dollar_amount_with_discount }}</th>
                 </tr>
 
+                <tr>
+                    <th id="balance">Prior to order Balance</th>
+                    <th>${% convert_cent_to_dollor order_container.balance_before_purchase %}</th>
+                </tr>
+
                 {% if is_advantage %}
                     <tr>
                         <th id="balance">Remaining Balance [Advantage Program]</th>
-                        <th>${{ client.dollar_balance }}</th>
+                        <th>${% convert_cent_to_dollor order_container.balance_after_purchase %}</th>
                     </tr>
                 {% elif client.balance %}
                     <tr>
                         <th id="balance">Remaining Balance</th>
-                        <th>${{ client.dollar_balance }}</th>
+                        <th>${% convert_cent_to_dollor order_container.balance_after_purchase %}</th>
                     </tr>
                 {% endif %}
 
