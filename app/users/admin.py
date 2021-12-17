@@ -151,11 +151,15 @@ class ClientForm(forms.ModelForm):
                     order = Order.objects.get(pk=order_container.pk)
                     order_service = OrderService(client, order)
                     order_container, charge_succesful = order_service.checkout(order)
+
                 except ValidationError:
                     raise forms.ValidationError("Can't bill client's card")
 
                 if not charge_succesful:
                     raise forms.ValidationError("Can't bill client's card")
+                else:
+                    client.subscription = order_container.subscription
+                    client.save()
 
 
 class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):

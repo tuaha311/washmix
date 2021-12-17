@@ -50,6 +50,7 @@ class OrderService:
         basket = order.basket
         request = order.request
         subscription = order.subscription
+        order.balance_before_purchase = client.balance
 
         service_list = [
             BasketService(client),
@@ -104,6 +105,7 @@ class OrderService:
 
             # 6. let's save a client's current subscription that used on this order
             order.bought_with_subscription = client.subscription
+            order.balance_after_purchase = client.balance
             order.save()
 
         self._order = order
