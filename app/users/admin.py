@@ -157,9 +157,6 @@ class ClientForm(forms.ModelForm):
 
                 if not charge_succesful:
                     raise forms.ValidationError("Can't bill client's card")
-                else:
-                    client.subscription = order_container.subscription
-                    client.save()
 
 
 class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
