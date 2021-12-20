@@ -44,21 +44,36 @@ class OrderContainer(BaseDynamicAmountContainer):
         return amount
 
     @property
-    def discount(self) -> int:
-        order = self._order
-        coupon = order.coupon
-        coupon_discount = 0
-
-        if coupon:
-            amount = self.amount
-            coupon_service = CouponService(amount, coupon)
-            coupon_discount = coupon_service.calculate_coupon_discount()
+    def amount_for_coupon(self) -> int:
+        """
+        NOTICE: Coupon is applied only on basket amount,
+        delivery is not part of coupon discount.
+        """
 
         filled_container_list = self._filled_container_list
-        subscription_discount_list = [item.discount for item in filled_container_list]
-        subscription_discount = sum(subscription_discount_list)
+        request_container = self.request
 
-        return subscription_discount + coupon_discount
+        amount_list = [item.amount for item in filled_container_list]
+        amount = sum(amount_list)
+
+        return amount
+
+    @property
+    def discount(self) -> int:
+        # order = self._order
+        # coupon = order.coupon
+        # coupon_discount = 0
+
+        # if coupon:
+        #     amount = self.amount_for_coupon
+        #     coupon_service = CouponService(amount, coupon)
+        #     coupon_discount = coupon_service.calculate_coupon_discount()
+
+        # filled_container_list = self._filled_container_list
+        # subscription_discount_list = [item.discount for item in filled_container_list]
+        # subscription_discount = sum(subscription_discount_list)
+
+        return self.subscription_discount + self.coupon_discount
 
     @property
     def coupon_discount(self) -> int:
@@ -67,7 +82,7 @@ class OrderContainer(BaseDynamicAmountContainer):
         coupon_discount = 0
 
         if coupon:
-            amount = self.amount
+            amount = self.amount_for_coupon
             coupon_service = CouponService(amount, coupon)
             coupon_discount = coupon_service.calculate_coupon_discount()
 
