@@ -137,6 +137,7 @@ class SubscriptionService(PaymentInterfaceService):
             if order.is_save_card:
                 order.card = client.main_card
 
+            order.balance_after_purchase = client.balance
             order.save()
 
             client.subscription = future_subscription
