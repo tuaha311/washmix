@@ -4,6 +4,8 @@ from rest_framework.response import Response
 
 from api.authentication import default_pos_authentication
 from api.permissions import default_pos_permissions
+from deliveries.choices import DeliveryStatus
+from deliveries.models.delivery import Delivery
 from orders.api.pos.serializers.orders import (
     OrderSerializer,
     POSOrderAlreadyFormedResponseSerializer,
@@ -77,6 +79,16 @@ class POSOrderAlreadyFormedView(GenericAPIView):
 
         client = serializer.validated_data["client"]
         request = serializer.validated_data["request"]
+
+        try:
+            if request.pickup.status not in [
+                DeliveryStatus.ACCEPTED,
+                DeliveryStatus.IN_PROGRESS,
+                DeliveryStatus.COMPLETED,
+            ]:
+                return Response(None)
+        except Delivery.DoesNotExist:
+            return Response(None)
 
         service = OrderService(client)
         order = service.get_order_by_request(request)

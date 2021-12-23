@@ -7,6 +7,7 @@ from billing.choices import InvoicePurpose
 from billing.models import Coupon, Invoice
 from billing.services.coupon import CouponService
 from billing.services.payments import PaymentService
+from deliveries.choices import DeliveryStatus
 from deliveries.models import Request
 from deliveries.services.requests import RequestService
 from notifications.tasks import send_email
