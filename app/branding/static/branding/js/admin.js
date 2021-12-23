@@ -63,11 +63,14 @@ function handleOrderIsAlreadyFormed(clientId, requestId, parent) {
 
       if (formed === true) {
         newElement = createLink(order)
-      } else {
+      }
+      if (formed === false){
         newElement = createButton(clientId, requestId)
       }
 
-      parent.appendChild(newElement)
+      if (newElement) {
+         parent.appendChild(newElement)
+      }
     }
   )
 }
