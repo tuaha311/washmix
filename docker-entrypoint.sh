@@ -4,6 +4,8 @@ set -e
 
 action=$1
 
+cd app
+
 if [ "$action" = "worker" ]
 then
   echo "Running dramatiq worker"

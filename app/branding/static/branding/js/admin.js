@@ -8,6 +8,7 @@ var PAID_ORDER_COLOR = "green"
 var UNPAID_ORDER_COLOR = "red"
 var RUSH_DELIVERY_COLOR = "yellow"
 var CLIENT_WITHOUT_CARD_COLOR = "red"
+var DELIVERIES_DUE_TODAY = "orange"
 
 
 /*
@@ -62,11 +63,14 @@ function handleOrderIsAlreadyFormed(clientId, requestId, parent) {
 
       if (formed === true) {
         newElement = createLink(order)
-      } else {
+      }
+      if (formed === false){
         newElement = createButton(clientId, requestId)
       }
 
-      parent.appendChild(newElement)
+      if (newElement) {
+         parent.appendChild(newElement)
+      }
     }
   )
 }
@@ -155,11 +159,22 @@ function fillOrderPaymentWithColor() {
 function fillRushDeliveryWithColor() {
   var ALL_ORDER_SELECTOR = '#result_list > tbody > tr'
   var allRows = document.querySelectorAll(ALL_ORDER_SELECTOR)
+  var today = new Date();
+  var dd = String(today.getDate()).padStart(2, '0');
+  var mm = String(today.getMonth() + 1).padStart(2, '0');
+  var yyyy = today.getFullYear();
+  today = mm + '/' + dd + '/' + yyyy;
 
   function callback(row, index) {
     var rushField = row.querySelector('td.field-is_rush')
     var isRush = rushField.innerHTML === "True"
 
+    var rowDate = row.querySelector(`#id_form-${index}-date`).value
+    var isDateToday = today === rowDate
+
+    if(isDateToday) {
+      row.style.backgroundColor = DELIVERIES_DUE_TODAY
+    }
     if (isRush) {
       row.style.backgroundColor = RUSH_DELIVERY_COLOR
     }
@@ -168,7 +183,6 @@ function fillRushDeliveryWithColor() {
 
   allRows.forEach(callback)
 }
-
 
 // simple router
 if (window.location.pathname.search(CLIENT_URL) !== -1) {

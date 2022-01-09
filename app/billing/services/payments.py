@@ -13,7 +13,7 @@ from billing.models import Card, Invoice, Transaction
 from billing.services.card import CardService
 from billing.stripe_helper import StripeHelper
 from billing.utils import create_credit, create_debit, prepare_stripe_metadata
-from subscriptions.models import Package
+from subscriptions.models import Package, Subscription
 from subscriptions.services.subscription import SubscriptionService
 from subscriptions.utils import is_advantage_program
 from users.models import Client
@@ -173,6 +173,13 @@ class PaymentService:
                 webhook_kind = WebhookKind.REFILL_WITH_CHARGE
                 continue_with_order = invoice.order.pk
                 self._process_immediate_payment(webhook_kind, unpaid_amount, continue_with_order)
+
+            if is_advantage and not is_auto_billing and client.balance <= 0:
+                package = Package.objects.get(name=settings.PAYC)
+                subscription = Subscription.objects.fill_subscription(package, subscription)
+                subscription.save()
+                client.subscription = subscription
+                client.save()
 
     def charge_subscription_with_auto_billing(self):
         """

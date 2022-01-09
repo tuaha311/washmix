@@ -93,6 +93,14 @@ class Order(Common):
         choices=OrderPaymentChoices.CHOICES,
         default=OrderPaymentChoices.UNPAID,
     )
+    balance_before_purchase = models.BigIntegerField(
+        verbose_name="customer balance before order, in cents (¢)",
+        default=0,
+    )
+    balance_after_purchase = models.BigIntegerField(
+        verbose_name="customer balance after order, in cents (¢)",
+        default=0,
+    )
     note = models.TextField(
         verbose_name="note",
         blank=True,

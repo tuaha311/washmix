@@ -1,39 +1,44 @@
 {% extends "base_email_with_info.html" %}
 
 {% block extra_style %}
-  <style media="all" type="text/css">
-    #order-table, #basket-table, #basket-total {
-      width: 100%;
-    }
+    <style media="all" type="text/css">
+        #order-table, #basket-table, #basket-total {
+            width: 100%;
+        }
 
-    #order-table th, #basket-table th {
-      width: 25%;
-    }
+        #order-table th, #basket-table th {
+            width: 25%;
+        }
 
-    #basket-total th {
-      width: 50%;
-    }
+        #basket-total th {
+            width: 50%;
+        }
 
-    #discount {
-      color: blue;
-    }
+        #discount {
+            color: blue;
+        }
 
-    #balance {
-      color: blueviolet;
-    }
+        #balance {
+            color: blueviolet;
+        }
 
-    #unpaid {
-      color: red;
-    }
-  </style>
+        #unpaid {
+            color: red;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
-  <tr>
-    <td>
-      <h3>Your invoice for Order #{{ order_container.id }}</h3>
-    </td>
-  </tr>
+    <tr>
+        <td>
+            <h3>Your invoice for Order #{{ order_container.id }}</h3>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <h4>Billing date: {{ order_container.created.date }}</h4>
+        </td>
+    </tr>
 
-  {% include "chunks/detailed_order.html" %}
+    {% include "chunks/detailed_order.html" %}
 {% endblock %}

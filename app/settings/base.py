@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     "notifications",
     "deliveries",
     "subscriptions",
+    "archived",
     # inside core app we are unregistering some models
     # it should be lower that branding apps to be last application and apply
     # last changes for admin
@@ -230,8 +231,8 @@ UPDATE_FIELDS_FOR_USER = {"first_name", "last_name", "billing_address"}
 ###############
 
 FREE_DELIVERY_PRICE = 0
-PAYC_FREE_DELIVERY_FROM = 4900
-GOLD_PLATINUM_FREE_DELIVERY_FROM = 3900
+PAYC_FREE_DELIVERY_FROM = 6900
+GOLD_PLATINUM_FREE_DELIVERY_FROM = 5900
 CREDIT_BACK_PERCENTAGE = 5
 # 20$ total for rush delivery - i.e.
 # - dropoff 10$ (1000)
@@ -262,6 +263,9 @@ USUAL_PROCESSING_TIMEDELTA = timedelta(days=USUAL_PROCESSING_BUSINESS_DAYS)
 # 1 business day order handling + 1 day for delivery (delivery on the next day after handling)
 RUSH_PROCESSING_BUSINESS_DAYS = 2
 RUSH_PROCESSING_TIMEDELTA = timedelta(days=RUSH_PROCESSING_BUSINESS_DAYS)
+
+ALLOW_DELIVERY_CANCELLATION_HOURS = 1
+ALLOW_DELIVERY_CANCELLATION_TIMEDELTA = timedelta(hours=ALLOW_DELIVERY_CANCELLATION_HOURS)
 
 MON = 1
 TUE = 2
@@ -297,6 +301,12 @@ DELIVERY_STATUS_MAP = {
     PAUSED: "Paused recurring delivery",
 }
 DELIVERY_STATUS_CHOICES = list(DELIVERY_STATUS_MAP.items())
+
+#########
+# USERS #
+#########
+DELETE_USER_AFTER_NON_SIGNUP_HOURS = 3
+DELETE_USER_AFTER_TIMEDELTA = timedelta(hours=DELETE_USER_AFTER_NON_SIGNUP_HOURS)
 
 
 #####################################
@@ -564,10 +574,12 @@ dramatiq.set_broker(DRAMATIQ_BROKER)
 ###########################
 # SMS NOTIFICATION EVENTS #
 ###########################
-
+USER_SIGNUP = "user_signup"
 NEW_DELIVERY = "new_delivery"
 DELIVERY_DROPOFF_COMPLETE = "delivery_dropoff_complete"
-
+PICKUP_REQUEST_CANCELED = "pickup_request_canceled"
+UNABLE_TO_CREATE_MULTIPLE_REQUEST = "unable_to_create_multiple_request"
+PICKUP_DUE_TOMORROW = "pickup_due_tomorrow"
 
 #############################
 # TWILIO WITH SMS TEMPLATES #
@@ -582,11 +594,23 @@ TWILIO_FAIL = "fail"
 TWILIO_PICKUP_CODE = "pickup_scheduled"
 
 SMS_EVENT_INFO = {
+    USER_SIGNUP: {
+        "template_name": "sms/user_signup.html",
+    },
     NEW_DELIVERY: {
         "template_name": "sms/new_delivery.html",
     },
     DELIVERY_DROPOFF_COMPLETE: {
         "template_name": "sms/dropoff_complete.html",
+    },
+    PICKUP_REQUEST_CANCELED: {
+        "template_name": "sms/pickup_request_canceled.html",
+    },
+    UNABLE_TO_CREATE_MULTIPLE_REQUEST: {
+        "template_name": "sms/unable_to_create_multiple_request.html",
+    },
+    PICKUP_DUE_TOMORROW: {
+        "template_name": "sms/pickup_due_tomorrow.html",
     },
 }
 
@@ -605,7 +629,7 @@ PAYMENT_FAIL_CLIENT = "payment_fail_client"
 PAYMENT_FAIL_ADMIN = "payment_fail_admin"
 CARD_CHANGES = "card_changes"
 ACCRUE_CREDIT_BACK = "accrue_credit_back"
-
+SEND_ADMIN_CLIENT_INFORMATION = "send_admin_client_information"
 
 #################################
 # SENDGRID WITH EMAIL TEMPLATES #
@@ -614,7 +638,7 @@ ACCRUE_CREDIT_BACK = "accrue_credit_back"
 SENDGRID_NO_REPLY = "no-reply@washmix.com"
 SENDGRID_FROM_EMAIL = Email("info@washmix.com")
 SENDGRID_API_KEY = env.str("SENDGRID_API_KEY", "")
-ADMIN_EMAIL_LIST = env.list("ADMIN_EMAIL_LIST", ["michael.beheshtaien@gmail.com"])
+ADMIN_EMAIL_LIST = env.list("ADMIN_EMAIL_LIST", ["michael@washmix.com"])
 
 EMAIL_EVENT_INFO = {
     SIGNUP: {
@@ -664,6 +688,12 @@ EMAIL_EVENT_INFO = {
     ACCRUE_CREDIT_BACK: {
         "template_name": "email/accrue_credit_back.html",
         "subject": "Credit Back",
+        "from_email": "info@washmix.com",
+        "reply_to": "info@washmix.com",
+    },
+    SEND_ADMIN_CLIENT_INFORMATION: {
+        "template_name": "email/send_admin_client_information.html",
+        "subject": "New User Activity",
         "from_email": "info@washmix.com",
         "reply_to": "info@washmix.com",
     },

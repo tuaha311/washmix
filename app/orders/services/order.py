@@ -7,6 +7,7 @@ from billing.choices import InvoicePurpose
 from billing.models import Coupon, Invoice
 from billing.services.coupon import CouponService
 from billing.services.payments import PaymentService
+from deliveries.choices import DeliveryStatus
 from deliveries.models import Request
 from deliveries.services.requests import RequestService
 from notifications.tasks import send_email
@@ -50,6 +51,7 @@ class OrderService:
         basket = order.basket
         request = order.request
         subscription = order.subscription
+        order.balance_before_purchase = client.balance
 
         service_list = [
             BasketService(client),
@@ -104,6 +106,7 @@ class OrderService:
 
             # 6. let's save a client's current subscription that used on this order
             order.bought_with_subscription = client.subscription
+            order.balance_after_purchase = client.balance
             order.save()
 
         self._order = order
@@ -203,6 +206,7 @@ class OrderService:
             if order.is_save_card:
                 order.card = client.main_card
 
+            order.balance_after_purchase = client.balance
             order.save()
 
         self._notify_admin_list_on_new_order()
@@ -291,7 +295,11 @@ class OrderService:
         return invoice
 
     def _calculate_and_apply_discount(self, coupon: Coupon, invoice: Invoice):
-        amount_with_discount = invoice.amount_with_discount
+        if invoice.order.basket:
+            amount_with_discount = invoice.order.basket.amount_with_discount
+        else:
+            amount_with_discount = invoice.amount_with_discount
+
         discount = invoice.discount
 
         coupon_service = CouponService(amount_with_discount, coupon)

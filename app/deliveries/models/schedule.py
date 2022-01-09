@@ -54,4 +54,4 @@ class Schedule(CommonScheduleRequest, Common):
         pretty_days = [settings.DELIVERY_DAYS_MAP[item] for item in days]
         string_days = ", ".join(pretty_days)
 
-        return f"#{self.id} - {string_days}"
+        return f"#{self.id} - {string_days} - {self.client.email}"

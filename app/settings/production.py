@@ -18,6 +18,8 @@ ALLOWED_HOSTS = [
     "www.washmix-back.herokuapp.com",
 ]
 
+CSRF_TRUSTED_ORIGINS = ALLOWED_HOSTS
+
 ALLOWED_COUNTRY_CODES = [
     RUSSIA_COUNTRY_CODE,
     USA_COUNTRY_CODE,

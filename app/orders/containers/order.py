@@ -2,6 +2,7 @@ from typing import List, Optional
 
 from django.conf import settings
 
+from billing.choices import InvoiceDiscountBy
 from billing.services.coupon import CouponService
 from core.containers import BaseDynamicAmountContainer
 from core.utils import get_dollars
@@ -43,21 +44,80 @@ class OrderContainer(BaseDynamicAmountContainer):
         return amount
 
     @property
+    def amount_for_coupon(self) -> int:
+        """
+        NOTICE: Coupon is applied only on basket amount,
+        delivery is not part of coupon discount.
+        """
+
+        filled_container_list = self._filled_container_list
+        request_container = self.request
+
+        amount_list = [item.amount for item in filled_container_list]
+        amount = sum(amount_list)
+
+        return amount
+
+    @property
     def discount(self) -> int:
+        # order = self._order
+        # coupon = order.coupon
+        # coupon_discount = 0
+
+        # if coupon:
+        #     amount = self.amount_for_coupon
+        #     coupon_service = CouponService(amount, coupon)
+        #     coupon_discount = coupon_service.calculate_coupon_discount()
+
+        # filled_container_list = self._filled_container_list
+        # subscription_discount_list = [item.discount for item in filled_container_list]
+        # subscription_discount = sum(subscription_discount_list)
+
+        return self.subscription_discount + self.coupon_discount
+
+    @property
+    def coupon_discount(self) -> int:
         order = self._order
         coupon = order.coupon
         coupon_discount = 0
 
         if coupon:
-            amount = self.amount
+            amount = self.amount_for_coupon
             coupon_service = CouponService(amount, coupon)
             coupon_discount = coupon_service.calculate_coupon_discount()
 
+        return coupon_discount
+
+    @property
+    def coupon_discount_type(self) -> str:
+        order = self._order
+        coupon = order.coupon
+        coupon_discount_type = ""
+
+        if coupon:
+            coupon_discount_type = coupon.discount_by
+
+        return coupon_discount_type
+
+    @property
+    def discount_percent(self) -> int:
+        order = self._order
+        coupon = order.coupon
+        coupon_discount_percent = 0
+
+        if coupon:
+            if coupon.discount_by == InvoiceDiscountBy.PERCENTAGE:
+                coupon_discount_percent = coupon.value_off
+
+        return coupon_discount_percent
+
+    @property
+    def subscription_discount(self) -> int:
         filled_container_list = self._filled_container_list
         subscription_discount_list = [item.discount for item in filled_container_list]
         subscription_discount = sum(subscription_discount_list)
 
-        return subscription_discount + coupon_discount
+        return subscription_discount
 
     @property
     def credit_back(self) -> int:

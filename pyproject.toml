@@ -37,7 +37,7 @@ authors = ["Evrone <api@evrone.com>"]
 
 
 [tool.poetry.dependencies]
-python = "~3.7"
+python = "3.7.10"
 
 # core + api
 Django = "~2.2"
@@ -86,6 +86,7 @@ netaddr = "^0.8.0"
 djangoql = "^0.14.2"
 django-jet = "^1.0.8"
 WeasyPrint = "^52.2"
+django-cors-headers = "^3.9.0"
 
 
 [tool.poetry.dev-dependencies]
