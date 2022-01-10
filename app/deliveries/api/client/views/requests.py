@@ -1,3 +1,5 @@
+import datetime
+
 from django.conf import settings
 from django.db.models import Q, QuerySet
 from django.utils import timezone
@@ -17,7 +19,7 @@ from deliveries.services.requests import RequestService
 from notifications.models import Notification, NotificationTypes
 from notifications.tasks import send_admin_client_information, send_sms
 from orders.choices import OrderStatusChoices
-from settings.base import ALLOW_DELIVERY_CANCELLATION_TIMEDELTA
+from settings.base import ALLOW_DELIVERY_CANCELLATION_TIMEDELTA, ALLOW_DELIVERY_RESHEDULE_TIMEDELTA
 
 
 class RequestFilter(filters.FilterSet):
@@ -121,6 +123,31 @@ class RequestViewSet(ModelViewSet):
         request = service.create(address=address, comment=instructions, is_rush=is_rush)
 
         serializer.instance = request
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop("partial", False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+
+        request = serializer.instance
+
+        if request.created + ALLOW_DELIVERY_RESHEDULE_TIMEDELTA < timezone.now():
+            message = "Sorry, but your pickup is already scheduled and it’s passed our cutoff time to make any changes. If any questions email cs@washmix.com or text 415-993-9274"
+
+            return Response(
+                {"message": message},
+                status=status.HTTP_412_PRECONDITION_FAILED,
+            )
+
+        self.perform_update(serializer)
+
+        if getattr(instance, "_prefetched_objects_cache", None):
+            # If 'prefetch_related' has been applied to a queryset, we need to
+            # forcibly invalidate the prefetch cache on the instance.
+            instance._prefetched_objects_cache = {}
+
+        return Response(serializer.data)
 
     def perform_update(self, serializer: Serializer):
         update_fields = set(serializer.validated_data.keys())

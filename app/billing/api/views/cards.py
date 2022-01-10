@@ -1,5 +1,6 @@
 from django.conf import settings
 
+from rest_framework import status
 from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -43,6 +44,18 @@ class CardViewSet(SetMainAttributeMixin, ModelViewSet):
                 "action": self.removed_text,
             },
         )
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        client = request.user.client
+        card_list_length = len(client.card_list.all())
+
+        if card_list_length == 1:
+            message = f"Dear {client.full_name} as part of WashMix, we require all account holders to have a Valid Credit Card on file as their default payment method - In order to delete this card, you can first add a New Card, and then remove this card."
+            return Response({"message": message}, status=status.HTTP_412_PRECONDITION_FAILED)
+
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class CardRefreshView(GenericAPIView):
