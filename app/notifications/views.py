@@ -12,7 +12,7 @@ def show_notifications(request, *args, **kwargs):
         if notification_pk:
             Notification.objects.get(pk=notification_pk).notification_read()
 
-    notifications = Notification.objects.filter(is_read=False).order_by("-created")
+    notifications = Notification.objects.filter(is_read=False)
     read_notifications = Notification.objects.filter(is_read=True).order_by("-created")[:10]
     for notification in notifications:
         notification.message = notification.get_message_display()
