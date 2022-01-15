@@ -54,6 +54,8 @@ class OrderSerializer(CommonContainerSerializer, serializers.ModelSerializer):
             "subscription_discount",
             "coupon_discount_type",
             "discount_percent",
+            "balance_after_purchase",
+            "balance_before_purchase",
         ]
 
 
