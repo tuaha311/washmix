@@ -10,7 +10,7 @@ from subscriptions.choices import Package
 def test_payc_small_load():
     subscription = MagicMock()
     subscription.name = Package.PAYC
-    subscription.delivery_free_from = 4900
+    subscription.delivery_free_from = 6900
     delivery = MagicMock()
     basket = MagicMock()
     amount_list = [
@@ -29,7 +29,7 @@ def test_payc_small_load():
 def test_payc_medium_load():
     subscription = MagicMock()
     subscription.name = Package.PAYC
-    subscription.delivery_free_from = 4900
+    subscription.delivery_free_from = 6900
     delivery = MagicMock()
     basket = MagicMock()
     amount_list = [
@@ -48,7 +48,7 @@ def test_payc_medium_load():
 def test_payc_free():
     subscription = MagicMock()
     subscription.name = Package.PAYC
-    subscription.delivery_free_from = 4900
+    subscription.delivery_free_from = 6900
     delivery = MagicMock()
     basket = MagicMock()
     amount_list = [
@@ -69,7 +69,7 @@ def test_payc_free():
 def test_gold_small_load():
     subscription = MagicMock()
     subscription.name = Package.GOLD
-    subscription.delivery_free_from = 3900
+    subscription.delivery_free_from = 5900
     delivery = MagicMock()
     basket = MagicMock()
     amount_list = [
@@ -88,7 +88,7 @@ def test_gold_small_load():
 def test_gold_medium_load():
     subscription = MagicMock()
     subscription.name = Package.GOLD
-    subscription.delivery_free_from = 3900
+    subscription.delivery_free_from = 5900
     delivery = MagicMock()
     basket = MagicMock()
     amount_list = [
@@ -107,7 +107,7 @@ def test_gold_medium_load():
 def test_gold_free():
     subscription = MagicMock()
     subscription.name = Package.GOLD
-    subscription.delivery_free_from = 3900
+    subscription.delivery_free_from = 5900
     delivery = MagicMock()
     basket = MagicMock()
     amount_list = [
@@ -128,7 +128,7 @@ def test_gold_free():
 def test_platinum_small_load():
     subscription = MagicMock()
     subscription.name = Package.PLATINUM
-    subscription.delivery_free_from = 3900
+    subscription.delivery_free_from = 4900
     delivery = MagicMock()
     basket = MagicMock()
     amount_list = [
@@ -147,7 +147,7 @@ def test_platinum_small_load():
 def test_platinum_medium_load():
     subscription = MagicMock()
     subscription.name = Package.PLATINUM
-    subscription.delivery_free_from = 3900
+    subscription.delivery_free_from = 4900
     delivery = MagicMock()
     basket = MagicMock()
     amount_list = [
@@ -166,7 +166,7 @@ def test_platinum_medium_load():
 def test_platinum_free():
     subscription = MagicMock()
     subscription.name = Package.PLATINUM
-    subscription.delivery_free_from = 3900
+    subscription.delivery_free_from = 4900
     delivery = MagicMock()
     basket = MagicMock()
     amount_list = [
