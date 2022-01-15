@@ -33,9 +33,9 @@ def test_payc_medium_load():
     delivery = MagicMock()
     basket = MagicMock()
     amount_list = [
-        [3000, 495, 0],
-        [4000, 495, 0],
-        [4899, 495, 0],
+        [5000, 495, 0],
+        [5500, 495, 0],
+        [6899, 495, 0],
     ]
 
     for basket_amount, delivery_amount, delivery_discount in amount_list:
@@ -52,8 +52,8 @@ def test_payc_free():
     delivery = MagicMock()
     basket = MagicMock()
     amount_list = [
-        [4900, 495, 495],
-        [5500, 495, 495],
+        [6900, 0, 0],
+        [7500, 0, 0],
     ]
 
     for basket_amount, delivery_amount, delivery_discount in amount_list:
@@ -73,9 +73,9 @@ def test_gold_small_load():
     delivery = MagicMock()
     basket = MagicMock()
     amount_list = [
-        [0, 749, 0],
-        [1250, 749, 0],
-        [2499, 749, 0],
+        [0, 745, 0],
+        [1250, 745, 0],
+        [2499, 745, 0],
     ]
 
     for basket_amount, delivery_amount, delivery_discount in amount_list:
@@ -92,9 +92,9 @@ def test_gold_medium_load():
     delivery = MagicMock()
     basket = MagicMock()
     amount_list = [
-        [2600, 495, 0],
-        [3300, 495, 0],
-        [3899, 495, 0],
+        [4900, 495, 0],
+        [5500, 495, 0],
+        [5899, 495, 0],
     ]
 
     for basket_amount, delivery_amount, delivery_discount in amount_list:
@@ -111,8 +111,8 @@ def test_gold_free():
     delivery = MagicMock()
     basket = MagicMock()
     amount_list = [
-        [3900, 495, 495],
-        [4500, 495, 495],
+        [5900, 0, 0],
+        [6500, 0, 0],
     ]
 
     for basket_amount, delivery_amount, delivery_discount in amount_list:
@@ -132,9 +132,9 @@ def test_platinum_small_load():
     delivery = MagicMock()
     basket = MagicMock()
     amount_list = [
-        [0, 749, 0],
-        [1250, 749, 0],
-        [2499, 749, 0],
+        [0, 745, 0],
+        [1250, 745, 0],
+        [2499, 745, 0],
     ]
 
     for basket_amount, delivery_amount, delivery_discount in amount_list:
@@ -151,9 +151,9 @@ def test_platinum_medium_load():
     delivery = MagicMock()
     basket = MagicMock()
     amount_list = [
-        [2600, 495, 0],
+        [2900, 495, 0],
         [3300, 495, 0],
-        [3899, 495, 0],
+        [4899, 495, 0],
     ]
 
     for basket_amount, delivery_amount, delivery_discount in amount_list:
@@ -170,8 +170,8 @@ def test_platinum_free():
     delivery = MagicMock()
     basket = MagicMock()
     amount_list = [
-        [3900, 495, 495],
-        [4500, 495, 495],
+        [4900, 0, 0],
+        [5500, 0, 0],
     ]
 
     for basket_amount, delivery_amount, delivery_discount in amount_list:
