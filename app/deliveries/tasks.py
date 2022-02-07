@@ -1,5 +1,5 @@
 import logging
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 from django.conf import settings
 from django.utils.timezone import localtime
@@ -65,7 +65,7 @@ def create_recurring_request_every_day():
 
 
 @dramatiq.actor(
-    periodic=cron("00 06 * * *"),
+    periodic=cron("00 18 * * *"),
     max_retries=settings.DRAMATIQ_MAX_RETRIES,
     max_age=settings.DRAMATIQ_MAX_AGE,
 )
@@ -92,6 +92,8 @@ def send_sms_if_pickup_due_tomorrow():
 
         logger.info(f"Start of handling notification for delivery # {delivery.pk}")
 
+        pickup_date = datetime.combine(delivery.date, datetime.min.time()).strftime("%m/%d/%y")
+
         send_sms.send_with_options(
             kwargs={
                 "event": settings.PICKUP_DUE_TOMORROW,
@@ -99,6 +101,7 @@ def send_sms_if_pickup_due_tomorrow():
                 "extra_context": {
                     "client_id": client.id,
                     "delivery_id": delivery.id,
+                    "pickup_date": pickup_date,
                 },
             },
             delay=settings.DRAMATIQ_DELAY_FOR_DELIVERY,
