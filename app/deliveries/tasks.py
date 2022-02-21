@@ -77,6 +77,7 @@ def send_sms_if_pickup_due_tomorrow():
         client = delivery.request.client
         number = client.main_phone.number
 
+        # Do not send if customer has auto schedule
         if client.schedule_list.values():
             logger.info(f"Delivery # {delivery.pk} do not send sms because already has a schedule")
             continue
