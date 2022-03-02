@@ -29,15 +29,32 @@
                 </svg>
                             </div>
                             <div class="toast__content">
-                                <p class="toast__type">{{ notification.user_triggered }}</p>
-                                {% if notification.description %}
-                                    <p class="toast__message">{{ notification.user_triggered }} {{ notification.message }} {{ notification.description }}</p>
-                                {% else %}
-                                    <p class="toast__message">{{ notification.user_triggered }} {{ notification.message }}</p>
+                                {% if notification.user_triggered %}
+                                    <p class="toast__type">{{ notification.user_triggered }}</p>
+                                {% elif notification.customer_triggered %}
+                                    <p class="toast__type">{{ notification.customer_triggered }}</p>
+                                {% endif %}
+
+                                {% if notification.user_triggered %}
+                                    {% if notification.description %}
+                                        <p class="toast__message">{{ notification.user_triggered }} {{ notification.message }} {{ notification.description }}</p>
+                                    {% else %}
+                                        <p class="toast__message">{{ notification.user_triggered }} {{ notification.message }}</p>
+                                    {% endif %}
+                                {% endif %}
+
+                                {% if notification.customer_triggered %}
+                                    {% if notification.description %}
+                                        <p class="toast__message">{{ notification.customer_triggered }} {{ notification.message }} {{ notification.description }}</p>
+                                    {% else %}
+                                        <p class="toast__message">{{ notification.customer_triggered }} {{ notification.message }}</p>
+                                    {% endif %}
                                 {% endif %}
                             </div>
+
                             <div class="toast__close">
-                                <button name="primary-key" value="{{ notification.pk }}" type="submit" class="submit-button">
+                                <button name="primary-key" value="{{ notification.pk }}" type="submit"
+                                        class="submit-button">
                                     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.642 15.642"
                                          enable-background="new 0 0 15.642 15.642">
                                         <path fill-rule="evenodd"

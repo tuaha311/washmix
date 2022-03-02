@@ -633,6 +633,7 @@ PAYMENT_FAIL_ADMIN = "payment_fail_admin"
 CARD_CHANGES = "card_changes"
 ACCRUE_CREDIT_BACK = "accrue_credit_back"
 SEND_ADMIN_CLIENT_INFORMATION = "send_admin_client_information"
+SEND_ADMIN_PCUSTOMER_INFORMATION = "send_admin_pcustomer_information"
 
 #################################
 # SENDGRID WITH EMAIL TEMPLATES #
@@ -697,6 +698,12 @@ EMAIL_EVENT_INFO = {
     SEND_ADMIN_CLIENT_INFORMATION: {
         "template_name": "email/send_admin_client_information.html",
         "subject": "New User Activity",
+        "from_email": "info@washmix.com",
+        "reply_to": "info@washmix.com",
+    },
+    SEND_ADMIN_PCUSTOMER_INFORMATION: {
+        "template_name": "email/send_admin_pcustomer_information.html",
+        "subject": "New Potential Customer Activity",
         "from_email": "info@washmix.com",
         "reply_to": "info@washmix.com",
     },
