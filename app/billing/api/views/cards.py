@@ -16,6 +16,7 @@ class CardViewSet(SetMainAttributeMixin, ModelViewSet):
     serializer_class = CardSerializer
     main_attribute = "main_card"
     removed_text = "removed from"
+    updated_text = "updated from"
 
     def get_queryset(self):
         client = self.request.user.client
@@ -41,7 +42,7 @@ class CardViewSet(SetMainAttributeMixin, ModelViewSet):
             recipient_list=recipient_list,
             extra_context={
                 "client_id": client_id,
-                "action": self.removed_text,
+                "action": self.updated_text,
             },
         )
 
