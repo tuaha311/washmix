@@ -30,9 +30,13 @@
                             </div>
                             <div class="toast__content">
                                 {% if notification.user_triggered %}
-                                    <p class="toast__type">{{ notification.user_triggered }}</p>
+                                    <a href={% url 'admin:users_client_change' notification.user_triggered.id %}>
+                                        <p class="toast__type">{{ notification.user_triggered }}</p>
+                                    </a>
                                 {% elif notification.customer_triggered %}
-                                    <p class="toast__type">{{ notification.customer_triggered }}</p>
+                                    <a href={% url 'admin:users_customer_change' notification.customer_triggered.id %}>
+                                        <p class="toast__type">{{ notification.customer_triggered }}</p>
+                                    </a>
                                 {% endif %}
 
                                 {% if notification.user_triggered %}
