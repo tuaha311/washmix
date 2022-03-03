@@ -38,4 +38,4 @@ class Phone(Common):
         verbose_name_plural = "phones"
 
     def __str__(self):
-        return self.number
+        return f"{self.number} - {self.client}"
