@@ -17,9 +17,9 @@ from notifications.tasks import send_sms
 logger = logging.getLogger(__name__)
 
 
-# every day at 06:00
+# every day at 07:00
 @dramatiq.actor(
-    periodic=cron("00 06 * * *"),
+    periodic=cron("00 07 * * *"),
     max_retries=settings.DRAMATIQ_MAX_RETRIES,
     max_age=settings.DRAMATIQ_MAX_AGE,
 )
