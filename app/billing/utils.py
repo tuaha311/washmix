@@ -8,6 +8,8 @@ from django.db.transaction import atomic
 from billing.choices import InvoiceKind, InvoiceProvider, InvoicePurpose
 from billing.models import Invoice, Transaction
 from core.utils import clone_from_to
+from orders.choices import OrderPaymentChoices
+from orders.models import Order
 from users.models import Client
 
 
@@ -63,6 +65,14 @@ def add_money_to_balance(
             amount=amount,
             discount=settings.DEFAULT_ZERO_DISCOUNT,
             purpose=InvoicePurpose.CREDIT,
+        )
+        Order.objects.create(
+            client=client,
+            invoice=invoice,
+            payment=OrderPaymentChoices.PAID,
+            balance_before_purchase=client.balance,
+            balance_after_purchase=client.balance + amount,
+            note="Credit Back by WashMix",
         )
         transaction = create_debit(
             client=client,
