@@ -10,6 +10,7 @@ class NotificationTypes:
     PICKUP_DATE_CHANGE = "pickup_date_change"
     PICKUP_REQUEST_CANCELED = "pickup_request_canceled"
     DROPOFF_DUE_TODAY = "dropoff_due_today"
+    POTENTIAL_CUSTOMER = "potential_customer"
 
     MAP = {
         NEW_ORDER: "created new order",
@@ -18,6 +19,7 @@ class NotificationTypes:
         PICKUP_DATE_CHANGE: "changed the pickup date",
         PICKUP_REQUEST_CANCELED: "canceled the pickup request",
         DROPOFF_DUE_TODAY: "drop-off is due today",
+        POTENTIAL_CUSTOMER: "added to potential customer",
     }
     CHOICES = list(MAP.items())
 
@@ -44,6 +46,16 @@ class Notification(Common):
         "users.Client",
         verbose_name="client",
         on_delete=models.CASCADE,
+        null=True,
+        blank=True
+    )
+
+    customer_triggered = models.ForeignKey(
+        "users.Customer",
+        verbose_name="customer",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
     )
 
     is_read = models.BooleanField(
@@ -63,5 +75,5 @@ class Notification(Common):
         self.save()
 
     @staticmethod
-    def create_notification(client, message, **kwargs):
-        Notification.objects.create(user_triggered=client, message=message, **kwargs)
+    def create_notification(client, message, customer_triggered=None, **kwargs):
+        Notification.objects.create(user_triggered=client, message=message, customer_triggered=customer_triggered, **kwargs)
