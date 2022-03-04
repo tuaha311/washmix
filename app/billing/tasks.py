@@ -66,10 +66,10 @@ def accrue_credit_back_every_3_month():
                 "dollar_credit_back": dollar_credit_back,
                 "dollar_balance": dollar_balance,
                 "old_balance": convert_cent_to_dollars(
-                    transaction.invoice.order.balance_before_purchase
+                    int(transaction.invoice.order.balance_before_purchase)
                 ),
                 "new_balance": convert_cent_to_dollars(
-                    transaction.invoice.order.balance_after_purchase
+                    int(transaction.invoice.order.balance_after_purchase)
                 ),
             },
         )

@@ -146,7 +146,9 @@ def test_client_has_credit_back(
     accrue_credit_back_every_3_month()
 
     order_container_class_mock.assert_called_once_with(order)
-    add_money_to_balance_mock.assert_called_once_with(client, total_credit_back)
+    add_money_to_balance_mock.assert_called_once_with(
+        client, total_credit_back, note="Credit Back by WashMix"
+    )
     exists_in_execution_cache_mock.assert_called_once_with(key)
     send_email_mock.send.assert_called_once()
     add_to_execution_cache_mock.assert_called_once_with(key)
