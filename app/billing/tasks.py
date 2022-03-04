@@ -52,7 +52,7 @@ def accrue_credit_back_every_3_month():
         if total_credit_back == 0:
             continue
 
-        transaction = add_money_to_balance(client, total_credit_back)
+        transaction = add_money_to_balance(client, total_credit_back, note="Credit Back by WashMix")
 
         client.refresh_from_db()
         dollar_credit_back = convert_cent_to_dollars(total_credit_back)

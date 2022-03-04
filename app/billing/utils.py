@@ -53,7 +53,7 @@ create_credit = partial(
 
 
 def add_money_to_balance(
-    client: Client, amount: int, provider=InvoiceProvider.CREDIT_BACK
+    client: Client, amount: int, provider=InvoiceProvider.CREDIT_BACK, note=None
 ) -> Transaction:
     """
     Helper function that creates invoice and transaction in debit direction.
@@ -72,7 +72,7 @@ def add_money_to_balance(
             payment=OrderPaymentChoices.PAID,
             balance_before_purchase=client.balance,
             balance_after_purchase=client.balance + amount,
-            note="Credit Back by WashMix",
+            note=note,
         )
         transaction = create_debit(
             client=client,
@@ -85,7 +85,7 @@ def add_money_to_balance(
 
 
 def remove_money_from_balance(
-    client: Client, amount: int, provider=InvoiceProvider.CREDIT_BACK
+    client: Client, amount: int, provider=InvoiceProvider.CREDIT_BACK, note=None
 ) -> Transaction:
     """
     Helper function that creates invoice and transaction in credit direction.
@@ -97,6 +97,14 @@ def remove_money_from_balance(
             amount=amount,
             discount=settings.DEFAULT_ZERO_DISCOUNT,
             purpose=InvoicePurpose.CREDIT,
+        )
+        Order.objects.create(
+            client=client,
+            invoice=invoice,
+            payment=OrderPaymentChoices.PAID,
+            balance_before_purchase=client.balance,
+            balance_after_purchase=client.balance - amount,
+            note=note,
         )
         transaction = create_credit(
             client=client,
