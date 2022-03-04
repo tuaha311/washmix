@@ -25,7 +25,7 @@ class CustomerCreateView(CreateAPIView):
                     None, NotificationTypes.POTENTIAL_CUSTOMER, customer
                 )
 
-                send_email(
+                send_email.send(
                     event=settings.SEND_ADMIN_PCUSTOMER_INFORMATION,
                     recipient_list=settings.ADMIN_EMAIL_LIST,
                     extra_context={

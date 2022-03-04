@@ -108,6 +108,13 @@ class ClientForm(forms.ModelForm):
         min_value=settings.DEFAULT_ZERO_AMOUNT,
     )
 
+    description = forms.CharField(
+        widget=forms.Textarea,
+        required=False,
+        label="Description appearing on invoice",
+        max_length=1000,
+    )
+
     change_client_subscription = forms.CharField(
         label="Change Client Subscription",
         required=False,
@@ -184,12 +191,17 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
         client = form.instance
         add_money_amount = form.cleaned_data.get("add_money_amount", None)
         remove_money_amount = form.cleaned_data.get("remove_money_amount", None)
+        description = form.cleaned_data.get("description", None)
 
         if add_money_amount and add_money_amount > 0:
-            add_money_to_balance(client, add_money_amount, provider=InvoiceProvider.WASHMIX)
+            add_money_to_balance(
+                client, add_money_amount, provider=InvoiceProvider.WASHMIX, note=description
+            )
 
         if remove_money_amount and remove_money_amount > 0:
-            remove_money_from_balance(client, remove_money_amount, provider=InvoiceProvider.WASHMIX)
+            remove_money_from_balance(
+                client, remove_money_amount, provider=InvoiceProvider.WASHMIX, note=description
+            )
 
         return super().save_form(request, form, change)
 
