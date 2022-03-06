@@ -171,6 +171,7 @@ class ClientForm(forms.ModelForm):
 
 class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
     readonly_fields = [
+        "additional_phones",
         "balance",
         "stripe_id",
     ]
@@ -248,6 +249,13 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
         self.message_user(request, "Clients was removed.", messages.SUCCESS)
 
     full_delete_action.short_description = "Remove all client's info and notify them."  # type: ignore
+
+    def additional_phones(self, obj):
+        phones = ""
+        for ph in obj.phone_list.all():
+            if obj.main_phone != ph:
+                phones += ph.number + ", "
+        return phones
 
 
 class CustomerAdmin(AdminWithSearch):
