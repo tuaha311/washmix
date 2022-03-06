@@ -7,15 +7,18 @@ from users.models import Client
 
 class ClientSerializer(serializers.ModelSerializer):
     main_phone = serializers.SlugRelatedField(slug_field="number", read_only=True)
+    client_numbers = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Client
-        fields = [
-            "id",
-            "main_phone",
-            "first_name",
-            "last_name",
-        ]
+        fields = ["id", "main_phone", "first_name", "last_name", "client_numbers"]
+
+    def get_client_numbers(self, obj):
+        phones = ""
+        for ph in obj.phone_list.all():
+            if obj.main_phone != ph:
+                phones += ph.number + ", "
+        return phones
 
 
 class DeliverySerializer(serializers.ModelSerializer):
