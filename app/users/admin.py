@@ -211,7 +211,7 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
             added_or_removed = "removed"
 
         if transaction:
-            send_email.send(
+            send_email(
                 event=settings.SEND_ADMIN_STORE_CREDIT,
                 recipient_list=[*settings.ADMIN_EMAIL_LIST],
                 extra_context={
