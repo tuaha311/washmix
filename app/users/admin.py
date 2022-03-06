@@ -18,9 +18,12 @@ from billing.models import Invoice
 from billing.utils import add_money_to_balance, remove_money_from_balance
 from core.admin import AdminWithSearch
 from core.mixins import AdminUpdateFieldsMixin
+from core.utils import convert_cent_to_dollars
 from deliveries.models import Request
+from notifications.tasks import send_email
 from orders.models import Order
 from orders.services.order import OrderService
+from settings.base import SEND_ADMIN_STORE_CREDIT
 from subscriptions.models import Package
 from subscriptions.services.subscription import SubscriptionService
 from users.helpers import remove_user_relation_with_all_info
@@ -192,15 +195,36 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
         add_money_amount = form.cleaned_data.get("add_money_amount", None)
         remove_money_amount = form.cleaned_data.get("remove_money_amount", None)
         description = form.cleaned_data.get("description", None)
+        added_or_removed = None
+        transaction = None
 
         if add_money_amount and add_money_amount > 0:
-            add_money_to_balance(
+            transaction = add_money_to_balance(
                 client, add_money_amount, provider=InvoiceProvider.WASHMIX, note=description
             )
+            added_or_removed = "added"
 
         if remove_money_amount and remove_money_amount > 0:
-            remove_money_from_balance(
+            transaction = remove_money_from_balance(
                 client, remove_money_amount, provider=InvoiceProvider.WASHMIX, note=description
+            )
+            added_or_removed = "removed"
+
+        if transaction:
+            send_email.send(
+                event=settings.SEND_ADMIN_STORE_CREDIT,
+                recipient_list=[*settings.ADMIN_EMAIL_LIST],
+                extra_context={
+                    "client": client,
+                    "added_or_removed": added_or_removed,
+                    "note": description,
+                    "old_balance": convert_cent_to_dollars(
+                        int(transaction.invoice.order.balance_before_purchase)
+                    ),
+                    "new_balance": convert_cent_to_dollars(
+                        int(transaction.invoice.order.balance_after_purchase)
+                    ),
+                },
             )
 
         return super().save_form(request, form, change)
