@@ -197,18 +197,21 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
         description = form.cleaned_data.get("description", None)
         added_or_removed = None
         transaction = None
+        credit_given = None
 
         if add_money_amount and add_money_amount > 0:
             transaction = add_money_to_balance(
                 client, add_money_amount, provider=InvoiceProvider.WASHMIX, note=description
             )
             added_or_removed = "added"
+            credit_given = convert_cent_to_dollars(int(add_money_amount))
 
         if remove_money_amount and remove_money_amount > 0:
             transaction = remove_money_from_balance(
                 client, remove_money_amount, provider=InvoiceProvider.WASHMIX, note=description
             )
             added_or_removed = "removed"
+            credit_given = convert_cent_to_dollars(int(remove_money_amount))
 
         if transaction:
             send_email(
@@ -217,6 +220,7 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
                 extra_context={
                     "client": client,
                     "added_or_removed": added_or_removed,
+                    "credit_given": credit_given,
                     "note": description,
                     "old_balance": convert_cent_to_dollars(
                         int(transaction.invoice.order.balance_before_purchase)
