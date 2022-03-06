@@ -194,6 +194,21 @@
                         <th id="unpaid">${{ order_container.invoice.dollar_unpaid_amount }}</th>
                     </tr>
                 {% endif %}
+
+                <tr>
+                    <th>
+                        <div class="divider"></div>
+                    </th>
+                    <th>
+                        <div class="divider"></div>
+                    </th>
+                </tr>
+
+                <tr>
+                    <th id="note">Note</th>
+                    <th id="note">{{ order_container.note }}</th>
+                </tr>
+
             </table>
         </td>
     </tr>
