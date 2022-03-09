@@ -249,3 +249,11 @@ Valid body for working with Twilio Studio
 {"message": "{{trigger.message.Body}}", "phone": "{{trigger.message.From}}"}
 ```
 
+## Heroku DB Backups
+https://devcenter.heroku.com/articles/heroku-postgres-backups#creating-a-backup
+
+Run this via heroku cli
+```bash
+heroku pg:backups:schedules --app washmix-back
+heroku pg:backups --app washmix-back
+```
