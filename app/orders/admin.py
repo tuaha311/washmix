@@ -33,6 +33,14 @@ class BasketAdmin(AdminWithSearch):
     inlines = [QuantityInlineAdmin]
 
 
+class PaymentOrderForm(forms.ModelForm):
+    payment_retry = forms.CharField(
+        label="Payment",
+        required=False,
+        widget=forms.Select(choices=[(None, "--------"), ("retry", "retry")]),
+    )
+
+
 class OrderAdmin(AdminWithSearch):
     readonly_fields = [
         "pdf_path",
@@ -51,6 +59,7 @@ class OrderAdmin(AdminWithSearch):
         "employee",
     ]
     actions = ["cancel_unpaid_order"]
+    form = PaymentOrderForm
 
     def cancel_unpaid_order(self, request: HttpRequest, order_queryset: QuerySet):
         """
@@ -135,6 +144,18 @@ class OrderAdmin(AdminWithSearch):
         relative_path = str(relative_to_base_dir)
 
         return f"/{relative_path}"
+
+    def save_form(self, request: HttpRequest, form: forms.BaseForm, change):
+        order = form.instance
+        payment_retry = form.cleaned_data.get("payment_retry", None)
+        if payment_retry == "retry":
+            from billing.services.payments import PaymentService
+
+            print("Retrying")
+            payment_service = PaymentService(order.client, order.invoice)
+            payment_service.charge()
+
+        return super().save_form(request, form, change)
 
 
 models = [
