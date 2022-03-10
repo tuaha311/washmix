@@ -127,8 +127,8 @@ class OrderContainer(BaseDynamicAmountContainer):
         payment_status = self.payment
 
         # we are calculating credit back only for POS orders
-        if subscription:
-            return settings.DEFAULT_ZERO_AMOUNT
+        # if subscription:
+        #     return settings.DEFAULT_ZERO_AMOUNT
 
         # if this field doesn't exists - we don't know with which subscription kind
         # order was purchased

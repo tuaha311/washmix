@@ -1,0 +1,69 @@
+{% extends "base_email.html" %}
+
+{% block extra_style %}
+    <style media="all" type="text/css">
+        #order-table, #basket-table, #basket-total {
+            width: 100%;
+        }
+
+        #order-table th, #basket-table th {
+            width: 25%;
+        }
+
+        #basket-total th {
+            width: 50%;
+        }
+
+        #discount {
+            color: blue;
+        }
+
+        #balance {
+            color: blueviolet;
+        }
+
+        #unpaid, #paid {
+            font-weight: 800;
+            font-size: 24px;
+        }
+
+        #unpaid {
+            color: red;
+        }
+
+        #paid {
+            color: green;
+        }
+    </style>
+{% endblock %}
+
+
+{% block body %}
+
+    <tr>
+        <td>
+            <h4 class="centered">New Potential Customer</h4>
+        </td>
+    </tr>
+
+    <tr>
+        <td>
+            <div class="divider"></div>
+        </td>
+    </tr>
+
+    <tr>
+        <td>
+            <h3>Customer information</h3>
+            <div id="customer-information">
+                <p>Name - {{ customer.full_name }}</p>
+                <p>Email - <a href="mailto:{{ customer.email }}">{{ customer.email }}</a></p>
+                <p>Phone Number - {{ customer.phone }}</p>
+                {% if customer.address %}
+                    <p>Address - {{ customer.address }} {{ customer.address }}</p>
+                {% endif %}
+            </div>
+        </td>
+    </tr>
+
+{% endblock %}

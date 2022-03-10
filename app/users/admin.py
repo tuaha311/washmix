@@ -18,9 +18,12 @@ from billing.models import Invoice
 from billing.utils import add_money_to_balance, remove_money_from_balance
 from core.admin import AdminWithSearch
 from core.mixins import AdminUpdateFieldsMixin
+from core.utils import convert_cent_to_dollars
 from deliveries.models import Request
+from notifications.tasks import send_email
 from orders.models import Order
 from orders.services.order import OrderService
+from settings.base import SEND_ADMIN_STORE_CREDIT
 from subscriptions.models import Package
 from subscriptions.services.subscription import SubscriptionService
 from users.helpers import remove_user_relation_with_all_info
@@ -108,6 +111,13 @@ class ClientForm(forms.ModelForm):
         min_value=settings.DEFAULT_ZERO_AMOUNT,
     )
 
+    description = forms.CharField(
+        widget=forms.Textarea,
+        required=False,
+        label="Description appearing on invoice",
+        max_length=1000,
+    )
+
     change_client_subscription = forms.CharField(
         label="Change Client Subscription",
         required=False,
@@ -161,6 +171,7 @@ class ClientForm(forms.ModelForm):
 
 class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
     readonly_fields = [
+        "additional_phones",
         "balance",
         "stripe_id",
     ]
@@ -184,12 +195,42 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
         client = form.instance
         add_money_amount = form.cleaned_data.get("add_money_amount", None)
         remove_money_amount = form.cleaned_data.get("remove_money_amount", None)
+        description = form.cleaned_data.get("description", None)
+        added_or_removed = None
+        transaction = None
+        credit_given = None
 
         if add_money_amount and add_money_amount > 0:
-            add_money_to_balance(client, add_money_amount, provider=InvoiceProvider.WASHMIX)
+            transaction = add_money_to_balance(
+                client, add_money_amount, provider=InvoiceProvider.WASHMIX, note=description
+            )
+            added_or_removed = "added"
+            credit_given = convert_cent_to_dollars(int(add_money_amount))
 
         if remove_money_amount and remove_money_amount > 0:
-            remove_money_from_balance(client, remove_money_amount, provider=InvoiceProvider.WASHMIX)
+            transaction = remove_money_from_balance(
+                client, remove_money_amount, provider=InvoiceProvider.WASHMIX, note=description
+            )
+            added_or_removed = "removed"
+            credit_given = convert_cent_to_dollars(int(remove_money_amount))
+
+        if transaction:
+            send_email(
+                event=settings.SEND_ADMIN_STORE_CREDIT,
+                recipient_list=[*settings.ADMIN_EMAIL_LIST],
+                extra_context={
+                    "client": client,
+                    "added_or_removed": added_or_removed,
+                    "credit_given": credit_given,
+                    "note": description,
+                    "old_balance": convert_cent_to_dollars(
+                        int(transaction.invoice.order.balance_before_purchase)
+                    ),
+                    "new_balance": convert_cent_to_dollars(
+                        int(transaction.invoice.order.balance_after_purchase)
+                    ),
+                },
+            )
 
         return super().save_form(request, form, change)
 
@@ -208,6 +249,13 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
         self.message_user(request, "Clients was removed.", messages.SUCCESS)
 
     full_delete_action.short_description = "Remove all client's info and notify them."  # type: ignore
+
+    def additional_phones(self, obj):
+        phones = ""
+        for ph in obj.phone_list.all():
+            if obj.main_phone != ph:
+                phones += ph.number + ", "
+        return phones
 
 
 class CustomerAdmin(AdminWithSearch):

@@ -2,6 +2,8 @@ from django import forms
 from django.conf import settings
 from django.contrib import admin
 from django.db.models.signals import post_save
+from django.urls import reverse
+from django.utils.html import format_html
 
 from core.admin import AdminWithSearch
 from deliveries.choices import DeliveryKind, DeliveryStatus
@@ -17,7 +19,7 @@ class RequestAdmin(AdminWithSearch):
     inlines = [DeliveryInlineAdmin]
     list_display = [
         "__str__",
-        "client",
+        "request_client",
         "address",
         "comment",
         "is_rush",
@@ -31,6 +33,13 @@ class RequestAdmin(AdminWithSearch):
         return Request.objects.filter(
             delivery_list__kind=DeliveryKind.DROPOFF,
             delivery_list__status__in=[DeliveryStatus.ACCEPTED, DeliveryStatus.IN_PROGRESS],
+        )
+
+    def request_client(self, obj):
+        return format_html(
+            "<a href='{url}'>{text}</a>",
+            url=reverse("admin:users_client_change", args=(obj.client.id,)),
+            text=obj.client,
         )
 
 
@@ -69,6 +78,13 @@ class DeliveryAdmin(AdminWithSearch):
             status__in=[DeliveryStatus.ACCEPTED, DeliveryStatus.IN_PROGRESS]
         )
 
+    def client(self, obj):
+        return format_html(
+            "<a href='{url}'>{text}</a>",
+            url=reverse("admin:users_client_change", args=(obj.request.client.id,)),
+            text=obj.request.client,
+        )
+
     def save_model(self, request, obj, form, change):
         """
         We are catching the moment when admin changes Delivery's
@@ -105,6 +121,23 @@ class ScheduleForm(forms.ModelForm):
 
 class ScheduleAdmin(AdminWithSearch):
     form = ScheduleForm
+    list_display = [
+        "id",
+        "schedule_days",
+        "schedule_client",
+    ]
+
+    def schedule_days(self, obj):
+        pretty_days = [settings.DELIVERY_DAYS_MAP[item] for item in obj.days]
+        string_days = ", ".join(pretty_days)
+        return string_days
+
+    def schedule_client(self, obj):
+        return format_html(
+            "<a href='{url}'>{text}</a>",
+            url=reverse("admin:users_client_change", args=(obj.client.id,)),
+            text=obj.client,
+        )
 
 
 models = [[Schedule, ScheduleAdmin], [Delivery, DeliveryAdmin], [Request, RequestAdmin]]
