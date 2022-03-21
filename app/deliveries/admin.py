@@ -60,6 +60,7 @@ class DeliveryAdmin(AdminWithSearch):
         "is_rush",
         "note",
         "comment",
+        "changed",
     ]
     list_editable = [
         "date",
