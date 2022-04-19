@@ -1,6 +1,7 @@
 from django import forms
 from django.conf import settings
 from django.contrib import admin
+from django.db.models import Q
 from django.db.models.signals import post_save
 from django.urls import reverse
 from django.utils.html import format_html
@@ -8,15 +9,30 @@ from django.utils.html import format_html
 from core.admin import AdminWithSearch
 from deliveries.choices import DeliveryKind, DeliveryStatus
 from deliveries.models import Delivery, Request, Schedule
+from users.admin import CustomAutocompleteSelect
+
+
+class DeliveryForm(forms.ModelForm):
+    class Meta:
+        model = Delivery
+        fields = "__all__"
+        widgets = {
+            "employee": CustomAutocompleteSelect(
+                model._meta.get_field("employee").remote_field, "Select an Employee", admin.site
+            )
+        }
 
 
 class DeliveryInlineAdmin(admin.TabularInline):
     model = Delivery
     extra = 0
+    form = DeliveryForm
+    autocomplete_fields = ("employee",)
 
 
 class RequestAdmin(AdminWithSearch):
     inlines = [DeliveryInlineAdmin]
+    autocomplete_fields = ("client", "address", "schedule")
     list_display = [
         "__str__",
         "request_client",
@@ -42,12 +58,19 @@ class RequestAdmin(AdminWithSearch):
             text=obj.client,
         )
 
+    def get_search_results(self, request, queryset, search_term):
+        queryset, use_distinct = super().get_search_results(request, queryset, search_term)
+        if "autocomplete" in request.path:
+            queryset = queryset.filter(Q(id__contains=request.GET.get("q", "")))
+        return queryset, use_distinct
+
 
 class DeliveryAdmin(AdminWithSearch):
     readonly_fields = [
         "order",
         "client",
     ]
+    form = DeliveryForm
     list_display = [
         "__str__",
         "client",
@@ -73,6 +96,9 @@ class DeliveryAdmin(AdminWithSearch):
         "kind",
         "employee",
     ]
+    # autocomplete_fields = ('employee',)
+    def get_changelist_form(self, request, **kwargs):
+        return DeliveryForm
 
     def get_queryset(self, request):
         return Delivery.objects.filter(
@@ -118,6 +144,14 @@ class ScheduleForm(forms.ModelForm):
     class Meta:
         model = Schedule
         fields = "__all__"
+        widgets = {
+            "client": CustomAutocompleteSelect(
+                model._meta.get_field("client").remote_field, "Select a Client", admin.site
+            ),
+            "address": CustomAutocompleteSelect(
+                model._meta.get_field("address").remote_field, "Select an Address", admin.site
+            ),
+        }
 
 
 class ScheduleAdmin(AdminWithSearch):
@@ -139,6 +173,15 @@ class ScheduleAdmin(AdminWithSearch):
             url=reverse("admin:users_client_change", args=(obj.client.id,)),
             text=obj.client,
         )
+
+    def get_search_results(self, request, queryset, search_term):
+        queryset, use_distinct = super().get_search_results(request, queryset, search_term)
+        if "autocomplete" in request.path:
+            queryset = queryset.filter(
+                Q(client__user__email__icontains=request.GET.get("q", ""))
+                | Q(id__contains=request.GET.get("q", ""))
+            )
+        return queryset, use_distinct
 
 
 models = [[Schedule, ScheduleAdmin], [Delivery, DeliveryAdmin], [Request, RequestAdmin]]
