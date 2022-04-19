@@ -1,7 +1,7 @@
 from django import forms
 from django.conf import settings
 from django.contrib import admin, messages
-from django.db.models import QuerySet
+from django.db.models import Q, QuerySet
 from django.db.transaction import atomic
 from django.http import HttpRequest
 from django.template.loader import render_to_string
@@ -12,6 +12,7 @@ from billing.utils import perform_refund
 from core.admin import AdminWithSearch
 from orders.models import Basket, Item, Order, Price, Quantity, Service
 from orders.utils import generate_pdf_from_html
+from users.admin import CustomAutocompleteSelect
 
 
 class QuantityInlineForm(forms.ModelForm):
@@ -27,18 +28,57 @@ class QuantityInlineAdmin(admin.TabularInline):
     model = Quantity
     form = QuantityInlineForm
     extra = 0
+    autocomplete_fields = ("price",)
 
 
 class BasketAdmin(AdminWithSearch):
     inlines = [QuantityInlineAdmin]
+    autocomplete_fields = ("client",)
+
+    def get_search_results(self, request, queryset, search_term):
+        queryset, use_distinct = super().get_search_results(request, queryset, search_term)
+        if "autocomplete" in request.path:
+            queryset = queryset.filter(Q(id__contains=request.GET.get("q", "")))
+        return queryset, use_distinct
 
 
-class PaymentOrderForm(forms.ModelForm):
+class OrderAdminForm(forms.ModelForm):
     payment_retry = forms.CharField(
         label="Payment",
         required=False,
         widget=forms.Select(choices=[(None, "--------"), ("retry", "retry")]),
     )
+
+    class Meta:
+        model = Order
+        fields = "__all__"
+        widgets = {
+            "client": CustomAutocompleteSelect(
+                model._meta.get_field("client").remote_field, "Select a Client", admin.site
+            ),
+            "employee": CustomAutocompleteSelect(
+                model._meta.get_field("employee").remote_field, "Select an Employee", admin.site
+            ),
+            "basket": CustomAutocompleteSelect(
+                model._meta.get_field("basket").remote_field, "Select a Basket", admin.site
+            ),
+            "request": CustomAutocompleteSelect(
+                model._meta.get_field("request").remote_field, "Select a Request", admin.site
+            ),
+            "subscription": CustomAutocompleteSelect(
+                model._meta.get_field("subscription").remote_field,
+                "Select a Subscription",
+                admin.site,
+            ),
+            "invoice": CustomAutocompleteSelect(
+                model._meta.get_field("invoice").remote_field, "Select an Invoice", admin.site
+            ),
+            "bought_with_subscription": CustomAutocompleteSelect(
+                model._meta.get_field("bought_with_subscription").remote_field,
+                "Select a Subscription",
+                admin.site,
+            ),
+        }
 
 
 class OrderAdmin(AdminWithSearch):
@@ -59,7 +99,11 @@ class OrderAdmin(AdminWithSearch):
         "employee",
     ]
     actions = ["cancel_unpaid_order"]
-    form = PaymentOrderForm
+    form = OrderAdminForm
+    # autocomplete_fields = ['client','employee','basket','request','subscription','invoice','bought_with_subscription']
+
+    def get_changelist_form(self, request, **kwargs):
+        return OrderAdminForm
 
     def cancel_unpaid_order(self, request: HttpRequest, order_queryset: QuerySet):
         """
