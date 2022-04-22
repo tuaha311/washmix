@@ -12,6 +12,10 @@ aliases:
     - checkout
     - deploy_to_heroku
 
+  - &deploy_to_heroku_staging
+    - checkout
+    - deploy_to_heroku_staging
+
 # Commands
 commands:
   deploy_to_heroku:
@@ -22,12 +26,21 @@ commands:
             echo "Moved to Github Actions"
             # git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git ${CIRCLE_BRANCH}:master
 
+  deploy_to_heroku_staging:
+    description: "Deploy applicaton to Heroku staging"
+    steps:
+      - run:
+          command: |
+            git push https://heroku:$HEROKU_API_KEY@git.heroku.com/${HEROKU_APP_NAME}-staging.git ${CIRCLE_BRANCH}:master
+
 jobs:
   "Deploy to Heroku":
     <<: *build_environment
     steps: *deploy_to_heroku
 
-# // End of jobs
+  "Deploy to Heroku staging":
+    <<: *build_environment
+    steps: *deploy_to_heroku_staging
 
 _release-filters: &release-filters
   branches:
@@ -35,6 +48,11 @@ _release-filters: &release-filters
       - heroku-test
       - master
 
+_staging-filters: &staging-filters
+  branches:
+    only:
+      - testing-stage
+      - dev
 
 workflows:
   deploy-to-heroku:
@@ -42,3 +60,6 @@ workflows:
       - "Deploy to Heroku":
           filters:
             <<: *release-filters
+      - "Deploy to Heroku staging":
+          filters:
+            <<: *staging-filters
