@@ -25,7 +25,16 @@ MIDDLEWARE = [
 ]
 
 
-INTERNAL_IPS = ["127.0.0.1", "localhost"]
+# INTERNAL_IPS = ["127.0.0.1", "localhost"]
+
+
+def show_toolbar(request):
+    return True
+
+
+DEBUG_TOOLBAR_CONFIG = {
+    "SHOW_TOOLBAR_CALLBACK": "settings.dev.show_toolbar",
+}
 
 ALLOWED_COUNTRY_CODES = [RUSSIA_COUNTRY_CODE, USA_COUNTRY_CODE]
 
