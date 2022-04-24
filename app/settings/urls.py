@@ -50,7 +50,7 @@ urlpatterns += [
     # REST API
     path("api/", include("api.urls")),
     path("jet/", include("jet.urls", "jet")),
-    # path('__debug__/', include(debug_toolbar.urls)),
+    path("__debug__/", include(debug_toolbar.urls)),
     path("admin/notifications/", include("notifications.urls")),
     path("admin/", admin.site.urls),
     # Static files serving
