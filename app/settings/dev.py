@@ -33,8 +33,6 @@ DEBUG_TOOLBAR_CONFIG = {
     "SHOW_TOOLBAR_CALLBACK": "settings.dev.show_toolbar",
 }
 
-INTERNAL_IPS = ["127.0.0.1", "localhost"]
-
 ALLOWED_COUNTRY_CODES = [RUSSIA_COUNTRY_CODE, USA_COUNTRY_CODE]
 
 
