@@ -26,7 +26,7 @@ MIDDLEWARE = [
 
 
 def show_toolbar(request):
-    return request.user.is_staff
+    return True
 
 
 DEBUG_TOOLBAR_CONFIG = {
