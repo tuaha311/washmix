@@ -3,7 +3,7 @@ from django.conf.urls import include
 from django.contrib import admin
 from django.urls import path
 
-# import debug_toolbar
+import debug_toolbar
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 
