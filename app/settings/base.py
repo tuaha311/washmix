@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # third party
+    "debug_toolbar",
     "rest_framework",
     "djoser",
     "social_django",

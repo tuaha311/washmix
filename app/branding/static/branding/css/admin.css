@@ -33,3 +33,18 @@ td.field-date {
     margin-top: 5px;
     text-align: center;
 }
+.select2-dropdown--below{
+    min-width: 250px;
+}
+.select2-dropdown--above{
+    min-width: 250px;
+}
+.select2-selection__rendered{
+    overflow: unset !important;
+}
+.select2-selection__clear{
+    left:6px;
+}
+.select2-selection__arrow{
+    right:-5px !important;
+}

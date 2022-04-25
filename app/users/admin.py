@@ -2,9 +2,11 @@ from django import forms
 from django.conf import settings
 from django.contrib import admin, messages
 from django.contrib.admin.sites import NotRegistered
+from django.contrib.admin.widgets import AutocompleteSelect
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
-from django.db.models import QuerySet
+from django.core.paginator import Paginator
+from django.db.models import Q, QuerySet
 from django.http.request import HttpRequest
 
 from swap_user.admin import BaseUserAdmin
@@ -35,6 +37,17 @@ User = get_user_model()
 #
 # Invoice inlines
 #
+class CustomAutocompleteSelect(AutocompleteSelect):
+    def __init__(self, field, prompt="", admin_site=None, attrs=None, choices=(), using=None):
+        self.prompt = prompt
+        super().__init__(field, admin_site, attrs=attrs, choices=choices, using=using)
+
+    def build_attrs(self, base_attrs, extra_attrs=None):
+        attrs = super().build_attrs(base_attrs, extra_attrs=extra_attrs)
+        attrs.update({"data-placeholder": self.prompt})
+        return attrs
+
+
 class InvoiceInlineForm(forms.ModelForm):
     class Meta:
         model = Invoice
@@ -50,6 +63,10 @@ class InvoiceInlineAdmin(admin.TabularInline):
     model = Invoice
     form = InvoiceInlineForm
     extra = 0
+    readonly_fields = (
+        "card",
+        "purpose",
+    )
 
 
 #
@@ -68,6 +85,20 @@ class OrderInlineForm(forms.ModelForm):
             "payment",
             "note",
         ]
+        widgets = {
+            "employee": CustomAutocompleteSelect(
+                model._meta.get_field("employee").remote_field, "Select an Employee", admin.site
+            ),
+            "basket": CustomAutocompleteSelect(
+                model._meta.get_field("basket").remote_field, "Select a Basket", admin.site
+            ),
+            "request": CustomAutocompleteSelect(
+                model._meta.get_field("request").remote_field, "Select an Request", admin.site
+            ),
+            "coupon": CustomAutocompleteSelect(
+                model._meta.get_field("coupon").remote_field, "Select a Coupon", admin.site
+            ),
+        }
 
 
 class OrderInlineAdmin(admin.TabularInline):
@@ -88,12 +119,21 @@ class RequestInlineForm(forms.ModelForm):
             "comment",
             "schedule",
         ]
+        widgets = {
+            "address": CustomAutocompleteSelect(
+                model._meta.get_field("address").remote_field, "Select an Address", admin.site
+            ),
+            "schedule": CustomAutocompleteSelect(
+                model._meta.get_field("schedule").remote_field, "Select a Schedule", admin.site
+            ),
+        }
 
 
 class RequestInlineAdmin(admin.TabularInline):
     model = Request
     form = RequestInlineForm
     extra = 0
+    # autocomplete_fields = ('address','schedule')
 
 
 #
@@ -177,6 +217,12 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
     ]
     form = ClientForm
     inlines = [RequestInlineAdmin, OrderInlineAdmin, InvoiceInlineAdmin]
+    autocomplete_fields = (
+        "user",
+        "main_card",
+        "main_phone",
+        "main_address",
+    )
     list_display = [
         "__str__",
         "full_name",
@@ -257,6 +303,12 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
                 phones += ph.number + ", "
         return phones
 
+    def get_search_results(self, request, queryset, search_term):
+        queryset, use_distinct = super().get_search_results(request, queryset, search_term)
+        if "autocomplete" in request.path:
+            queryset = queryset.filter(user__email__contains=request.GET.get("q", ""))
+        return queryset, use_distinct
+
 
 class CustomerAdmin(AdminWithSearch):
     list_display = [
@@ -278,6 +330,7 @@ class UserAdmin(
 ):
     add_form_class = NamedUserEmailRequiredFieldsForm
     change_form_class = NamedUserEmailOptionalFieldsForm
+    search_fields = ["email"]
 
 
 class EmployeeAdmin(AdminWithSearch):
@@ -295,6 +348,17 @@ class EmployeeAdmin(AdminWithSearch):
         self.message_user(request, "Employees was removed.", messages.SUCCESS)
 
     full_delete_action.short_description = "Remove all employee's info and notify them."  # type: ignore
+
+    def get_search_results(self, request, queryset, search_term):
+        queryset, use_distinct = super().get_search_results(request, queryset, search_term)
+        if "autocomplete" in request.path:
+            queryset = queryset.filter(
+                Q(user__email__icontains=request.GET.get("q", ""))
+                | Q(user__first_name__icontains=request.GET.get("q", ""))
+                | Q(user__last_name__icontains=request.GET.get("q", ""))
+                | Q(position__icontains=request.GET.get("q", ""))
+            )
+        return queryset, use_distinct
 
 
 models = [
