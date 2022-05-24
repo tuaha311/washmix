@@ -29,7 +29,7 @@ from settings.base import SEND_ADMIN_STORE_CREDIT
 from subscriptions.models import Package
 from subscriptions.services.subscription import SubscriptionService
 from users.helpers import remove_user_relation_with_all_info
-from users.models import Client, Customer, Employee
+from users.models import Client, Customer, Employee, Log
 
 User = get_user_model()
 
@@ -323,6 +323,14 @@ class CustomerAdmin(AdminWithSearch):
     list_filter = ["kind"]
 
 
+class LogAdmin(AdminWithSearch):
+    list_display = [
+        "customer",
+        "created",
+        "action",
+    ]
+
+
 class UserAdmin(
     AdminUpdateFieldsMixin,
     AdminWithSearch,
@@ -377,3 +385,5 @@ except NotRegistered:
     pass
 finally:
     admin.site.register(User, UserAdmin)
+
+admin.site.register(Log, LogAdmin)

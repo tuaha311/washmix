@@ -11,6 +11,7 @@ from api.client.serializers import auth
 from api.client.serializers.auth import (
     DjoserPasswordResetConfirmSerializer,
     DjoserSendEmailResetSerializer,
+    LoginSerializer,
 )
 from api.utils import cleanup_email
 from core.services.signup import SignupService
@@ -74,4 +75,5 @@ class DjoserSetNewPasswordView(DjoserProxyView):
 
 
 class LoginView(TokenObtainSlidingView):
+    serializer_class = LoginSerializer
     response_serializer_class = auth.LoginResponseSerializer
