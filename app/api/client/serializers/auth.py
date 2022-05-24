@@ -15,6 +15,7 @@ class SignupSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField()
     phone = serializers.CharField()
+    # address = serializers.CharField()
 
     def validate_email(self, value):
         email = cleanup_email(value)
