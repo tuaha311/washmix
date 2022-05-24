@@ -171,6 +171,14 @@ class RequestViewSet(ModelViewSet):
 
         serializer.save()
         pretty_date = pickup_date.strftime("%B %d, %Y")
+
+        send_admin_client_information(
+            client.id,
+            "A Customer has Updated their Pickup Request.",
+            is_pickup=True,
+            pickup_date=pretty_date,
+        )
+
         Notification.create_notification(
             client, NotificationTypes.PICKUP_DATE_CHANGE, description=f"to {pretty_date}"
         )
