@@ -584,6 +584,7 @@ DELIVERY_DROPOFF_COMPLETE = "delivery_dropoff_complete"
 PICKUP_REQUEST_CANCELED = "pickup_request_canceled"
 UNABLE_TO_CREATE_MULTIPLE_REQUEST = "unable_to_create_multiple_request"
 PICKUP_DUE_TOMORROW = "pickup_due_tomorrow"
+SMS_CREDIT_BACK = "credit_back"
 
 #############################
 # TWILIO WITH SMS TEMPLATES #
@@ -615,6 +616,9 @@ SMS_EVENT_INFO = {
     },
     PICKUP_DUE_TOMORROW: {
         "template_name": "sms/pickup_due_tomorrow.html",
+    },
+    SMS_CREDIT_BACK: {
+        "template_name": "sms/credit_back.html",
     },
 }
 
