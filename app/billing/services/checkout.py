@@ -55,6 +55,9 @@ class WelcomeService:
     def _create_main_address(self, raw_address: dict) -> Address:
         return self._create_address(raw_address, "main_address")
 
+    def _create_signup_main_address(self, raw_address: dict) -> Address:
+        return self._create_signup_address(raw_address, "main_address")
+
     def _create_billing_address(self, raw_billing_address: dict) -> dict:
         client = self._client
 
@@ -64,11 +67,27 @@ class WelcomeService:
 
         return client.billing_address
 
+    def _create_signup_address(self, address: dict, attribute: str):
+        serializer = WelcomeCheckoutAddressSerializer(data=address)
+        serializer.is_valid()
+
+        service = MainAttributeService(self._client, attribute)
+        address = service.create(serializer)
+
+        return address
+
     def _create_address(self, address: dict, attribute: str):
         serializer = WelcomeCheckoutAddressSerializer(data=address)
         serializer.is_valid()
 
-        service = MainAttributeService(self._request.user.client, attribute)
-        address = service.create(serializer)
-
-        return address
+        if not self._request.user.client.main_address:
+            service = MainAttributeService(self._request.user.client, attribute)
+            address = service.create(serializer)
+            return address
+        else:
+            client = self._request.user.client
+            client.main_address.zip_code = address.get("zip_code")
+            client.main_address.address_line_1 = address.get("address_line_1")
+            client.main_address.instructions = address.get("instructions")
+            client.main_address.save()
+            return client.main_address

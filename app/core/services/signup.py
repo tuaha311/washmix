@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db.transaction import atomic
 
+from billing.services.checkout import WelcomeService
 from billing.stripe_helper import StripeHelper
 from notifications.models import Notification, NotificationTypes
 from notifications.tasks import send_admin_client_information, send_email, send_sms
@@ -11,7 +12,7 @@ User = get_user_model()
 
 
 class SignupService:
-    def signup(self, email, password, phone) -> Client:
+    def signup(self, zipCode, address, email, password, phone) -> Client:
         with atomic():
             client = Client.objects.create_client(email, password, phone)
             client_id = client.id
@@ -22,6 +23,10 @@ class SignupService:
 
             client.stripe_id = customer["id"]
             client.save(update_fields={"stripe_id", "main_phone"})
+
+            service = WelcomeService(client, None, None)
+            raw_address = {"zip_code": zipCode, "address_line_1": address}
+            address = service._create_signup_main_address(raw_address)
         main_phone = client.main_phone.number
 
         send_email.send(

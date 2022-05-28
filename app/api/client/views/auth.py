@@ -16,6 +16,7 @@ from api.client.serializers.auth import (
 from api.utils import cleanup_email
 from core.services.signup import SignupService
 from core.utils import get_clean_number
+from locations.models import Address
 
 User = get_user_model()
 
@@ -31,11 +32,13 @@ class SignupView(GenericAPIView):
         email = serializer.validated_data["email"]
         password = serializer.validated_data["password"]
         raw_phone = serializer.validated_data["phone"]
+        zipCode = serializer.validated_data["zipCode"]
+        address = serializer.validated_data["addressLine1"]
         clean_email = cleanup_email(email)
         clean_phone = get_clean_number(raw_phone)
 
         service = SignupService()
-        client = service.signup(clean_email, password, clean_phone)
+        client = service.signup(zipCode, address, clean_email, password, clean_phone)
 
         return Response({"email": client.email})
 
