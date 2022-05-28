@@ -20,6 +20,7 @@ from notifications.models import Notification, NotificationTypes
 from notifications.tasks import send_admin_client_information, send_sms
 from orders.choices import OrderStatusChoices
 from settings.base import ALLOW_DELIVERY_CANCELLATION_TIMEDELTA, ALLOW_DELIVERY_RESHEDULE_TIMEDELTA
+from users.models import Log
 
 
 class RequestFilter(filters.FilterSet):
@@ -106,6 +107,7 @@ class RequestViewSet(ModelViewSet):
             )
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
+        Log.objects.create(customer=client.email, action="Created Pick Up Request")
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def perform_create(self, serializer: Serializer):
@@ -146,7 +148,7 @@ class RequestViewSet(ModelViewSet):
             # If 'prefetch_related' has been applied to a queryset, we need to
             # forcibly invalidate the prefetch cache on the instance.
             instance._prefetched_objects_cache = {}
-
+        Log.objects.create(customer=self.request.user.email, action="Updated Pick Up Request")
         return Response(serializer.data)
 
     def perform_update(self, serializer: Serializer):
@@ -198,7 +200,7 @@ class RequestViewSet(ModelViewSet):
         send_admin_client_information(client.id, "A Customer has Canceled the Pickup Request")
 
         Notification.create_notification(client, NotificationTypes.PICKUP_REQUEST_CANCELED)
-
+        Log.objects.create(customer=client.email, action="Cancelled Pick Up Request")
         return Response({"message": "request canceled"}, status=status.HTTP_200_OK)
 
 
