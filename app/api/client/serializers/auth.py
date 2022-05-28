@@ -7,6 +7,7 @@ from rest_framework import serializers
 from api.utils import cleanup_email
 from core.models import Phone
 from core.utils import get_clean_number
+from locations.models import ZipCode
 
 User = get_user_model()
 
@@ -15,6 +16,8 @@ class SignupSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField()
     phone = serializers.CharField()
+    zipCode = serializers.SlugRelatedField(slug_field="value", queryset=ZipCode.objects.all())
+    addressLine1 = serializers.CharField()
 
     def validate_email(self, value):
         email = cleanup_email(value)
