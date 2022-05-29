@@ -14,7 +14,6 @@ class ProxyFieldsOnModelUpdate:
         unique_fields = set(serializer.validated_data.keys())
         update_fields = self.proxy_fields & unique_fields
         super().perform_update(serializer)
-        instance.save(update_fields=update_fields)
         print("updateing perform update")
         log = ""
         for up in update_fields:
@@ -22,3 +21,5 @@ class ProxyFieldsOnModelUpdate:
         if log:
             log = log[:-2]
             Log.objects.create(customer=instance.email, action=f"The user updated {log}")
+
+        instance.save(update_fields=update_fields)
