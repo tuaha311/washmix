@@ -15,6 +15,7 @@ class ProxyFieldsOnModelUpdate:
         update_fields = self.proxy_fields & unique_fields
         super().perform_update(serializer)
         instance.save(update_fields=update_fields)
+        print("updateing perform update")
         log = ""
         for up in update_fields:
             log += str(up) + ", "
