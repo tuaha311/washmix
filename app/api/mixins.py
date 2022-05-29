@@ -20,6 +20,6 @@ class ProxyFieldsOnModelUpdate:
             log += str(up) + ", "
         if log:
             log = log[:-2]
-            Log.objects.create(customer=instance.email, action=f"The user updated {log}")
+            Log.objects.create(customer=self.request.user.email, action=f"The user updated {log}")
 
         instance.save(update_fields=update_fields)
