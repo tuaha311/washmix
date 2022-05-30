@@ -1,4 +1,5 @@
 from users.models import Log
+from notifications.tasks import send_admin_client_information
 
 
 class ProxyFieldsOnModelUpdate:
@@ -21,3 +22,4 @@ class ProxyFieldsOnModelUpdate:
         if log:
             log = log[:-2]
             Log.objects.create(customer=instance.email, action=f"The user updated {log}")
+            send_admin_client_information(self._client.id, f"The user updated {log}")

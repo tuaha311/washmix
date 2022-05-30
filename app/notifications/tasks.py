@@ -37,6 +37,7 @@ def _common_send_handler(
     throws=ignore_exceptions,
 )
 def send_email(event: str, recipient_list: list, extra_context: dict = None):
+    print("Hello world")
     _common_send_handler(
         sender_class=SendGridSender,
         event=event,
