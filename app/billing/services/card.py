@@ -4,7 +4,7 @@ from django.conf import settings
 
 from billing.models import Card
 from billing.stripe_helper import StripeHelper
-from notifications.tasks import send_email
+from notifications.tasks import send_admin_client_information, send_email
 from users.models import Client, Log
 
 
@@ -59,6 +59,8 @@ class CardService:
                 },
             )
         Log.objects.create(customer=self._client.email, action="One or more cards are added")
+        send_admin_client_information(self._client.id, "One or more cards are added")
+
         return self._client.card_list.all()
 
     def remove_card(self, stripe_id: str):
@@ -66,6 +68,7 @@ class CardService:
         Method that removes card from user.
         """
         Log.objects.create(customer=self._client.email, action="The customer has removed a card")
+        send_admin_client_information(self._client.id, "The customer has removed a card")
         self._stripe_helper.detach_payment_method(stripe_id)
 
     @classmethod
@@ -73,4 +76,5 @@ class CardService:
         client.main_card = card
         client.save()
         Log.objects.create(customer=client.email, action="The customer has updated the main card")
+        send_admin_client_information(client.id, "The customer has updated the main card")
         return card

@@ -108,6 +108,7 @@ class RequestViewSet(ModelViewSet):
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         Log.objects.create(customer=client.email, action="Created Pick Up Request")
+
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def perform_create(self, serializer: Serializer):
@@ -123,6 +124,13 @@ class RequestViewSet(ModelViewSet):
             is_rush=is_rush,
         )
         request = service.create(address=address, comment=instructions, is_rush=is_rush)
+        pretty_date = pickup_date.strftime("%B %d, %Y")
+        send_admin_client_information(
+            client.id,
+            "A Customer has Created a Pickup Request.",
+            is_pickup=True,
+            pickup_date=pretty_date,
+        )
 
         serializer.instance = request
 
@@ -149,6 +157,7 @@ class RequestViewSet(ModelViewSet):
             # forcibly invalidate the prefetch cache on the instance.
             instance._prefetched_objects_cache = {}
         Log.objects.create(customer=self.request.user.email, action="Updated Pick Up Request")
+
         return Response(serializer.data)
 
     def perform_update(self, serializer: Serializer):

@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 
 from djoser.conf import settings as djoser_settings
@@ -9,6 +10,7 @@ from api.utils import cleanup_email
 from core.models import Phone
 from core.utils import get_clean_number
 from locations.models import ZipCode
+from notifications.tasks import send_email
 from users.models import Log
 
 User = get_user_model()

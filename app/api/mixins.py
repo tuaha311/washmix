@@ -1,3 +1,4 @@
+from notifications.tasks import send_admin_client_information
 from users.models import Log
 
 
@@ -20,5 +21,6 @@ class ProxyFieldsOnModelUpdate:
         if log:
             log = log[:-2]
             Log.objects.create(customer=self.request.user.email, action=f"The user updated {log}")
+            send_admin_client_information(self.request.user.client.id, f"The user updated {log}")
 
         instance.save(update_fields=update_fields)
