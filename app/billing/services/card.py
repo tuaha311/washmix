@@ -4,7 +4,7 @@ from django.conf import settings
 
 from billing.models import Card
 from billing.stripe_helper import StripeHelper
-from notifications.tasks import send_email, send_admin_client_information
+from notifications.tasks import send_admin_client_information, send_email
 from users.models import Client, Log
 
 

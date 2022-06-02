@@ -6,18 +6,43 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('notifications', '0006_notification_customer_triggered'),
+        ("notifications", "0006_notification_customer_triggered"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='notification',
-            name='description',
-            field=models.CharField(choices=[('new_order', 'created new order'), ('new_signup', 'signed up'), ('new_pickup_request', 'created new pickup request'), ('pickup_date_change', 'changed the pickup date'), ('pickup_request_canceled', 'canceled the pickup request'), ('dropoff_due_today', 'drop-off is due today'), ('potential_customer', 'added to potential customer')], max_length=100, null=True, verbose_name='short description'),
+            model_name="notification",
+            name="description",
+            field=models.CharField(
+                choices=[
+                    ("new_order", "created new order"),
+                    ("new_signup", "signed up"),
+                    ("new_pickup_request", "created new pickup request"),
+                    ("pickup_date_change", "changed the pickup date"),
+                    ("pickup_request_canceled", "canceled the pickup request"),
+                    ("dropoff_due_today", "drop-off is due today"),
+                    ("potential_customer", "added to potential customer"),
+                ],
+                max_length=100,
+                null=True,
+                verbose_name="short description",
+            ),
         ),
         migrations.AlterField(
-            model_name='notification',
-            name='message',
-            field=models.CharField(choices=[('new_order', 'created new order'), ('new_signup', 'signed up'), ('new_pickup_request', 'created new pickup request'), ('pickup_date_change', 'changed the pickup date'), ('pickup_request_canceled', 'canceled the pickup request'), ('dropoff_due_today', 'drop-off is due today'), ('potential_customer', 'added to potential customer')], max_length=80, verbose_name='notification type'),
+            model_name="notification",
+            name="message",
+            field=models.CharField(
+                choices=[
+                    ("new_order", "created new order"),
+                    ("new_signup", "signed up"),
+                    ("new_pickup_request", "created new pickup request"),
+                    ("pickup_date_change", "changed the pickup date"),
+                    ("pickup_request_canceled", "canceled the pickup request"),
+                    ("dropoff_due_today", "drop-off is due today"),
+                    ("potential_customer", "added to potential customer"),
+                ],
+                max_length=80,
+                verbose_name="notification type",
+            ),
         ),
     ]

@@ -1,10 +1,11 @@
 from django.conf import settings
 
 from rest_framework.viewsets import ModelViewSet
-from notifications.tasks import send_admin_client_information
+
 from api.client.mixins import PreventDeletionOfMainAttributeMixin, SetMainAttributeMixin
 from core.api.serializers import PhoneSerializer
 from core.services.phone import PhoneNumberService
+from notifications.tasks import send_admin_client_information
 from users.models import Log
 
 

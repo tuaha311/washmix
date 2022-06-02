@@ -127,7 +127,7 @@ class RequestViewSet(ModelViewSet):
         pretty_date = pickup_date.strftime("%B %d, %Y")
         send_admin_client_information(
             client.id,
-            "A Customer has Updated their Pickup Request.",
+            "A Customer has Created a Pickup Request.",
             is_pickup=True,
             pickup_date=pretty_date,
         )
