@@ -73,6 +73,8 @@ def accrue_credit_back_every_3_month():
                 ),
             },
         )
+        before_balance = int(transaction.invoice.order.balance_before_purchase)
+        after_balance = int(transaction.invoice.order.balance_after_purchase)
         recipient_list = [client.main_phone]
         send_sms.send(
             event=settings.SMS_CREDIT_BACK,
@@ -81,12 +83,8 @@ def accrue_credit_back_every_3_month():
                 "client_id": client_id,
                 "dollar_credit_back": dollar_credit_back,
                 "dollar_balance": dollar_balance,
-                "old_balance": convert_cent_to_dollars(
-                    int(transaction.invoice.order.balance_before_purchase)
-                ),
-                "new_balance": convert_cent_to_dollars(
-                    int(transaction.invoice.order.balance_after_purchase)
-                ),
+                "old_balance": convert_cent_to_dollars(before_balance),
+                "new_balance": convert_cent_to_dollars(after_balance),
             },
         )
 
