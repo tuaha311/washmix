@@ -108,6 +108,7 @@ def test_client_doesnt_have_credit_back(
 
 @patch("billing.tasks.add_to_execution_cache")
 @patch("billing.tasks.send_email")
+@patch("billing.tasks.send_sms")
 @patch("billing.tasks.OrderContainer")
 @patch("billing.tasks.exists_in_execution_cache")
 @patch("billing.tasks.add_money_to_balance")
@@ -119,6 +120,7 @@ def test_client_has_credit_back(
     add_money_to_balance_mock,
     exists_in_execution_cache_mock,
     order_container_class_mock,
+    send_sms_mock,
     send_email_mock,
     add_to_execution_cache_mock,
 ):
