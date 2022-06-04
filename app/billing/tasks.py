@@ -79,13 +79,15 @@ def accrue_credit_back_every_3_month():
         send_sms.send(
             event=settings.SMS_CREDIT_BACK,
             recipient_list=recipient_list,
-            extra_context={
-                "client_id": client_id,
-                "dollar_credit_back": dollar_credit_back,
-                "dollar_balance": dollar_balance,
-                "old_balance": convert_cent_to_dollars(before_balance),
-                "new_balance": convert_cent_to_dollars(after_balance),
-            },
+            extra_context=dict(
+                {
+                    "client_id": client_id,
+                    "dollar_credit_back": dollar_credit_back,
+                    "dollar_balance": dollar_balance,
+                    "old_balance": convert_cent_to_dollars(before_balance),
+                    "new_balance": convert_cent_to_dollars(after_balance),
+                }
+            ),
         )
 
         add_to_execution_cache(key)
