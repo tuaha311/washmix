@@ -77,7 +77,7 @@ def accrue_credit_back_every_3_month():
         send_sms.send_with_options(
             kwargs={
                 "event": settings.SMS_CREDIT_BACK,
-                "recipient_list": [client.main_phone.number],
+                "recipient_list": [str(client.main_phone.number)],
                 "extra_context": {
                     "client_id": client_id,
                     "dollar_credit_back": dollar_credit_back,
