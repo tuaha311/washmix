@@ -120,9 +120,9 @@ def test_client_has_credit_back(
     add_money_to_balance_mock,
     exists_in_execution_cache_mock,
     order_container_class_mock,
+    send_sms_mock,
     send_email_mock,
     add_to_execution_cache_mock,
-    send_sms_mock,
 ):
     now = datetime(2021, 8, 2)
     key = "credit_back_for_client:100"
