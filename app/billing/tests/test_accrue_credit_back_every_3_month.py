@@ -108,6 +108,7 @@ def test_client_doesnt_have_credit_back(
 
 @patch("billing.tasks.add_to_execution_cache")
 @patch("billing.tasks.send_email")
+@patch("billing.tasks.send_sms")
 @patch("billing.tasks.OrderContainer")
 @patch("billing.tasks.exists_in_execution_cache")
 @patch("billing.tasks.add_money_to_balance")
