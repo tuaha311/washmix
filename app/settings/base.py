@@ -522,13 +522,13 @@ if not REDIS_URL:
         db=REDIS_DB,
         password=REDIS_PASSWORD,
         ssl=REDIS_SSL,
-        ssl_cert_reqs=REDIS_SSL_CERT_REQS,
+        # ssl_cert_reqs=REDIS_SSL_CERT_REQS,
     )
 else:
     REDIS_CLIENT = StrictRedis.from_url(
         url=REDIS_URL,
         db=REDIS_DB,
-        ssl_cert_reqs=REDIS_SSL_CERT_REQS,
+        # ssl_cert_reqs=REDIS_SSL_CERT_REQS,
     )
 
 
@@ -549,13 +549,13 @@ if not REDIS_URL:
         port=REDIS_PORT,
         db=DRAMATIQ_DB,
         password=REDIS_PASSWORD,
-        ssl_cert_reqs=REDIS_SSL_CERT_REQS,
+        # ssl_cert_reqs=REDIS_SSL_CERT_REQS,
     )
 else:
     DRAMATIQ_REDIS_CLIENT = StrictRedis.from_url(
         url=REDIS_URL,
         db=DRAMATIQ_DB,
-        ssl_cert_reqs=REDIS_SSL_CERT_REQS,
+        # ssl_cert_reqs=REDIS_SSL_CERT_REQS,
     )
 
 DRAMATIQ_BROKER = RedisBroker(client=DRAMATIQ_REDIS_CLIENT)
