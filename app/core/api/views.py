@@ -5,6 +5,8 @@ from rest_framework.viewsets import ModelViewSet
 from api.client.mixins import PreventDeletionOfMainAttributeMixin, SetMainAttributeMixin
 from core.api.serializers import PhoneSerializer
 from core.services.phone import PhoneNumberService
+from notifications.tasks import send_admin_client_information
+from users.models import Log
 
 
 class PhoneViewSet(PreventDeletionOfMainAttributeMixin, SetMainAttributeMixin, ModelViewSet):
@@ -32,7 +34,8 @@ class PhoneViewSet(PreventDeletionOfMainAttributeMixin, SetMainAttributeMixin, M
             update_fields = settings.UPDATE_FIELDS_FOR_PHONE
 
         super().perform_update(serializer)
-
+        Log.objects.create(customer=self.request.user.email, action="Updated Phone Number")
+        send_admin_client_information(self.request.user.client.id, "The user updated Phone Number")
         phone.save(update_fields=update_fields)
 
     def get_queryset(self):

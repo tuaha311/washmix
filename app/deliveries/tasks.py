@@ -131,7 +131,7 @@ def notify_admin_dropoff_today():
             logger.info(f"Dropoff # {delivery.pk} is not due today")
             continue
 
-        key = f"pickup_schedule:{delivery.pk}"
+        key = f"dropoff_schedule:{delivery.pk}"
         if exists_in_execution_cache(key):
             logger.info(f"Notification for delivery # {delivery.pk} already handled")
             continue

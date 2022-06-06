@@ -1,12 +1,17 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 
 from djoser.conf import settings as djoser_settings
 from djoser.serializers import PasswordResetConfirmSerializer, SendEmailResetSerializer
 from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainSlidingSerializer
 
 from api.utils import cleanup_email
 from core.models import Phone
 from core.utils import get_clean_number
+from locations.models import ZipCode
+from notifications.tasks import send_email
+from users.models import Log
 
 User = get_user_model()
 
@@ -15,6 +20,8 @@ class SignupSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField()
     phone = serializers.CharField()
+    zipCode = serializers.SlugRelatedField(slug_field="value", queryset=ZipCode.objects.all())
+    addressLine1 = serializers.CharField()
 
     def validate_email(self, value):
         email = cleanup_email(value)
@@ -45,6 +52,15 @@ class EmptyResponseSerializer(serializers.Serializer):
 
 class LoginResponseSerializer(serializers.Serializer):
     token = serializers.CharField()
+
+
+class LoginSerializer(TokenObtainSlidingSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        if "token" in data and data["token"]:
+            Log.objects.create(customer=self.user.email, action="Log In")
+
+        return data
 
 
 class DjoserUserFunctionsMixin:
