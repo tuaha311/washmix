@@ -88,6 +88,6 @@ class WelcomeService:
             client = self._request.user.client
             client.main_address.zip_code = address.get("zip_code")
             client.main_address.address_line_1 = address.get("address_line_1")
-            client.main_address.instructions = address.get("instructions")
+            client.main_address.instructions = address.get("instructions", "")
             client.main_address.save()
             return client.main_address
