@@ -1,5 +1,5 @@
-from users.models import Log
 from notifications.tasks import send_admin_client_information
+from users.models import Log
 
 
 class ProxyFieldsOnModelUpdate:
