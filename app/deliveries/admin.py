@@ -117,11 +117,10 @@ class DeliveryAdmin(AdminWithSearch):
         We are catching the moment when admin changes Delivery's
         date and synthetically sending `post_save` signal.
         """
-
         delivery = obj
         update_fields = frozenset(form.changed_data)
-
-        if "date" in update_fields:
+        
+        if "date" or "status" in update_fields:
             post_save.send(
                 sender=Delivery,
                 instance=delivery,
