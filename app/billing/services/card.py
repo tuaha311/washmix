@@ -75,6 +75,4 @@ class CardService:
     def update_main_card(cls, client: Client, card: Card):
         client.main_card = card
         client.save()
-        Log.objects.create(customer=client.email, action="The customer has updated the main card")
-        send_admin_client_information(client.id, "The customer has updated the main card")
         return card
