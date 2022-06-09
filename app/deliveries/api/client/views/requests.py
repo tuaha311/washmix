@@ -107,7 +107,6 @@ class RequestViewSet(ModelViewSet):
             )
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
-        Log.objects.create(customer=client.email, action="Created Pick Up Request")
 
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
@@ -125,12 +124,6 @@ class RequestViewSet(ModelViewSet):
         )
         request = service.create(address=address, comment=instructions, is_rush=is_rush)
         pretty_date = pickup_date.strftime("%B %d, %Y")
-        send_admin_client_information(
-            client.id,
-            "A Customer has Created a Pickup Request.",
-            is_pickup=True,
-            pickup_date=pretty_date,
-        )
 
         serializer.instance = request
 
@@ -214,10 +207,11 @@ class RequestViewSet(ModelViewSet):
             delivery.status = DeliveryStatus.CANCELLED
             delivery.save()
 
-        send_admin_client_information(client.id, "A Customer has Canceled the Pickup Request")
+        if deliveries:
+            send_admin_client_information(client.id, "A Customer has Canceled the Pickup Request")
+            Log.objects.create(customer=client.email, action="Cancelled Pick Up Request")
 
         Notification.create_notification(client, NotificationTypes.PICKUP_REQUEST_CANCELED)
-        Log.objects.create(customer=client.email, action="Cancelled Pick Up Request")
         return Response({"message": "request canceled"}, status=status.HTTP_200_OK)
 
 
