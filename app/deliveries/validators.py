@@ -2,6 +2,7 @@ from datetime import date, time
 
 from django.conf import settings
 from django.utils.timezone import localtime
+from deliveries.models import PickupDay
 
 from rest_framework import serializers
 
@@ -17,11 +18,21 @@ class RequestValidator:
         self._pickup_start = pickup_start
         self._pickup_end = pickup_end
 
-        if self._pickup_date.isoweekday() in settings.NON_WORKING_DAYS:
+        WORKING_DAYS = []
+        for obj in PickupDay.objects.all():
+            WORKING_DAYS.append(int(obj.day))
+
+        if self._pickup_date.isoweekday() not in WORKING_DAYS:
             raise serializers.ValidationError(
-                detail="Pickup day can't be at weekends.",
+                detail="Pickup day can't be at weekends or holidays",
                 code="cant_pickup_at_weekends",
             )
+        
+        # if self._pickup_date.isoweekday() in settings.NON_WORKING_DAYS:
+        #     raise serializers.ValidationError(
+        #         detail="Pickup day can't be at weekends.",
+        #         code="cant_pickup_at_weekends",
+        #     )
 
     def validate(self):
         self._validate_date()

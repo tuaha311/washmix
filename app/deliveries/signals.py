@@ -20,7 +20,6 @@ def on_delivery_notify_signal(
         - Created
         - Date is changed
     """
-
     # We are ignoring raw signals
     # Ref - https://docs.djangoproject.com/en/3.1/ref/signals/#post-save
     if raw:
@@ -52,6 +51,7 @@ def on_delivery_notify_signal(
     if update_fields:
         is_date_updated = "date" in update_fields
 
+    
     if is_pickup and (is_created or is_date_updated):
         # we are adding some delay to wait for database
         # transaction commit

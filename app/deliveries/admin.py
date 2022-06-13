@@ -8,7 +8,7 @@ from django.utils.html import format_html
 
 from core.admin import AdminWithSearch
 from deliveries.choices import DeliveryKind, DeliveryStatus
-from deliveries.models import Delivery, Request, Schedule
+from deliveries.models import Delivery, Request, Schedule, PickupDay
 from users.admin import CustomAutocompleteSelect
 
 
@@ -182,7 +182,12 @@ class ScheduleAdmin(AdminWithSearch):
             )
         return queryset, use_distinct
 
+class PickupdayAdmin(AdminWithSearch):
+    list_display = [
+        "day",
+    ]
 
-models = [[Schedule, ScheduleAdmin], [Delivery, DeliveryAdmin], [Request, RequestAdmin]]
+
+models = [[Schedule, ScheduleAdmin], [Delivery, DeliveryAdmin], [Request, RequestAdmin], [PickupDay,PickupdayAdmin]]
 for item in models:
     admin.site.register(*item)
