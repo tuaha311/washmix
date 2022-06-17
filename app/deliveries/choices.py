@@ -23,7 +23,7 @@ class DeliveryKind:
     }
     CHOICES = list(MAP.items())
 
-class PickupDays:
+class WeekDays:
     MON = "1"
     TUE = "2"
     WED = "3"
@@ -32,7 +32,7 @@ class PickupDays:
     SAT = "6"
     SUN = "7"
 
-    PICKUP_DAYS_MAP = {
+    WEEK_DAYS_MAP = {
         MON: "Monday",
         TUE: "Tuesday",
         WED: "Wednesday",
@@ -42,4 +42,4 @@ class PickupDays:
         SUN : "Sunday"
     }
     
-    CHOICES = list(PICKUP_DAYS_MAP.items())
+    CHOICES = list(WEEK_DAYS_MAP.items())
