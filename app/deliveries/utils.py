@@ -1,7 +1,9 @@
 from datetime import date, datetime, time, timedelta
 from typing import Tuple
-from deliveries.models import Holiday, Nonworkingday
+
 from django.conf import settings
+
+from deliveries.models import Holiday, Nonworkingday
 
 
 def get_business_days_with_offset(start_date: date, offset: int) -> date:
@@ -9,16 +11,21 @@ def get_business_days_with_offset(start_date: date, offset: int) -> date:
     Common function, that handles business days with offset.
     For example, you can use it for calculating next business day at end of week.
     """
-    HOLIDAYS = ["%02d-%02d-%02d"%(i.date.year,i.date.month,i.date.day) for i in Holiday.objects.all()]
+    HOLIDAYS = [
+        "%02d-%02d-%02d" % (i.date.year, i.date.month, i.date.day) for i in Holiday.objects.all()
+    ]
     days = [start_date + timedelta(days=index + 1) for index in range(settings.DAYS_IN_YEAR)]
     NON_WORKING_DAYS = []
     for obj in Nonworkingday.objects.all():
         NON_WORKING_DAYS.append(int(obj.day))
 
     business_only_days = [
-        item for item in days if item.isoweekday() not in NON_WORKING_DAYS and f'{item.year}-{item.month}-{item.day}' not in HOLIDAYS
+        item
+        for item in days
+        if item.isoweekday() not in NON_WORKING_DAYS
+        and f"{item.year}-{item.month}-{item.day}" not in HOLIDAYS
     ]
-   
+
     return business_only_days[offset - 1]
 
 
@@ -36,7 +43,9 @@ def get_pickup_day(start_datetime: datetime) -> date:
     pickup_date = start_datetime.date()
     pickup_weekday = pickup_date.isoweekday()
 
-    HOLIDAYS = ["%02d-%02d-%02d"%(i.date.year,i.date.month,i.date.day) for i in Holiday.objects.all()]
+    HOLIDAYS = [
+        "%02d-%02d-%02d" % (i.date.year, i.date.month, i.date.day) for i in Holiday.objects.all()
+    ]
     NON_WORKING_DAYS = []
     for obj in Nonworkingday.objects.all():
         NON_WORKING_DAYS.append(int(obj.day))

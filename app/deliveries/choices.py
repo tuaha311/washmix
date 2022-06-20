@@ -23,6 +23,7 @@ class DeliveryKind:
     }
     CHOICES = list(MAP.items())
 
+
 class WeekDays:
     MON = "1"
     TUE = "2"
@@ -39,7 +40,7 @@ class WeekDays:
         THU: "Thursday",
         FRI: "Friday",
         SAT: "Saturday",
-        SUN : "Sunday"
+        SUN: "Sunday",
     }
-    
+
     CHOICES = list(WEEK_DAYS_MAP.items())

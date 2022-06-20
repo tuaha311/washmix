@@ -1,8 +1,11 @@
 from datetime import date
 
+import pytest
+
 from deliveries.utils import get_dropoff_day
 
 
+@pytest.mark.django_db
 def test_same_week():
     mon_tue = [
         # mon
@@ -17,6 +20,7 @@ def test_same_week():
         assert result == get_dropoff_day(pickup)
 
 
+@pytest.mark.django_db
 def test_next_week():
     wed_and_rest_of_week = [
         # thu
@@ -29,6 +33,7 @@ def test_next_week():
         assert result == get_dropoff_day(pickup_date)
 
 
+@pytest.mark.django_db
 def test_is_rush():
     mon_tue = [
         # mon

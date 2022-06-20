@@ -2,9 +2,10 @@ from datetime import date, time
 
 from django.conf import settings
 from django.utils.timezone import localtime
-from deliveries.models import Nonworkingday, Holiday
 
 from rest_framework import serializers
+
+from deliveries.models import Holiday, Nonworkingday
 
 
 class RequestValidator:
@@ -18,11 +19,14 @@ class RequestValidator:
         self._pickup_start = pickup_start
         self._pickup_end = pickup_end
 
-        HOLIDAYS = ["%02d-%02d-%02d"%(i.date.year,i.date.month,i.date.day) for i in Holiday.objects.all()]
+        HOLIDAYS = [
+            "%02d-%02d-%02d" % (i.date.year, i.date.month, i.date.day)
+            for i in Holiday.objects.all()
+        ]
         NON_WORKING_DAYS = []
         for obj in Nonworkingday.objects.all():
             NON_WORKING_DAYS.append(int(obj.day))
-        
+
         print(self._pickup_date)
         if self._pickup_date.isoweekday() in NON_WORKING_DAYS:
             raise serializers.ValidationError(
@@ -34,7 +38,7 @@ class RequestValidator:
                 detail="Pickup day can't be at holidays",
                 code="cant_pickup_at_weekends",
             )
-        
+
         # if self._pickup_date.isoweekday() in settings.NON_WORKING_DAYS:
         #     raise serializers.ValidationError(
         #         detail="Pickup day can't be at weekends.",
@@ -50,11 +54,14 @@ class RequestValidator:
     def _validate_date(self):
         # we doesn't work at weekends - because we are chilling
 
-        HOLIDAYS = ["%02d-%02d-%02d"%(i.date.year,i.date.month,i.date.day) for i in Holiday.objects.all()]
+        HOLIDAYS = [
+            "%02d-%02d-%02d" % (i.date.year, i.date.month, i.date.day)
+            for i in Holiday.objects.all()
+        ]
         NON_WORKING_DAYS = []
         for obj in Nonworkingday.objects.all():
             NON_WORKING_DAYS.append(int(obj.day))
-            
+
         if self._pickup_date.isoweekday() in NON_WORKING_DAYS:
             raise serializers.ValidationError(
                 detail="Pickup day can't be at weekends.",

@@ -1,5 +1,7 @@
 from datetime import date, datetime
 
+import pytest
+
 from deliveries.utils import get_pickup_day
 
 
@@ -23,6 +25,7 @@ def test_next_day():
         assert start, result == get_pickup_day(start)
 
 
+@pytest.mark.django_db
 def test_friday_and_weekends():
     fri_and_weekends = [
         # fri, same day and next

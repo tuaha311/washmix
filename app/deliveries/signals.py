@@ -47,15 +47,14 @@ def on_delivery_notify_signal(
     is_pickup = delivery.kind == DeliveryKind.PICKUP
     is_completed = delivery.status == DeliveryStatus.COMPLETED
     is_cancelled = delivery.status == DeliveryStatus.CANCELLED
-    
+
     if update_fields:
         is_date_updated = "date" in update_fields
 
-    
     if is_pickup and (is_created or is_date_updated):
         # we are adding some delay to wait for database
         # transaction commit
-        
+
         send_sms.send_with_options(
             kwargs={
                 "event": settings.NEW_DELIVERY,
