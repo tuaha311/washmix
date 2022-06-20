@@ -8,7 +8,7 @@ from django.utils.html import format_html
 
 from core.admin import AdminWithSearch
 from deliveries.choices import DeliveryKind, DeliveryStatus
-from deliveries.models import Delivery, Request, Schedule
+from deliveries.models import Delivery, Request, Schedule, Nonworkingday, Holiday
 from users.admin import CustomAutocompleteSelect
 
 
@@ -117,11 +117,10 @@ class DeliveryAdmin(AdminWithSearch):
         We are catching the moment when admin changes Delivery's
         date and synthetically sending `post_save` signal.
         """
-
         delivery = obj
         update_fields = frozenset(form.changed_data)
-
-        if "date" in update_fields:
+        
+        if "date" or "status" in update_fields:
             post_save.send(
                 sender=Delivery,
                 instance=delivery,
@@ -183,7 +182,16 @@ class ScheduleAdmin(AdminWithSearch):
             )
         return queryset, use_distinct
 
+class NonworkingdayAdmin(AdminWithSearch):
+    list_display = [
+        "day",
+    ]
 
-models = [[Schedule, ScheduleAdmin], [Delivery, DeliveryAdmin], [Request, RequestAdmin]]
+class HolidayAdmin(AdminWithSearch):
+    list_display = [
+        "date",
+    ]
+
+models = [[Schedule, ScheduleAdmin], [Delivery, DeliveryAdmin], [Request, RequestAdmin], [Nonworkingday, NonworkingdayAdmin], [Holiday, HolidayAdmin]]
 for item in models:
     admin.site.register(*item)

@@ -581,6 +581,7 @@ dramatiq.set_broker(DRAMATIQ_BROKER)
 USER_SIGNUP = "user_signup"
 NEW_DELIVERY = "new_delivery"
 DELIVERY_DROPOFF_COMPLETE = "delivery_dropoff_complete"
+ORDER_PICKUP_COMPLETE = "order_pickup_complete"
 PICKUP_REQUEST_CANCELED = "pickup_request_canceled"
 UNABLE_TO_CREATE_MULTIPLE_REQUEST = "unable_to_create_multiple_request"
 PICKUP_DUE_TOMORROW = "pickup_due_tomorrow"
@@ -607,6 +608,9 @@ SMS_EVENT_INFO = {
     },
     DELIVERY_DROPOFF_COMPLETE: {
         "template_name": "sms/dropoff_complete.html",
+    },
+    ORDER_PICKUP_COMPLETE: {
+        "template_name": "sms/pickup_complete.html",
     },
     PICKUP_REQUEST_CANCELED: {
         "template_name": "sms/pickup_request_canceled.html",
