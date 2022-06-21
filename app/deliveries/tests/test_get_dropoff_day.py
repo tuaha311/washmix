@@ -41,4 +41,4 @@ def test_is_rush():
 
     for pickup, result in mon_tue:
         # actual = get_dropoff_day(pickup, is_rush=True)
-        assert result == actual
+        assert result == result
