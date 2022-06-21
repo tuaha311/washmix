@@ -102,7 +102,7 @@ class RequestViewSet(ModelViewSet):
                 delay=settings.DRAMATIQ_DELAY_FOR_DELIVERY,
             )
             return Response(
-                {"message": "You already have a pickup request made"},
+                {"non_field_errors": ["You already have a pickup request made"]},
                 status=status.HTTP_412_PRECONDITION_FAILED,
             )
         self.perform_create(serializer)

@@ -30,7 +30,7 @@ class RequestValidator:
         print(self._pickup_date)
         if self._pickup_date.isoweekday() in NON_WORKING_DAYS:
             raise serializers.ValidationError(
-                detail="Pickup day can't be at weekends",
+                detail="Pickup day can't be at Holidays",
                 code="cant_pickup_at_weekends",
             )
         elif str(self._pickup_date) in HOLIDAYS:
