@@ -24,15 +24,11 @@ def test_same_week(nonworkingday_class_mock, holiday_class_mock):
 @patch("deliveries.utils.Holiday")
 @patch("deliveries.utils.Nonworkingday")
 def test_next_week(nonworkingday_class_mock, holiday_class_mock):
-    sat = MagicMock()
-    sat.id = 100
-    sat.pk = 100
-    sat.day = WeekDays.SAT
     sun = MagicMock()
     sun.id = 200
     sun.pk = 200
     sun.day = WeekDays.SUN
-    nonworkingday_class_mock.objects.all.return_value = [sat, sun]
+    nonworkingday_class_mock.objects.all.return_value = [sun]
     wed_and_rest_of_week = [
         # thu
         [date(2020, 9, 17), date(2020, 9, 21)],
