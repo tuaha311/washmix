@@ -1,6 +1,7 @@
 from datetime import date, datetime
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
+from deliveries.choices import WeekDays
 from deliveries.utils import get_pickup_day
 
 
@@ -27,6 +28,15 @@ def test_next_day():
 @patch("deliveries.utils.Holiday")
 @patch("deliveries.utils.Nonworkingday")
 def test_friday_and_weekends(nonworkingday_class_mock, holiday_class_mock):
+    sat = MagicMock()
+    sat.id = 100
+    sat.pk = 100
+    sat.day = WeekDays.SAT
+    sun = MagicMock()
+    sun.id = 200
+    sun.pk = 200
+    sun.day = WeekDays.SUN
+    nonworkingday_class_mock.objects.all.return_value = [sat, sun]
     fri_and_weekends = [
         # fri, same day and next
         [datetime(2020, 9, 18, 7, 30), date(2020, 9, 18)],
