@@ -1,4 +1,5 @@
 from datetime import date, datetime
+from unittest.mock import patch
 
 from deliveries.utils import get_pickup_day
 
@@ -23,7 +24,9 @@ def test_next_day():
         assert start, result == get_pickup_day(start)
 
 
-def test_friday_and_weekends():
+@patch("deliveries.utils.Holiday")
+@patch("deliveries.utils.Nonworkingday")
+def test_friday_and_weekends(nonworkingday_class_mock, holiday_class_mock):
     fri_and_weekends = [
         # fri, same day and next
         [datetime(2020, 9, 18, 7, 30), date(2020, 9, 18)],
@@ -37,5 +40,4 @@ def test_friday_and_weekends():
     ]
 
     for start, result in fri_and_weekends:
-        # assert result == get_pickup_day(start)
-        assert result == result
+        assert result == get_pickup_day(start)

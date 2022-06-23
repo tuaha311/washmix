@@ -1,9 +1,12 @@
 from datetime import date
+from unittest.mock import patch
 
 from deliveries.utils import get_dropoff_day
 
 
-def test_same_week():
+@patch("deliveries.utils.Holiday")
+@patch("deliveries.utils.Nonworkingday")
+def test_same_week(nonworkingday_class_mock, holiday_class_mock):
     mon_tue = [
         # mon
         [date(2020, 9, 14), date(2020, 9, 17)],
@@ -14,11 +17,12 @@ def test_same_week():
     ]
 
     for pickup, result in mon_tue:
-        # assert result == get_dropoff_day(pickup)
-        assert result == result
+        assert result == get_dropoff_day(pickup)
 
 
-def test_next_week():
+@patch("deliveries.utils.Holiday")
+@patch("deliveries.utils.Nonworkingday")
+def test_next_week(nonworkingday_class_mock, holiday_class_mock):
     wed_and_rest_of_week = [
         # thu
         [date(2020, 9, 17), date(2020, 9, 21)],
@@ -27,11 +31,12 @@ def test_next_week():
     ]
 
     for pickup_date, result in wed_and_rest_of_week:
-        # assert result == get_dropoff_day(pickup_date)
-        assert result == result
+        assert result == get_dropoff_day(pickup_date)
 
 
-def test_is_rush():
+@patch("deliveries.utils.Holiday")
+@patch("deliveries.utils.Nonworkingday")
+def test_is_rush(nonworkingday_class_mock, holiday_class_mock):
     mon_tue = [
         # mon
         [date(2020, 9, 14), date(2020, 9, 16)],
@@ -40,5 +45,5 @@ def test_is_rush():
     ]
 
     for pickup, result in mon_tue:
-        # actual = get_dropoff_day(pickup, is_rush=True)
-        assert result == result
+        actual = get_dropoff_day(pickup, is_rush=True)
+        assert result == actual

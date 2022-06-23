@@ -8,7 +8,5 @@ class Nonworkingday(Common):
     day = models.CharField(
         max_length=20,
         verbose_name="day",
-        choices=WeekDays.CHOICES,
-        null=True,
-        blank=True
+        choices=WeekDays.CHOICES
     )

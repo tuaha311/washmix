@@ -53,9 +53,6 @@ def get_pickup_day(start_datetime: datetime) -> date:
     if pickup_weekday not in NON_WORKING_DAYS:
         pickup_date = get_business_days_with_offset(pickup_date, offset=settings.NEXT_DAY)
 
-    # if pickup_weekday in settings.NON_WORKING_DAYS:
-    #     pickup_date = get_business_days_with_offset(pickup_date, offset=settings.NEXT_DAY)
-
     elif pickup_time > settings.TODAY_DELIVERY_CUT_OFF_TIME:
         pickup_date = get_business_days_with_offset(pickup_date, offset=settings.NEXT_DAY)
 

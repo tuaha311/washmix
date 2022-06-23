@@ -120,7 +120,9 @@ class DeliveryAdmin(AdminWithSearch):
         delivery = obj
         update_fields = frozenset(form.changed_data)
 
-        if "date" or "status" in update_fields:
+        if "date" or (
+            "status" in update_fields and update_fields["status"] == DeliveryStatus.CANCELLED
+        ):
             post_save.send(
                 sender=Delivery,
                 instance=delivery,

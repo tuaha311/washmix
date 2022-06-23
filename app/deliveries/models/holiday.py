@@ -5,7 +5,5 @@ from core.common_models import Common
 
 class Holiday(Common):
     date = models.DateField(
-        verbose_name="date",
-        null=True,
-        blank=True
+        verbose_name="date"
     )
