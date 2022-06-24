@@ -5,6 +5,8 @@ from rest_framework.viewsets import ModelViewSet
 
 from deliveries.api.client.serializers.schedule import ScheduleSerializer
 from deliveries.models import Schedule
+from notifications.tasks import send_admin_client_information
+from users.models import Log
 
 
 class ScheduleViewSet(ModelViewSet):
@@ -30,3 +32,8 @@ class ScheduleViewSet(ModelViewSet):
     def perform_create(self, serializer: Serializer):
         client = self.request.user.client
         serializer.save(client=client)
+
+    def perform_update(self, serializer):
+        super().perform_update(serializer)
+        Log.objects.create(customer=self.request.user.email, action="Updated Preferences")
+        send_admin_client_information(self.request.user.client.id, f"The user updated preferences")

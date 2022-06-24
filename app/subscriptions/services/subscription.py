@@ -10,7 +10,7 @@ from billing.services.invoice import InvoiceService
 from billing.utils import confirm_debit, create_debit
 from core.interfaces import PaymentInterfaceService
 from deliveries.models import Request
-from notifications.tasks import send_email
+from notifications.tasks import send_admin_client_information, send_email
 from orders.choices import OrderPaymentChoices, OrderStatusChoices
 from orders.containers.order import OrderContainer
 from orders.models import Basket, Order
@@ -207,6 +207,9 @@ class SubscriptionService(PaymentInterfaceService):
                 "direction_of_subscription": direction_of_subscription,
                 "is_advantage": is_advantage,
             },
+        )
+        send_admin_client_information(
+            client_id, f"The user updated the package to {future_subscription.name}"
         )
 
     def _get_order_service(self, subscription: Subscription):
