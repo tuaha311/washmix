@@ -23,7 +23,6 @@ class RequestValidator:
         for obj in Nonworkingday.objects.all():
             NON_WORKING_DAYS.append(int(obj.day))
         
-        print(self._pickup_date)
         if self._pickup_date.isoweekday() in NON_WORKING_DAYS:
             raise serializers.ValidationError(
                 detail="Pickup day can't be at weekends",
