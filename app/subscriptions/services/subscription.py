@@ -208,9 +208,8 @@ class SubscriptionService(PaymentInterfaceService):
                 "is_advantage": is_advantage,
             },
         )
-        send_admin_client_information(
-            client_id, f"The user updated the package to {str(future_subscription.name)}"
-        )
+        sub_name = str(future_subscription.name)
+        send_admin_client_information(client_id, f"The user updated the package to {sub_name}")
 
     def _get_order_service(self, subscription: Subscription):
         # We are preventing circular import of OrderService
