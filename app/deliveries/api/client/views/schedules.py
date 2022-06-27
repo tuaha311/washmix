@@ -33,7 +33,16 @@ class ScheduleViewSet(ModelViewSet):
         client = self.request.user.client
         serializer.save(client=client)
 
+    def perform_destroy(self, instance):
+        super().perform_destroy(instance)
+        Log.objects.create(customer=self.request.user.email, action="Deleted Schedule")
+        send_admin_client_information(self.request.user.client.id, f"The user deleted Schedule")
+
     def perform_update(self, serializer):
+        old_days = Schedule.objects.get(client=self.request.user.client).days
         super().perform_update(serializer)
-        Log.objects.create(customer=self.request.user.email, action="Updated Preferences")
-        send_admin_client_information(self.request.user.client.id, f"The user updated preferences")
+        new_days = Schedule.objects.get(client=self.request.user.client).days
+
+        if old_days != new_days:
+            Log.objects.create(customer=self.request.user.email, action="Updated Schedule")
+            send_admin_client_information(self.request.user.client.id, f"The user updated Schedule")
