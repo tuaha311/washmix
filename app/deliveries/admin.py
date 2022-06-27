@@ -133,7 +133,8 @@ class DeliveryAdmin(AdminWithSearch):
             )
 
         return super().save_model(request, obj, form, change)
-    
+
+
 class ScheduleForm(forms.ModelForm):
     # we are overriding default `days` field widget
     days = forms.TypedMultipleChoiceField(
@@ -196,6 +197,7 @@ class HolidayAdmin(AdminWithSearch):
         "date",
     ]
 
+
 models = [
     [Schedule, ScheduleAdmin],
     [Delivery, DeliveryAdmin],
@@ -206,4 +208,3 @@ models = [
 
 for item in models:
     admin.site.register(*item)
-

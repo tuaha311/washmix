@@ -10,7 +10,7 @@ class DeliveryStatus:
         ACCEPTED: "Accepted",
         IN_PROGRESS: "In progress",
         COMPLETED: "Completed",
-        NO_SHOW: "No Show"
+        NO_SHOW: "No Show",
     }
     CHOICES = list(MAP.items())
 

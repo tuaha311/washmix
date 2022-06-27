@@ -32,11 +32,17 @@ class ScheduleViewSet(ModelViewSet):
     def perform_create(self, serializer: Serializer):
         client = self.request.user.client
         serializer.save(client=client)
+        Log.objects.create(customer=self.request.user.email, action="Created Recurring Pickup")
+        send_admin_client_information(
+            self.request.user.client.id, f"The user Created New Recurring Pickup"
+        )
 
     def perform_destroy(self, instance):
         super().perform_destroy(instance)
-        Log.objects.create(customer=self.request.user.email, action="Deleted Schedule")
-        send_admin_client_information(self.request.user.client.id, f"The user deleted Schedule")
+        Log.objects.create(customer=self.request.user.email, action="Deleted Recurring Pickup")
+        send_admin_client_information(
+            self.request.user.client.id, f"The user deleted Recurring Pickup"
+        )
 
     def perform_update(self, serializer):
         old_days = Schedule.objects.get(client=self.request.user.client).days
@@ -44,5 +50,7 @@ class ScheduleViewSet(ModelViewSet):
         new_days = Schedule.objects.get(client=self.request.user.client).days
 
         if old_days != new_days:
-            Log.objects.create(customer=self.request.user.email, action="Updated Schedule")
-            send_admin_client_information(self.request.user.client.id, f"The user updated Schedule")
+            Log.objects.create(customer=self.request.user.email, action="Updated Recurring Pickup")
+            send_admin_client_information(
+                self.request.user.client.id, f"The user updated Recurring Pickup"
+            )
