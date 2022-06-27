@@ -1,9 +1,13 @@
 from datetime import date
+from unittest.mock import MagicMock, patch
 
+from deliveries.choices import WeekDays
 from deliveries.utils import get_dropoff_day
 
 
-def test_same_week():
+@patch("deliveries.utils.Holiday")
+@patch("deliveries.utils.Nonworkingday")
+def test_same_week(nonworkingday_class_mock, holiday_class_mock):
     mon_tue = [
         # mon
         [date(2020, 9, 14), date(2020, 9, 17)],
@@ -17,7 +21,14 @@ def test_same_week():
         assert result == get_dropoff_day(pickup)
 
 
-def test_next_week():
+@patch("deliveries.utils.Holiday")
+@patch("deliveries.utils.Nonworkingday")
+def test_next_week(nonworkingday_class_mock, holiday_class_mock):
+    sun = MagicMock()
+    sun.id = 200
+    sun.pk = 200
+    sun.day = WeekDays.SUN
+    nonworkingday_class_mock.objects.all.return_value = [sun]
     wed_and_rest_of_week = [
         # thu
         [date(2020, 9, 17), date(2020, 9, 21)],
@@ -29,7 +40,9 @@ def test_next_week():
         assert result == get_dropoff_day(pickup_date)
 
 
-def test_is_rush():
+@patch("deliveries.utils.Holiday")
+@patch("deliveries.utils.Nonworkingday")
+def test_is_rush(nonworkingday_class_mock, holiday_class_mock):
     mon_tue = [
         # mon
         [date(2020, 9, 14), date(2020, 9, 16)],

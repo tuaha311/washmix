@@ -8,7 +8,7 @@ from django.utils.html import format_html
 
 from core.admin import AdminWithSearch
 from deliveries.choices import DeliveryKind, DeliveryStatus
-from deliveries.models import Delivery, Request, Schedule, Nonworkingday, Holiday
+from deliveries.models import Delivery, Holiday, Nonworkingday, Request, Schedule
 from users.admin import CustomAutocompleteSelect
 from users.models.employee import Employee
 
@@ -120,8 +120,10 @@ class DeliveryAdmin(AdminWithSearch):
         """
         delivery = obj
         update_fields = frozenset(form.changed_data)
-        
-        if "date" or "status" in update_fields:
+
+        if "date" or (
+            "status" in update_fields and update_fields["status"] == DeliveryStatus.CANCELLED
+        ):
             post_save.send(
                 sender=Delivery,
                 instance=delivery,
@@ -182,18 +184,26 @@ class ScheduleAdmin(AdminWithSearch):
             )
         return queryset, use_distinct
 
+
 class NonworkingdayAdmin(AdminWithSearch):
     list_display = [
         "day",
     ]
+
 
 class HolidayAdmin(AdminWithSearch):
     list_display = [
         "date",
     ]
 
-models = [[Schedule, ScheduleAdmin], [Delivery, DeliveryAdmin], [Request, RequestAdmin], \
-          [Nonworkingday, NonworkingdayAdmin], [Holiday, HolidayAdmin]]
+models = [
+    [Schedule, ScheduleAdmin],
+    [Delivery, DeliveryAdmin],
+    [Request, RequestAdmin],
+    [Nonworkingday, NonworkingdayAdmin],
+    [Holiday, HolidayAdmin],
+]
+
 for item in models:
     admin.site.register(*item)
 

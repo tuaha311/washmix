@@ -6,35 +6,74 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('deliveries', '0010_pickupday'),
+        ("deliveries", "0010_pickupday"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Holiday',
+            name="Holiday",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', models.DateTimeField(auto_now_add=True, verbose_name='creation date and time')),
-                ('changed', models.DateTimeField(auto_now=True, verbose_name='last changed date and time')),
-                ('date', models.DateField(blank=True, null=True, verbose_name='date')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                (
+                    "created",
+                    models.DateTimeField(auto_now_add=True, verbose_name="creation date and time"),
+                ),
+                (
+                    "changed",
+                    models.DateTimeField(auto_now=True, verbose_name="last changed date and time"),
+                ),
+                ("date", models.DateField(blank=True, null=True, verbose_name="date")),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
         migrations.CreateModel(
-            name='Nonworkingday',
+            name="Nonworkingday",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', models.DateTimeField(auto_now_add=True, verbose_name='creation date and time')),
-                ('changed', models.DateTimeField(auto_now=True, verbose_name='last changed date and time')),
-                ('day', models.CharField(blank=True, choices=[('1', 'Monday'), ('2', 'Tuesday'), ('3', 'Wednesday'), ('4', 'Thursday'), ('5', 'Friday'), ('6', 'Saturday'), ('7', 'Sunday')], max_length=20, null=True, verbose_name='day')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                (
+                    "created",
+                    models.DateTimeField(auto_now_add=True, verbose_name="creation date and time"),
+                ),
+                (
+                    "changed",
+                    models.DateTimeField(auto_now=True, verbose_name="last changed date and time"),
+                ),
+                (
+                    "day",
+                    models.CharField(
+                        blank=True,
+                        choices=[
+                            ("1", "Monday"),
+                            ("2", "Tuesday"),
+                            ("3", "Wednesday"),
+                            ("4", "Thursday"),
+                            ("5", "Friday"),
+                            ("6", "Saturday"),
+                            ("7", "Sunday"),
+                        ],
+                        max_length=20,
+                        null=True,
+                        verbose_name="day",
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
         migrations.DeleteModel(
-            name='PickupDay',
+            name="PickupDay",
         ),
     ]
