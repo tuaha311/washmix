@@ -10,6 +10,7 @@ from core.admin import AdminWithSearch
 from deliveries.choices import DeliveryKind, DeliveryStatus
 from deliveries.models import Delivery, Holiday, Nonworkingday, Request, Schedule
 from users.admin import CustomAutocompleteSelect
+from users.models.employee import Employee
 
 
 class DeliveryForm(forms.ModelForm):
@@ -132,8 +133,7 @@ class DeliveryAdmin(AdminWithSearch):
             )
 
         return super().save_model(request, obj, form, change)
-
-
+    
 class ScheduleForm(forms.ModelForm):
     # we are overriding default `days` field widget
     days = forms.TypedMultipleChoiceField(
@@ -196,7 +196,6 @@ class HolidayAdmin(AdminWithSearch):
         "date",
     ]
 
-
 models = [
     [Schedule, ScheduleAdmin],
     [Delivery, DeliveryAdmin],
@@ -204,5 +203,7 @@ models = [
     [Nonworkingday, NonworkingdayAdmin],
     [Holiday, HolidayAdmin],
 ]
+
 for item in models:
     admin.site.register(*item)
+

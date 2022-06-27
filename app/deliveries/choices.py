@@ -3,12 +3,14 @@ class DeliveryStatus:
     ACCEPTED = "accepted"
     IN_PROGRESS = "in_progress"
     COMPLETED = "completed"
+    NO_SHOW = "no_show"
 
     MAP = {
         CANCELLED: "Cancelled",
         ACCEPTED: "Accepted",
         IN_PROGRESS: "In progress",
         COMPLETED: "Completed",
+        NO_SHOW: "No Show"
     }
     CHOICES = list(MAP.items())
 
