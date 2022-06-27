@@ -25,18 +25,18 @@ class RequestValidator:
         
         if self._pickup_date.isoweekday() in NON_WORKING_DAYS:
             raise serializers.ValidationError(
-                detail="Pickup day can't be at weekends",
+                detail="Pickup & Delivery services are available on Weekdays",
                 code="cant_pickup_at_weekends",
             )
         elif str(self._pickup_date) in HOLIDAYS:
             raise serializers.ValidationError(
-                detail="Pickup day can't be at holidays",
+                detail="Sorry, we do not operate on the upcoming holidays",
                 code="cant_pickup_at_weekends",
             )
         
         # if self._pickup_date.isoweekday() in settings.NON_WORKING_DAYS:
         #     raise serializers.ValidationError(
-        #         detail="Pickup day can't be at weekends.",
+        #         detail="Pickup & Delivery services are available on Weekdays",
         #         code="cant_pickup_at_weekends",
         #     )
 
@@ -56,12 +56,12 @@ class RequestValidator:
             
         if self._pickup_date.isoweekday() in NON_WORKING_DAYS:
             raise serializers.ValidationError(
-                detail="Pickup day can't be at weekends.",
+                detail="Pickup & Delivery services are available on Weekdays",
                 code="cant_pickup_at_weekends",
             )
         elif str(self._pickup_date) in HOLIDAYS:
             raise serializers.ValidationError(
-                detail="Pickup day can't be at holidays",
+                detail="Sorry, we do not operate on the upcoming holidays",
                 code="cant_pickup_at_weekends",
             )
 
