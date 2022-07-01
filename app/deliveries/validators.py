@@ -5,8 +5,6 @@ from django.utils.timezone import localtime
 
 from rest_framework import serializers
 
-from deliveries.models import Holiday, Nonworkingday
-
 
 class RequestValidator:
     def __init__(
@@ -19,30 +17,11 @@ class RequestValidator:
         self._pickup_start = pickup_start
         self._pickup_end = pickup_end
 
-        HOLIDAYS = [
-            "%02d-%02d-%02d" % (i.date.year, i.date.month, i.date.day)
-            for i in Holiday.objects.all()
-        ]
-        NON_WORKING_DAYS = []
-        for obj in Nonworkingday.objects.all():
-            NON_WORKING_DAYS.append(int(obj.day))
-
-        if str(self._pickup_date) in HOLIDAYS:
+        if self._pickup_date.isoweekday() in settings.NON_WORKING_DAYS:
             raise serializers.ValidationError(
-                detail="Sorry, we do not operate on the upcoming holidays",
+                detail="Pickup day can't be at weekends.",
                 code="cant_pickup_at_weekends",
             )
-        elif self._pickup_date.isoweekday() in NON_WORKING_DAYS:
-            raise serializers.ValidationError(
-                detail="Pickup & Delivery services are available on Weekdays",
-                code="cant_pickup_at_weekends",
-            )
-
-        # if self._pickup_date.isoweekday() in settings.NON_WORKING_DAYS:
-        #     raise serializers.ValidationError(
-        #         detail="Pickup & Delivery services are available on Weekdays",
-        #         code="cant_pickup_at_weekends",
-        #     )
 
     def validate(self):
         self._validate_date()
@@ -52,31 +31,11 @@ class RequestValidator:
 
     def _validate_date(self):
         # we doesn't work at weekends - because we are chilling
-
-        HOLIDAYS = [
-            "%02d-%02d-%02d" % (i.date.year, i.date.month, i.date.day)
-            for i in Holiday.objects.all()
-        ]
-        NON_WORKING_DAYS = []
-        for obj in Nonworkingday.objects.all():
-            NON_WORKING_DAYS.append(int(obj.day))
-
-        if str(self._pickup_date) in HOLIDAYS:
+        if self._pickup_date.isoweekday() in settings.NON_WORKING_DAYS:
             raise serializers.ValidationError(
-                detail="Sorry, we do not operate on the upcoming holidays",
-                code="cant_pickup_at_weekends",
+                detail="Delivery doesn't work at weekends.",
+                code="pickup_date_is_weekends",
             )
-        elif self._pickup_date.isoweekday() in NON_WORKING_DAYS:
-            raise serializers.ValidationError(
-                detail="Pickup & Delivery services are available on Weekdays",
-                code="cant_pickup_at_weekends",
-            )
-
-        # if self._pickup_date.isoweekday() in settings.NON_WORKING_DAYS:
-        #     raise serializers.ValidationError(
-        #         detail="Delivery doesn't work at weekends.",
-        #         code="pickup_date_is_weekends",
-        #     )
 
         # we can't handle pickup date which is passed (in past)
         now = localtime()

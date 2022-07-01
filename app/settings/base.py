@@ -283,7 +283,6 @@ DELIVERY_DAYS_MAP = {
     TUE: "Tuesday",
     WED: "Wednesday",
     THU: "Thursday",
-    FRI: "Friday",
     SAT: "Saturday",
 }
 DELIVERY_DAY_CHOICES = list(DELIVERY_DAYS_MAP.items())
