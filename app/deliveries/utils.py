@@ -51,8 +51,6 @@ def get_pickup_day(start_datetime: datetime) -> date:
     elif pickup_time > settings.TODAY_DELIVERY_CUT_OFF_TIME:
         pickup_date = get_business_days_with_offset(pickup_date, offset=settings.NEXT_DAY)
 
-    print("calculated pickup date")
-    print(pickup_date)
     return pickup_date
 
 

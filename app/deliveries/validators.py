@@ -26,15 +26,12 @@ class RequestValidator:
         NON_WORKING_DAYS = []
         for obj in Nonworkingday.objects.all():
             NON_WORKING_DAYS.append(int(obj.day))
-        print(self._pickup_date)
         if str(self._pickup_date) in HOLIDAYS:
-            print("yes in holi day")
             raise serializers.ValidationError(
                 detail="Sorry, we do not operate on the upcoming holidays",
                 code="cant_pickup_at_weekends",
             )
         elif self._pickup_date.isoweekday() in NON_WORKING_DAYS:
-            print("yes in non working day")
             raise serializers.ValidationError(
                 detail="Pickup & Delivery services are available on Weekdays",
                 code="cant_pickup_at_weekends",
@@ -63,15 +60,12 @@ class RequestValidator:
         for obj in Nonworkingday.objects.all():
             NON_WORKING_DAYS.append(int(obj.day))
 
-        print(self._pickup_date)
         if str(self._pickup_date) in HOLIDAYS:
-            print("yes in holiday")
             raise serializers.ValidationError(
                 detail="Sorry, we do not operate on the upcoming holidays",
                 code="cant_pickup_at_weekends",
             )
         elif self._pickup_date.isoweekday() in NON_WORKING_DAYS:
-            print("yes in non working day")
             raise serializers.ValidationError(
                 detail="Pickup & Delivery services are available on Weekdays",
                 code="cant_pickup_at_weekends",
