@@ -11,9 +11,7 @@ def get_business_days_with_offset(start_date: date, offset: int) -> date:
     Common function, that handles business days with offset.
     For example, you can use it for calculating next business day at end of week.
     """
-    HOLIDAYS = [
-        "%02d-%02d-%02d" % (i.date.year, i.date.month, i.date.day) for i in Holiday.objects.all()
-    ]
+    HOLIDAYS = [i.date.strftime("%Y-%m-%d") for i in Holiday.objects.all()]
     days = [start_date + timedelta(days=index + 1) for index in range(settings.DAYS_IN_YEAR)]
     NON_WORKING_DAYS = []
     for obj in Nonworkingday.objects.all():
@@ -22,8 +20,7 @@ def get_business_days_with_offset(start_date: date, offset: int) -> date:
     business_only_days = [
         item
         for item in days
-        if item.isoweekday() not in NON_WORKING_DAYS
-        and f"{item.year}-{item.month}-{item.day}" not in HOLIDAYS
+        if item.isoweekday() not in NON_WORKING_DAYS and item.strftime("%Y-%m-%d") not in HOLIDAYS
     ]
 
     return business_only_days[offset - 1]
@@ -43,21 +40,12 @@ def get_pickup_day(start_datetime: datetime) -> date:
     pickup_date = start_datetime.date()
     pickup_weekday = pickup_date.isoweekday()
 
-    HOLIDAYS = [
-        "%02d-%02d-%02d" % (i.date.year, i.date.month, i.date.day) for i in Holiday.objects.all()
-    ]
+    HOLIDAYS = [i.strftime("%Y-%m-%d") for i in Holiday.objects.all()]
     NON_WORKING_DAYS = []
     for obj in Nonworkingday.objects.all():
         NON_WORKING_DAYS.append(int(obj.day))
 
-    print("printing holidays")
-    print(HOLIDAYS)
-    print(f"{pickup_date.year}-{pickup_date.month}-{pickup_date.day}")
-
-    if (
-        pickup_weekday in NON_WORKING_DAYS
-        or f"{pickup_date.year}-{pickup_date.month}-{pickup_date.day}" in HOLIDAYS
-    ):
+    if pickup_weekday in NON_WORKING_DAYS or pickup_date.strftime("%Y-%m-%d") in HOLIDAYS:
         pickup_date = get_business_days_with_offset(pickup_date, offset=settings.NEXT_DAY)
 
     elif pickup_time > settings.TODAY_DELIVERY_CUT_OFF_TIME:
