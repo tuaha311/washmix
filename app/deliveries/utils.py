@@ -40,7 +40,7 @@ def get_pickup_day(start_datetime: datetime) -> date:
     pickup_date = start_datetime.date()
     pickup_weekday = pickup_date.isoweekday()
 
-    HOLIDAYS = [i.strftime("%Y-%m-%d") for i in Holiday.objects.all()]
+    HOLIDAYS = [i.date.strftime("%Y-%m-%d") for i in Holiday.objects.all()]
     NON_WORKING_DAYS = []
     for obj in Nonworkingday.objects.all():
         NON_WORKING_DAYS.append(int(obj.day))
