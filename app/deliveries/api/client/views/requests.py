@@ -56,9 +56,18 @@ class RequestFilter(filters.FilterSet):
         without_completed_deliveries = Q(
             delivery_list__status__in=[DeliveryStatus.ACCEPTED, DeliveryStatus.IN_PROGRESS]
         )
+        without_no_show = Q(
+            delivery_list__status__in=[
+                DeliveryStatus.ACCEPTED,
+                DeliveryStatus.IN_PROGRESS,
+                DeliveryStatus.COMPLETED,
+            ]
+        )
         dropoff_query = without_expired_deliveries & without_completed_deliveries
 
-        filtered_result = request_list.filter(order_query & dropoff_query).distinct()
+        filtered_result = request_list.filter(
+            order_query & dropoff_query & without_no_show
+        ).distinct()
 
         return filtered_result
 
