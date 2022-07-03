@@ -47,6 +47,7 @@ def on_delivery_notify_signal(
     is_pickup = delivery.kind == DeliveryKind.PICKUP
     is_completed = delivery.status == DeliveryStatus.COMPLETED
     is_cancelled = delivery.status == DeliveryStatus.CANCELLED
+    is_no_show = delivery.status == DeliveryStatus.NO_SHOW
 
     if update_fields:
         is_date_updated = "date" in update_fields
@@ -105,6 +106,18 @@ def on_delivery_notify_signal(
         send_sms.send_with_options(
             kwargs={
                 "event": settings.ORDER_PICKUP_COMPLETE,
+                "recipient_list": [number],
+                "extra_context": {
+                    "client_id": client.id,
+                    "delivery_id": delivery.id,
+                },
+            },
+            delay=settings.DRAMATIQ_DELAY_FOR_DELIVERY,
+        )
+    if is_pickup and is_no_show:
+        send_sms.send_with_options(
+            kwargs={
+                "event": settings.NO_SHOW,
                 "recipient_list": [number],
                 "extra_context": {
                     "client_id": client.id,
