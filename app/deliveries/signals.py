@@ -149,6 +149,7 @@ def on_delivery_notify_signal(
                 order = order_service.prepare(delivery.request)
                 order, full_paid = order_service.checkout(order)
                 if full_paid:
+                    order_service.finalize(order, None)
                     send_admin_client_information(
                         client.id, f"Customer did not show up. {amount/100}$ charged for Delivery"
                     )
