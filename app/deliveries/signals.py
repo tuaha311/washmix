@@ -145,22 +145,6 @@ def on_delivery_notify_signal(
             if is_advantage:
                 amount = 1490
             with atomic():
-                # invoice = Invoice.objects.create(
-                #     client=client,
-                #     amount=amount,
-                #     discount=settings.DEFAULT_ZERO_DISCOUNT,
-                #     purpose=InvoicePurpose.CREDIT,
-                # )
-                # order = Order.objects.create(
-                #     client=client,
-                #     invoice=invoice,
-                #     payment=OrderPaymentChoices.PAID,
-                #     balance_before_purchase=client.balance,
-                #     balance_after_purchase=client.balance - amount,
-                #     note="No Show Delivery Charges",
-                # )
-                delivery.request.amount = amount
-                delivery.request.save()
                 order_service = OrderService(client)
                 order = order_service.prepare(delivery.request)
                 order, full_paid = order_service.checkout(order)
