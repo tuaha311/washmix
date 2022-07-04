@@ -4,13 +4,13 @@ from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from app.billing.choices import InvoicePurpose
-from app.billing.models import Invoice
-from app.billing.services.payments import PaymentService
-from app.subscriptions.utils import is_advantage_program
+from billing.choices import InvoicePurpose
+from billing.models import Invoice
+from billing.services.payments import PaymentService
 from deliveries.choices import DeliveryKind, DeliveryStatus
 from deliveries.models import Delivery
 from notifications.tasks import send_sms
+from subscriptions.utils import is_advantage_program
 
 logger = logging.getLogger(__name__)
 
