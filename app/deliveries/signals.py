@@ -4,12 +4,9 @@ from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from billing.choices import InvoicePurpose
-from billing.models import Invoice
-from billing.services.payments import PaymentService
 from deliveries.choices import DeliveryKind, DeliveryStatus
 from deliveries.models import Delivery
-from notifications.tasks import send_sms
+from notifications.tasks import send_admin_client_information, send_sms
 from subscriptions.utils import is_advantage_program
 
 logger = logging.getLogger(__name__)
@@ -119,17 +116,6 @@ def on_delivery_notify_signal(
             delay=settings.DRAMATIQ_DELAY_FOR_DELIVERY,
         )
     if is_pickup and is_no_show:
-        amount = 1990
-        if is_advantage:
-            amount = 1490
-        invoice = Invoice.objects.create(
-            client=client,
-            amount=amount,
-            discount=settings.DEFAULT_ZERO_DISCOUNT,
-            purpose=InvoicePurpose.ORDER,
-        )
-        payment_service = PaymentService(client, invoice)
-        payment_service.charge()
         send_sms.send_with_options(
             kwargs={
                 "event": settings.NO_SHOW,
@@ -141,5 +127,6 @@ def on_delivery_notify_signal(
             },
             delay=settings.DRAMATIQ_DELAY_FOR_DELIVERY,
         )
+        send_admin_client_information(client.id, "The customer did not show up for the Pickup")
 
         logger.info(f"Sending SMS to client {client.email}")
