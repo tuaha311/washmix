@@ -2,11 +2,18 @@ import logging
 
 from django.conf import settings
 from django.db.models.signals import post_save
+from django.db.transaction import atomic
 from django.dispatch import receiver
 
+from billing.choices import InvoiceProvider, InvoicePurpose
+from billing.models.invoice import Invoice
+from billing.utils import create_credit
 from deliveries.choices import DeliveryKind, DeliveryStatus
 from deliveries.models import Delivery
 from notifications.tasks import send_admin_client_information, send_sms
+from orders.choices import OrderPaymentChoices
+from orders.models.order import Order
+from orders.services.order import OrderService
 from subscriptions.utils import is_advantage_program
 
 logger = logging.getLogger(__name__)
@@ -130,3 +137,33 @@ def on_delivery_notify_signal(
         send_admin_client_information(client.id, "The customer did not show up for the Pickup")
 
         logger.info(f"Sending SMS to client {client.email}")
+
+    if is_dropoff and is_no_show:
+        delivery_request = delivery.request
+        if not delivery_request.order:
+            amount = 1990
+            if is_advantage:
+                amount = 1490
+            with atomic():
+                invoice = Invoice.objects.create(
+                    client=client,
+                    amount=amount,
+                    discount=settings.DEFAULT_ZERO_DISCOUNT,
+                    purpose=InvoicePurpose.CREDIT,
+                )
+                order = Order.objects.create(
+                    client=client,
+                    invoice=invoice,
+                    payment=OrderPaymentChoices.PAID,
+                    balance_before_purchase=client.balance,
+                    balance_after_purchase=client.balance - amount,
+                    note="No Show Delivery Charges",
+                )
+                order.request = delivery.request
+                order.save()
+                order_service = OrderService(client)
+                order, full_paid = order_service.checkout()
+                if full_paid:
+                    send_admin_client_information(
+                        client.id, f"Customer did not show up. {amount/100}$ charged for Delivery"
+                    )
