@@ -4,6 +4,10 @@ from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+from app.billing.choices import InvoicePurpose
+from app.billing.models import Invoice
+from app.billing.services.payments import PaymentService
+from app.subscriptions.utils import is_advantage_program
 from deliveries.choices import DeliveryKind, DeliveryStatus
 from deliveries.models import Delivery
 from notifications.tasks import send_sms
@@ -48,7 +52,7 @@ def on_delivery_notify_signal(
     is_completed = delivery.status == DeliveryStatus.COMPLETED
     is_cancelled = delivery.status == DeliveryStatus.CANCELLED
     is_no_show = delivery.status == DeliveryStatus.NO_SHOW
-
+    is_advantage = bool(client.subscription) and is_advantage_program(client.subscription.name)
     if update_fields:
         is_date_updated = "date" in update_fields
 
@@ -115,6 +119,17 @@ def on_delivery_notify_signal(
             delay=settings.DRAMATIQ_DELAY_FOR_DELIVERY,
         )
     if is_pickup and is_no_show:
+        amount = 1990
+        if is_advantage:
+            amount = 1490
+        invoice = Invoice.objects.create(
+            client=client,
+            amount=amount,
+            discount=settings.DEFAULT_ZERO_DISCOUNT,
+            purpose=InvoicePurpose.ORDER,
+        )
+        payment_service = PaymentService(client, invoice)
+        payment_service.charge()
         send_sms.send_with_options(
             kwargs={
                 "event": settings.NO_SHOW,
