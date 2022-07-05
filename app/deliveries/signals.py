@@ -147,7 +147,7 @@ def on_delivery_notify_signal(
             with atomic():
                 order_service = OrderService(client)
                 order = order_service.prepare(delivery.request)
-                order.note = "NO BAG NO SHOW Charge"
+                order.note = "NO BAG OUTSIDE FOR PICKUP"
                 order.save()
                 order, full_paid = order_service.checkout(order)
                 if full_paid:
