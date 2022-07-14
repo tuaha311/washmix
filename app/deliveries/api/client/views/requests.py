@@ -56,11 +56,14 @@ class RequestFilter(filters.FilterSet):
         without_completed_deliveries = Q(
             delivery_list__status__in=[DeliveryStatus.ACCEPTED, DeliveryStatus.IN_PROGRESS]
         )
+        without_no_show = Q(
+            delivery_list__kind=DeliveryKind.PICKUP, delivery_list__status=DeliveryStatus.NO_SHOW
+        )
         dropoff_query = without_expired_deliveries & without_completed_deliveries
-
         filtered_result = request_list.filter(order_query & dropoff_query).distinct()
+        filtered_again = filtered_result.exclude(without_no_show).distinct()
 
-        return filtered_result
+        return filtered_again
 
 
 class RequestViewSet(ModelViewSet):
@@ -102,12 +105,11 @@ class RequestViewSet(ModelViewSet):
                 delay=settings.DRAMATIQ_DELAY_FOR_DELIVERY,
             )
             return Response(
-                {"message": "You already have a pickup request made"},
+                {"non_field_errors": ["You already have a pickup request made"]},
                 status=status.HTTP_412_PRECONDITION_FAILED,
             )
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
-        Log.objects.create(customer=client.email, action="Created Pick Up Request")
 
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
@@ -125,12 +127,6 @@ class RequestViewSet(ModelViewSet):
         )
         request = service.create(address=address, comment=instructions, is_rush=is_rush)
         pretty_date = pickup_date.strftime("%B %d, %Y")
-        send_admin_client_information(
-            client.id,
-            "A Customer has Created a Pickup Request.",
-            is_pickup=True,
-            pickup_date=pretty_date,
-        )
 
         serializer.instance = request
 
@@ -214,10 +210,11 @@ class RequestViewSet(ModelViewSet):
             delivery.status = DeliveryStatus.CANCELLED
             delivery.save()
 
-        send_admin_client_information(client.id, "A Customer has Canceled the Pickup Request")
+        if deliveries:
+            send_admin_client_information(client.id, "A Customer has Canceled the Pickup Request")
+            Log.objects.create(customer=client.email, action="Cancelled Pick Up Request")
 
         Notification.create_notification(client, NotificationTypes.PICKUP_REQUEST_CANCELED)
-        Log.objects.create(customer=client.email, action="Cancelled Pick Up Request")
         return Response({"message": "request canceled"}, status=status.HTTP_200_OK)
 
 

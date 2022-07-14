@@ -58,8 +58,8 @@ class CardService:
                     "action": self.added_text,
                 },
             )
-        Log.objects.create(customer=self._client.email, action="One or more cards are added")
-        send_admin_client_information(self._client.id, "One or more cards are added")
+            Log.objects.create(customer=self._client.email, action="Client has Updated their Card")
+            send_admin_client_information(self._client.id, "Client has Updated their Card")
 
         return self._client.card_list.all()
 
@@ -75,6 +75,4 @@ class CardService:
     def update_main_card(cls, client: Client, card: Card):
         client.main_card = card
         client.save()
-        Log.objects.create(customer=client.email, action="The customer has updated the main card")
-        send_admin_client_information(client.id, "The customer has updated the main card")
         return card

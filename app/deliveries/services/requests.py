@@ -17,7 +17,7 @@ from notifications.tasks import send_admin_client_information
 from orders.containers.basket import BasketContainer
 from orders.models import Basket, Order
 from subscriptions.models import Subscription
-from users.models import Client
+from users.models import Client, Log
 
 
 class RequestService(PaymentInterfaceService):
@@ -146,6 +146,7 @@ class RequestService(PaymentInterfaceService):
                 is_pickup=True,
                 pickup_date=pickup_info.get("date").strftime("%B %d, %Y"),
             )
+            Log.objects.create(customer=self._client.email, action="Created New Pick Up Request")
             Notification.create_notification(self._client, NotificationTypes.NEW_PICKUP_REQUEST)
         return request
 

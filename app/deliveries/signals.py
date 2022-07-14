@@ -2,11 +2,19 @@ import logging
 
 from django.conf import settings
 from django.db.models.signals import post_save
+from django.db.transaction import atomic
 from django.dispatch import receiver
 
+from billing.choices import InvoiceProvider, InvoicePurpose
+from billing.models.invoice import Invoice
+from billing.utils import create_credit
 from deliveries.choices import DeliveryKind, DeliveryStatus
 from deliveries.models import Delivery
-from notifications.tasks import send_sms
+from notifications.tasks import send_admin_client_information, send_sms
+from orders.choices import OrderPaymentChoices
+from orders.models.order import Order
+from orders.services.order import OrderService
+from subscriptions.utils import is_advantage_program
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +28,6 @@ def on_delivery_notify_signal(
         - Created
         - Date is changed
     """
-
     # We are ignoring raw signals
     # Ref - https://docs.djangoproject.com/en/3.1/ref/signals/#post-save
     if raw:
@@ -48,13 +55,15 @@ def on_delivery_notify_signal(
     is_pickup = delivery.kind == DeliveryKind.PICKUP
     is_completed = delivery.status == DeliveryStatus.COMPLETED
     is_cancelled = delivery.status == DeliveryStatus.CANCELLED
-
+    is_no_show = delivery.status == DeliveryStatus.NO_SHOW
+    is_advantage = bool(client.subscription) and is_advantage_program(client.subscription.name)
     if update_fields:
         is_date_updated = "date" in update_fields
 
     if is_pickup and (is_created or is_date_updated):
         # we are adding some delay to wait for database
         # transaction commit
+
         send_sms.send_with_options(
             kwargs={
                 "event": settings.NEW_DELIVERY,
@@ -100,3 +109,46 @@ def on_delivery_notify_signal(
         )
 
         logger.info(f"Sending SMS to client {client.email}")
+
+    if is_pickup and is_completed:
+        send_sms.send_with_options(
+            kwargs={
+                "event": settings.ORDER_PICKUP_COMPLETE,
+                "recipient_list": [number],
+                "extra_context": {
+                    "client_id": client.id,
+                    "delivery_id": delivery.id,
+                },
+            },
+            delay=settings.DRAMATIQ_DELAY_FOR_DELIVERY,
+        )
+    if is_pickup and is_no_show:
+        send_sms.send_with_options(
+            kwargs={
+                "event": settings.NO_SHOW,
+                "recipient_list": [number],
+                "extra_context": {
+                    "client_id": client.id,
+                    "delivery_id": delivery.id,
+                },
+            },
+            delay=settings.DRAMATIQ_DELAY_FOR_DELIVERY,
+        )
+        send_admin_client_information(client.id, "The customer did not show up for the Pickup")
+
+        logger.info(f"Sending SMS to client {client.email}")
+
+    if is_dropoff and is_no_show:
+        delivery_request = delivery.request
+        if not Order.objects.filter(request=delivery_request).exists():
+            amount = 1990
+            if is_advantage:
+                amount = 1490
+            with atomic():
+                order_service = OrderService(client)
+                order = order_service.prepare(delivery.request)
+                order.note = "NO BAG OUTSIDE FOR PICKUP"
+                order.save()
+                order, full_paid = order_service.checkout(order)
+                if full_paid:
+                    order_service.finalize(order, None, True)

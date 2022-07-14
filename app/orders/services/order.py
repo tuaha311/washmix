@@ -173,7 +173,7 @@ class OrderService:
 
         return self.get_container()
 
-    def finalize(self, order: Order, employee: Employee) -> Optional[Order]:
+    def finalize(self, order: Order, employee: Employee, no_show=False) -> Optional[Order]:
         """
         Last hook in payment flow, that marks order as paid and
         calls success events.
@@ -208,8 +208,8 @@ class OrderService:
 
             order.balance_after_purchase = client.balance
             order.save()
-
-        self._notify_admin_list_on_new_order()
+        if not no_show:
+            self._notify_admin_list_on_new_order()
 
         return order
 
