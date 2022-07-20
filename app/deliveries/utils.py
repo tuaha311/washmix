@@ -26,7 +26,11 @@ def get_business_days_with_offset(start_date: date, offset: int, dropoff=False) 
         ]
         return business_only_days[offset - 1]
     else:
-        business_only_days = [item for item in days if item.strftime("%Y-%m-%d") not in HOLIDAYS]
+        business_only_days = [
+            item
+            for item in days
+            if item.strftime("%Y-%m-%d") not in HOLIDAYS and item.isoweekday() != 7
+        ]
         index = 1
         while (
             business_only_days[offset - index].isoweekday() == 7
