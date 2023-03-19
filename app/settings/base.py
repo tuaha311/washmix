@@ -70,9 +70,9 @@ INSTALLED_APPS = [
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": env.str("DB_NAME", "wm_local"),
-        "USER": env.str("DB_USER", "wm_user"),
-        "PASSWORD": env.str("DB_PASSWORD", "wm_pass"),
+        "NAME": env.str("DB_NAME", "washmix_local"),
+        "USER": env.str("DB_USER", "hamza"),
+        "PASSWORD": env.str("DB_PASSWORD", "1234"),
         "HOST": env.str("DB_HOST", "localhost"),
         "PORT": env.str("DB_PORT", "5432"),
         "CONN_MAX_AGE": 10,
@@ -749,10 +749,13 @@ EMAIL_EVENT_INFO = {
     },
 }
 
+TEMPLATE_DEBUG = False
 
 ##############
 # DJANGO-JET #
 ##############
 
 JET_SIDE_MENU_COMPACT = True
+JET_CHANGE_FORM_SIBLING_LINKS = False
 JET_DEFAULT_THEME = "washmix"
+JET_CHANGE_FORM_SIBLING_LINKS = False
