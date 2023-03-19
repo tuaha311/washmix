@@ -33,6 +33,20 @@ from users.helpers import remove_user_relation_with_all_info
 from users.models import Client, Customer, Employee, Log
 
 User = get_user_model()
+LIMIT = 10
+
+
+class InlineChangeList(object):
+    can_show_all = True
+    multi_page = True
+    get_query_string = ChangeList.__dict__["get_query_string"]
+
+    def __init__(self, request, page_num, paginator):
+        self.show_all = "all" in request.GET
+        self.page_num = page_num
+        self.paginator = paginator
+        self.result_count = paginator.count
+        self.params = dict(request.GET.items())
 
 
 class InlineChangeList(object):
@@ -81,7 +95,7 @@ class InvoiceInlineAdmin(admin.TabularInline):
         "card",
         "purpose",
     )
-    per_page = 10
+    per_page = LIMIT
     template = "admin/edit_inline.html"
 
     def get_formset(self, request, obj=None, **kwargs):
@@ -152,7 +166,7 @@ class OrderInlineAdmin(admin.TabularInline):
     model = Order
     form = OrderInlineForm
     extra = 0
-    per_page = 10
+    per_page = LIMIT
     template = "admin/edit_inline.html"
 
     def get_formset(self, request, obj=None, **kwargs):
