@@ -99,7 +99,6 @@ LANGUAGE_CODE = "en-AU"
 TIME_ZONE = "America/Los_Angeles"
 USE_I18N = True
 USE_L10N = False
-USE_TZ = True
 
 
 # first element of list controls appearance in `django-jet` admin of date field
