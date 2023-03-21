@@ -229,7 +229,7 @@ class RequestInlineAdmin(admin.TabularInline):
     form = RequestInlineForm
     extra = 0
     can_delete = False
-    per_page = 1
+    per_page = LIMIT
 
     def get_formset(self, request, obj=None, **kwargs):
         formset_class = super().get_formset(request, obj, **kwargs)
