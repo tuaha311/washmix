@@ -143,6 +143,7 @@ class RequestService(PaymentInterfaceService):
             send_admin_client_information(
                 self._client.id,
                 "A New Pickup Request is Created",
+                "New Request",
                 is_pickup=True,
                 pickup_date=pickup_info.get("date").strftime("%B %d, %Y"),
             )

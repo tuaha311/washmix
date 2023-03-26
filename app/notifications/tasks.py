@@ -80,7 +80,7 @@ def send_sms(event: str, recipient_list: list, extra_context: dict = None):
     logger.info(f"Sent SMS via Twilio to {recipient_list}")
 
 
-def send_admin_client_information(client_id, event_type, **kwargs):
+def send_admin_client_information(client_id, event_type, event=None, **kwargs):
     is_pickup = kwargs.get("is_pickup")
     context = {
         "client_id": client_id,
@@ -90,8 +90,18 @@ def send_admin_client_information(client_id, event_type, **kwargs):
     if is_pickup:
         context["pickup_date"] = kwargs.get("pickup_date")
 
+    event_email = settings.SEND_ADMIN_CLIENT_INFORMATION
+
+    if event:
+        if event == "Customer Account Update":
+            event_email = settings.CUSTOMER_ACCOUNT_UPDATE
+        elif event == "Customer No Show":
+            event_email = settings.CUSTOMER_NOSHOW
+        elif event == "New Request":
+            event_email = settings.NEW_REQUEST
+
     send_email.send(
-        event=settings.SEND_ADMIN_CLIENT_INFORMATION,
+        event=event_email,
         recipient_list=settings.ADMIN_EMAIL_LIST,
         extra_context=context,
     )
