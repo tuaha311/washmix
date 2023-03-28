@@ -16,9 +16,9 @@ from users.models import Client
 logger = logging.getLogger(__name__)
 
 
-# every day at 05:00 PM
+# every day at 05:00
 @dramatiq.actor(
-    periodic=cron("00 17 * * *"),
+    periodic=cron("00 05 * * *"),
     max_retries=settings.DRAMATIQ_MAX_RETRIES,
     max_age=settings.DRAMATIQ_MAX_AGE,
 )

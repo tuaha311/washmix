@@ -97,7 +97,6 @@ class DeliveryAdmin(AdminWithSearch):
         "kind",
         "employee",
     ]
-
     # autocomplete_fields = ('employee',)
     def get_changelist_form(self, request, **kwargs):
         return DeliveryForm

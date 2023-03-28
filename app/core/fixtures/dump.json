@@ -177,6 +177,94 @@
   },
   {
     "model": "contenttypes.contenttype",
+    "pk": 23,
+    "fields": {
+      "app_label": "billing",
+      "model": "card"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 24,
+    "fields": {
+      "app_label": "billing",
+      "model": "coupon"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 25,
+    "fields": {
+      "app_label": "billing",
+      "model": "invoice"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 26,
+    "fields": {
+      "app_label": "billing",
+      "model": "transaction"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 27,
+    "fields": {
+      "app_label": "locations",
+      "model": "address"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 28,
+    "fields": {
+      "app_label": "locations",
+      "model": "zipcode"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 29,
+    "fields": {
+      "app_label": "locations",
+      "model": "city"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 30,
+    "fields": {
+      "app_label": "notifications",
+      "model": "notification"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 31,
+    "fields": {
+      "app_label": "deliveries",
+      "model": "delivery"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 32,
+    "fields": {
+      "app_label": "deliveries",
+      "model": "request"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "pk": 33,
+    "fields": {
+      "app_label": "deliveries",
+      "model": "schedule"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
     "pk": 34,
     "fields": {
       "app_label": "subscriptions",
@@ -1253,6 +1341,534 @@
         "client"
       ],
       "codename": "view_client"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 89,
+    "fields": {
+      "name": "Can add card",
+      "content_type": [
+        "billing",
+        "card"
+      ],
+      "codename": "add_card"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 90,
+    "fields": {
+      "name": "Can change card",
+      "content_type": [
+        "billing",
+        "card"
+      ],
+      "codename": "change_card"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 91,
+    "fields": {
+      "name": "Can delete card",
+      "content_type": [
+        "billing",
+        "card"
+      ],
+      "codename": "delete_card"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 92,
+    "fields": {
+      "name": "Can view card",
+      "content_type": [
+        "billing",
+        "card"
+      ],
+      "codename": "view_card"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 93,
+    "fields": {
+      "name": "Can add coupon",
+      "content_type": [
+        "billing",
+        "coupon"
+      ],
+      "codename": "add_coupon"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 94,
+    "fields": {
+      "name": "Can change coupon",
+      "content_type": [
+        "billing",
+        "coupon"
+      ],
+      "codename": "change_coupon"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 95,
+    "fields": {
+      "name": "Can delete coupon",
+      "content_type": [
+        "billing",
+        "coupon"
+      ],
+      "codename": "delete_coupon"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 96,
+    "fields": {
+      "name": "Can view coupon",
+      "content_type": [
+        "billing",
+        "coupon"
+      ],
+      "codename": "view_coupon"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 97,
+    "fields": {
+      "name": "Can add invoice",
+      "content_type": [
+        "billing",
+        "invoice"
+      ],
+      "codename": "add_invoice"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 98,
+    "fields": {
+      "name": "Can change invoice",
+      "content_type": [
+        "billing",
+        "invoice"
+      ],
+      "codename": "change_invoice"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 99,
+    "fields": {
+      "name": "Can delete invoice",
+      "content_type": [
+        "billing",
+        "invoice"
+      ],
+      "codename": "delete_invoice"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 100,
+    "fields": {
+      "name": "Can view invoice",
+      "content_type": [
+        "billing",
+        "invoice"
+      ],
+      "codename": "view_invoice"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 101,
+    "fields": {
+      "name": "Can add transaction",
+      "content_type": [
+        "billing",
+        "transaction"
+      ],
+      "codename": "add_transaction"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 102,
+    "fields": {
+      "name": "Can change transaction",
+      "content_type": [
+        "billing",
+        "transaction"
+      ],
+      "codename": "change_transaction"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 103,
+    "fields": {
+      "name": "Can delete transaction",
+      "content_type": [
+        "billing",
+        "transaction"
+      ],
+      "codename": "delete_transaction"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 104,
+    "fields": {
+      "name": "Can view transaction",
+      "content_type": [
+        "billing",
+        "transaction"
+      ],
+      "codename": "view_transaction"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 105,
+    "fields": {
+      "name": "Can add address",
+      "content_type": [
+        "locations",
+        "address"
+      ],
+      "codename": "add_address"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 106,
+    "fields": {
+      "name": "Can change address",
+      "content_type": [
+        "locations",
+        "address"
+      ],
+      "codename": "change_address"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 107,
+    "fields": {
+      "name": "Can delete address",
+      "content_type": [
+        "locations",
+        "address"
+      ],
+      "codename": "delete_address"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 108,
+    "fields": {
+      "name": "Can view address",
+      "content_type": [
+        "locations",
+        "address"
+      ],
+      "codename": "view_address"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 109,
+    "fields": {
+      "name": "Can add zip code",
+      "content_type": [
+        "locations",
+        "zipcode"
+      ],
+      "codename": "add_zipcode"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 110,
+    "fields": {
+      "name": "Can change zip code",
+      "content_type": [
+        "locations",
+        "zipcode"
+      ],
+      "codename": "change_zipcode"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 111,
+    "fields": {
+      "name": "Can delete zip code",
+      "content_type": [
+        "locations",
+        "zipcode"
+      ],
+      "codename": "delete_zipcode"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 112,
+    "fields": {
+      "name": "Can view zip code",
+      "content_type": [
+        "locations",
+        "zipcode"
+      ],
+      "codename": "view_zipcode"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 113,
+    "fields": {
+      "name": "Can add city",
+      "content_type": [
+        "locations",
+        "city"
+      ],
+      "codename": "add_city"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 114,
+    "fields": {
+      "name": "Can change city",
+      "content_type": [
+        "locations",
+        "city"
+      ],
+      "codename": "change_city"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 115,
+    "fields": {
+      "name": "Can delete city",
+      "content_type": [
+        "locations",
+        "city"
+      ],
+      "codename": "delete_city"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 116,
+    "fields": {
+      "name": "Can view city",
+      "content_type": [
+        "locations",
+        "city"
+      ],
+      "codename": "view_city"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 117,
+    "fields": {
+      "name": "Can add notification",
+      "content_type": [
+        "notifications",
+        "notification"
+      ],
+      "codename": "add_notification"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 118,
+    "fields": {
+      "name": "Can change notification",
+      "content_type": [
+        "notifications",
+        "notification"
+      ],
+      "codename": "change_notification"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 119,
+    "fields": {
+      "name": "Can delete notification",
+      "content_type": [
+        "notifications",
+        "notification"
+      ],
+      "codename": "delete_notification"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 120,
+    "fields": {
+      "name": "Can view notification",
+      "content_type": [
+        "notifications",
+        "notification"
+      ],
+      "codename": "view_notification"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 121,
+    "fields": {
+      "name": "Can add delivery",
+      "content_type": [
+        "deliveries",
+        "delivery"
+      ],
+      "codename": "add_delivery"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 122,
+    "fields": {
+      "name": "Can change delivery",
+      "content_type": [
+        "deliveries",
+        "delivery"
+      ],
+      "codename": "change_delivery"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 123,
+    "fields": {
+      "name": "Can delete delivery",
+      "content_type": [
+        "deliveries",
+        "delivery"
+      ],
+      "codename": "delete_delivery"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 124,
+    "fields": {
+      "name": "Can view delivery",
+      "content_type": [
+        "deliveries",
+        "delivery"
+      ],
+      "codename": "view_delivery"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 125,
+    "fields": {
+      "name": "Can add request",
+      "content_type": [
+        "deliveries",
+        "request"
+      ],
+      "codename": "add_request"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 126,
+    "fields": {
+      "name": "Can change request",
+      "content_type": [
+        "deliveries",
+        "request"
+      ],
+      "codename": "change_request"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 127,
+    "fields": {
+      "name": "Can delete request",
+      "content_type": [
+        "deliveries",
+        "request"
+      ],
+      "codename": "delete_request"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 128,
+    "fields": {
+      "name": "Can view request",
+      "content_type": [
+        "deliveries",
+        "request"
+      ],
+      "codename": "view_request"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 129,
+    "fields": {
+      "name": "Can add schedule",
+      "content_type": [
+        "deliveries",
+        "schedule"
+      ],
+      "codename": "add_schedule"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 130,
+    "fields": {
+      "name": "Can change schedule",
+      "content_type": [
+        "deliveries",
+        "schedule"
+      ],
+      "codename": "change_schedule"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 131,
+    "fields": {
+      "name": "Can delete schedule",
+      "content_type": [
+        "deliveries",
+        "schedule"
+      ],
+      "codename": "delete_schedule"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "pk": 132,
+    "fields": {
+      "name": "Can view schedule",
+      "content_type": [
+        "deliveries",
+        "schedule"
+      ],
+      "codename": "view_schedule"
     }
   },
   {
