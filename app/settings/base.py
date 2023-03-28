@@ -70,9 +70,9 @@ INSTALLED_APPS = [
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": env.str("DB_NAME", "wm_local"),
-        "USER": env.str("DB_USER", "wm_user"),
-        "PASSWORD": env.str("DB_PASSWORD", "wm_pass"),
+        "NAME": env.str("DB_NAME", "washmix_local"),
+        "USER": env.str("DB_USER", "hamza"),
+        "PASSWORD": env.str("DB_PASSWORD", "1234"),
         "HOST": env.str("DB_HOST", "localhost"),
         "PORT": env.str("DB_PORT", "5432"),
         "CONN_MAX_AGE": 10,
@@ -99,7 +99,6 @@ LANGUAGE_CODE = "en-AU"
 TIME_ZONE = "America/Los_Angeles"
 USE_I18N = True
 USE_L10N = False
-USE_TZ = True
 
 
 # first element of list controls appearance in `django-jet` admin of date field
@@ -648,6 +647,8 @@ ACCRUE_CREDIT_BACK = "accrue_credit_back"
 SEND_ADMIN_CLIENT_INFORMATION = "send_admin_client_information"
 SEND_ADMIN_PCUSTOMER_INFORMATION = "send_admin_pcustomer_information"
 SEND_ADMIN_STORE_CREDIT = "send_email_store_credit"
+CUSTOMER_ACCOUNT_UPDATE = "customer_account_update"
+CUSTOMER_NOSHOW = "customer_no_show"
 
 #################################
 # SENDGRID WITH EMAIL TEMPLATES #
@@ -676,7 +677,7 @@ EMAIL_EVENT_INFO = {
     NEW_ORDER: {
         "template_name": "email/new_order.html",
         "subject": "WashMix New Order",
-        "from_email": "cs@washmix.com",
+        "from_email": "orders@washmix.com",
         "reply_to": "orders@washmix.com",
     },
     PAYMENT_FAIL_CLIENT: {
@@ -688,7 +689,7 @@ EMAIL_EVENT_INFO = {
     PAYMENT_FAIL_ADMIN: {
         "template_name": "email/payment_fail_admin.html",
         "subject": "WashMix Payment Failed",
-        "from_email": "info@washmix.com",
+        "from_email": "failed@washmix.com",
         "reply_to": "info@washmix.com",
     },
     ACCOUNT_REMOVED: {
@@ -727,12 +728,33 @@ EMAIL_EVENT_INFO = {
         "from_email": "info@washmix.com",
         "reply_to": "info@washmix.com",
     },
+    CUSTOMER_ACCOUNT_UPDATE: {
+        "template_name": "email/send_admin_client_information.html",
+        "subject": "New User Activity",
+        "from_email": "update@washmix.com",
+        "reply_to": "info@washmix.com",
+    },
+    CUSTOMER_NOSHOW: {
+        "template_name": "email/send_admin_client_information.html",
+        "subject": "New User Activity",
+        "from_email": "noshow@washmix.com",
+        "reply_to": "info@washmix.com",
+    },
+    NEW_REQUEST: {
+        "template_name": "email/send_admin_client_information.html",
+        "subject": "New User Activity",
+        "from_email": "request@washmix.com",
+        "reply_to": "info@washmix.com",
+    },
 }
 
+TEMPLATE_DEBUG = False
 
 ##############
 # DJANGO-JET #
 ##############
 
 JET_SIDE_MENU_COMPACT = True
+JET_CHANGE_FORM_SIBLING_LINKS = False
 JET_DEFAULT_THEME = "washmix"
+JET_CHANGE_FORM_SIBLING_LINKS = False
