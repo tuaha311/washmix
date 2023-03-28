@@ -134,9 +134,7 @@ def on_delivery_notify_signal(
             },
             delay=settings.DRAMATIQ_DELAY_FOR_DELIVERY,
         )
-        send_admin_client_information(
-            client.id, "The customer did not show up for the Pickup", "Customer No Show"
-        )
+        send_admin_client_information(client.id, "The customer did not show up for the Pickup")
 
         logger.info(f"Sending SMS to client {client.email}")
 
