@@ -43,7 +43,7 @@ venv
 */assets/admin
 */assets/drf-yasg
 */assets/rest_framework
-
+app/settings/base.py
 # media files
 */media/reports/*
 *.tmp
