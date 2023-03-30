@@ -36,7 +36,9 @@ def archive_not_signedup_users():
     delete_clients = Client.objects.filter(
         card_list__isnull=True, created__lt=localtime() - DELETE_USER_AFTER_TIMEDELTA
     )
-
+    print("************* IN archive_not_signedup_users *************")
+    delete_clients_count = delete_clients.count()
+    print(f"Total delete clients: {delete_clients_count}")
     if delete_clients:
         for client in delete_clients:
             phone = ""
