@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("deliveries", "0008_change_ordering_on_delivery"),
     ]
