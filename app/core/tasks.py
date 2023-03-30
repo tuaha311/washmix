@@ -1,5 +1,6 @@
 import logging
 
+from django.contrib.auth import get_user_model
 from django.utils.timezone import localtime
 
 import dramatiq
@@ -32,7 +33,9 @@ def archive_not_signedup_users():
     delete_clients = Client.objects.filter(
         card_list__isnull=True, created__lt=localtime() - DELETE_USER_AFTER_TIMEDELTA
     )
-
+    print("************* IN archive_not_signedup_users *************")
+    delete_clients_count = delete_clients.count()
+    print(f"Total delete clients: {delete_clients_count}")
     if delete_clients:
         for client in delete_clients:
             phone = ""
@@ -62,6 +65,19 @@ def archive_not_signedup_users():
             )
 
             user.delete()
+
+
+@dramatiq.actor(periodic=cron("0 23 * * 6"))
+def delete_archived_customers_who_signed_up_already():
+    """
+    Deleting All Previous Users Who have signed up, but were not deleted.
+    """
+    user = get_user_model()
+    delete_clients = ArchivedCustomer.objects.filter(
+        email__in=user.objects.values_list("email", flat=True)
+    )
+    for client in delete_clients:
+        client.delete()
 
 
 @dramatiq.actor

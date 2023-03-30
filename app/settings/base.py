@@ -309,8 +309,8 @@ DELIVERY_STATUS_CHOICES = list(DELIVERY_STATUS_MAP.items())
 #########
 # USERS #
 #########
-DELETE_USER_AFTER_NON_SIGNUP_HOURS = 3
-DELETE_USER_AFTER_TIMEDELTA = timedelta(hours=DELETE_USER_AFTER_NON_SIGNUP_HOURS)
+DELETE_USER_AFTER_NON_SIGNUP_HOURS = 10
+DELETE_USER_AFTER_TIMEDELTA = timedelta(minutes=DELETE_USER_AFTER_NON_SIGNUP_HOURS)
 
 
 #####################################
@@ -741,7 +741,7 @@ EMAIL_EVENT_INFO = {
     },
     CUSTOMER_NOSHOW: {
         "template_name": "email/send_admin_client_information.html",
-        "subject": "New User Activity",
+        "subject": "NO SHOW",
         "from_email": "noshow@washmix.com",
         "reply_to": "info@washmix.com",
     },
