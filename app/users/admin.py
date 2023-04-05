@@ -291,6 +291,13 @@ class ClientForm(forms.ModelForm):
         widget=forms.Select(choices=[(None, "--------")] + settings.PACKAGE_NAME_CHOICES),
     )
 
+    private_note = forms.CharField(
+        widget=forms.Textarea,
+        label="Private Note About Client",
+        required=False,
+        max_length=300,
+    )
+
     class Meta:
         model = Client
         fields = "__all__"
