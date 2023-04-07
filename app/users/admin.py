@@ -369,9 +369,11 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
 
     def get_main_phone_number(self, obj):
         """
-        Returns the phone number portion of the main_phone field.
+        Returns the phone number portion of the main_phone field, or the main_phone field if it doesn't have a number attribute.
         """
-        return obj.main_phone.number
+        if hasattr(obj.main_phone, "number"):
+            return obj.main_phone.number
+        return obj.main_phone
 
     get_main_phone_number.short_description = "Main Phone Number"  # Set column header in admin
 
