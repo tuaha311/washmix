@@ -350,14 +350,24 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
         "main_phone",
         "main_address",
     )
+
     list_display = [
-        "__str__",
         "full_name",
-        "main_phone",
+        "get_main_phone_number",  # Use custom method instead of main_phone
+        "__str__",
         "subscription",
         "main_address",
         "has_card",
     ]
+
+    def get_main_phone_number(self, obj):
+        """
+        Returns the phone number portion of the main_phone field.
+        """
+        return obj.main_phone.number
+
+    get_main_phone_number.short_description = "Main Phone Number"  # Set column header in admin
+
     actions = ["full_delete_action"]
 
     def save_form(self, request: HttpRequest, form: forms.BaseForm, change):
