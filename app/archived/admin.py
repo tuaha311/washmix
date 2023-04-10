@@ -28,10 +28,9 @@ class ArchivedRequestsAdmin(RequestAdmin):
 
 class ArchivedCustomerAdmin(AdminWithSearch):
     list_display = [
-        "__str__",
         "full_name",
-        "email",
         "phone",
+        "email",
         "zip_code",
         "address",
         "kind",
