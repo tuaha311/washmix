@@ -27,7 +27,6 @@ class WelcomeCheckoutView(GenericAPIView):
         welcome_service = WelcomeService(client, request, order)
         address, billing_address = welcome_service.checkout(user, raw_address, raw_billing_address)
         try:
-            print("CLIENT:    ", client.__dict__)
             # Deleting User Data if the client was already in our archived Customer
             archived_customer = ArchivedCustomer.objects.filter(email=client.email).delete()
             # Confirming that the deletion was successful
