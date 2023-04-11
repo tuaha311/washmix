@@ -7,6 +7,7 @@ from billing.stripe_helper import StripeHelper
 from notifications.models import Notification, NotificationTypes
 from notifications.tasks import send_admin_client_information, send_email, send_sms
 from users.models import Client
+from archived.models import ArchivedCustomer
 
 User = get_user_model()
 
@@ -27,6 +28,11 @@ class SignupService:
             service = WelcomeService(client, None, None)
             raw_address = {"zip_code": zipCode, "address_line_1": address}
             address = service._create_signup_main_address(raw_address)
+
+
+            # Deleting User Data if the client was already in our archived Customer
+            ArchivedCustomer.objects.filter(email=email).delete()
+
         main_phone = client.main_phone.number
 
         send_email.send(
