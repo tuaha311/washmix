@@ -6,6 +6,7 @@ from api.client.serializers.checkout import (
     WelcomeCheckoutResponseSerializer,
     WelcomeCheckoutSerializer,
 )
+from archived.models import ArchivedCustomer
 from billing.services.checkout import WelcomeService
 
 
@@ -25,6 +26,21 @@ class WelcomeCheckoutView(GenericAPIView):
         client = request.user.client
         welcome_service = WelcomeService(client, request, order)
         address, billing_address = welcome_service.checkout(user, raw_address, raw_billing_address)
+        try:
+            print("CLIENT:    ", client.__dict__)
+            # Deleting User Data if the client was already in our archived Customer
+            archived_customer = ArchivedCustomer.objects.filter(email=client.email).delete()
+            # Confirming that the deletion was successful
+            if archived_customer[0] > 0:
+                print(
+                    f"{archived_customer[0]} records for {client.email} were successfully deleted."
+                )
+            else:
+                print(f"No records found for {client.email}. Nothing was deleted.")
+
+        except Exception as e:
+            print(f"An error occurred while deleting records for {client.email}.")
+            print(f"Error details: {e}")
 
         response_body = {
             "user": user,
