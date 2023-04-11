@@ -131,13 +131,14 @@ class RequestViewSet(ModelViewSet):
         serializer.instance = request
 
     def update(self, request, *args, **kwargs):
+        print("_________           ")
         partial = kwargs.pop("partial", False)
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
 
         request = serializer.instance
-
+        print("==========              ", request.__dict__)
         if request.created + ALLOW_DELIVERY_RESHEDULE_TIMEDELTA < timezone.now():
             message = "Sorry, but your pickup is already scheduled and it’s passed our cutoff time to make any changes. If any questions email cs@washmix.com or text 415-993-9274"
 
