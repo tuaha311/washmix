@@ -147,6 +147,7 @@ class POSOrderPrepareClientResponseSerializer(serializers.ModelSerializer):
             "no_crease",
             "fabric_softener",
             "fix_tears",
+            "private_note",
         ]
 
 

@@ -137,7 +137,6 @@ class RequestViewSet(ModelViewSet):
         serializer.is_valid(raise_exception=True)
 
         request = serializer.instance
-
         if request.created + ALLOW_DELIVERY_RESHEDULE_TIMEDELTA < timezone.now():
             message = "Sorry, but your pickup is already scheduled and it’s passed our cutoff time to make any changes. If any questions email cs@washmix.com or text 415-993-9274"
 
