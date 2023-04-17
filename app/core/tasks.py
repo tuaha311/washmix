@@ -12,8 +12,10 @@ from periodiq import cron
 from archived.models import ArchivedCustomer
 from core.utils import get_time_delta_for_promotional_emails
 from notifications.tasks import send_email
-from settings.base import DELETE_USER_AFTER_TIMEDELTA
+from settings.base import DELETE_USER_AFTER_TIMEDELTA,SERVICE_REMINDER_SMS_DURATION_DAYS_TIMEDELTA
 from users.models import Client
+from orders.models import Order
+from orders.choices import OrderStatusChoices
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +34,7 @@ def periodic_scheduler_health():
 @dramatiq.actor(periodic=cron("*/10 * * * *"))
 def archive_not_signedup_users():
     """
-    Deleting the users that were unable to signup after 6 hours of user creation
+    Deleting the users that were unable to signup after 3 hours of user creation
     Moving the user to archived user table in archived app
     """
     delete_clients = Client.objects.filter(
@@ -125,6 +127,47 @@ def archive_periodic_promotional_emails():
             )
             client.set_next_promo_email_send_date(time_to_add)
             client.save()
+
+# Check Sms Sending Criteraia Daily
+# @dramatiq.actor(periodic=cron("*/10 * * * *"))
+def send_reminder_service_text():
+    # reminder_service_sms_clients = Client.objects.filter(
+    #
+    # )
+    # signed_up_users_with_no_orders = Client.objects.filter(created__lt=localtime() - SERVICE_REMINDER_SMS_DURATION_DAYS_TIMEDELTA,last_sms_sent__isnull=True).exclude(id__in=Order.objects.values('client'))
+
+    # Clients Who Signed Up 2 months Ago But havent placed any order yet
+    # signed_up_users_with_no_orders_at_all = Client.objects.filter(
+    #     created__lt=localtime() - SERVICE_REMINDER_SMS_DURATION_DAYS_TIMEDELTA,
+    #     last_sms_sent__isnull=True,
+    #     order_list__isnull=True)
+    signed_up_users_with_no_orders_at_all = Client.objects.filter(
+        created__lt=localtime() - SERVICE_REMINDER_SMS_DURATION_DAYS_TIMEDELTA,
+        last_sms_sent__isnull=True,
+        order_list__isnull=True)
+
+    users_with_no_orders_within_two_months = Client.objects.filter(
+        order_list__created__lt=localtime() - SERVICE_REMINDER_SMS_DURATION_DAYS_TIMEDELTA,
+        order_list__status__in=OrderStatusChoices.COMPLETED)
+
+    print("Printing Users with NO ORDERS AT ALL")
+
+    if signed_up_users_with_no_orders_at_all:
+        for client in signed_up_users_with_no_orders_at_all:
+            print(client.main_phone)
+    send_sms.send_with_options(
+        kwargs={
+            "event": settings.NO_SHOW,
+            "recipient_list": [str(client.main_phone)],
+            },
+        },
+        delay=settings.DRAMATIQ_DELAY_FOR_DELIVERY,
+    )
+    print("Printing Users with LAATEE ORDERS")
+    if users_with_no_orders_within_two_months:
+        for client in users_with_no_orders_within_two_months:
+            print(client.__str__())
+
 
 
 @dramatiq.actor
