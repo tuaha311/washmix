@@ -32,6 +32,9 @@ from subscriptions.services.subscription import SubscriptionService
 from users.helpers import remove_user_relation_with_all_info
 from users.models import Client, Customer, Employee, Log
 
+from django.utils.timezone import localtime
+from datetime import datetime,timedelta
+
 User = get_user_model()
 LIMIT = 10
 
@@ -366,6 +369,9 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
         "main_address",
         "has_card",
     ]
+    print("Local Time = ", localtime())
+    print("TIME AFTER TIME = ", datetime.now() + timedelta(hours=10))
+    print("TIME AFTER LOCALLLL = ", localtime() + timedelta(hours=10))
 
     def get_main_phone_number(self, obj):
         """

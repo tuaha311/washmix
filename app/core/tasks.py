@@ -3,11 +3,16 @@ import logging
 from django.contrib.auth import get_user_model
 from django.utils.timezone import localtime
 
+from datetime import timedelta
 import dramatiq
 from periodiq import cron
 
 from archived.models import ArchivedCustomer
-from settings.base import DELETE_USER_AFTER_TIMEDELTA
+from settings.base import (
+    DELETE_USER_AFTER_TIMEDELTA,
+    ARCHIVE_CUSTOMER_FIRST_PROMOTION_EMAIL_SEND_HOURS_TIMEDELTA,
+    TOTAL_PROMOTIONAL_EMAIL_COUNT
+)
 from users.models import Client
 
 logger = logging.getLogger(__name__)
@@ -59,6 +64,7 @@ def archive_not_signedup_users():
                     "full_name": full_name,
                     "address": address,
                     "zip_code": zip_code,
+                    "promo_email_send_time": (localtime() + ARCHIVE_CUSTOMER_FIRST_PROMOTION_EMAIL_SEND_HOURS_TIMEDELTA)
                 },
             )
 
@@ -77,6 +83,20 @@ def delete_archived_customers_who_signed_up_already():
     for client in delete_clients:
         client.delete()
 
+
+# every 10 minutes
+@dramatiq.actor(periodic=cron("*/10 * * * *"))
+def archive_periodic_promotional_emails():
+    email_customers = ArchivedCustomer.objects.filter(promo_email_sent_count__lt = TOTAL_PROMOTIONAL_EMAIL_COUNT)
+    currentTime = localtime()
+    for client in email_customers:
+        email_time = client.promo_email_send_time
+        sent_count = client.promo_email_sent_count
+        # Sending First Email
+        if not sent_count and ( email_time.strftime('%Y-%m-%d %H:00:00') == currentTime.strftime('%Y-%m-%d %H:00:00') ) :
+
+        elif sent_count and (email_time.date() == currentTime.date()) :
+            print("ELIF")
 
 @dramatiq.actor
 def worker_health():

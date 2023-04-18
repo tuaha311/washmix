@@ -61,6 +61,17 @@ class ArchivedCustomer(Common):
         default=CustomerKind.INTERESTED,
         choices=CustomerKind.CHOICES,
     )
+    promo_email_sent_count = models.PositiveSmallIntegerField(
+        verbose_name="Promotion Email Sent Count",
+        default=0,
+        blank=True,
+    )
+    promo_email_send_time = models.DateTimeField(
+        verbose_name="Promotion Email Sending Time",
+        editable=False,
+        blank=True,
+        null=True,
+    )
 
     class Meta:
         verbose_name = "Archived Customer"
@@ -68,3 +79,5 @@ class ArchivedCustomer(Common):
 
     def __str__(self):
         return f"#{self.id}"
+
+    def set_next_promo_email_send_date(self,):

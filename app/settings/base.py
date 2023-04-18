@@ -1,4 +1,4 @@
-from datetime import time, timedelta
+from datetime import time, timedelta,datetime
 from pathlib import Path
 
 import dramatiq
@@ -311,6 +311,10 @@ DELIVERY_STATUS_CHOICES = list(DELIVERY_STATUS_MAP.items())
 #########
 DELETE_USER_AFTER_NON_SIGNUP_HOURS = 3
 DELETE_USER_AFTER_TIMEDELTA = timedelta(hours=DELETE_USER_AFTER_NON_SIGNUP_HOURS)
+
+TOTAL_PROMOTIONAL_EMAIL_COUNT = 5
+ARCHIVE_CUSTOMER_FIRST_PROMOTION_EMAIL_SEND_HOURS = 1
+ARCHIVE_CUSTOMER_FIRST_PROMOTION_EMAIL_SEND_HOURS_TIMEDELTA = timedelta(hours= ARCHIVE_CUSTOMER_FIRST_PROMOTION_EMAIL_SEND_HOURS)
 
 
 #####################################
