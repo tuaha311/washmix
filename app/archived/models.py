@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import timedelta
 
 from core.common_models import Common
 from core.validators import validate_phone
@@ -80,4 +81,8 @@ class ArchivedCustomer(Common):
     def __str__(self):
         return f"#{self.id}"
 
-    def set_next_promo_email_send_date(self,):
+    def set_next_promo_email_send_date(self, time_delta_to_add):
+        self.promo_email_send_time = self.promo_email_send_time + time_delta_to_add
+
+    def increase_promo_email_sent_count(self):
+        self.promo_email_sent_count += 1

@@ -10,10 +10,13 @@ from periodiq import cron
 from archived.models import ArchivedCustomer
 from settings.base import (
     DELETE_USER_AFTER_TIMEDELTA,
-    ARCHIVE_CUSTOMER_FIRST_PROMOTION_EMAIL_SEND_HOURS_TIMEDELTA,
     TOTAL_PROMOTIONAL_EMAIL_COUNT
 )
 from users.models import Client
+
+from core.utils import get_time_delta_for_promotional_emails
+from django.conf import settings
+from notifications.tasks import send_email
 
 logger = logging.getLogger(__name__)
 
@@ -64,7 +67,8 @@ def archive_not_signedup_users():
                     "full_name": full_name,
                     "address": address,
                     "zip_code": zip_code,
-                    "promo_email_send_time": (localtime() + ARCHIVE_CUSTOMER_FIRST_PROMOTION_EMAIL_SEND_HOURS_TIMEDELTA)
+                    "promo_email_sent_count": 0,
+                    "promo_email_send_time": (localtime() + get_time_delta_for_promotional_emails(settings.PROMO_EMAIL_PERIODS,0))
                 },
             )
 
@@ -87,17 +91,21 @@ def delete_archived_customers_who_signed_up_already():
 # every 10 minutes
 @dramatiq.actor(periodic=cron("*/10 * * * *"))
 def archive_periodic_promotional_emails():
-    email_customers = ArchivedCustomer.objects.filter(promo_email_sent_count__lt = TOTAL_PROMOTIONAL_EMAIL_COUNT)
-    currentTime = localtime()
+    email_customers = ArchivedCustomer.objects.filter(promo_email_sent_count__lt=settings.TOTAL_PROMOTIONAL_EMAIL_COUNT)
+    current_time = localtime()
     for client in email_customers:
         email_time = client.promo_email_send_time
         sent_count = client.promo_email_sent_count
-        # Sending First Email
-        if not sent_count and ( email_time.strftime('%Y-%m-%d %H:00:00') == currentTime.strftime('%Y-%m-%d %H:00:00') ) :
-
-        elif sent_count and (email_time.date() == currentTime.date()) :
-            print("ELIF")
-
+        # Sending Email
+        if (not sent_count and (email_time.strftime('%Y-%m-%d %H:00:00') == current_time.strftime('%Y-%m-%d %H:00:00'))) or (sent_count and (email_time.date() == current_time.date())):
+            send_email.send(
+                event=settings.PROMOTION_EMAIL_ARCHIVE_CUSTOMER,
+                recipient_list=[client.email],
+            )
+            client.increase_promo_email_sent_count()
+            time_to_add = get_time_delta_for_promotional_emails(settings.PROMO_EMAIL_PERIODS,
+                                                              client.promo_email_sent_count)
+            client.set_next_promo_email_send_date(time_to_add)
 @dramatiq.actor
 def worker_health():
     """
