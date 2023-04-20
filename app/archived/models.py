@@ -66,6 +66,7 @@ class ArchivedCustomer(Common):
         verbose_name="Promotion Email Sent Count",
         default=0,
         blank=True,
+        editable=False,
     )
     promo_email_send_time = models.DateTimeField(
         verbose_name="Promotion Email Sending Time",

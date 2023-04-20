@@ -685,7 +685,9 @@ SEND_ADMIN_PCUSTOMER_INFORMATION = "send_admin_pcustomer_information"
 SEND_ADMIN_STORE_CREDIT = "send_email_store_credit"
 CUSTOMER_ACCOUNT_UPDATE = "customer_account_update"
 CUSTOMER_NOSHOW = "customer_no_show"
-PROMOTION_EMAIL_ARCHIVE_CUSTOMER = "promotion_email_archive_customer"
+FIRST_PROMOTION_EMAIL_ARCHIVE_CUSTOMER = "first_promotion_email_archive_customer"
+SECOND_PROMOTION_EMAIL_ARCHIVE_CUSTOMER = "second_promotion_email_archive_customer"
+THIRD_PROMOTION_EMAIL_ARCHIVE_CUSTOMER = "third_promotion_email_archive_customer"
 
 #################################
 # SENDGRID WITH EMAIL TEMPLATES #
@@ -783,8 +785,20 @@ EMAIL_EVENT_INFO = {
         "from_email": "request@washmix.com",
         "reply_to": "info@washmix.com",
     },
-    PROMOTION_EMAIL_ARCHIVE_CUSTOMER: {
-        "template_name": "email/promotion_email_archived_customer.html",
+    FIRST_PROMOTION_EMAIL_ARCHIVE_CUSTOMER: {
+        "template_name": "email/first_promotion_email_archived_customer.html",
+        "subject": "Promotional Email",
+        "from_email": "request@washmix.com",
+        "reply_to": "info@washmix.com",
+    },
+    SECOND_PROMOTION_EMAIL_ARCHIVE_CUSTOMER: {
+        "template_name": "email/second_promotion_email_archived_customer.html",
+        "subject": "Promotional Email",
+        "from_email": "request@washmix.com",
+        "reply_to": "info@washmix.com",
+    },
+    THIRD_PROMOTION_EMAIL_ARCHIVE_CUSTOMER: {
+        "template_name": "email/first_promotion_email_archived_customer.html",
         "subject": "Promotional Email",
         "from_email": "request@washmix.com",
         "reply_to": "info@washmix.com",

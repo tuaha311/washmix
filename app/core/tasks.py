@@ -98,8 +98,14 @@ def archive_periodic_promotional_emails():
         sent_count = client.promo_email_sent_count
         # Sending Email
         if (not sent_count and (email_time.strftime('%Y-%m-%d %H:00:00') == current_time.strftime('%Y-%m-%d %H:00:00'))) or (sent_count and (email_time.date() == current_time.date())):
-            send_email.send(
-                event=settings.PROMOTION_EMAIL_ARCHIVE_CUSTOMER,
+            if not client.promo_email_sent_count:
+                email_to_send = settings.FIRST_PROMOTION_EMAIL_ARCHIVE_CUSTOMER
+            elif client.promo_email_sent_count == 1:
+                email_to_send = settings.SECOND_PROMOTION_EMAIL_ARCHIVE_CUSTOMER
+            else:
+                email_to_send = settings.THIRD_PROMOTION_EMAIL_ARCHIVE_CUSTOMER
+            send_email(
+                event=settings.email_to_send,
                 recipient_list=[client.email],
             )
             client.increase_promo_email_sent_count()

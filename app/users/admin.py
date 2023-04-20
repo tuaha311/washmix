@@ -368,11 +368,6 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
         "main_address",
         "has_card",
     ]
-    send_email.send(
-        event=settings.PROMOTION_EMAIL_ARCHIVE_CUSTOMER,
-        recipient_list=["bnb@mailinator.com"],
-    )
-    print("EMAIL SENT")
     def get_main_phone_number(self, obj):
         """
         Returns the phone number portion of the main_phone field, or the main_phone field if it doesn't have a number attribute.
