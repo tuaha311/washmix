@@ -32,8 +32,6 @@ from subscriptions.services.subscription import SubscriptionService
 from users.helpers import remove_user_relation_with_all_info
 from users.models import Client, Customer, Employee, Log
 
-from notifications.tasks import send_email
-
 User = get_user_model()
 LIMIT = 10
 
@@ -368,6 +366,7 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
         "main_address",
         "has_card",
     ]
+
     def get_main_phone_number(self, obj):
         """
         Returns the phone number portion of the main_phone field, or the main_phone field if it doesn't have a number attribute.

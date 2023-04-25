@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 from pathlib import PosixPath
 
 from django.conf import settings
@@ -6,8 +7,6 @@ from django.db.models import Model
 
 import phonenumbers
 from rest_framework import serializers
-
-from datetime import timedelta
 
 
 def convert_cent_to_dollars(cent_amount: int):
@@ -167,8 +166,9 @@ def clone_instance(instance: Model) -> Model:
     instance.save()
 
     return instance
-def get_time_delta_for_promotional_emails(promo_email_periods: dict, email_count: int) -> timedelta:
 
+
+def get_time_delta_for_promotional_emails(promo_email_periods: dict, email_count: int) -> timedelta:
     time_unit = promo_email_periods[email_count]["time_unit"]
     time_value = int(promo_email_periods[email_count]["after"])
     delta = None

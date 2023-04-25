@@ -1,5 +1,6 @@
-from django.db import models
 from datetime import timedelta
+
+from django.db import models
 
 from core.common_models import Common
 from core.validators import validate_phone

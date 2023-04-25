@@ -1,4 +1,4 @@
-from datetime import time, timedelta,datetime
+from datetime import datetime, time, timedelta
 from pathlib import Path
 
 import dramatiq
@@ -318,7 +318,7 @@ DELETE_USER_AFTER_TIMEDELTA = timedelta(hours=DELETE_USER_AFTER_NON_SIGNUP_HOURS
 ######################################
 
 TOTAL_PROMOTIONAL_EMAIL_COUNT = 5
-PROMO_EMAIL_PERIODS = { ## Max Unit Allowed is Week , Min can be millisecond
+PROMO_EMAIL_PERIODS = {  ## Max Unit Allowed is Week , Min can be millisecond
     0: {
         "after": "1",
         "time_unit": "hours",
@@ -334,8 +334,6 @@ PROMO_EMAIL_PERIODS = { ## Max Unit Allowed is Week , Min can be millisecond
     3: {
         "after": "4",  # 1 Month
         "time_unit": "weeks",
-
-
     },
     4: {
         "after": "12",  # 3 Months
@@ -798,7 +796,7 @@ EMAIL_EVENT_INFO = {
         "reply_to": "info@washmix.com",
     },
     THIRD_PROMOTION_EMAIL_ARCHIVE_CUSTOMER: {
-        "template_name": "email/first_promotion_email_archived_customer.html",
+        "template_name": "email/third_promotion_email_archived_customer.html",
         "subject": "Promotional Email",
         "from_email": "request@washmix.com",
         "reply_to": "info@washmix.com",
