@@ -104,11 +104,16 @@ class Client(ProxyUserInfoMixin, Stripeable, Common):
         verbose_name="automatically bill subscription",
         default=True,
     )
-
     private_note = models.CharField(
         max_length=300,
         blank=True,
     )
+    # promo_sms_sent = models.DateTimeField(
+    #     verbose_name="Last Promotional SMS",
+    #     editable=False,
+    #     blank=True,
+    #     null=True,
+    # )
 
     objects = ClientManager()
 

@@ -16,6 +16,9 @@ from settings.base import DELETE_USER_AFTER_TIMEDELTA,SERVICE_REMINDER_SMS_DURAT
 from users.models import Client
 from orders.models import Order
 from orders.choices import OrderStatusChoices
+from notifications.tasks import send_sms
+from django.conf import settings
+from django.db.models import Q
 
 logger = logging.getLogger(__name__)
 
@@ -131,42 +134,54 @@ def archive_periodic_promotional_emails():
 # Check Sms Sending Criteraia Daily
 # @dramatiq.actor(periodic=cron("*/10 * * * *"))
 def send_reminder_service_text():
-    # reminder_service_sms_clients = Client.objects.filter(
-    #
-    # )
-    # signed_up_users_with_no_orders = Client.objects.filter(created__lt=localtime() - SERVICE_REMINDER_SMS_DURATION_DAYS_TIMEDELTA,last_sms_sent__isnull=True).exclude(id__in=Order.objects.values('client'))
-
-    # Clients Who Signed Up 2 months Ago But havent placed any order yet
-    # signed_up_users_with_no_orders_at_all = Client.objects.filter(
-    #     created__lt=localtime() - SERVICE_REMINDER_SMS_DURATION_DAYS_TIMEDELTA,
-    #     last_sms_sent__isnull=True,
-    #     order_list__isnull=True)
     signed_up_users_with_no_orders_at_all = Client.objects.filter(
-        created__lt=localtime() - SERVICE_REMINDER_SMS_DURATION_DAYS_TIMEDELTA,
-        last_sms_sent__isnull=True,
-        order_list__isnull=True)
+        Q(
+            created__lt=localtime() - SERVICE_REMINDER_SMS_DURATION_DAYS_TIMEDELTA,
+            order_list__isnull=True,
+            promo_email_send_time__isnull=True
+        )
+        |
+        Q(
+            created__lt=localtime() - SERVICE_REMINDER_SMS_DURATION_DAYS_TIMEDELTA,
+            order_list__isnull=True,
+            promo_email_send_time__isnull=False,
+            promo_email_send_time__lt=localtime() - SERVICE_REMINDER_SMS_DURATION_DAYS_TIMEDELTA,
+        )
+    ).distinct('user_id').limit(20)
 
-    users_with_no_orders_within_two_months = Client.objects.filter(
-        order_list__created__lt=localtime() - SERVICE_REMINDER_SMS_DURATION_DAYS_TIMEDELTA,
-        order_list__status__in=OrderStatusChoices.COMPLETED)
+    users_with_no_orders_within_given_limit = Client.objects.filter(
+       Q(
+            order_list__changed__lt=localtime() - SERVICE_REMINDER_SMS_DURATION_DAYS_TIMEDELTA,
+            order_list__status__exact=OrderStatusChoices.COMPLETED,
+            promo_email_send_time__isnull=True
+       )
+       |
+       Q(
+           order_list__changed__lt=localtime() - SERVICE_REMINDER_SMS_DURATION_DAYS_TIMEDELTA,
+           order_list__status__exact=OrderStatusChoices.COMPLETED,
+           promo_email_send_time__isnull=False,
+           promo_email_send_time__lt=localtime() - SERVICE_REMINDER_SMS_DURATION_DAYS_TIMEDELTA
+       )
+    ).distinct('user_id').limit(20)
 
     print("Printing Users with NO ORDERS AT ALL")
+    print(signed_up_users_with_no_orders_at_all)
+    # print(users_with_no_orders_within_two_months)
 
     if signed_up_users_with_no_orders_at_all:
         for client in signed_up_users_with_no_orders_at_all:
-            print(client.main_phone)
-    send_sms.send_with_options(
-        kwargs={
-            "event": settings.NO_SHOW,
-            "recipient_list": [str(client.main_phone)],
-            },
-        },
-        delay=settings.DRAMATIQ_DELAY_FOR_DELIVERY,
-    )
-    print("Printing Users with LAATEE ORDERS")
-    if users_with_no_orders_within_two_months:
-        for client in users_with_no_orders_within_two_months:
-            print(client.__str__())
+            print(client.main_phone.number)
+            send_sms.send_with_options(
+                kwargs={
+                    "event": settings.NO_SHOW,
+                    "recipient_list": [client.main_phone.number],
+                    },
+            )
+            print("SMS SENT to " + client.main_phone.number)
+    # print("Printing Users with LAATEE ORDERS")
+    # if users_with_no_orders_within_two_months:
+    #     for client in users_with_no_orders_within_two_months:
+    #         print(client.user_id)
 
 
 
