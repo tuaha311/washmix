@@ -375,6 +375,7 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
         "has_card",
     ]
 
+<<<<<<< HEAD
     def full_address(self, obj):
         address_line_2 = obj.billing_address.get("address_line_2")
         if address_line_2 is not None:
@@ -385,6 +386,8 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
     def address_line_2(self, obj):
         return obj.billing_address.get("address_line_2")
 
+=======
+>>>>>>> 15a4877 (All Done With Periodic SMS Sending Template Logic and Implementation)
     def get_main_phone_number(self, obj):
         """
         Returns the phone number portion of the main_phone field, or the main_phone field if it doesn't have a number attribute.
