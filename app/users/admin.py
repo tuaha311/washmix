@@ -32,7 +32,7 @@ from subscriptions.services.subscription import SubscriptionService
 from users.helpers import remove_user_relation_with_all_info
 from users.models import Client, Customer, Employee, Log
 
-from core.tasks import send_reminder_service_text
+
 
 User = get_user_model()
 LIMIT = 10
@@ -368,8 +368,6 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
         "main_address",
         "has_card",
     ]
-
-    send_reminder_service_text()
 
     def get_main_phone_number(self, obj):
         """

@@ -132,57 +132,64 @@ def archive_periodic_promotional_emails():
             client.save()
 
 # Check Sms Sending Criteraia Daily
-# @dramatiq.actor(periodic=cron("*/10 * * * *"))
+#Every Hour
+@dramatiq.actor(periodic=cron("*/59 * * * *"))
 def send_reminder_service_text():
     signed_up_users_with_no_orders_at_all = Client.objects.filter(
         Q(
             created__lt=localtime() - SERVICE_REMINDER_SMS_DURATION_DAYS_TIMEDELTA,
             order_list__isnull=True,
-            promo_email_send_time__isnull=True
+            promo_sms_sent__isnull=True
         )
         |
         Q(
             created__lt=localtime() - SERVICE_REMINDER_SMS_DURATION_DAYS_TIMEDELTA,
             order_list__isnull=True,
-            promo_email_send_time__isnull=False,
-            promo_email_send_time__lt=localtime() - SERVICE_REMINDER_SMS_DURATION_DAYS_TIMEDELTA,
+            promo_sms_sent__isnull=False,
+            promo_sms_sent__lt=localtime() - SERVICE_REMINDER_SMS_DURATION_DAYS_TIMEDELTA,
         )
-    ).distinct('user_id').limit(20)
+    ).distinct('user_id')[:20]
 
     users_with_no_orders_within_given_limit = Client.objects.filter(
        Q(
             order_list__changed__lt=localtime() - SERVICE_REMINDER_SMS_DURATION_DAYS_TIMEDELTA,
             order_list__status__exact=OrderStatusChoices.COMPLETED,
-            promo_email_send_time__isnull=True
+            promo_sms_sent__isnull=True
        )
        |
        Q(
            order_list__changed__lt=localtime() - SERVICE_REMINDER_SMS_DURATION_DAYS_TIMEDELTA,
            order_list__status__exact=OrderStatusChoices.COMPLETED,
-           promo_email_send_time__isnull=False,
-           promo_email_send_time__lt=localtime() - SERVICE_REMINDER_SMS_DURATION_DAYS_TIMEDELTA
+           promo_sms_sent__isnull=False,
+           promo_sms_sent__lt=localtime() - SERVICE_REMINDER_SMS_DURATION_DAYS_TIMEDELTA
        )
-    ).distinct('user_id').limit(20)
-
-    print("Printing Users with NO ORDERS AT ALL")
-    print(signed_up_users_with_no_orders_at_all)
-    # print(users_with_no_orders_within_two_months)
+    ).distinct('user_id')[:20]
 
     if signed_up_users_with_no_orders_at_all:
         for client in signed_up_users_with_no_orders_at_all:
-            print(client.main_phone.number)
             send_sms.send_with_options(
                 kwargs={
-                    "event": settings.NO_SHOW,
+                    "event": settings.SERVICE_PROMOTION,
                     "recipient_list": [client.main_phone.number],
                     },
+                delay=settings.DRAMATIQ_DELAY_FOR_DELIVERY,
             )
-            print("SMS SENT to " + client.main_phone.number)
-    # print("Printing Users with LAATEE ORDERS")
-    # if users_with_no_orders_within_two_months:
-    #     for client in users_with_no_orders_within_two_months:
-    #         print(client.user_id)
+            client.set_promo_sms_sent_date(localtime())
+            client.save()
+            logger.info(f"Sendin SMS to client {client.email}")
 
+    if users_with_no_orders_within_given_limit:
+        for client in users_with_no_orders_within_given_limit:
+            send_sms.send_with_options(
+                kwargs={
+                    "event": settings.SERVICE_PROMOTION,
+                    "recipient_list": [client.main_phone.number],
+                    },
+                delay=settings.DRAMATIQ_DELAY_FOR_DELIVERY,
+            )
+            client.set_promo_sms_sent_date(localtime())
+            client.save()
+            logger.info(f"Sendin SMS to client {client.email}")
 
 
 @dramatiq.actor
