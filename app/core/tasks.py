@@ -1,9 +1,10 @@
 import logging
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.utils.timezone import localtime
+from django.utils import timezone
 
 import dramatiq
 from periodiq import cron
@@ -20,6 +21,8 @@ from settings.base import (
     UNPAID_ORDER_TOTAL_REMINDER_EMAILS,
 )
 from users.models import Client
+from notifications.tasks import send_sms
+from django.db.models import Q
 
 logger = logging.getLogger(__name__)
 
@@ -247,6 +250,129 @@ def delete_archived_customers_who_signed_up_already():
     print(f"Total delete clients: {delete_clients_count}")
     for client in delete_clients:
         client.delete()
+
+
+# every 10 minutes
+@dramatiq.actor(periodic=cron("*/10 * * * *"))
+def archive_periodic_promotional_emails():
+    email_customers = ArchivedCustomer.objects.filter(
+        promo_email_sent_count__lt=settings.TOTAL_PROMOTIONAL_EMAIL_COUNT
+    )
+    current_time = localtime()
+    for client in email_customers:
+        email_time = client.promo_email_send_time
+        sent_count = client.promo_email_sent_count
+        # Sending Email
+        if (
+            not sent_count
+            and (
+                email_time.strftime("%Y-%m-%d %H:00:00")
+                == current_time.strftime("%Y-%m-%d %H:00:00")
+            )
+        ) or (sent_count and (email_time.date() == current_time.date())):
+            if not client.promo_email_sent_count:
+                email_to_send = settings.FIRST_PROMOTION_EMAIL_ARCHIVE_CUSTOMER
+            elif client.promo_email_sent_count == 1:
+                email_to_send = settings.SECOND_PROMOTION_EMAIL_ARCHIVE_CUSTOMER
+            else:
+                email_to_send = settings.THIRD_PROMOTION_EMAIL_ARCHIVE_CUSTOMER
+            send_email(
+                event=email_to_send,
+                recipient_list=[client.email],
+                extra_context={
+                    "date": datetime.datetime.now().strftime("%d-%B-%Y"),
+                },
+            )
+            client.increase_promo_email_sent_count()
+            time_to_add = get_time_delta_for_promotional_emails(
+                settings.PROMO_EMAIL_PERIODS, client.promo_email_sent_count
+            )
+            client.set_next_promo_email_send_date(time_to_add)
+            client.save()
+
+def derive_required_months(month):
+    all_months = []
+    for i in range(0, 5):
+        month = month - 2
+        if month == 0:
+            month = 12
+        if month == -1:
+            month = 11
+        all_months.append(month)
+        
+    return all_months
+
+# Check Sms Sending Criteraia Daily
+#Every Hour
+@dramatiq.actor(periodic=cron("*/59 * * * *"))
+def send_reminder_service_text():
+    # current_date = datetime.now().date()
+    current_date = timezone.now()
+    month =  int(current_date.month)
+    day =  current_date.day
+    start_date = current_date - timedelta(days=60) 
+    all_months = derive_required_months(month)
+    
+    signed_up_users_with_no_orders_at_all = Client.objects.filter(
+        Q(
+            created__month=month, 
+            created__day=day,
+            order_list__isnull=True,
+            promo_sms_sent__isnull=True
+        )
+        |
+        Q(
+            created__month=month - 2,
+            created__day=day,
+            order_list__isnull=True,
+            promo_sms_sent__isnull=False
+        ) & ~Q(
+            promo_sms_sent__range=(start_date, current_date)
+        )
+        ).distinct('user_id')[:20]
+
+    users_with_no_orders_within_given_limit = Client.objects.filter(
+        Q(
+            ~Q(order_list__created__range=(start_date, current_date)),
+            created__day=day,
+            created__month__in=all_months,
+            promo_sms_sent__isnull=True
+        )
+        |
+        Q(
+            ~Q(order_list__created__range=(start_date, current_date)),
+            Q(promo_sms_sent__isnull=False),
+            ~Q(promo_sms_sent__range=(start_date, current_date)),
+            created__day=day,
+            created__month__in=all_months
+        )
+        ).distinct('user_id')[:20]
+    
+    if signed_up_users_with_no_orders_at_all:
+        for client in signed_up_users_with_no_orders_at_all:
+            send_sms.send_with_options(
+                kwargs={
+                    "event": settings.SERVICE_PROMOTION,
+                    "recipient_list": [client.main_phone.number],
+                    },
+                delay=settings.DRAMATIQ_DELAY_FOR_DELIVERY,
+            )
+            client.set_promo_sms_sent_date(localtime())
+            client.save()
+            logger.info(f"Sendin SMS to client {client.email}")
+
+    if users_with_no_orders_within_given_limit:
+        for client in users_with_no_orders_within_given_limit:
+            send_sms.send_with_options(
+                kwargs={
+                    "event": settings.SERVICE_PROMOTION,
+                    "recipient_list": [client.main_phone.number],
+                    },
+                delay=settings.DRAMATIQ_DELAY_FOR_DELIVERY,
+            )
+            client.set_promo_sms_sent_date(localtime())
+            client.save()
+            logger.info(f"Sendin SMS to client {client.email}")
 
 
 @dramatiq.actor
