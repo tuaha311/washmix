@@ -1,4 +1,4 @@
-from datetime import time, timedelta
+from datetime import datetime, time, timedelta
 from pathlib import Path
 
 import dramatiq
@@ -311,6 +311,35 @@ DELIVERY_STATUS_CHOICES = list(DELIVERY_STATUS_MAP.items())
 #########
 DELETE_USER_AFTER_NON_SIGNUP_HOURS = 3
 DELETE_USER_AFTER_TIMEDELTA = timedelta(hours=DELETE_USER_AFTER_NON_SIGNUP_HOURS)
+
+
+######################################
+# PROMOTIONAL ARCHIVE CUSTOMER EMAILS#
+######################################
+
+TOTAL_PROMOTIONAL_EMAIL_COUNT = 5
+PROMO_EMAIL_PERIODS = {  ## Max Unit Allowed is Week , Min can be millisecond
+    0: {
+        "after": "1",
+        "time_unit": "hours",
+    },
+    1: {
+        "after": "1",
+        "time_unit": "days",
+    },
+    2: {
+        "after": "1",
+        "time_unit": "weeks",
+    },
+    3: {
+        "after": "4",  # 1 Month
+        "time_unit": "weeks",
+    },
+    4: {
+        "after": "12",  # 3 Months
+        "time_unit": "weeks",
+    },
+}
 
 
 #####################################
@@ -654,6 +683,9 @@ SEND_ADMIN_PCUSTOMER_INFORMATION = "send_admin_pcustomer_information"
 SEND_ADMIN_STORE_CREDIT = "send_email_store_credit"
 CUSTOMER_ACCOUNT_UPDATE = "customer_account_update"
 CUSTOMER_NOSHOW = "customer_no_show"
+FIRST_PROMOTION_EMAIL_ARCHIVE_CUSTOMER = "first_promotion_email_archive_customer"
+SECOND_PROMOTION_EMAIL_ARCHIVE_CUSTOMER = "second_promotion_email_archive_customer"
+THIRD_PROMOTION_EMAIL_ARCHIVE_CUSTOMER = "third_promotion_email_archive_customer"
 
 #################################
 # SENDGRID WITH EMAIL TEMPLATES #
@@ -748,6 +780,24 @@ EMAIL_EVENT_INFO = {
     NEW_REQUEST: {
         "template_name": "email/send_admin_client_information.html",
         "subject": "New User Activity",
+        "from_email": "request@washmix.com",
+        "reply_to": "info@washmix.com",
+    },
+    FIRST_PROMOTION_EMAIL_ARCHIVE_CUSTOMER: {
+        "template_name": "email/first_promotion_email_archived_customer.html",
+        "subject": "Promotional Email",
+        "from_email": "request@washmix.com",
+        "reply_to": "info@washmix.com",
+    },
+    SECOND_PROMOTION_EMAIL_ARCHIVE_CUSTOMER: {
+        "template_name": "email/second_promotion_email_archived_customer.html",
+        "subject": "Promotional Email",
+        "from_email": "request@washmix.com",
+        "reply_to": "info@washmix.com",
+    },
+    THIRD_PROMOTION_EMAIL_ARCHIVE_CUSTOMER: {
+        "template_name": "email/third_promotion_email_archived_customer.html",
+        "subject": "Promotional Email",
         "from_email": "request@washmix.com",
         "reply_to": "info@washmix.com",
     },
