@@ -31,17 +31,16 @@ class RequestValidator:
                 detail="Sorry, we do not operate on the upcoming holidays",
                 code="cant_pickup_at_weekends",
             )
-        elif self._pickup_date.isoweekday() in NON_WORKING_DAYS:
+        elif self._pickup_date.isoweekday() == 6 or self._pickup_date.isoweekday() == 7:
             raise serializers.ValidationError(
                 detail="Pickup & Delivery services are available on Weekdays",
                 code="cant_pickup_at_weekends",
             )
-
-        # if self._pickup_date.isoweekday() in settings.NON_WORKING_DAYS:
-        #     raise serializers.ValidationError(
-        #         detail="Pickup & Delivery services are available on Weekdays",
-        #         code="cant_pickup_at_weekends",
-        #     )
+        elif self._pickup_date.isoweekday() in NON_WORKING_DAYS:
+            raise serializers.ValidationError(
+                detail="We don't have service on this day",
+                code="cant_pickup_at_weekends",
+            )
 
     def validate(self):
         self._validate_date()
@@ -62,12 +61,17 @@ class RequestValidator:
 
         if str(self._pickup_date) in HOLIDAYS:
             raise serializers.ValidationError(
-                detail="Sorry, we do not operate on the upcoming holidays",
+                detail="Sorry, we do not operate on the upcoming holidays.",
+                code="cant_pickup_at_weekends",
+            )
+        elif self._pickup_date.isoweekday() == 6 or self._pickup_date.isoweekday() == 7:
+            raise serializers.ValidationError(
+                detail="Pickup & Delivery services are available on Weekdays.",
                 code="cant_pickup_at_weekends",
             )
         elif self._pickup_date.isoweekday() in NON_WORKING_DAYS:
             raise serializers.ValidationError(
-                detail="Pickup & Delivery services are available on Weekdays",
+                detail="We don't have service on this day.",
                 code="cant_pickup_at_weekends",
             )
 
