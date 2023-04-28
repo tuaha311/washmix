@@ -12,7 +12,7 @@ from periodiq import cron
 from archived.models import ArchivedCustomer
 from core.utils import get_time_delta_for_promotional_emails
 from notifications.tasks import send_email
-from settings.base import DELETE_USER_AFTER_TIMEDELTA, TOTAL_PROMOTIONAL_EMAIL_COUNT
+from settings.base import DELETE_USER_AFTER_TIMEDELTA
 from users.models import Client
 
 logger = logging.getLogger(__name__)
