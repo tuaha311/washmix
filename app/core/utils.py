@@ -179,5 +179,7 @@ def get_time_delta_for_promotional_emails(promo_email_periods: dict, email_count
         delta = timedelta(days=time_value)
     elif time_unit == "weeks":
         delta = timedelta(weeks=time_value)
+    elif time_unit == "minutes":
+        delta = timedelta(minutes=time_value)
 
     return delta
