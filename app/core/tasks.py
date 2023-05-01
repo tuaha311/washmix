@@ -33,8 +33,8 @@ def periodic_scheduler_health():
     logger.info("Periodic scheduler health - OK")
 
 
-# every 10 minutes
-@dramatiq.actor(periodic=cron("*/10 * * * *"))
+# every 5 minutes
+@dramatiq.actor(periodic=cron("*/5 * * * *"))
 def archive_not_signedup_users():
     """
     Deleting the users that were unable to signup after 3 hours of user creation
@@ -79,7 +79,7 @@ def archive_not_signedup_users():
 
             user.delete()
 
-
+#every week on Saturday 11 PM
 @dramatiq.actor(periodic=cron("0 23 * * 6"))
 def delete_archived_customers_who_signed_up_already():
     """
@@ -93,7 +93,7 @@ def delete_archived_customers_who_signed_up_already():
         client.delete()
 
 
-# every 10 minutes
+# every 5 minutes
 @dramatiq.actor(periodic=cron("*/5 * * * *"))
 def archive_periodic_promotional_emails():
     email_customers = ArchivedCustomer.objects.filter(
