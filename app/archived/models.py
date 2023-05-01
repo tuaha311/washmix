@@ -82,7 +82,6 @@ class ArchivedCustomer(Common):
 
     def __str__(self):
         return f"#{self.id}"
-
     def set_next_promo_email_send_date(self, time_delta_to_add):
         self.promo_email_send_time = self.promo_email_send_time + time_delta_to_add
 

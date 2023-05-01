@@ -311,7 +311,8 @@ DELIVERY_STATUS_CHOICES = list(DELIVERY_STATUS_MAP.items())
 #########
 DELETE_USER_AFTER_NON_SIGNUP_HOURS = 3
 DELETE_USER_AFTER_TIMEDELTA = timedelta(hours=DELETE_USER_AFTER_NON_SIGNUP_HOURS)
-
+SERVICE_REMINDER_SMS_DURATION_DAYS = 6
+SERVICE_REMINDER_SMS_DURATION_DAYS_TIMEDELTA = timedelta(days=SERVICE_REMINDER_SMS_DURATION_DAYS)
 
 ######################################
 # PROMOTIONAL ARCHIVE CUSTOMER EMAILS#
@@ -617,6 +618,7 @@ UNABLE_TO_CREATE_MULTIPLE_REQUEST = "unable_to_create_multiple_request"
 PICKUP_DUE_TOMORROW = "pickup_due_tomorrow"
 SMS_CREDIT_BACK = "credit_back"
 NO_SHOW = "no_show"
+SERVICE_PROMOTION = "service_promotion"
 
 #############################
 # TWILIO WITH SMS TEMPLATES #
@@ -660,6 +662,9 @@ SMS_EVENT_INFO = {
     },
     NO_SHOW: {
         "template_name": "sms/no_show.html",
+    },
+    SERVICE_PROMOTION: {
+        "template_name": "sms/service_promotion.html",
     },
 }
 

@@ -12,8 +12,13 @@ from periodiq import cron
 from archived.models import ArchivedCustomer
 from core.utils import get_time_delta_for_promotional_emails
 from notifications.tasks import send_email
-from settings.base import DELETE_USER_AFTER_TIMEDELTA
+from settings.base import DELETE_USER_AFTER_TIMEDELTA,SERVICE_REMINDER_SMS_DURATION_DAYS_TIMEDELTA
 from users.models import Client
+from orders.models import Order
+from orders.choices import OrderStatusChoices
+from notifications.tasks import send_sms
+from django.conf import settings
+from django.db.models import Q
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +37,7 @@ def periodic_scheduler_health():
 @dramatiq.actor(periodic=cron("*/10 * * * *"))
 def archive_not_signedup_users():
     """
-    Deleting the users that were unable to signup after 6 hours of user creation
+    Deleting the users that were unable to signup after 3 hours of user creation
     Moving the user to archived user table in archived app
     """
     delete_clients = Client.objects.filter(
@@ -125,6 +130,66 @@ def archive_periodic_promotional_emails():
             )
             client.set_next_promo_email_send_date(time_to_add)
             client.save()
+
+# Check Sms Sending Criteraia Daily
+#Every Hour
+@dramatiq.actor(periodic=cron("*/59 * * * *"))
+def send_reminder_service_text():
+    signed_up_users_with_no_orders_at_all = Client.objects.filter(
+        Q(
+            created__lt=localtime() - SERVICE_REMINDER_SMS_DURATION_DAYS_TIMEDELTA,
+            order_list__isnull=True,
+            promo_sms_sent__isnull=True
+        )
+        |
+        Q(
+            created__lt=localtime() - SERVICE_REMINDER_SMS_DURATION_DAYS_TIMEDELTA,
+            order_list__isnull=True,
+            promo_sms_sent__isnull=False,
+            promo_sms_sent__lt=localtime() - SERVICE_REMINDER_SMS_DURATION_DAYS_TIMEDELTA,
+        )
+    ).distinct('user_id')[:20]
+
+    users_with_no_orders_within_given_limit = Client.objects.filter(
+       Q(
+            order_list__changed__lt=localtime() - SERVICE_REMINDER_SMS_DURATION_DAYS_TIMEDELTA,
+            order_list__status__exact=OrderStatusChoices.COMPLETED,
+            promo_sms_sent__isnull=True
+       )
+       |
+       Q(
+           order_list__changed__lt=localtime() - SERVICE_REMINDER_SMS_DURATION_DAYS_TIMEDELTA,
+           order_list__status__exact=OrderStatusChoices.COMPLETED,
+           promo_sms_sent__isnull=False,
+           promo_sms_sent__lt=localtime() - SERVICE_REMINDER_SMS_DURATION_DAYS_TIMEDELTA
+       )
+    ).distinct('user_id')[:20]
+
+    if signed_up_users_with_no_orders_at_all:
+        for client in signed_up_users_with_no_orders_at_all:
+            send_sms.send_with_options(
+                kwargs={
+                    "event": settings.SERVICE_PROMOTION,
+                    "recipient_list": [client.main_phone.number],
+                    },
+                delay=settings.DRAMATIQ_DELAY_FOR_DELIVERY,
+            )
+            client.set_promo_sms_sent_date(localtime())
+            client.save()
+            logger.info(f"Sendin SMS to client {client.email}")
+
+    if users_with_no_orders_within_given_limit:
+        for client in users_with_no_orders_within_given_limit:
+            send_sms.send_with_options(
+                kwargs={
+                    "event": settings.SERVICE_PROMOTION,
+                    "recipient_list": [client.main_phone.number],
+                    },
+                delay=settings.DRAMATIQ_DELAY_FOR_DELIVERY,
+            )
+            client.set_promo_sms_sent_date(localtime())
+            client.save()
+            logger.info(f"Sendin SMS to client {client.email}")
 
 
 @dramatiq.actor
