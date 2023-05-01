@@ -94,7 +94,7 @@ def delete_archived_customers_who_signed_up_already():
 
 
 # every 10 minutes
-@dramatiq.actor(periodic=cron("*/10 * * * *"))
+@dramatiq.actor(periodic=cron("*/5 * * * *"))
 def archive_periodic_promotional_emails():
     email_customers = ArchivedCustomer.objects.filter(
         promo_email_sent_count__lt=settings.TOTAL_PROMOTIONAL_EMAIL_COUNT
