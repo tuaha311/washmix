@@ -101,9 +101,10 @@ def archive_periodic_promotional_emails():
     )
     current_time = localtime()
     for client in email_customers:
-        print(email_customers)
         if client.promo_email_send_time is None:
             email_time = current_time
+            client.promo_email_send_time = current_time
+            client.save()
         else:
             email_time = client.promo_email_send_time
         sent_count = client.promo_email_sent_count
@@ -134,7 +135,6 @@ def archive_periodic_promotional_emails():
             )
             client.set_next_promo_email_send_date(time_to_add)
             client.save()
-            print("PROMO EMAIL SENT TO  " + client.email)
 
 # Check Sms Sending Criteraia Daily
 #Every Hour

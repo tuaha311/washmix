@@ -321,23 +321,23 @@ SERVICE_REMINDER_SMS_DURATION_DAYS_TIMEDELTA = timedelta(days=SERVICE_REMINDER_S
 TOTAL_PROMOTIONAL_EMAIL_COUNT = 5
 PROMO_EMAIL_PERIODS = {  ## Max Unit Allowed is Week , Min can be millisecond
     0: {
-        "after": "5",
+        "after": "1",
         "time_unit": "minutes",
     },
     1: {
-        "after": "5",
+        "after": "1",
         "time_unit": "minutes",
     },
     2: {
-        "after": "5",
+        "after": "1",
         "time_unit": "minutes",
     },
     3: {
-        "after": "5",  # 1 Month
+        "after": "1",  # 1 Month
         "time_unit": "minutes",
     },
     4: {
-        "after": "5",  # 3 Months
+        "after": "1",  # 3 Months
         "time_unit": "minutes",
     },
 }
