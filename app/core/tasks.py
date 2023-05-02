@@ -102,7 +102,7 @@ def archive_periodic_promotional_emails():
     current_time = localtime()
     for client in email_customers:
         print(email_customers)
-        if client.promo_email_sent_time is None:
+        if client.promo_email_send_time is None:
             email_time = current_time
         else:
             email_time = client.promo_email_send_time
