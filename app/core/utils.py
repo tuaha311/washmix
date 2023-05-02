@@ -168,11 +168,13 @@ def clone_instance(instance: Model) -> Model:
     return instance
 
 
-def get_time_delta_for_promotional_emails(promo_email_periods: dict, email_count: int) -> timedelta:
-    time_unit = promo_email_periods[email_count]["time_unit"]
-    time_value = int(promo_email_periods[email_count]["after"])
+def get_time_delta_for_promotional_emails(promo_email_periods: dict, email_count: int, total_email_to_send: int) -> timedelta:
     delta = None
-
+    if(email_count < total_email_to_send ):
+        time_unit = promo_email_periods[email_count]["time_unit"]
+        time_value = int(promo_email_periods[email_count]["after"])
+    else:
+        return delta
     if time_unit == "hours":
         delta = timedelta(hours=time_value)
     elif time_unit == "days":

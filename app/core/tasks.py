@@ -76,7 +76,6 @@ def archive_not_signedup_users():
                     ),
                 },
             )
-
             user.delete()
 
 #every week on Saturday 11 PM
@@ -94,12 +93,15 @@ def delete_archived_customers_who_signed_up_already():
 
 
 # every 5 minutes
-@dramatiq.actor(periodic=cron("*/1 * * * *"))
+@dramatiq.actor(periodic=cron("*/5 * * * *"))
 def archive_periodic_promotional_emails():
     email_customers = ArchivedCustomer.objects.filter(
         promo_email_sent_count__lt=settings.TOTAL_PROMOTIONAL_EMAIL_COUNT
     )
+
     current_time = localtime()
+    print(current_time)
+
     for client in email_customers:
         if client.promo_email_send_time is None:
             email_time = current_time
@@ -131,10 +133,11 @@ def archive_periodic_promotional_emails():
             )
             client.increase_promo_email_sent_count()
             time_to_add = get_time_delta_for_promotional_emails(
-                settings.PROMO_EMAIL_PERIODS, client.promo_email_sent_count
+                settings.PROMO_EMAIL_PERIODS, client.promo_email_sent_count, settings.TOTAL_PROMOTIONAL_EMAIL_COUNT
             )
             client.set_next_promo_email_send_date(time_to_add)
             client.save()
+            print("PROMO EMAIL SEND To" + client.email)
 
 # Check Sms Sending Criteraia Daily
 #Every Hour
