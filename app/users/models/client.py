@@ -115,6 +115,13 @@ class Client(ProxyUserInfoMixin, Stripeable, Common):
         null=True,
     )
 
+    promo_sms_sent = models.DateTimeField(
+        verbose_name="Last Promotional SMS",
+        editable=False,
+        blank=True,
+        null=True,
+    )
+
     objects = ClientManager()
 
     class Meta:
