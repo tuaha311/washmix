@@ -150,8 +150,9 @@ def archive_periodic_promotional_emails():
             print("PROMO EMAIL SEND To " + client.email)
 
 # Check Sms Sending Criteraia Daily
+# @dramatiq.actor(periodic=cron("*/59 * * * *"))
 # Every Hour
-@dramatiq.actor(periodic=cron("*/59 * * * *"))
+@dramatiq.actor(periodic=cron("*1 * * * *"))
 def send_reminder_service_text():
     signed_up_users_with_no_orders_at_all = Client.objects.filter(
         Q(
