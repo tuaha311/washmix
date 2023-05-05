@@ -121,8 +121,6 @@ def archive_periodic_promotional_emails():
         else:
             email_time = client.promo_email_send_time
         sent_count = client.promo_email_sent_count
-        print("Email Time")
-        print(email_time)
         # Sending Email
         if (
             not sent_count
