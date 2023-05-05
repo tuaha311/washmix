@@ -79,7 +79,7 @@ def archive_not_signedup_users():
                     "promo_email_sent_count": 0,
                     "promo_email_send_time": (
                         localtime()
-                        + get_time_delta_for_promotional_emails(settings.PROMO_EMAIL_PERIODS, 0)
+                        + get_time_delta_for_promotional_emails(settings.PROMO_EMAIL_PERIODS, 0, settings.TOTAL_PROMOTIONAL_EMAIL_COUNT)
                     ),
                 },
             )
@@ -143,7 +143,7 @@ def archive_periodic_promotional_emails():
             time_to_add = get_time_delta_for_promotional_emails(
                 settings.PROMO_EMAIL_PERIODS,
                 client.promo_email_sent_count,
-                settings.TOTAL_PROMOTIONAL_EMAIL_COUNT,
+                settings.TOTAL_PROMOTIONAL_EMAIL_COUNT
             )
             client.set_next_promo_email_send_date(time_to_add)
             client.save()
