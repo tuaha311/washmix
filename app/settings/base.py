@@ -327,24 +327,24 @@ UNPAID_ORDER_SECOND_REMINDER_HOURS_TIMEDELTA = timedelta(minutes=UNPAID_ORDER_SE
 TOTAL_PROMOTIONAL_EMAIL_COUNT = 5
 PROMO_EMAIL_PERIODS = {  ## Max Unit Allowed is Week , Min can be millisecond
     0: {
-        "after": "2",
-        "time_unit": "minutes",
+        "after": "1",
+        "time_unit": "hours",
     },
     1: {
-        "after": "2",
-        "time_unit": "minutes",
+        "after": "1",
+        "time_unit": "days",
     },
     2: {
-        "after": "2",
-        "time_unit": "minutes",
+        "after": "1",
+        "time_unit": "weeks",
     },
     3: {
-        "after": "2",  # 1 Month
-        "time_unit": "minutes",
+        "after": "4",  # 1 Month
+        "time_unit": "weeks",
     },
     4: {
-        "after": "2",  # 3 Months
-        "time_unit": "minutes",
+        "after": "36",  # 3 Months
+        "time_unit": "weeks",
     },
 }
 
