@@ -1,0 +1,15 @@
+{% extends "base_email.html" %}
+
+{% block body %}
+  <tr>
+    <td>
+      <h4>Dear Admin</h4>
+      <h4>A REMINDER TO CHARGE the following clients {{ client.full_name }} order.{% block extra_header %}{% endblock %}.</h4>
+    </td>
+  </tr>
+
+  {% block content %}
+  {% endblock %}
+
+
+{% endblock %}
