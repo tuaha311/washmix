@@ -315,10 +315,10 @@ SERVICE_REMINDER_SMS_DURATION_DAYS = 6
 SERVICE_REMINDER_SMS_DURATION_DAYS_TIMEDELTA = timedelta(days=SERVICE_REMINDER_SMS_DURATION_DAYS)
 
 UNPAID_ORDER_TOTAL_REMINDER_EMAILS = 2
-UNPAID_ORDER_FIRST_REMINDER_HOURS = 2
-UNPAID_ORDER_SECOND_REMINDER_HOURS = 2
-UNPAID_ORDER_FIRST_REMINDER_HOURS_TIMEDELTA = timedelta(minutes=UNPAID_ORDER_FIRST_REMINDER_HOURS)
-UNPAID_ORDER_SECOND_REMINDER_HOURS_TIMEDELTA = timedelta(minutes=UNPAID_ORDER_SECOND_REMINDER_HOURS)
+UNPAID_ORDER_FIRST_REMINDER_HOURS = 48
+UNPAID_ORDER_SECOND_REMINDER_HOURS = 144
+UNPAID_ORDER_FIRST_REMINDER_HOURS_TIMEDELTA = timedelta(hours=UNPAID_ORDER_FIRST_REMINDER_HOURS)
+UNPAID_ORDER_SECOND_REMINDER_HOURS_TIMEDELTA = timedelta(hours=UNPAID_ORDER_SECOND_REMINDER_HOURS)
 
 ######################################
 # PROMOTIONAL ARCHIVE CUSTOMER EMAILS#
@@ -327,24 +327,24 @@ UNPAID_ORDER_SECOND_REMINDER_HOURS_TIMEDELTA = timedelta(minutes=UNPAID_ORDER_SE
 TOTAL_PROMOTIONAL_EMAIL_COUNT = 5
 PROMO_EMAIL_PERIODS = {  ## Max Unit Allowed is Week , Min can be millisecond
     0: {
-        "after": "2",
-        "time_unit": "minutes",
+        "after": "1",
+        "time_unit": "hours",
     },
     1: {
-        "after": "2",
-        "time_unit": "minutes",
+        "after": "1",
+        "time_unit": "days",
     },
     2: {
-        "after": "2",
-        "time_unit": "minutes",
+        "after": "1",
+        "time_unit": "weeks",
     },
     3: {
-        "after": "2",  # 1 Month
-        "time_unit": "minutes",
+        "after": "4",  # 1 Month
+        "time_unit": "weeks",
     },
     4: {
-        "after": "2",  # 3 Months
-        "time_unit": "minutes",
+        "after": "36",  # 3 Months
+        "time_unit": "weeks",
     },
 }
 
@@ -706,7 +706,7 @@ THIRD_PROMOTION_EMAIL_ARCHIVE_CUSTOMER = "third_promotion_email_archive_customer
 SENDGRID_NO_REPLY = "no-reply@washmix.com"
 SENDGRID_FROM_EMAIL = Email("info@washmix.com")
 SENDGRID_API_KEY = env.str("SENDGRID_API_KEY", "")
-ADMIN_EMAIL_LIST = env.list("ADMIN_EMAIL_LIST", ["michael1@mailinator.com"])
+ADMIN_EMAIL_LIST = env.list("ADMIN_EMAIL_LIST", ["michael@washmix.com"])
 
 EMAIL_EVENT_INFO = {
     SIGNUP: {
