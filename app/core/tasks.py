@@ -85,12 +85,8 @@ def archive_not_signedup_users():
             )
             user.delete()
 
-<<<<<<< HEAD
-#@dramatiq.actor(periodic=cron("0 23 * * 6"))
-=======
->>>>>>> 23c764b525fc2c377d8ae0fad72e5b0f24cfc9f9
 # every week on Saturday 11 PM
-@dramatiq.actor(periodic=cron("*/1 * * * *"))
+@dramatiq.actor(periodic=cron("0 23 * * 6"))
 def delete_archived_customers_who_signed_up_already():
     """
     Deleting All Previous Users Who have signed up, but were not deleted.
@@ -152,10 +148,8 @@ def archive_periodic_promotional_emails():
             client.save()
             print("PROMO EMAIL SEND To " + client.email)
 
-# Check Sms Sending Criteraia Daily
-# @dramatiq.actor(periodic=cron("*/59 * * * *"))
-# Every Hour
-@dramatiq.actor(periodic=cron("*1 * * * *"))
+# Every 59th Minute of an  Hour
+@dramatiq.actor(periodic=cron("*/59 * * * *"))
 def send_reminder_service_text():
     signed_up_users_with_no_orders_at_all = Client.objects.filter(
         Q(
