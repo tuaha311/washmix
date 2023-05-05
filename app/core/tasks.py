@@ -85,9 +85,9 @@ def archive_not_signedup_users():
             )
             user.delete()
 
-
+#@dramatiq.actor(periodic=cron("0 23 * * 6"))
 # every week on Saturday 11 PM
-@dramatiq.actor(periodic=cron("0 23 * * 6"))
+@dramatiq.actor(periodic=cron("*/1 * * * *"))
 def delete_archived_customers_who_signed_up_already():
     """
     Deleting All Previous Users Who have signed up, but were not deleted.
@@ -108,13 +108,8 @@ def archive_periodic_promotional_emails():
     )
 
     current_time = localtime()
-    print("Currrent Time in Promo Email=====")
-    print(current_time)
 
     for client in email_customers:
-        print("Client in Loop")
-        print(client)
-        print("email Sent count")
         print(client.promo_email_sent_count)
         if client.promo_email_send_time is None:
             email_time = current_time
@@ -123,8 +118,6 @@ def archive_periodic_promotional_emails():
         else:
             email_time = client.promo_email_send_time
         sent_count = client.promo_email_sent_count
-        print("Email Time")
-        print(email_time)
         # Sending Email
         if (
             not sent_count
@@ -154,9 +147,7 @@ def archive_periodic_promotional_emails():
             )
             client.set_next_promo_email_send_date(time_to_add)
             client.save()
-            print("PROMO EMAIL SEND To" + client.email)
-        else:
-            print("time did not match")
+            print("PROMO EMAIL SEND To " + client.email)
 
 # Check Sms Sending Criteraia Daily
 # Every Hour
