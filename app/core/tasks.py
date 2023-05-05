@@ -40,8 +40,8 @@ def periodic_scheduler_health():
     logger.info("Periodic scheduler health - OK")
 
 
-# every 5 minutes
-@dramatiq.actor(periodic=cron("*/5 * * * *"))
+# Every 59th Minute of an  Hour
+@dramatiq.actor(periodic=cron("*/59 * * * *"))
 def archive_not_signedup_users():
     """
     Deleting the users that were unable to signup after 3 hours of user creation
@@ -85,7 +85,10 @@ def archive_not_signedup_users():
             )
             user.delete()
 
+<<<<<<< HEAD
 #@dramatiq.actor(periodic=cron("0 23 * * 6"))
+=======
+>>>>>>> 23c764b525fc2c377d8ae0fad72e5b0f24cfc9f9
 # every week on Saturday 11 PM
 @dramatiq.actor(periodic=cron("*/1 * * * *"))
 def delete_archived_customers_who_signed_up_already():
@@ -100,8 +103,8 @@ def delete_archived_customers_who_signed_up_already():
         client.delete()
 
 
-# every 1 minutes
-@dramatiq.actor(periodic=cron("*/1 * * * *"))
+# Every 59th Minute of an  Hour
+@dramatiq.actor(periodic=cron("*/59 * * * *"))
 def archive_periodic_promotional_emails():
     email_customers = ArchivedCustomer.objects.filter(
         promo_email_sent_count__lt=settings.TOTAL_PROMOTIONAL_EMAIL_COUNT
@@ -209,8 +212,8 @@ def send_reminder_service_text():
             logger.info(f"Sendin SMS to client {client.email}")
 
 
-# every Hour at 1st Minute
-@dramatiq.actor(periodic=cron("*/1 * * * *"))
+# Every 59th Minute of an  Hour
+@dramatiq.actor(periodic=cron("*/59 * * * *"))
 def unpaid_orders_reminder_emails_setter():
     request_ids = Delivery.objects.filter(
         kind__iexact=DeliveryKind.PICKUP,
@@ -231,8 +234,8 @@ def unpaid_orders_reminder_emails_setter():
             order.save()
 
 
-# every Hour at 1st Minute
-@dramatiq.actor(periodic=cron("*/1 * * * *"))
+# Every 59th Minute of an  Hour
+@dramatiq.actor(periodic=cron("*/59 * * * *"))
 def send_unpaid_order_reminder_emails():
     request_ids = Delivery.objects.filter(
         kind__iexact=DeliveryKind.PICKUP,
