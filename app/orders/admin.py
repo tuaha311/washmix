@@ -84,6 +84,10 @@ class OrderAdminForm(forms.ModelForm):
 class OrderAdmin(AdminWithSearch):
     readonly_fields = [
         "pdf_path",
+        "client_name",
+        "client_address",
+        "client_phone",
+        "status",
     ]
     list_display = [
         "__str__",
@@ -149,6 +153,15 @@ class OrderAdmin(AdminWithSearch):
         )
 
     cancel_unpaid_order.short_description = "Cancel unpaid order and perform refund."  # type: ignore
+
+    def client_name(self, order: Order):
+        return order.client.full_name
+
+    def client_address(self, order: Order):
+        return order.client.main_address
+
+    def client_phone(self, order: Order):
+        return order.client.main_phone
 
     def pdf_path(self, order: Order):
         """

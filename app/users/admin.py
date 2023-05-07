@@ -32,6 +32,8 @@ from subscriptions.services.subscription import SubscriptionService
 from users.helpers import remove_user_relation_with_all_info
 from users.models import Client, Customer, Employee, Log
 
+
+
 User = get_user_model()
 LIMIT = 10
 

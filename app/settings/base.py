@@ -311,7 +311,14 @@ DELIVERY_STATUS_CHOICES = list(DELIVERY_STATUS_MAP.items())
 #########
 DELETE_USER_AFTER_NON_SIGNUP_HOURS = 3
 DELETE_USER_AFTER_TIMEDELTA = timedelta(hours=DELETE_USER_AFTER_NON_SIGNUP_HOURS)
+SERVICE_REMINDER_SMS_DURATION_DAYS = 6
+SERVICE_REMINDER_SMS_DURATION_DAYS_TIMEDELTA = timedelta(days=SERVICE_REMINDER_SMS_DURATION_DAYS)
 
+UNPAID_ORDER_TOTAL_REMINDER_EMAILS = 2
+UNPAID_ORDER_FIRST_REMINDER_HOURS = 48
+UNPAID_ORDER_SECOND_REMINDER_HOURS = 144
+UNPAID_ORDER_FIRST_REMINDER_HOURS_TIMEDELTA = timedelta(hours=UNPAID_ORDER_FIRST_REMINDER_HOURS)
+UNPAID_ORDER_SECOND_REMINDER_HOURS_TIMEDELTA = timedelta(hours=UNPAID_ORDER_SECOND_REMINDER_HOURS)
 
 ######################################
 # PROMOTIONAL ARCHIVE CUSTOMER EMAILS#
@@ -336,7 +343,7 @@ PROMO_EMAIL_PERIODS = {  ## Max Unit Allowed is Week , Min can be millisecond
         "time_unit": "weeks",
     },
     4: {
-        "after": "12",  # 3 Months
+        "after": "36",  # 3 Months
         "time_unit": "weeks",
     },
 }
@@ -617,6 +624,7 @@ UNABLE_TO_CREATE_MULTIPLE_REQUEST = "unable_to_create_multiple_request"
 PICKUP_DUE_TOMORROW = "pickup_due_tomorrow"
 SMS_CREDIT_BACK = "credit_back"
 NO_SHOW = "no_show"
+SERVICE_PROMOTION = "service_promotion"
 
 #############################
 # TWILIO WITH SMS TEMPLATES #
@@ -661,6 +669,9 @@ SMS_EVENT_INFO = {
     NO_SHOW: {
         "template_name": "sms/no_show.html",
     },
+    SERVICE_PROMOTION: {
+        "template_name": "sms/service_promotion.html",
+    },
 }
 
 
@@ -673,6 +684,7 @@ FORGOT_PASSWORD = "forgot_password"
 PURCHASE_SUBSCRIPTION = "purchase_subscription"
 NEW_REQUEST = "new_request"
 NEW_ORDER = "new_order"
+UNCHARGED_ORDER_REMINDER= "uncharged_order_reminder"
 ACCOUNT_REMOVED = "account_removed"
 PAYMENT_FAIL_CLIENT = "payment_fail_client"
 PAYMENT_FAIL_ADMIN = "payment_fail_admin"
@@ -714,6 +726,12 @@ EMAIL_EVENT_INFO = {
     NEW_ORDER: {
         "template_name": "email/new_order.html",
         "subject": "WashMix New Order",
+        "from_email": "orders@washmix.com",
+        "reply_to": "orders@washmix.com",
+    },
+    UNCHARGED_ORDER_REMINDER: {
+        "template_name": "email/uncharged_order_reminder.html",
+        "subject": "WashMix UNCHARGED Order Reminder",
         "from_email": "orders@washmix.com",
         "reply_to": "orders@washmix.com",
     },
