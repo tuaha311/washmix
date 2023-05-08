@@ -73,7 +73,6 @@ class DeliveryAdmin(AdminWithSearch):
     ]
     form = DeliveryForm
     list_display = [
-        "__str__",
         "full_name",
         "phone",
         "email",
