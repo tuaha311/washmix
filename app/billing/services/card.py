@@ -59,9 +59,7 @@ class CardService:
                 },
             )
             Log.objects.create(customer=self._client.email, action="Client has Updated their Card")
-            send_admin_client_information(
-                self._client.id, "Client has Updated their Card", "Customer Account Update"
-            )
+            send_admin_client_information(self._client.id, "Client has Updated their Card")
 
         return self._client.card_list.all()
 
@@ -70,9 +68,7 @@ class CardService:
         Method that removes card from user.
         """
         Log.objects.create(customer=self._client.email, action="The customer has removed a card")
-        send_admin_client_information(
-            self._client.id, "The customer has removed a card", "Customer Account Update"
-        )
+        send_admin_client_information(self._client.id, "The customer has removed a card")
         self._stripe_helper.detach_payment_method(stripe_id)
 
     @classmethod

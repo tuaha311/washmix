@@ -209,9 +209,7 @@ class SubscriptionService(PaymentInterfaceService):
             },
         )
         send_admin_client_information(
-            int(client_id),
-            f"The user updated the package to {str(future_subscription.name)}",
-            "Customer Account Update",
+            int(client_id), f"The user updated the package to {str(future_subscription.name)}"
         )
 
     def _get_order_service(self, subscription: Subscription):

@@ -5,6 +5,7 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
+
     dependencies = [
         ("subscriptions", "0004_remove_subscription_invoice"),
         ("orders", "0004_add_discount_by_subscription"),

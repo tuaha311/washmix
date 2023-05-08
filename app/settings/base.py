@@ -1,4 +1,4 @@
-from datetime import datetime, time, timedelta
+from datetime import time, timedelta
 from pathlib import Path
 
 import dramatiq
@@ -311,14 +311,6 @@ DELIVERY_STATUS_CHOICES = list(DELIVERY_STATUS_MAP.items())
 #########
 DELETE_USER_AFTER_NON_SIGNUP_HOURS = 3
 DELETE_USER_AFTER_TIMEDELTA = timedelta(hours=DELETE_USER_AFTER_NON_SIGNUP_HOURS)
-SERVICE_REMINDER_SMS_DURATION_DAYS = 6
-SERVICE_REMINDER_SMS_DURATION_DAYS_TIMEDELTA = timedelta(days=SERVICE_REMINDER_SMS_DURATION_DAYS)
-
-UNPAID_ORDER_TOTAL_REMINDER_EMAILS = 2
-UNPAID_ORDER_FIRST_REMINDER_HOURS = 48
-UNPAID_ORDER_SECOND_REMINDER_HOURS = 144
-UNPAID_ORDER_FIRST_REMINDER_HOURS_TIMEDELTA = timedelta(hours=UNPAID_ORDER_FIRST_REMINDER_HOURS)
-UNPAID_ORDER_SECOND_REMINDER_HOURS_TIMEDELTA = timedelta(hours=UNPAID_ORDER_SECOND_REMINDER_HOURS)
 
 ######################################
 # PROMOTIONAL ARCHIVE CUSTOMER EMAILS#
@@ -343,7 +335,7 @@ PROMO_EMAIL_PERIODS = {  ## Max Unit Allowed is Week , Min can be millisecond
         "time_unit": "weeks",
     },
     4: {
-        "after": "36",  # 3 Months
+        "after": "12",  # 3 Months
         "time_unit": "weeks",
     },
 }
@@ -616,7 +608,6 @@ dramatiq.set_broker(DRAMATIQ_BROKER)
 ###########################
 USER_SIGNUP = "user_signup"
 NEW_DELIVERY = "new_delivery"
-UPDATED_DELIVERY = "updated_delivery"
 DELIVERY_DROPOFF_COMPLETE = "delivery_dropoff_complete"
 ORDER_PICKUP_COMPLETE = "order_pickup_complete"
 PICKUP_REQUEST_CANCELED = "pickup_request_canceled"
@@ -624,7 +615,6 @@ UNABLE_TO_CREATE_MULTIPLE_REQUEST = "unable_to_create_multiple_request"
 PICKUP_DUE_TOMORROW = "pickup_due_tomorrow"
 SMS_CREDIT_BACK = "credit_back"
 NO_SHOW = "no_show"
-SERVICE_PROMOTION = "service_promotion"
 
 #############################
 # TWILIO WITH SMS TEMPLATES #
@@ -644,9 +634,6 @@ SMS_EVENT_INFO = {
     },
     NEW_DELIVERY: {
         "template_name": "sms/new_delivery.html",
-    },
-    UPDATED_DELIVERY: {
-        "template_name": "sms/updated_delivery.html",
     },
     DELIVERY_DROPOFF_COMPLETE: {
         "template_name": "sms/dropoff_complete.html",
@@ -669,9 +656,6 @@ SMS_EVENT_INFO = {
     NO_SHOW: {
         "template_name": "sms/no_show.html",
     },
-    SERVICE_PROMOTION: {
-        "template_name": "sms/service_promotion.html",
-    },
 }
 
 
@@ -684,7 +668,6 @@ FORGOT_PASSWORD = "forgot_password"
 PURCHASE_SUBSCRIPTION = "purchase_subscription"
 NEW_REQUEST = "new_request"
 NEW_ORDER = "new_order"
-UNCHARGED_ORDER_REMINDER= "uncharged_order_reminder"
 ACCOUNT_REMOVED = "account_removed"
 PAYMENT_FAIL_CLIENT = "payment_fail_client"
 PAYMENT_FAIL_ADMIN = "payment_fail_admin"
@@ -693,11 +676,6 @@ ACCRUE_CREDIT_BACK = "accrue_credit_back"
 SEND_ADMIN_CLIENT_INFORMATION = "send_admin_client_information"
 SEND_ADMIN_PCUSTOMER_INFORMATION = "send_admin_pcustomer_information"
 SEND_ADMIN_STORE_CREDIT = "send_email_store_credit"
-CUSTOMER_ACCOUNT_UPDATE = "customer_account_update"
-CUSTOMER_NOSHOW = "customer_no_show"
-FIRST_PROMOTION_EMAIL_ARCHIVE_CUSTOMER = "first_promotion_email_archive_customer"
-SECOND_PROMOTION_EMAIL_ARCHIVE_CUSTOMER = "second_promotion_email_archive_customer"
-THIRD_PROMOTION_EMAIL_ARCHIVE_CUSTOMER = "third_promotion_email_archive_customer"
 
 #################################
 # SENDGRID WITH EMAIL TEMPLATES #
@@ -726,13 +704,7 @@ EMAIL_EVENT_INFO = {
     NEW_ORDER: {
         "template_name": "email/new_order.html",
         "subject": "WashMix New Order",
-        "from_email": "orders@washmix.com",
-        "reply_to": "orders@washmix.com",
-    },
-    UNCHARGED_ORDER_REMINDER: {
-        "template_name": "email/uncharged_order_reminder.html",
-        "subject": "WashMix UNCHARGED Order Reminder",
-        "from_email": "orders@washmix.com",
+        "from_email": "cs@washmix.com",
         "reply_to": "orders@washmix.com",
     },
     PAYMENT_FAIL_CLIENT: {
@@ -744,7 +716,7 @@ EMAIL_EVENT_INFO = {
     PAYMENT_FAIL_ADMIN: {
         "template_name": "email/payment_fail_admin.html",
         "subject": "WashMix Payment Failed",
-        "from_email": "failed@washmix.com",
+        "from_email": "info@washmix.com",
         "reply_to": "info@washmix.com",
     },
     ACCOUNT_REMOVED: {
@@ -783,42 +755,6 @@ EMAIL_EVENT_INFO = {
         "from_email": "info@washmix.com",
         "reply_to": "info@washmix.com",
     },
-    CUSTOMER_ACCOUNT_UPDATE: {
-        "template_name": "email/send_admin_client_information.html",
-        "subject": "New User Activity",
-        "from_email": "update@washmix.com",
-        "reply_to": "info@washmix.com",
-    },
-    CUSTOMER_NOSHOW: {
-        "template_name": "email/send_admin_client_information.html",
-        "subject": "New User Activity",
-        "from_email": "noshow@washmix.com",
-        "reply_to": "info@washmix.com",
-    },
-    NEW_REQUEST: {
-        "template_name": "email/send_admin_client_information.html",
-        "subject": "New User Activity",
-        "from_email": "request@washmix.com",
-        "reply_to": "info@washmix.com",
-    },
-    FIRST_PROMOTION_EMAIL_ARCHIVE_CUSTOMER: {
-        "template_name": "email/first_promotion_email_archived_customer.html",
-        "subject": "Promotional Email",
-        "from_email": "request@washmix.com",
-        "reply_to": "info@washmix.com",
-    },
-    SECOND_PROMOTION_EMAIL_ARCHIVE_CUSTOMER: {
-        "template_name": "email/second_promotion_email_archived_customer.html",
-        "subject": "Promotional Email",
-        "from_email": "request@washmix.com",
-        "reply_to": "info@washmix.com",
-    },
-    THIRD_PROMOTION_EMAIL_ARCHIVE_CUSTOMER: {
-        "template_name": "email/third_promotion_email_archived_customer.html",
-        "subject": "Promotional Email",
-        "from_email": "request@washmix.com",
-        "reply_to": "info@washmix.com",
-    },
 }
 
 
@@ -826,6 +762,5 @@ EMAIL_EVENT_INFO = {
 # DJANGO-JET #
 ##############
 
-JET_CHANGE_FORM_SIBLING_LINKS = False
 JET_SIDE_MENU_COMPACT = True
 JET_DEFAULT_THEME = "washmix"

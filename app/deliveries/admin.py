@@ -74,13 +74,11 @@ class DeliveryAdmin(AdminWithSearch):
     form = DeliveryForm
     list_display = [
         "__str__",
-        "full_name",
-        "phone",
-        "email",
+        "client",
         "date",
-        "kind",
         "sorting",
         "employee",
+        "kind",
         "status",
         "address",
         "is_rush",
@@ -99,7 +97,6 @@ class DeliveryAdmin(AdminWithSearch):
         "kind",
         "employee",
     ]
-
     # autocomplete_fields = ('employee',)
     def get_changelist_form(self, request, **kwargs):
         return DeliveryForm
@@ -109,21 +106,12 @@ class DeliveryAdmin(AdminWithSearch):
             status__in=[DeliveryStatus.ACCEPTED, DeliveryStatus.IN_PROGRESS]
         )
 
-    def full_name(self, obj):
+    def client(self, obj):
         return format_html(
             "<a href='{url}'>{text}</a>",
             url=reverse("admin:users_client_change", args=(obj.request.client.id,)),
-            text=obj.request.client.full_name,
+            text=obj.request.client,
         )
-
-    def phone(self, obj):
-        client = obj.client
-        if hasattr(client.main_phone, "number"):
-            return client.main_phone.number
-        return client.main_phone
-
-    def email(self, obj):
-        return obj.client.email
 
     def save_model(self, request, obj, form, change):
         """

@@ -48,7 +48,3 @@ td.field-date {
 .select2-selection__arrow{
     right:-5px !important;
 }
-#id_private_note {
-    border: 3px solid red;
-    color: red;
-}
