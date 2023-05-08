@@ -9,7 +9,6 @@ import dramatiq
 from periodiq import cron
 
 from archived.models import ArchivedCustomer
-from core.utils import get_time_delta_for_promotional_emails
 from notifications.tasks import send_email, send_sms
 from orders.choices import OrderStatusChoices
 from orders.models import Order
