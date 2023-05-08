@@ -2,11 +2,10 @@ from django import forms
 from django.conf import settings
 from django.contrib import admin, messages
 from django.contrib.admin.sites import NotRegistered
-from django.contrib.admin.views.main import PAGE_VAR, ChangeList
 from django.contrib.admin.widgets import AutocompleteSelect
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
-from django.core.paginator import EmptyPage, InvalidPage, Paginator
+from django.core.paginator import Paginator
 from django.db.models import Q, QuerySet
 from django.http.request import HttpRequest
 
@@ -33,33 +32,6 @@ from users.helpers import remove_user_relation_with_all_info
 from users.models import Client, Customer, Employee, Log
 
 User = get_user_model()
-LIMIT = 10
-
-
-class InlineChangeList(object):
-    can_show_all = True
-    multi_page = True
-    get_query_string = ChangeList.__dict__["get_query_string"]
-
-    def __init__(self, request, page_num, paginator):
-        self.show_all = "all" in request.GET
-        self.page_num = page_num
-        self.paginator = paginator
-        self.result_count = paginator.count
-        self.params = dict(request.GET.items())
-
-
-class InlineChangeList(object):
-    can_show_all = True
-    multi_page = True
-    get_query_string = ChangeList.__dict__["get_query_string"]
-
-    def __init__(self, request, page_num, paginator):
-        self.show_all = "all" in request.GET
-        self.page_num = page_num
-        self.paginator = paginator
-        self.result_count = paginator.count
-        self.params = dict(request.GET.items())
 
 
 #
@@ -95,39 +67,6 @@ class InvoiceInlineAdmin(admin.TabularInline):
         "card",
         "purpose",
     )
-    per_page = LIMIT
-    template = "admin/edit_inline.html"
-
-    def get_formset(self, request, obj=None, **kwargs):
-        formset_class = super().get_formset(request, obj, **kwargs)
-
-        class PaginationFormSet(formset_class):
-            def __init__(self, *args, **kwargs):
-                super(PaginationFormSet, self).__init__(*args, **kwargs)
-
-                qs = self.queryset
-                paginator = Paginator(qs, self.per_page)
-                try:
-                    page_num = int(request.GET.get("page", ["0"])[0])
-                except ValueError:
-                    page_num = 0
-
-                try:
-                    page = paginator.page(page_num + 1)
-                except (EmptyPage, InvalidPage):
-                    page = paginator.page(paginator.num_pages)
-
-                self.page = page
-                self.cl = InlineChangeList(request, page_num, paginator)
-                self.paginator = paginator
-
-                if self.cl.show_all:
-                    self._queryset = qs
-                else:
-                    self._queryset = page.object_list
-
-        PaginationFormSet.per_page = self.per_page
-        return PaginationFormSet
 
 
 #
@@ -166,39 +105,6 @@ class OrderInlineAdmin(admin.TabularInline):
     model = Order
     form = OrderInlineForm
     extra = 0
-    per_page = LIMIT
-    template = "admin/edit_inline.html"
-
-    def get_formset(self, request, obj=None, **kwargs):
-        formset_class = super().get_formset(request, obj, **kwargs)
-
-        class PaginationFormSet(formset_class):
-            def __init__(self, *args, **kwargs):
-                super(PaginationFormSet, self).__init__(*args, **kwargs)
-
-                qs = self.queryset
-                paginator = Paginator(qs, self.per_page)
-                try:
-                    page_num = int(request.GET.get("page", ["0"])[0])
-                except ValueError:
-                    page_num = 0
-
-                try:
-                    page = paginator.page(page_num + 1)
-                except (EmptyPage, InvalidPage):
-                    page = paginator.page(paginator.num_pages)
-
-                self.page = page
-                self.cl = InlineChangeList(request, page_num, paginator)
-                self.paginator = paginator
-
-                if self.cl.show_all:
-                    self._queryset = qs
-                else:
-                    self._queryset = page.object_list
-
-        PaginationFormSet.per_page = self.per_page
-        return PaginationFormSet
 
 
 #
@@ -224,47 +130,13 @@ class RequestInlineForm(forms.ModelForm):
 
 
 class RequestInlineAdmin(admin.TabularInline):
-    template = "admin/edit_inline.html"
     model = Request
     form = RequestInlineForm
     extra = 0
-    can_delete = False
-    per_page = LIMIT
-
-    def get_formset(self, request, obj=None, **kwargs):
-        formset_class = super().get_formset(request, obj, **kwargs)
-
-        class PaginationFormSet(formset_class):
-            def __init__(self, *args, **kwargs):
-                super(PaginationFormSet, self).__init__(*args, **kwargs)
-
-                qs = self.queryset
-                paginator = Paginator(qs, self.per_page)
-                try:
-                    page_num = int(request.GET.get("page", ["0"])[0])
-                except ValueError:
-                    page_num = 0
-
-                try:
-                    page = paginator.page(page_num + 1)
-                except (EmptyPage, InvalidPage):
-                    page = paginator.page(paginator.num_pages)
-
-                self.page = page
-                self.cl = InlineChangeList(request, page_num, paginator)
-                self.paginator = paginator
-
-                if self.cl.show_all:
-                    self._queryset = qs
-                else:
-                    self._queryset = page.object_list
-
-        PaginationFormSet.per_page = self.per_page
-        return PaginationFormSet
+    # autocomplete_fields = ('address','schedule')
 
 
 #
-# #
 # Client Admin
 #
 class ClientForm(forms.ModelForm):
