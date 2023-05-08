@@ -319,19 +319,19 @@ DELETE_USER_AFTER_TIMEDELTA = timedelta(hours=DELETE_USER_AFTER_NON_SIGNUP_HOURS
 TOTAL_PROMOTIONAL_EMAIL_COUNT = 5
 PROMO_EMAIL_PERIODS = {  ## Max Unit Allowed is Week , Min can be millisecond
     0: {
-        "after": "2",
+        "after": "5",
         "time_unit": "minutes",
     },
     1: {
-        "after": "2",
+        "after": "5",
         "time_unit": "minutes",
     },
     2: {
-        "after": "2",
+        "after": "5",
         "time_unit": "minutes",
     },
     3: {
-        "after": "2",  # 1 Month
+        "after": "5",  # 1 Month
         "time_unit": "minutes",
     },
     4: {
