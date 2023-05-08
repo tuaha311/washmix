@@ -5,10 +5,14 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("users", "0004_auto_20220524_0649"),
+        ("users", "0005_client_custom_delivery_note"),
     ]
 
     operations = [
+        migrations.RemoveField(
+            model_name="client",
+            name="custom_delivery_note",
+        ),
         migrations.AddField(
             model_name="client",
             name="private_note",
