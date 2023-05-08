@@ -608,7 +608,6 @@ dramatiq.set_broker(DRAMATIQ_BROKER)
 ###########################
 USER_SIGNUP = "user_signup"
 NEW_DELIVERY = "new_delivery"
-UPDATED_DELIVERY = "updated_delivery"
 DELIVERY_DROPOFF_COMPLETE = "delivery_dropoff_complete"
 ORDER_PICKUP_COMPLETE = "order_pickup_complete"
 PICKUP_REQUEST_CANCELED = "pickup_request_canceled"
@@ -635,9 +634,6 @@ SMS_EVENT_INFO = {
     },
     NEW_DELIVERY: {
         "template_name": "sms/new_delivery.html",
-    },
-    UPDATED_DELIVERY: {
-        "template_name": "sms/updated_delivery.html",
     },
     DELIVERY_DROPOFF_COMPLETE: {
         "template_name": "sms/dropoff_complete.html",
