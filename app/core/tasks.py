@@ -4,6 +4,7 @@ from datetime import timedelta
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.db.models import Q
 from django.utils.timezone import localtime
 
 import dramatiq
@@ -11,7 +12,9 @@ from periodiq import cron
 
 from archived.models import ArchivedCustomer
 from core.utils import get_time_delta_for_promotional_emails
-from notifications.tasks import send_email
+from notifications.tasks import send_email, send_sms
+from orders.choices import OrderStatusChoices
+from orders.models import Order
 from settings.base import DELETE_USER_AFTER_TIMEDELTA
 from users.models import Client
 

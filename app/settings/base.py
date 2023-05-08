@@ -312,7 +312,6 @@ DELIVERY_STATUS_CHOICES = list(DELIVERY_STATUS_MAP.items())
 DELETE_USER_AFTER_NON_SIGNUP_HOURS = 3
 DELETE_USER_AFTER_TIMEDELTA = timedelta(hours=DELETE_USER_AFTER_NON_SIGNUP_HOURS)
 
-
 ######################################
 # PROMOTIONAL ARCHIVE CUSTOMER EMAILS#
 ######################################
