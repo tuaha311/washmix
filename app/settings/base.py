@@ -694,7 +694,7 @@ THIRD_PROMOTION_EMAIL_ARCHIVE_CUSTOMER = "third_promotion_email_archive_customer
 SENDGRID_NO_REPLY = "no-reply@washmix.com"
 SENDGRID_FROM_EMAIL = Email("info@washmix.com")
 SENDGRID_API_KEY = env.str("SENDGRID_API_KEY", "")
-ADMIN_EMAIL_LIST = env.list("ADMIN_EMAIL_LIST", ["michael@washmix.com"])
+ADMIN_EMAIL_LIST = env.list("ADMIN_EMAIL_LIST", ["michaela@mailinator.com"])
 
 EMAIL_EVENT_INFO = {
     SIGNUP: {
