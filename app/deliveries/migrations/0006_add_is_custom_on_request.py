@@ -4,6 +4,7 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
+
     dependencies = [
         ("deliveries", "0005_add_custom_amount_on_request"),
     ]

@@ -70,6 +70,7 @@ def create_recurring_request_every_day():
     max_age=settings.DRAMATIQ_MAX_AGE,
 )
 def send_sms_if_pickup_due_tomorrow():
+
     for delivery in Delivery.objects.filter(
         kind=DeliveryKind.PICKUP, status__in=[DeliveryStatus.ACCEPTED, DeliveryStatus.IN_PROGRESS]
     ):
@@ -120,6 +121,7 @@ def send_sms_if_pickup_due_tomorrow():
     max_age=settings.DRAMATIQ_MAX_AGE,
 )
 def notify_admin_dropoff_today():
+
     for delivery in Delivery.objects.filter(
         kind=DeliveryKind.DROPOFF, status__in=[DeliveryStatus.ACCEPTED, DeliveryStatus.IN_PROGRESS]
     ):
