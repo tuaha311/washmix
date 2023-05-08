@@ -291,13 +291,6 @@ class ClientForm(forms.ModelForm):
         widget=forms.Select(choices=[(None, "--------")] + settings.PACKAGE_NAME_CHOICES),
     )
 
-    private_note = forms.CharField(
-        widget=forms.Textarea,
-        label="Private Note About Client",
-        required=False,
-        max_length=300,
-    )
-
     class Meta:
         model = Client
         fields = "__all__"
@@ -357,26 +350,14 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
         "main_phone",
         "main_address",
     )
-
     list_display = [
-        "full_name",
-        "get_main_phone_number",  # Use custom method instead of main_phone
         "__str__",
+        "full_name",
+        "main_phone",
         "subscription",
         "main_address",
         "has_card",
     ]
-
-    def get_main_phone_number(self, obj):
-        """
-        Returns the phone number portion of the main_phone field, or the main_phone field if it doesn't have a number attribute.
-        """
-        if hasattr(obj.main_phone, "number"):
-            return obj.main_phone.number
-        return obj.main_phone
-
-    get_main_phone_number.short_description = "Main Phone Number"  # Set column header in admin
-
     actions = ["full_delete_action"]
 
     def save_form(self, request: HttpRequest, form: forms.BaseForm, change):

@@ -105,11 +105,6 @@ class Client(ProxyUserInfoMixin, Stripeable, Common):
         default=True,
     )
 
-    private_note = models.CharField(
-        max_length=300,
-        blank=True,
-    )
-
     objects = ClientManager()
 
     class Meta:
