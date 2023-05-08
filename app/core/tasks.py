@@ -128,6 +128,7 @@ def archive_periodic_promotional_emails():
             )
             client.set_next_promo_email_send_date(time_to_add)
             client.save()
+            print("PROMO EMAIL SENT TO  " + client.email)
 
 
 @dramatiq.actor
