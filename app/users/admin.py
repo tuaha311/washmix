@@ -2,10 +2,11 @@ from django import forms
 from django.conf import settings
 from django.contrib import admin, messages
 from django.contrib.admin.sites import NotRegistered
+from django.contrib.admin.views.main import PAGE_VAR, ChangeList
 from django.contrib.admin.widgets import AutocompleteSelect
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
-from django.core.paginator import Paginator
+from django.core.paginator import EmptyPage, InvalidPage, Paginator
 from django.db.models import Q, QuerySet
 from django.http.request import HttpRequest
 
@@ -32,6 +33,33 @@ from users.helpers import remove_user_relation_with_all_info
 from users.models import Client, Customer, Employee, Log
 
 User = get_user_model()
+LIMIT = 10
+
+
+class InlineChangeList(object):
+    can_show_all = True
+    multi_page = True
+    get_query_string = ChangeList.__dict__["get_query_string"]
+
+    def __init__(self, request, page_num, paginator):
+        self.show_all = "all" in request.GET
+        self.page_num = page_num
+        self.paginator = paginator
+        self.result_count = paginator.count
+        self.params = dict(request.GET.items())
+
+
+class InlineChangeList(object):
+    can_show_all = True
+    multi_page = True
+    get_query_string = ChangeList.__dict__["get_query_string"]
+
+    def __init__(self, request, page_num, paginator):
+        self.show_all = "all" in request.GET
+        self.page_num = page_num
+        self.paginator = paginator
+        self.result_count = paginator.count
+        self.params = dict(request.GET.items())
 
 
 #
@@ -67,6 +95,39 @@ class InvoiceInlineAdmin(admin.TabularInline):
         "card",
         "purpose",
     )
+    per_page = LIMIT
+    template = "admin/edit_inline.html"
+
+    def get_formset(self, request, obj=None, **kwargs):
+        formset_class = super().get_formset(request, obj, **kwargs)
+
+        class PaginationFormSet(formset_class):
+            def __init__(self, *args, **kwargs):
+                super(PaginationFormSet, self).__init__(*args, **kwargs)
+
+                qs = self.queryset
+                paginator = Paginator(qs, self.per_page)
+                try:
+                    page_num = int(request.GET.get("page", ["0"])[0])
+                except ValueError:
+                    page_num = 0
+
+                try:
+                    page = paginator.page(page_num + 1)
+                except (EmptyPage, InvalidPage):
+                    page = paginator.page(paginator.num_pages)
+
+                self.page = page
+                self.cl = InlineChangeList(request, page_num, paginator)
+                self.paginator = paginator
+
+                if self.cl.show_all:
+                    self._queryset = qs
+                else:
+                    self._queryset = page.object_list
+
+        PaginationFormSet.per_page = self.per_page
+        return PaginationFormSet
 
 
 #
@@ -105,6 +166,39 @@ class OrderInlineAdmin(admin.TabularInline):
     model = Order
     form = OrderInlineForm
     extra = 0
+    per_page = LIMIT
+    template = "admin/edit_inline.html"
+
+    def get_formset(self, request, obj=None, **kwargs):
+        formset_class = super().get_formset(request, obj, **kwargs)
+
+        class PaginationFormSet(formset_class):
+            def __init__(self, *args, **kwargs):
+                super(PaginationFormSet, self).__init__(*args, **kwargs)
+
+                qs = self.queryset
+                paginator = Paginator(qs, self.per_page)
+                try:
+                    page_num = int(request.GET.get("page", ["0"])[0])
+                except ValueError:
+                    page_num = 0
+
+                try:
+                    page = paginator.page(page_num + 1)
+                except (EmptyPage, InvalidPage):
+                    page = paginator.page(paginator.num_pages)
+
+                self.page = page
+                self.cl = InlineChangeList(request, page_num, paginator)
+                self.paginator = paginator
+
+                if self.cl.show_all:
+                    self._queryset = qs
+                else:
+                    self._queryset = page.object_list
+
+        PaginationFormSet.per_page = self.per_page
+        return PaginationFormSet
 
 
 #
@@ -130,13 +224,46 @@ class RequestInlineForm(forms.ModelForm):
 
 
 class RequestInlineAdmin(admin.TabularInline):
+    template = "admin/edit_inline.html"
     model = Request
     form = RequestInlineForm
     extra = 0
-    # autocomplete_fields = ('address','schedule')
+    per_page = LIMIT
+
+    def get_formset(self, request, obj=None, **kwargs):
+        formset_class = super().get_formset(request, obj, **kwargs)
+
+        class PaginationFormSet(formset_class):
+            def __init__(self, *args, **kwargs):
+                super(PaginationFormSet, self).__init__(*args, **kwargs)
+
+                qs = self.queryset
+                paginator = Paginator(qs, self.per_page)
+                try:
+                    page_num = int(request.GET.get("page", ["0"])[0])
+                except ValueError:
+                    page_num = 0
+
+                try:
+                    page = paginator.page(page_num + 1)
+                except (EmptyPage, InvalidPage):
+                    page = paginator.page(paginator.num_pages)
+
+                self.page = page
+                self.cl = InlineChangeList(request, page_num, paginator)
+                self.paginator = paginator
+
+                if self.cl.show_all:
+                    self._queryset = qs
+                else:
+                    self._queryset = page.object_list
+
+        PaginationFormSet.per_page = self.per_page
+        return PaginationFormSet
 
 
 #
+# #
 # Client Admin
 #
 class ClientForm(forms.ModelForm):
@@ -162,6 +289,13 @@ class ClientForm(forms.ModelForm):
         label="Change Client Subscription",
         required=False,
         widget=forms.Select(choices=[(None, "--------")] + settings.PACKAGE_NAME_CHOICES),
+    )
+
+    private_note = forms.CharField(
+        widget=forms.Textarea,
+        label="Private Note About Client",
+        required=False,
+        max_length=300,
     )
 
     class Meta:
@@ -223,14 +357,26 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
         "main_phone",
         "main_address",
     )
+
     list_display = [
-        "__str__",
         "full_name",
-        "main_phone",
+        "get_main_phone_number",  # Use custom method instead of main_phone
+        "__str__",
         "subscription",
         "main_address",
         "has_card",
     ]
+
+    def get_main_phone_number(self, obj):
+        """
+        Returns the phone number portion of the main_phone field, or the main_phone field if it doesn't have a number attribute.
+        """
+        if hasattr(obj.main_phone, "number"):
+            return obj.main_phone.number
+        return obj.main_phone
+
+    get_main_phone_number.short_description = "Main Phone Number"  # Set column header in admin
+
     actions = ["full_delete_action"]
 
     def save_form(self, request: HttpRequest, form: forms.BaseForm, change):

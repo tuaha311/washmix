@@ -63,10 +63,14 @@ def on_delivery_notify_signal(
     if is_pickup and (is_created or is_date_updated):
         # we are adding some delay to wait for database
         # transaction commit
+        if is_date_updated:
+            event = settings.UPDATED_DELIVERY
+        else:
+            event = settings.NEW_DELIVERY
 
         send_sms.send_with_options(
             kwargs={
-                "event": settings.NEW_DELIVERY,
+                "event": event,
                 "recipient_list": [number],
                 "extra_context": {
                     "client_id": client.id,
