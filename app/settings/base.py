@@ -652,6 +652,8 @@ ACCRUE_CREDIT_BACK = "accrue_credit_back"
 SEND_ADMIN_CLIENT_INFORMATION = "send_admin_client_information"
 SEND_ADMIN_PCUSTOMER_INFORMATION = "send_admin_pcustomer_information"
 SEND_ADMIN_STORE_CREDIT = "send_email_store_credit"
+CUSTOMER_ACCOUNT_UPDATE = "customer_account_update"
+CUSTOMER_NOSHOW = "customer_no_show"
 
 #################################
 # SENDGRID WITH EMAIL TEMPLATES #
@@ -680,7 +682,7 @@ EMAIL_EVENT_INFO = {
     NEW_ORDER: {
         "template_name": "email/new_order.html",
         "subject": "WashMix New Order",
-        "from_email": "cs@washmix.com",
+        "from_email": "orders@washmix.com",
         "reply_to": "orders@washmix.com",
     },
     PAYMENT_FAIL_CLIENT: {
@@ -692,7 +694,7 @@ EMAIL_EVENT_INFO = {
     PAYMENT_FAIL_ADMIN: {
         "template_name": "email/payment_fail_admin.html",
         "subject": "WashMix Payment Failed",
-        "from_email": "info@washmix.com",
+        "from_email": "failed@washmix.com",
         "reply_to": "info@washmix.com",
     },
     ACCOUNT_REMOVED: {
