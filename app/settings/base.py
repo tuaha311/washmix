@@ -312,34 +312,6 @@ DELIVERY_STATUS_CHOICES = list(DELIVERY_STATUS_MAP.items())
 DELETE_USER_AFTER_NON_SIGNUP_HOURS = 10
 DELETE_USER_AFTER_TIMEDELTA = timedelta(minutes=DELETE_USER_AFTER_NON_SIGNUP_HOURS)
 
-######################################
-# PROMOTIONAL ARCHIVE CUSTOMER EMAILS#
-######################################
-
-TOTAL_PROMOTIONAL_EMAIL_COUNT = 5
-PROMO_EMAIL_PERIODS = {  ## Max Unit Allowed is Week , Min can be millisecond
-    0: {
-        "after": "1",
-        "time_unit": "hours",
-    },
-    1: {
-        "after": "1",
-        "time_unit": "days",
-    },
-    2: {
-        "after": "1",
-        "time_unit": "weeks",
-    },
-    3: {
-        "after": "4",  # 1 Month
-        "time_unit": "weeks",
-    },
-    4: {
-        "after": "12",  # 3 Months
-        "time_unit": "weeks",
-    },
-}
-
 
 #####################################
 # APPLICATION_DATA (BUSINESS RULES) #
@@ -757,6 +729,24 @@ EMAIL_EVENT_INFO = {
         "template_name": "email/send_admin_store_credit.html",
         "subject": "Store Credit Update",
         "from_email": "info@washmix.com",
+        "reply_to": "info@washmix.com",
+    },
+    CUSTOMER_ACCOUNT_UPDATE: {
+        "template_name": "email/send_admin_client_information.html",
+        "subject": "New User Activity",
+        "from_email": "update@washmix.com",
+        "reply_to": "info@washmix.com",
+    },
+    CUSTOMER_NOSHOW: {
+        "template_name": "email/send_admin_client_information.html",
+        "subject": "NO SHOW",
+        "from_email": "noshow@washmix.com",
+        "reply_to": "info@washmix.com",
+    },
+    NEW_REQUEST: {
+        "template_name": "email/send_admin_client_information.html",
+        "subject": "New User Activity",
+        "from_email": "request@washmix.com",
         "reply_to": "info@washmix.com",
     },
 }
