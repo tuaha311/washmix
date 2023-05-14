@@ -7,6 +7,9 @@ import dramatiq
 from periodiq import cron
 
 from archived.models import ArchivedCustomer
+from notifications.tasks import send_email, send_sms
+from orders.choices import OrderStatusChoices
+from orders.models import Order
 from settings.base import DELETE_USER_AFTER_TIMEDELTA
 from users.models import Client
 

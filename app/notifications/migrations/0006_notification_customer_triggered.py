@@ -5,6 +5,7 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
+
     dependencies = [
         ("users", "0002_change_defaults_for_client"),
         ("notifications", "0005_auto_20220301_1414"),
