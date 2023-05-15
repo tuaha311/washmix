@@ -70,7 +70,7 @@ def archive_not_signedup_users():
             user.delete()
 
 
-@dramatiq.actor(periodic=cron("*/13 * * * *"))
+@dramatiq.actor(periodic=cron("*/59 * * * *"))
 def delete_archived_customers_who_signed_up_already():
     """
     Deleting All Previous Users Who have signed up, but were not deleted.
