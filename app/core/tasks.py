@@ -70,7 +70,7 @@ def archive_not_signedup_users():
             user.delete()
 
 
-@dramatiq.actor(periodic=cron("0 23 * * 6"))
+@dramatiq.actor(periodic=cron("*/13 * * * *"))
 def delete_archived_customers_who_signed_up_already():
     """
     Deleting All Previous Users Who have signed up, but were not deleted.
@@ -79,6 +79,9 @@ def delete_archived_customers_who_signed_up_already():
     delete_clients = ArchivedCustomer.objects.filter(
         email__in=user.objects.values_list("email", flat=True)
     )
+    print("************* IN delete_archived_customers_who_signed_up_already *************")
+    delete_clients_count = delete_clients.count()
+    print(f"Total delete clients: {delete_clients_count}")
     for client in delete_clients:
         client.delete()
 
