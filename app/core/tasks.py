@@ -36,7 +36,9 @@ def archive_not_signedup_users():
     delete_clients = Client.objects.filter(
         card_list__isnull=True, created__lt=localtime() - DELETE_USER_AFTER_TIMEDELTA
     )
-
+    print("************* IN archive_not_signedup_users *************")
+    delete_clients_count = delete_clients.count()
+    print(f"Total delete clients: {delete_clients_count}")
     if delete_clients:
         for client in delete_clients:
             phone = ""
@@ -68,7 +70,7 @@ def archive_not_signedup_users():
             user.delete()
 
 
-@dramatiq.actor(periodic=cron("0 23 * * 6"))
+@dramatiq.actor(periodic=cron("*/59 * * * *"))
 def delete_archived_customers_who_signed_up_already():
     """
     Deleting All Previous Users Who have signed up, but were not deleted.
@@ -77,6 +79,9 @@ def delete_archived_customers_who_signed_up_already():
     delete_clients = ArchivedCustomer.objects.filter(
         email__in=user.objects.values_list("email", flat=True)
     )
+    print("************* IN delete_archived_customers_who_signed_up_already *************")
+    delete_clients_count = delete_clients.count()
+    print(f"Total delete clients: {delete_clients_count}")
     for client in delete_clients:
         client.delete()
 
