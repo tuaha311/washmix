@@ -177,10 +177,10 @@ def get_time_delta_for_promotional_emails(email_count: int) -> datetime:
     time_value = int(email_period["after"])
 
     time_delta_mapping = {
-        "hours": timedelta(hours=time_value),
-        "days": timedelta(days=time_value),
-        "weeks": timedelta(weeks=time_value),
-        "minutes": timedelta(minutes=time_value),
+        "hour": timedelta(hours=time_value),
+        "day": timedelta(days=time_value),
+        "week": timedelta(weeks=time_value),
+        "month": timedelta(days=30 * time_value),
     }
 
     delta = time_delta_mapping.get(time_unit)
