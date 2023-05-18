@@ -6,7 +6,6 @@ import core.validators
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("archived", "0001_initial"),
     ]

@@ -1,8 +1,10 @@
 import os
+from datetime import datetime, timedelta
 from pathlib import PosixPath
 
 from django.conf import settings
 from django.db.models import Model
+from django.utils.timezone import localtime
 
 import phonenumbers
 from rest_framework import serializers
@@ -165,3 +167,25 @@ def clone_instance(instance: Model) -> Model:
     instance.save()
 
     return instance
+
+
+def get_time_delta_for_promotional_emails(email_count: int) -> datetime:
+    promo_email_periods = settings.PROMO_EMAIL_PERIODS
+    email_period = promo_email_periods[email_count]
+
+    time_unit = email_period["time_unit"]
+    time_value = int(email_period["after"])
+
+    time_delta_mapping = {
+        "hours": timedelta(hours=time_value),
+        "days": timedelta(days=time_value),
+        "weeks": timedelta(weeks=time_value),
+        "minutes": timedelta(minutes=time_value),
+    }
+
+    delta = time_delta_mapping.get(time_unit)
+
+    if delta is None:
+        raise ValueError(f"Invalid time unit: {time_unit}")
+
+    return localtime() + delta

@@ -21,6 +21,7 @@ from billing.models import Invoice
 from billing.utils import add_money_to_balance, remove_money_from_balance
 from core.admin import AdminWithSearch
 from core.mixins import AdminUpdateFieldsMixin
+from core.tasks import archive_periodic_promotional_emails
 from core.utils import convert_cent_to_dollars
 from deliveries.models import Request
 from notifications.tasks import send_email
