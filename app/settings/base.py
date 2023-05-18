@@ -312,6 +312,20 @@ DELIVERY_STATUS_CHOICES = list(DELIVERY_STATUS_MAP.items())
 DELETE_USER_AFTER_NON_SIGNUP_HOURS = 3
 DELETE_USER_AFTER_TIMEDELTA = timedelta(hours=DELETE_USER_AFTER_NON_SIGNUP_HOURS)
 
+######################################
+# PROMOTIONAL ARCHIVE CUSTOMER EMAILS#
+######################################
+
+PROMO_EMAIL_PERIODS = {
+    0: {
+        "after": "1",
+        "time_unit": "hour",
+    },
+    1: {"after": "1", "time_unit": "day", "time_of_day": "17:00"},  # Send at 5:00 pm
+    2: {"after": "1", "time_unit": "week", "time_of_day": "17:00"},  # Send at 5:00 pm
+    3: {"after": "1", "time_unit": "month", "time_of_day": "17:00"},  # Send at 5:00 pm
+    4: {"after": "3", "time_unit": "month", "time_of_day": "17:00"},  # Send at 5:00 pm
+}
 
 #####################################
 # APPLICATION_DATA (BUSINESS RULES) #
@@ -654,6 +668,9 @@ SEND_ADMIN_PCUSTOMER_INFORMATION = "send_admin_pcustomer_information"
 SEND_ADMIN_STORE_CREDIT = "send_email_store_credit"
 CUSTOMER_ACCOUNT_UPDATE = "customer_account_update"
 CUSTOMER_NOSHOW = "customer_no_show"
+FIRST_ARCHIVE_FOLLOW_UP = "first_archive_follow_up"
+SECOND_ARCHIVE_FOLLOW_UP = "second_archive_follow_up"
+THIRD_ARCHIVE_FOLLOW_UP = "third_archive_follow_up"
 
 #################################
 # SENDGRID WITH EMAIL TEMPLATES #
@@ -748,6 +765,24 @@ EMAIL_EVENT_INFO = {
     NEW_REQUEST: {
         "template_name": "email/send_admin_client_information.html",
         "subject": "New User Activity",
+        "from_email": "request@washmix.com",
+        "reply_to": "info@washmix.com",
+    },
+    FIRST_ARCHIVE_FOLLOW_UP: {
+        "template_name": "email/first_archive_follow_up.html",
+        "subject": "Ready to Sign Up?",
+        "from_email": "request@washmix.com",
+        "reply_to": "info@washmix.com",
+    },
+    SECOND_ARCHIVE_FOLLOW_UP: {
+        "template_name": "email/second_archive_follow_up.html",
+        "subject": "Confused About WashMix?",
+        "from_email": "request@washmix.com",
+        "reply_to": "info@washmix.com",
+    },
+    THIRD_ARCHIVE_FOLLOW_UP: {
+        "template_name": "email/third_archive_follow_up.html",
+        "subject": "We are waiting for you!",
         "from_email": "request@washmix.com",
         "reply_to": "info@washmix.com",
     },
