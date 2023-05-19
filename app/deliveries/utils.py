@@ -6,7 +6,7 @@ from django.conf import settings
 from deliveries.models import Holiday, Nonworkingday
 
 
-def get_business_days_with_offset(start_date: date, offset: int) -> date:
+def get_business_days_with_offset(start_date: date, offset: int, dropoff=False) -> date:
     """
     Common function, that handles business days with offset.
     For example, you can use it for calculating next business day at end of week.
@@ -17,13 +17,27 @@ def get_business_days_with_offset(start_date: date, offset: int) -> date:
     for obj in Nonworkingday.objects.all():
         NON_WORKING_DAYS.append(int(obj.day))
 
-    business_only_days = [
-        item
-        for item in days
-        if item.isoweekday() not in NON_WORKING_DAYS and item.strftime("%Y-%m-%d") not in HOLIDAYS
-    ]
-
-    return business_only_days[offset - 1]
+    if not dropoff:
+        business_only_days = [
+            item
+            for item in days
+            if item.isoweekday() not in NON_WORKING_DAYS
+            and item.strftime("%Y-%m-%d") not in HOLIDAYS
+        ]
+        return business_only_days[offset - 1]
+    else:
+        business_only_days = [
+            item
+            for item in days
+            if item.strftime("%Y-%m-%d") not in HOLIDAYS and item.isoweekday() != 7
+        ]
+        index = 1
+        while (
+            business_only_days[offset - index].isoweekday() == 7
+            or business_only_days[offset - index].isoweekday() in NON_WORKING_DAYS
+        ):
+            index -= 1
+        return business_only_days[offset - index]
 
 
 def get_pickup_day(start_datetime: datetime) -> date:
@@ -94,4 +108,4 @@ def get_dropoff_day(pickup_date: date, is_rush: bool = False) -> date:
     if is_rush:
         offset = settings.RUSH_PROCESSING_BUSINESS_DAYS
 
-    return get_business_days_with_offset(pickup_date, offset=offset)
+    return get_business_days_with_offset(pickup_date, offset=offset, dropoff=True)
