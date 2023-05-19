@@ -93,8 +93,6 @@ def archive_periodic_promotional_emails():
             email_time = client.next_promo_email_schedule
 
         sent_count = client.promo_emails_sent_count
-        print("")
-        print("")
         print("CLIENT:     ", client.email)
         print("Email Time:", email_time)
 
@@ -136,13 +134,7 @@ def archive_periodic_promotional_emails():
             print("PROMO EMAIL SENT TO " + client.email)
             print("**************************")
         else:
-            print("**************************")
-            print("Time did not match   ", email_time)
-            print("CLIENT:      ", client.email)
-            print("CLIENT:      ", client.next_promo_email_schedule)
-            print("**************************")
-        print("")
-        print("")
+            print("Time did not match   ")
 
 
 @dramatiq.actor(periodic=cron("*/13 * * * *"))

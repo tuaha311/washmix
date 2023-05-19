@@ -317,26 +317,12 @@ DELETE_USER_AFTER_TIMEDELTA = timedelta(hours=DELETE_USER_AFTER_NON_SIGNUP_HOURS
 ######################################
 
 PROMO_EMAIL_PERIODS = {
-    0: {
-        "after": "1",
-        "time_unit": "hour",
-    },
+    0: {"after": "1", "time_unit": "hour"},
     1: {"after": "1", "time_unit": "day", "time_of_day": "17:00"},  # Send at 5:00 pm
     2: {"after": "1", "time_unit": "week", "time_of_day": "17:00"},  # Send at 5:00 pm
     3: {"after": "1", "time_unit": "month", "time_of_day": "17:00"},  # Send at 5:00 pm
     4: {"after": "3", "time_unit": "month", "time_of_day": "17:00"},  # Send at 5:00 pm
 }
-
-# PROMO_EMAIL_PERIODS = {
-#     0: {
-#         "after": "10",
-#         "time_unit": "minute",
-#     },
-#     1: {"after": "5", "time_unit": "minute"},
-#     2: {"after": "6", "time_unit": "minute"},
-#     3: {"after": "7", "time_unit": "minute"},
-#     4: {"after": "10", "time_unit": "minute"},
-# }
 
 #####################################
 # APPLICATION_DATA (BUSINESS RULES) #
