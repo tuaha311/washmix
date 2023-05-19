@@ -85,7 +85,9 @@ def archive_periodic_promotional_emails():
     for client in email_customers:
         print("CLIENT:     ", client.email)
         if client.next_promo_email_schedule is None:
-            email_time = get_time_delta_for_promotional_emails(0)
+            email_time = get_time_delta_for_promotional_emails(
+                0
+            )  # should return localtime() + 1 hour
             client.promo_emails_sent_count = 0
             client.next_promo_email_schedule = email_time
         else:
@@ -126,11 +128,17 @@ def archive_periodic_promotional_emails():
             )
             client.next_promo_email_schedule = email_schedule
 
+            print("**************************")
             print("Client Saved, Next email to send is at  ", client.next_promo_email_schedule)
             client.save()
             print("PROMO EMAIL SENT TO " + client.email)
+            print("**************************")
         else:
-            print("Time did not match")
+            print("**************************")
+            print("Time did not match   ", email_time)
+            print("CLIENT:      ", client.email)
+            print("CLIENT:      ", client.next_promo_email_schedule)
+            print("**************************")
 
 
 @dramatiq.actor(periodic=cron("*/13 * * * *"))

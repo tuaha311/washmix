@@ -188,5 +188,5 @@ def get_time_delta_for_promotional_emails(email_count: int) -> datetime:
 
     if delta is None:
         raise ValueError(f"Invalid time unit: {time_unit}")
-
+    print("IN get_time_delta_for_promotional_emails:         ", localtime() + delta)
     return localtime() + delta
