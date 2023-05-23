@@ -10,6 +10,9 @@ class Request(CommonScheduleRequest, CommonAmountDiscountModel):
     """
     Client-side entity.
 
+    Request has multiple orders and order has single request.
+    Request has multiple deliveries and delivery has single request.
+
     Request for pickup and dropoff from our Client.
     It can be made via dashboard or via SMS to Twilio Flex.
 

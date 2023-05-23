@@ -324,6 +324,22 @@ PROMO_EMAIL_PERIODS = {
     4: {"after": "3", "time_unit": "month", "time_of_day": "17:00"},  # Send at 5:00 pm
 }
 
+######################################
+# UNPAID ORDER REMINDER EMAIL#
+######################################
+
+UNPAID_ORDER_TOTAL_REMINDER_EMAILS = 2
+# UNPAID_ORDER_FIRST_REMINDER_HOURS = 48
+# UNPAID_ORDER_SECOND_REMINDER_HOURS = 144
+# UNPAID_ORDER_FIRST_REMINDER_HOURS_TIMEDELTA = timedelta(hours=UNPAID_ORDER_FIRST_REMINDER_HOURS)
+# UNPAID_ORDER_SECOND_REMINDER_HOURS_TIMEDELTA = timedelta(hours=UNPAID_ORDER_SECOND_REMINDER_HOURS)
+
+UNPAID_ORDER_FIRST_REMINDER_HOURS = 8
+UNPAID_ORDER_SECOND_REMINDER_HOURS = 14
+UNPAID_ORDER_FIRST_REMINDER_HOURS_TIMEDELTA = timedelta(minutes=UNPAID_ORDER_FIRST_REMINDER_HOURS)
+UNPAID_ORDER_SECOND_REMINDER_HOURS_TIMEDELTA = timedelta(minutes=UNPAID_ORDER_SECOND_REMINDER_HOURS)
+
+
 #####################################
 # APPLICATION_DATA (BUSINESS RULES) #
 #####################################
@@ -668,6 +684,7 @@ CUSTOMER_NOSHOW = "customer_no_show"
 FIRST_ARCHIVE_FOLLOW_UP = "first_archive_follow_up"
 SECOND_ARCHIVE_FOLLOW_UP = "second_archive_follow_up"
 THIRD_ARCHIVE_FOLLOW_UP = "third_archive_follow_up"
+UNCHARGED_ORDER_REMINDER = "uncharged_order_reminder"
 
 #################################
 # SENDGRID WITH EMAIL TEMPLATES #
@@ -676,7 +693,7 @@ THIRD_ARCHIVE_FOLLOW_UP = "third_archive_follow_up"
 SENDGRID_NO_REPLY = "no-reply@washmix.com"
 SENDGRID_FROM_EMAIL = Email("info@washmix.com")
 SENDGRID_API_KEY = env.str("SENDGRID_API_KEY", "")
-ADMIN_EMAIL_LIST = env.list("ADMIN_EMAIL_LIST", ["michael@washmix.com", "hamza.washmix@gmail.com"])
+ADMIN_EMAIL_LIST = env.list("ADMIN_EMAIL_LIST", ["hamza.washmix@gmail.com"])
 
 EMAIL_EVENT_INFO = {
     SIGNUP: {
@@ -782,6 +799,12 @@ EMAIL_EVENT_INFO = {
         "subject": "We are waiting for you!",
         "from_email": "request@washmix.com",
         "reply_to": "info@washmix.com",
+    },
+    UNCHARGED_ORDER_REMINDER: {
+        "template_name": "email/uncharged_order_reminder.html",
+        "subject": "WashMix UNCHARGED Order Reminder",
+        "from_email": "orders@washmix.com",
+        "reply_to": "orders@washmix.com",
     },
 }
 
