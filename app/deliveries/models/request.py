@@ -79,6 +79,20 @@ class Request(CommonScheduleRequest, CommonAmountDiscountModel):
         default=0,
     )
 
+    unpaid_reminder_email_count = models.PositiveSmallIntegerField(
+        verbose_name="Unpaid Order Reminder Email",
+        default=0,
+        blank=True,
+        editable=False,
+    )
+
+    unpaid_reminder_email_time = models.DateTimeField(
+        verbose_name="Reminder Email Time",
+        editable=False,
+        blank=True,
+        null=True,
+    )
+
     class Meta:
         verbose_name = "request"
         verbose_name_plural = "requests"
@@ -186,3 +200,17 @@ class Request(CommonScheduleRequest, CommonAmountDiscountModel):
     @property
     def dropoff_status(self):
         return self.dropoff.get_status_display()
+
+    def increase_unpaid_reminder_email_count(self):
+        self.unpaid_reminder_email_count =self.unpaid_reminder_email_count + 1
+
+    def set_unpaid_order_reminder_email_time(self, time_to_send):
+        self.unpaid_reminder_email_time = time_to_send
+
+    @property
+    def unpaid_order_reminder_email_time(self):
+        return self.unpaid_reminder_email_time
+
+    @property
+    def unpaid_order_reminder_count(self):
+        return self.unpaid_reminder_email_count

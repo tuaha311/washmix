@@ -1,44 +1,73 @@
-{% extends "base_email_for_admin_reminder.html" %}
+{% extends "base_email.html" %}
 
 {% block extra_style %}
-    <style media="all" type="text/css">
-        #order-table, #basket-table, #basket-total {
-            width: 100%;
-        }
+  <style media="all" type="text/css">
+    #order-table, #basket-table, #basket-total {
+      width: 100%;
+    }
 
-        #order-table th, #basket-table th {
-            width: 25%;
-        }
+    #order-table th, #basket-table th {
+      width: 25%;
+    }
 
-        #basket-total th {
-            width: 50%;
-        }
+    #basket-total th {
+      width: 50%;
+    }
 
-        #discount {
-            color: blue;
-        }
+    #discount {
+      color: blue;
+    }
 
-        #balance {
-            color: blueviolet;
-        }
+    #balance {
+      color: blueviolet;
+    }
 
-        #unpaid {
-            color: red;
-        }
-    </style>
+    #unpaid, #paid {
+      font-weight: 800;
+      font-size: 24px;
+    }
+
+    #unpaid {
+      color: red;
+    }
+
+    #paid {
+      color: green;
+    }
+  </style>
 {% endblock %}
 
-{% block content %}
-    <tr>
-        <td>
-            <h3>UNCHARGED Order #{{ order_container.id }}</h3>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <h4>Billing date: {{ order_container.created.date }}</h4>
-        </td>
-    </tr>
+{% block body %}
+  <tr>
+    <td>
+      <div class="divider"></div>
+    </td>
+  </tr>
 
-    {% include "chunks/detailed_order.html" %}
+  <tr>
+    <td>
+      <h2 class="red centered">ORDER NOT CHARGED FOR REQUEST # {{ request.id }}</h2>
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <div class="divider"></div>
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <h3>Customer information</h3>
+      <div id="billing-information">
+        <p>Name - {{ full_name }}</p>
+        <p>Email - <a href="mailto:{{ client.email }}">{{ client.email }}</a></p>
+        <p>Phone Number - {{ client.main_phone.number }}</p>
+        <p>Address - {{ billing_address }}</p>
+        <p>Customer [{{ full_name }} - {{main_phone}} at {{billing_address}}] had an order picked up on {{ delivery.changed.strftime("%B %d, %Y") }} {defined = marked as completed} but has not been charged for. </p>
+      </div>
+    </td>
+  </tr>
+
+  {% include "chunks/detailed_order.html" %}
 {% endblock %}
