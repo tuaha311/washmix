@@ -1,5 +1,7 @@
 import logging
+from datetime import timedelta
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.utils.timezone import localtime
 
@@ -7,6 +9,7 @@ import dramatiq
 from periodiq import cron
 
 from archived.models import ArchivedCustomer
+from core.utils import get_time_delta_for_promotional_emails
 from notifications.tasks import send_email, send_sms
 from orders.choices import OrderStatusChoices
 from orders.models import Order
@@ -64,13 +67,77 @@ def archive_not_signedup_users():
                     "full_name": full_name,
                     "address": address,
                     "zip_code": zip_code,
+                    "promo_emails_sent_count": 0,
+                    "next_promo_email_schedule": get_time_delta_for_promotional_emails(0),
                 },
             )
 
             user.delete()
 
 
-@dramatiq.actor(periodic=cron("*/59 * * * *"))
+@dramatiq.actor(periodic=cron("*/10 * * * *"))
+def archive_periodic_promotional_emails():
+    email_customers = ArchivedCustomer.objects.all()
+
+    current_time = localtime()
+    print("Current Time in Promo Email:", current_time)
+
+    for client in email_customers:
+        if client.next_promo_email_schedule is None:
+            email_time = get_time_delta_for_promotional_emails(
+                0
+            )  # should return localtime() + 1 hour
+            client.promo_emails_sent_count = 0
+            client.next_promo_email_schedule = email_time
+        else:
+            email_time = client.next_promo_email_schedule
+
+        sent_count = client.promo_emails_sent_count
+        print("CLIENT:     ", client.email)
+        print("Email Time:", email_time)
+
+        # Sending Email
+        if email_time.strftime("%Y-%m-%d %H:00:00") == current_time.strftime("%Y-%m-%d %H:00:00"):
+            if not sent_count or sent_count == 0:
+                email_to_send = settings.FIRST_ARCHIVE_FOLLOW_UP
+            elif sent_count == 1:
+                email_to_send = settings.SECOND_ARCHIVE_FOLLOW_UP
+            else:
+                email_to_send = settings.THIRD_ARCHIVE_FOLLOW_UP
+
+            recipient_list = ["hamza.washmix@gmail.com", client.email]
+
+            send_email(
+                event=email_to_send,
+                recipient_list=recipient_list,
+            )
+
+            client.increase_promo_emails_sent_count()
+
+            if sent_count == 0:
+                time_to_add = timedelta(hours=24)
+            elif sent_count == 1:
+                time_to_add = timedelta(weeks=1)
+            elif sent_count == 2:
+                time_to_add = timedelta(days=30)
+            else:
+                time_to_add = timedelta(days=90)
+
+            email_schedule = (
+                current_time.replace(hour=17, minute=0, second=0, microsecond=0) + time_to_add
+            )
+            client.next_promo_email_schedule = email_schedule
+
+            print("**************************")
+            print("Client Saved  ", client.__dict__)
+            client.save()
+            print("PROMO EMAIL SENT TO " + client.email)
+            print("**************************")
+        else:
+            print("Time did not match   ")
+
+
+@dramatiq.actor(periodic=cron("*/13 * * * *"))
 def delete_archived_customers_who_signed_up_already():
     """
     Deleting All Previous Users Who have signed up, but were not deleted.
