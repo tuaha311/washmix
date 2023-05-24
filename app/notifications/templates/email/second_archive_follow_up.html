@@ -1,75 +1,262 @@
-{% extends "base_email.html" %}
-{% block body %}
-    <style type="text/css">
-      p {
-        margin: 0;
+{% load full_static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+    <style media="all" type="text/css">
+      {% if is_pdf %}
+        @page {
+          margin: 0;
+          size: A4;
+        }
+      {% endif %}
+
+      * {
+        color: #666666;
+      }
+
+      body {
+        width: 800px;
+        height: 100%;
+        margin: 0 auto;
         padding: 0;
+        {% if is_pdf %}
+          background-color: white;
+        {% else %}
+          background-color: #e4e4e4;
+        {% endif %}
+        font-family: 'Montserrat', sans-serif;
+        -webkit-font-smoothing: antialiased;
       }
-      .ft10 {
-        font-size: 16px;
-        font-family: Times;
-        color: #000000;
+
+      table {
+        border-spacing: 0;
       }
-      .ft11 {
-        font-size: 14px;
-        font-family: Times;
-        color: #212121;
+
+      .container .header {
+        width: 100%;
+        margin-bottom: 40px;
+        text-align: left;
       }
-      .ft13 {
-        font-size: 14px;
-        font-family: Times;
-        color: #ff0000;
+
+      .footer {
+        height: 40px;
+        width: 100%;
+        background-color: #39b6ed;
+        color: #fff;
       }
-      .ft14 {
-        font-size: 14px;
-        font-family: Times;
-        color: #0000ff;
+
+      .footer-row {
+        color: #fff;
       }
-      .ft15 {
-        font-size: 22px;
-        font-family: Times;
-        color: #4a86e8;
+
+      a {
+        color: #39b6ed;
       }
-      .ft16 {
-        font-size: 14px;
-        font-family: Times;
-        color: #172a4d;
+
+      .highlight-background {
+        background-color: lightgrey;
       }
-      .ft18 {
-        font-size: 16px;
-        font-family: Times;
-        color: #172a4d;
+
+      .container {
+        background-color: #fff;
+        padding: 50px;
+        {% if is_pdf %}
+          width: 700px;
+        {% else %}
+          width: 800px;
+        {% endif %}
       }
-      .ft19 {
-        font-size: 16px;
-        font-family: Times;
-        color: #ff0000;
+
+      .info-table {
+        width: 800px;
+        background-color: #fafafa;
       }
-      .ft110 {
-        font-size: 16px;
-        font-family: Times;
-        color: #333333;
+
+      .info-row {
+        text-align: center;
       }
-      .ft112 {
-        font-size: 14px;
-        line-height: 20px;
-        font-family: Times;
-        color: #212121;
+
+      .socials-table {
+        width: 800px;
+        background-color: #fafafa;
       }
-      .ft113 {
-        font-size: 16px;
-        line-height: 24px;
-        font-family: Times;
-        color: #333333;
+
+      .social-icon {
+        margin-right: 20px;
+        text-decoration: none;
+      }
+
+      .divider {
+        width: 100%;
+        height: 1px;
+        background-color: grey;
+        margin-top: 10px;
+        margin-bottom: 10px;
+      }
+
+      .padding-around {
+        padding: 10px;
+      }
+
+      .large-margin-top {
+        margin-top: 20px;
+      }
+
+      .large-padding-top {
+        padding-top: 20px;
+      }
+
+      .large-margin-bottom {
+        margin-bottom: 20px;
+      }
+
+      .large-padding-bottom {
+        padding-bottom: 20px;
+      }
+
+      .padding-top {
+        padding-top: 10px;
+      }
+
+      .margin-top {
+        margin-top: 10px;
+      }
+
+      .receiver-link {
+        margin-left: 5px;
+        margin-right: 5px;
+      }
+
+      .margin-bottom {
+        margin-bottom: 10px;
+      }
+
+      .centered {
+        text-align: center;
+      }
+
+      .italic {
+        font-style: italic;
+      }
+
+      .bold {
+        font-weight: bold;
+      }
+
+      .green {
+        color: green;
+      }
+
+      .orange {
+        color: orange;
+      }
+
+      .red {
+        color: red;
+      }
+
+      .title {
+        line-height: 1.2;
+        color: #003459;
+        font-size: 24px;
+        font-weight: 500;
+      }
+
+      ul li {
+        color: #39b6ed;
+      }
+
+      ul li span {
+        color: #666666;
       }
     </style>
+    {% block extra_style %}
+    {% endblock %}
+  </head>
+
+  <body>
+    <table class="container">
+      <tr>
+        <th class="header">
+          <a href="https://{{ washmix.domain }}" target="_blank">
+            <img src="{% full_static 'images/logo_with_text.png' %}" alt="logo" style="border: none;" width="160"/>
+          </a>
+        </th>
+      </tr>
+      <style type="text/css">
+        p {
+          margin: 0;
+          padding: 0;
+        }
+        .ft10 {
+          font-size: 16px;
+          font-family: Times;
+          color: #000000;
+        }
+        .ft11 {
+          font-size: 14px;
+          font-family: Times;
+          color: #212121;
+        }
+        .ft13 {
+          font-size: 14px;
+          font-family: Times;
+          color: #ff0000;
+        }
+        .ft14 {
+          font-size: 14px;
+          font-family: Times;
+          color: #0000ff;
+        }
+        .ft15 {
+          font-size: 22px;
+          font-family: Times;
+          color: #4a86e8;
+        }
+        .ft16 {
+          font-size: 14px;
+          font-family: Times;
+          color: #172a4d;
+        }
+        .ft18 {
+          font-size: 16px;
+          font-family: Times;
+          color: #172a4d;
+        }
+        .ft19 {
+          font-size: 16px;
+          font-family: Times;
+          color: #ff0000;
+        }
+        .ft110 {
+          font-size: 16px;
+          font-family: Times;
+          color: #333333;
+        }
+        .ft112 {
+          font-size: 14px;
+          line-height: 20px;
+          font-family: Times;
+          color: #212121;
+        }
+        .ft113 {
+          font-size: 16px;
+          line-height: 24px;
+          font-family: Times;
+          color: #333333;
+        }
+      </style>
       <p class="ft11">
         Hello <br /><br />
-        I hope this letter finds you well. Still thinking about using WASHMIX.
+        I hope this email finds you well. Still thinking about using WASHMIX.
         Let us share more information with you.
       </p>
       <br />
-
       <span
         class="ft16"
         style="
@@ -184,4 +371,6 @@
       <p class="ft110" style="font-weight: bold">Michael Beheshtaein</p>
       <p class="ft110" style="font-weight: bold">WASHMIX Inc.</p>
       <br />
-{% endblock %}
+    </table>
+  </body>
+</html>
