@@ -105,7 +105,7 @@ def archive_periodic_promotional_emails():
             else:
                 email_to_send = settings.THIRD_ARCHIVE_FOLLOW_UP
 
-            recipient_list = ["hamza.washmix@gmail.com", client.email]
+            recipient_list = [client.email]
 
             send_email(
                 event=email_to_send,
