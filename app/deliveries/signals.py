@@ -30,6 +30,7 @@ def on_delivery_notify_signal(
     """
     # We are ignoring raw signals
     # Ref - https://docs.djangoproject.com/en/3.1/ref/signals/#post-save
+    print("I AM ON SIGNALLLLL")
     if raw:
         logger.info("Raw signal call - ignoring")
         return None
@@ -61,6 +62,7 @@ def on_delivery_notify_signal(
         is_date_updated = "date" in update_fields
 
     if is_pickup and (is_created or is_date_updated):
+        print("111111111")
         # we are adding some delay to wait for database
         # transaction commit
         if is_date_updated:
@@ -83,6 +85,7 @@ def on_delivery_notify_signal(
         logger.info(f"Sending SMS to client {client.email}")
 
     if is_dropoff and is_completed:
+        print("22222222")
         # we are adding some delay to wait for database
         # transaction commit
         send_sms.send_with_options(
@@ -100,6 +103,7 @@ def on_delivery_notify_signal(
         logger.info(f"Sending SMS to client {client.email}")
 
     if is_pickup and is_cancelled:
+        print("3333333")
         send_sms.send_with_options(
             kwargs={
                 "event": settings.PICKUP_REQUEST_CANCELED,
@@ -115,6 +119,7 @@ def on_delivery_notify_signal(
         logger.info(f"Sending SMS to client {client.email}")
 
     if is_pickup and is_completed:
+        print("4444444")
         send_sms.send_with_options(
             kwargs={
                 "event": settings.ORDER_PICKUP_COMPLETE,
@@ -128,6 +133,7 @@ def on_delivery_notify_signal(
         )
 
     if is_pickup and is_no_show:
+        print("555555")
         send_sms.send_with_options(
             kwargs={
                 "event": settings.NO_SHOW,
@@ -144,8 +150,10 @@ def on_delivery_notify_signal(
         logger.info(f"Sending SMS to client {client.email}")
 
     if is_dropoff and is_no_show:
+        print("6666666")
         delivery_request = delivery.request
         if not Order.objects.filter(request=delivery_request).exists():
+            print("HERERERRERERERER")
             amount = 1990
             if is_advantage:
                 amount = 1490
