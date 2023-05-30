@@ -3,6 +3,7 @@ from typing import Tuple
 
 from django.conf import settings
 
+from deliveries.choices import DeliveryKind, DeliveryStatus
 from deliveries.models import Holiday, Nonworkingday
 
 
@@ -109,3 +110,11 @@ def get_dropoff_day(pickup_date: date, is_rush: bool = False) -> date:
         offset = settings.RUSH_PROCESSING_BUSINESS_DAYS
 
     return get_business_days_with_offset(pickup_date, offset=offset, dropoff=True)
+
+
+def update_deliveries_to_no_show(delivery):
+    request = delivery.request
+    drop_off_delivery = request.delivery_list.get(kind=DeliveryKind.DROPOFF)
+    drop_off_delivery.status = DeliveryStatus.NO_SHOW
+    drop_off_delivery.save()
+    print("Updated delivery to NO_SHOW: ", drop_off_delivery.pk)
