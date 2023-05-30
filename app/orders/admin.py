@@ -87,7 +87,13 @@ class ClientEmailFilter(SimpleListFilter):
 
     def lookups(self, request, model_admin):
         client_emails = model_admin.get_queryset(request).values_list('client__user__email', flat=True).distinct()
-        return [(email, email) for email in client_emails if email]
+        unique_emails = []
+        seen_emails = set()
+        for email in client_emails:
+            if email and email not in seen_emails:
+                unique_emails.append((email, email))
+                seen_emails.add(email)
+        return unique_emails
 
     def queryset(self, request, queryset):
         value = self.value()
@@ -101,7 +107,13 @@ class ClientFirstNameFilter(SimpleListFilter):
 
     def lookups(self, request, model_admin):
         client_names = model_admin.get_queryset(request).values_list('client__user__first_name', flat=True).distinct()
-        return [(name, name) for name in client_names if name]
+        unique_names = []
+        seen_names = set()
+        for name in client_names:
+            if name and name not in seen_names:
+                unique_names.append((name, name))
+                seen_names.add(name)
+        return unique_names
 
     def queryset(self, request, queryset):
         value = self.value()
@@ -115,13 +127,20 @@ class ClientLastNameFilter(SimpleListFilter):
 
     def lookups(self, request, model_admin):
         client_names = model_admin.get_queryset(request).values_list('client__user__last_name', flat=True).distinct()
-        return [(name, name) for name in client_names if name]
+        unique_names = []
+        seen_names = set()
+        for name in client_names:
+            if name and name not in seen_names:
+                unique_names.append((name, name))
+                seen_names.add(name)
+        return unique_names
 
     def queryset(self, request, queryset):
         value = self.value()
         if value:
             return queryset.filter(client__user__last_name=value)
         return queryset
+    
     
 class OrderAdmin(AdminWithSearch):
     list_filter = [
