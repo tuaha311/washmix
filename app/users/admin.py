@@ -349,6 +349,8 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
         "additional_phones",
         "balance",
         "stripe_id",
+        "full_address",
+        "address_line_2",
     ]
     form = ClientForm
     inlines = [RequestInlineAdmin, OrderInlineAdmin, InvoiceInlineAdmin]
@@ -364,9 +366,19 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
         "get_main_phone_number",  # Use custom method instead of main_phone
         "__str__",
         "subscription",
-        "main_address",
+        "full_address",
         "has_card",
     ]
+
+    def full_address(self, obj):
+        address_line_2 = obj.billing_address.get("address_line_2")
+        if address_line_2 is not None:
+            return str(obj.main_address) + ", (Apt: " + address_line_2 + " )"
+        else:
+            return obj.main_address
+
+    def address_line_2(self, obj):
+        return obj.billing_address.get("address_line_2")
 
     def get_main_phone_number(self, obj):
         """
