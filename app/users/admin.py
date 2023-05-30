@@ -372,7 +372,7 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
     def full_address(self, obj):
         address_line_2 = obj.billing_address.get("address_line_2")
         if address_line_2 is not None:
-            return address_line_2 + ", " + str(obj.main_address)
+            return str(obj.main_address) + ", " + address_line_2 
         else:
             return obj.main_address
 
