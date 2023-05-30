@@ -126,6 +126,7 @@ def on_delivery_notify_signal(
             },
             delay=settings.DRAMATIQ_DELAY_FOR_DELIVERY,
         )
+
     if is_pickup and is_no_show:
         send_sms.send_with_options(
             kwargs={
@@ -153,6 +154,7 @@ def on_delivery_notify_signal(
                 order = order_service.prepare(delivery.request)
                 order.note = "NO BAG OUTSIDE FOR PICKUP"
                 order.save()
+                print("ORDER:       ", order.__dict__)
                 order, full_paid = order_service.checkout(order)
                 if full_paid:
                     order_service.finalize(order, None, True)

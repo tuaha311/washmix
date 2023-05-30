@@ -9,6 +9,7 @@ from django.utils.html import format_html
 from core.admin import AdminWithSearch
 from deliveries.choices import DeliveryKind, DeliveryStatus
 from deliveries.models import Delivery, Holiday, Nonworkingday, Request, Schedule
+from deliveries.utils import update_deliveries_to_no_show
 from users.admin import CustomAutocompleteSelect
 from users.models.employee import Employee
 
@@ -130,19 +131,11 @@ class DeliveryAdmin(AdminWithSearch):
         We are catching the moment when admin changes Delivery's
         date and synthetically sending `post_save` signal.
         """
-        delivery = obj
-        update_fields = frozenset(form.changed_data)
 
-        # if "date" or (
-        #     "status" in update_fields and update_fields["status"] == DeliveryStatus.CANCELLED
-        # ):
-        #     post_save.send(
-        #         sender=Delivery,
-        #         instance=delivery,
-        #         update_fields=update_fields,
-        #         created=False,
-        #         raw=False,
-        #     )
+        if obj.status == DeliveryStatus.NO_SHOW:
+            print("Marking the Delivery to No Show and Charging client.")
+            update_deliveries_to_no_show(obj)
+
         return super().save_model(request, obj, form, change)
 
 
