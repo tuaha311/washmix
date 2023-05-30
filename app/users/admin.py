@@ -364,10 +364,17 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
         "get_main_phone_number",  # Use custom method instead of main_phone
         "__str__",
         "subscription",
-        "main_address",
+        "full_address",
         "has_card",
     ]
 
+    def full_address(self, obj):
+        address_line_2 = obj.billing_address.get('address_line_2')
+        if address_line_2 is not None:
+            return address_line_2 + ", " + str(obj.main_address)
+        else:
+            return obj.main_address
+        
     def get_main_phone_number(self, obj):
         """
         Returns the phone number portion of the main_phone field, or the main_phone field if it doesn't have a number attribute.
