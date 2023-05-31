@@ -28,7 +28,7 @@ class SignupSerializer(serializers.Serializer):
 
         if User.objects.filter(email=email).exists():
             raise serializers.ValidationError(
-                detail="Invalid credentials.",
+                detail="It appears that you have a registered account with this email. We recommend Sign In instead of registering. If you encounter any issues, please feel free to contact us at cs@washmix.com.",
                 code="invalid_auth_credentials",
             )
 
@@ -39,7 +39,7 @@ class SignupSerializer(serializers.Serializer):
 
         if Phone.objects.filter(number=number).exists():
             raise serializers.ValidationError(
-                detail="Invalid credentials.",
+                detail="It appears that you have a registered account with this phone number. We recommend Sign In instead of registering. If you encounter any issues, please feel free to contact us at cs@washmix.com.",
                 code="invalid_auth_credentials",
             )
 
