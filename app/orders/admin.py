@@ -1,7 +1,8 @@
+from typing import Any, List, Tuple
 from django import forms
 from django.conf import settings
 from django.contrib import admin, messages
-from django.db.models import Q, QuerySet, F
+from django.db.models import Q, QuerySet, F, CharField, Value
 from django.db.transaction import atomic
 from django.http import HttpRequest
 from django.template.loader import render_to_string
@@ -14,6 +15,7 @@ from orders.models import Basket, Item, Order, Price, Quantity, Service
 from orders.utils import generate_pdf_from_html
 from users.admin import CustomAutocompleteSelect
 from django.contrib.admin import SimpleListFilter
+from django.db.models.functions import Concat, TruncDate
 
 
 class QuantityInlineForm(forms.ModelForm):
@@ -101,12 +103,12 @@ class ClientEmailFilter(SimpleListFilter):
             return queryset.filter(client__user__email=value)
         return queryset
     
-class ClientFirstNameFilter(SimpleListFilter):
-    title = 'Client First Name'
-    parameter_name = 'client_first_name'
+class ClientNameFilter(SimpleListFilter):
+    title = 'Client Name'
+    parameter_name = 'client_name'
 
     def lookups(self, request, model_admin):
-        client_names = model_admin.get_queryset(request).values_list('client__user__first_name', flat=True).distinct()
+        client_names = model_admin.get_queryset(request).annotate(full_name=Concat('client__user__first_name', Value(' '), 'client__user__last_name', output_field=CharField())).values_list('full_name', flat=True).distinct()
         unique_names = []
         seen_names = set()
         for name in client_names:
@@ -117,40 +119,44 @@ class ClientFirstNameFilter(SimpleListFilter):
 
     def queryset(self, request, queryset):
         value = self.value()
+
         if value:
-            return queryset.filter(client__user__first_name=value)
-        return queryset
-    
-class ClientLastNameFilter(SimpleListFilter):
-    title = 'Client Last Name'
-    parameter_name = 'client_last_name'
+            parts = value.split(' ')
+            first_name = parts[0]
+            last_name = parts[1] if len(parts) > 1 else ''
+            return queryset.filter(Q(client__user__first_name__icontains=first_name, client__user__last_name__icontains=last_name))
+
+class BillingPaymentFilter(SimpleListFilter):
+    title = 'Stripe Payment'
+    parameter_name = 'stripe_payment'
 
     def lookups(self, request, model_admin):
-        client_names = model_admin.get_queryset(request).values_list('client__user__last_name', flat=True).distinct()
-        unique_names = []
-        seen_names = set()
-        for name in client_names:
-            if name and name not in seen_names:
-                unique_names.append((name, name))
-                seen_names.add(name)
-        return unique_names
+        stripe_dates = Order.objects.annotate(date=TruncDate('invoice__transaction_list__created')).values_list('date', flat=True).distinct()
+        unique_dates = []
+        seen_dates = set()
+        for date in stripe_dates:
+            if date and date not in seen_dates:
+                unique_dates.append((date, date))
+                seen_dates.add(date)
+        return unique_dates
 
     def queryset(self, request, queryset):
         value = self.value()
         if value:
-            return queryset.filter(client__user__last_name=value)
+            return queryset.filter(invoice__transaction_list__created__date=value)
         return queryset
-    
+
     
 class OrderAdmin(AdminWithSearch):
     list_filter = [
-        ClientEmailFilter,
-        ClientLastNameFilter,
-        ClientFirstNameFilter,
         "payment",
         "created",
-        "id"
+        BillingPaymentFilter,
+        ClientEmailFilter,
+        ClientNameFilter,
+        "id",
     ]
+    
     readonly_fields = [
         "pdf_path",
     ]
