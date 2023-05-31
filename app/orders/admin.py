@@ -1,7 +1,7 @@
 from django import forms
 from django.conf import settings
 from django.contrib import admin, messages
-from django.db.models import Q, QuerySet
+from django.db.models import Q, QuerySet, F
 from django.db.transaction import atomic
 from django.http import HttpRequest
 from django.template.loader import render_to_string
@@ -13,6 +13,7 @@ from core.admin import AdminWithSearch
 from orders.models import Basket, Item, Order, Price, Quantity, Service
 from orders.utils import generate_pdf_from_html
 from users.admin import CustomAutocompleteSelect
+from django.contrib.admin import SimpleListFilter
 
 
 class QuantityInlineForm(forms.ModelForm):
@@ -80,8 +81,57 @@ class OrderAdminForm(forms.ModelForm):
             ),
         }
 
+class ClientEmailFilter(SimpleListFilter):
+    title = 'Client Email'
+    parameter_name = 'client_email' 
 
+    def lookups(self, request, model_admin):
+        client_emails = model_admin.get_queryset(request).values_list('client__user__email', flat=True).distinct()
+        return [(email, email) for email in client_emails if email]
+
+    def queryset(self, request, queryset):
+        value = self.value()
+        if value:
+            return queryset.filter(client__user__email=value)
+        return queryset
+    
+class ClientFirstNameFilter(SimpleListFilter):
+    title = 'Client First Name'
+    parameter_name = 'client_first_name'
+
+    def lookups(self, request, model_admin):
+        client_names = model_admin.get_queryset(request).values_list('client__user__first_name', flat=True).distinct()
+        return [(name, name) for name in client_names if name]
+
+    def queryset(self, request, queryset):
+        value = self.value()
+        if value:
+            return queryset.filter(client__user__first_name=value)
+        return queryset
+    
+class ClientLastNameFilter(SimpleListFilter):
+    title = 'Client Last Name'
+    parameter_name = 'client_last_name'
+
+    def lookups(self, request, model_admin):
+        client_names = model_admin.get_queryset(request).values_list('client__user__last_name', flat=True).distinct()
+        return [(name, name) for name in client_names if name]
+
+    def queryset(self, request, queryset):
+        value = self.value()
+        if value:
+            return queryset.filter(client__user__last_name=value)
+        return queryset
+    
 class OrderAdmin(AdminWithSearch):
+    list_filter = [
+        ClientEmailFilter,
+        ClientLastNameFilter,
+        ClientFirstNameFilter,
+        "payment",
+        "created",
+        "id"
+    ]
     readonly_fields = [
         "pdf_path",
     ]
