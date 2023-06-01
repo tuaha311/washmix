@@ -37,6 +37,11 @@ from subscriptions.models import Package
 from subscriptions.services.subscription import SubscriptionService
 from users.helpers import remove_user_relation_with_all_info
 from users.models import Client, Customer, Employee, Log
+from django.http import HttpResponse
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle
+from reportlab.lib import colors
 
 User = get_user_model()
 LIMIT = 10
@@ -395,8 +400,75 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
 
     get_main_phone_number.short_description = "Main Phone Number"  # Set column header in admin
 
-    actions = ["full_delete_action"]
+    actions = ["full_delete_action", "generate_client_pdf"]
+    
+    def generate_client_pdf(self, request, queryset):
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="client_report.pdf"'
 
+        # Create the PDF document
+        doc = SimpleDocTemplate(response, pagesize=letter)
+
+        # Define styles for the PDF content
+        styles = getSampleStyleSheet()
+        heading_style = styles['Heading1']
+        normal_style = styles['Normal']
+
+        # Initialize the story (content) of the PDF
+        story = []
+
+        for client in queryset:
+            # Add client information to the PDF
+            client_info = []
+            client_info.append(Paragraph("Full Name: {}".format(client.full_name), heading_style))
+            client_info.append(Paragraph("Email: {}".format(client.user.email), normal_style))
+            client_info.append(Paragraph("Balance (in cents): {}".format(client.balance), normal_style))
+            client_info.append(Paragraph("Balance (in dollars): {}".format(client.dollar_balance), normal_style))
+            client_info.append(Paragraph("Has Card: {}".format(client.has_card), normal_style))
+            story.extend(client_info)
+
+            # Add a table for the orders
+            orders = Order.objects.filter(client=client)
+            if orders.exists():
+                order_data = []
+                order_data.append(["Order Number", "Status", "Payment", "Balance Before Purchase", "Balance After Purchase"])
+
+                for order in orders:
+                    order_data.append([
+                        str(order.id),
+                        str(order.status),
+                        str(order.payment),
+                        str(order.balance_before_purchase),
+                        str(order.balance_after_purchase),
+                    ])
+
+                table_style = TableStyle([
+                    ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+                    ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                    ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                    ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                    ('FONTSIZE', (0, 0), (-1, 0), 12),
+                    ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+                    ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+                    ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
+                    ('FONTSIZE', (0, 1), (-1, -1), 10),
+                    ('ALIGN', (-1, -1), (-2, -2), 'RIGHT'),
+                    ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+                    ('FONTNAME', (-1, -1), (-2, -2), 'Helvetica-Bold'),
+                    ('GRID', (0, 0), (-1, -1), 1, colors.black),
+                ])
+
+                order_table = Table(order_data, style=table_style, hAlign='LEFT')
+                story.append(Paragraph("Orders:", heading_style))
+                story.append(order_table)
+
+        # Build the PDF document with the story content
+        doc.build(story)
+
+        return response
+
+    generate_client_pdf.short_description = "Generate PDF of Client"
+    
     def save_form(self, request: HttpRequest, form: forms.BaseForm, change):
         """
         Method that helps to add credits for some client.
