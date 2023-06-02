@@ -1,10 +1,13 @@
+{% load full_static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Document</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, maximum-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+  
+  {% block extra_style %}
   <style type="text/css">
     .break {
       page-break-inside: avoid;
@@ -25,124 +28,345 @@
     .bg-gray {
       background-color: lightgrey;
     }
+    * {
+      color: #666666;
+    }
+
+    body {
+      width: 800px;
+      height: 100%;
+      margin: 0 auto;
+      padding: 0;
+      {% if is_pdf %}
+        background-color: white;
+      {% else %}
+        background-color: #e4e4e4;
+      {% endif %}
+      font-family: 'Montserrat', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    table {
+      border-spacing: 0;
+    }
+
+    .container .header {
+      width: 100%;
+      margin-bottom: 40px;
+      text-align: left;
+    }
+
+    .footer {
+      height: 40px;
+      width: 100%;
+      background-color: #39b6ed;
+      color: #fff;
+    }
+
+    .footer-row {
+      color: #fff;
+    }
+
+    a {
+      color: #39b6ed;
+    }
+
+    .highlight-background {
+      background-color: lightgrey;
+    }
+
+    .container {
+      background-color: #fff;
+      padding: 50px;
+      {% if is_pdf %}
+        width: 700px;
+      {% else %}
+        width: 800px;
+      {% endif %}
+    }
+
+    .info-table {
+      width: 800px;
+      background-color: #fafafa;
+    }
+
+    .info-row {
+      text-align: center;
+    }
+
+    .socials-table {
+      width: 800px;
+      background-color: #fafafa;
+    }
+
+    .social-icon {
+      margin-right: 20px;
+      text-decoration: none;
+    }
+
+    .divider {
+      width: 100%;
+      height: 1px;
+      background-color: grey;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+
+    .padding-around {
+      padding: 10px;
+    }
+
+    .large-margin-top {
+      margin-top: 20px;
+    }
+
+    .large-padding-top {
+      padding-top: 20px;
+    }
+
+    .large-margin-bottom {
+      margin-bottom: 20px;
+    }
+
+    .large-padding-bottom {
+      padding-bottom: 20px;
+    }
+
+    .padding-top {
+      padding-top: 10px;
+    }
+
+    .margin-top {
+      margin-top: 10px;
+    }
+
+    .receiver-link {
+      margin-left: 5px;
+      margin-right: 5px;
+    }
+
+    .margin-bottom {
+      margin-bottom: 10px;
+    }
+
+    .centered {
+      text-align: center;
+    }
+
+    .italic {
+      font-style: italic;
+    }
+
+    .bold {
+      font-weight: bold;
+    }
+
+    .green {
+      color: green;
+    }
+
+    .orange {
+      color: orange;
+    }
+
+    .red {
+      color: red;
+    }
+
+    .title {
+      line-height: 1.2;
+      color: #003459;
+      font-size: 24px;
+      font-weight: 500;
+    }
+
+    ul li {
+      color: #39b6ed;
+    }
+
+    ul li span {
+      color: #666666;
+    }
   </style>
+  {% endblock %}
 </head>
+
 <body>
-  {% comment %} {% extends "base_email.html" %} {% endcomment %}
-  {% block body %}
-  <tr>
-    <td>
-      <h4>
-        Dear {% for client in queryset %} {{ client.full_name }}{% endfor %} ,&nbsp;
-      </h4>
-      <p style="max-width: 700px">
-        Welcome to <a href="https://{{ washmix.domain }}">Washmix.com</a>
-        {% block extra_header %}{% endblock %}. To log in when visiting our
-        site, just click
-        <a href="https://{{ washmix.domain }}/login">Login</a>
-        and enter your email address and password.
-      </p>
-    </td>
-  </tr>
+  <table class="container">
+    <tr>
+      <th class="header">
+        <a href="https://{{ washmix.domain }}" target="_blank">
+          <img src="{% full_static 'images/logo_with_text.png' %}" alt="logo" style="border: none;" width="160"/>
+        </a>
+      </th>
+    </tr>
 
-  {% block content %}
-  <tr>
-    <td>
-      <h1 class="custom-heading">Client Information</h1>
-      {% for client in queryset %}
-      <table style="margin: 0">
-        <tr>
-          <th>Full Name</th>
-          <td>{{ client.full_name }}</td>
-        </tr>
-        <tr>
-          <th>Email</th>
-          <td>{{ client.user.email }}</td>
-        </tr>
-        <tr>
-          <th>Balance (in cents)</th>
-          <td>{{ client.balance }}</td>
-        </tr>
-        <tr>
-          <th>Balance (in dollars)</th>
-          <td>{{ client.dollar_balance }}</td>
-        </tr>
-        <tr>
-          <th>Has Card</th>
-          <td>{{ client.has_card }}</td>
-        </tr>
-      </table>
+    <tr>
+      <td>
+        <h4>
+          Dear {% for client in queryset %} {{ client.full_name }}{% endfor %} ,&nbsp;
+        </h4>
+        <p style="max-width: 700px">
+          Welcome to <a href="https://{{ washmix.domain }}">Washmix.com</a>
+          {% block extra_header %}{% endblock %}. To log in when visiting our
+          site, just click
+          <a href="https://{{ washmix.domain }}/login">Login</a>
+          and enter your email address and password.
+        </p>
 
-      <h2>Orders:</h2>
-      <table class="orders-tbl" style="">
-        <thead>
-          <tr class="bg-gray">
-            <th class="order-cell">ID</th>
-            <th class="order-cell">Payment</th>
-            <th class="order-cell">Amount</th>
-            <th class="order-cell">Date</th>
+        <h1 class="custom-heading">Client Information</h1>
+        {% for client in queryset %}
+        <table style="margin: 0">
+          <tr>
+            <th>Full Name</th>
+            <td>{{ client.full_name }}</td>
           </tr>
-        </thead>
-        <tbody>
-          {% for order in client_orders %}
-          <tr class="bg-white">
-            <td class="order-cell">{{ order.id }}</td>
-            <td class="order-cell">{{ order.payment }}</td>
-            <td class="order-cell">{{ order.invoice.amount_with_discount }}</td>
-            <td class="order-cell">{{ order.created }}</td>
+          <tr>
+            <th>Email</th>
+            <td>{{ client.user.email }}</td>
           </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-      
-      <h2>Balance:</h2>
-      <table class="orders-tbl" style="">
-        <thead>
-          <tr class="bg-gray">
-            <th class="order-cell">ID</th>
-            <th class="order-cell">Before Purchase</th>
-            <th class="order-cell">After Purchase</th>
-            <th class="order-cell">Update</th>
+          <tr>
+            <th>Balance (in cents)</th>
+            <td>{{ client.balance }}</td>
           </tr>
-        </thead>
-        <tbody>
-          {% for order in client_orders %}
-          <tr class="bg-white">
-            <td class="order-cell">{{ order.id }}</td>
-            <td class="order-cell">{{ order.balance_before_purchase }}</td>
-            <td class="order-cell">{{ order.balance_after_purchase }}</td>
-            <td class="order-cell">{{ order.changed }}</td>
+          <tr>
+            <th>Balance (in dollars)</th>
+            <td>{{ client.dollar_balance }}</td>
           </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+          <tr>
+            <th>Has Card</th>
+            <td>{{ client.has_card }}</td>
+          </tr>
+        </table>
 
-      <h2>Invoices:</h2>
-      <table class="invoices-tbl" style="">
-        <thead>
-          <tr class="bg-gray">
-            <th class="order-cell">ID</th>
-            <th class="order-cell">Purpose</th>
-            <th class="order-cell">Amount with Discount</th>
-            <th class="order-cell">Paid Amount</th>
-            <th class="order-cell">Unpaid Amount</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for invoice in client.invoice_list.all %}
-          <tr class="bg-white">
-            <td class="order-cell">{{ invoice.id }}</td>
-            <td class="order-cell">{{ invoice.get_purpose_display }}</td>
-            <td class="order-cell">{{ invoice.amount_with_discount }}</td>
-            <td class="order-cell">{{ invoice.paid_amount }}</td>
-            <td class="order-cell">{{ invoice.unpaid_amount }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-      {% endfor %}
-    </td>
-  </tr>
-  {% endblock %} {% endblock %}
+        <h2 style="page-break-before: always">Orders:</h2>
+        <table class="orders-tbl" style="">
+          <thead>
+            <tr class="bg-gray">
+              <th class="order-cell">ID</th>
+              <th class="order-cell">Payment</th>
+              <th class="order-cell">Amount</th>
+              <th class="order-cell">Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in client_orders %}
+            <tr class="bg-white">
+              <td class="order-cell">{{ order.id }}</td>
+              <td class="order-cell">{{ order.payment }}</td>
+              <td class="order-cell">{{ order.invoice.amount_with_discount }}</td>
+              <td class="order-cell">{{ order.created }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        
+        <h2>Balance:</h2>
+        <table class="orders-tbl" style="">
+          <thead>
+            <tr class="bg-gray">
+              <th class="order-cell">ID</th>
+              <th class="order-cell">Before Purchase</th>
+              <th class="order-cell">After Purchase</th>
+              <th class="order-cell">Update</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in client_orders %}
+            <tr class="bg-white">
+              <td class="order-cell">{{ order.id }}</td>
+              <td class="order-cell">{{ order.balance_before_purchase }}</td>
+              <td class="order-cell">{{ order.balance_after_purchase }}</td>
+              <td class="order-cell">{{ order.changed }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <h2>Invoices:</h2>
+        <table class="invoices-tbl" style="">
+          <thead>
+            <tr class="bg-gray">
+              <th class="order-cell">ID</th>
+              <th class="order-cell">Purpose</th>
+              <th class="order-cell">Amount with Discount</th>
+              <th class="order-cell">Paid Amount</th>
+              <th class="order-cell">Unpaid Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for invoice in client.invoice_list.all %}
+            <tr class="bg-white">
+              <td class="order-cell">{{ invoice.id }}</td>
+              <td class="order-cell">{{ invoice.get_purpose_display }}</td>
+              <td class="order-cell">{{ invoice.amount_with_discount }}</td>
+              <td class="order-cell">{{ invoice.paid_amount }}</td>
+              <td class="order-cell">{{ invoice.unpaid_amount }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% endfor %}
+      </td>
+    </tr>
+
+    <tr>
+      <td class="highlight-background padding-top instructions padding-around">
+        If you have any questions about your account or any other matter, please feel free to contact us at ​<a href="mailto:cs@washmix.com">cs@washmix.com</a>.​ OR call us directly at <b>{{ washmix.phone_number }}</b>
+      </td>
+    </tr>
+  </table>
+
+  <table class="socials-table">
+    <tr>
+      <td class="info-row"></td>
+
+      <td class="info-row large-padding-bottom large-padding-top">
+        <a href="{{ washmix.facebook_url }}" target="_blank" class="social-icon">
+          <img src="{% full_static 'images/facebook.png' %}" alt="facebook" style="border: none;" width="22"/>
+        </a>
+        <a href="{{ washmix.twitter_url }}" target="_blank" class="social-icon">
+          <img src="{% full_static 'images/twitter.png' %}" alt="twitter" style="border: none;" width="22"/>
+        </a>
+        <a href="{{ washmix.instagram_url }}" target="_blank" class="social-icon">
+          <img src="{% full_static 'images/instagram.png' %}" alt="instagram" style="border: none;" width="22"/>
+        </a>
+      </td>
+
+      <td class="info-row"></td>
+    </tr>
+  </table>
+
+  <table class="info-table">
+    <tr>
+      <td class="info-row large-padding-bottom">This message was sent to <a href="mailto:{{ client.email }}" class="receiver-link"> {{ client.email }}</a> by WashMix.</td>
+    </tr>
+
+    <tr>
+      <td class="info-row large-padding-bottom">
+        <a href="https://{{ washmix.domain }}" class="large-margin-bottom" target="_blank">
+          <img src="{% full_static 'images/logo.png' %}" alt="logo" style="border: none;" width="48"/>
+        </a>
+      </td>
+    </tr>
+
+    <tr>
+      <td class="info-row large-padding-bottom">
+        {{ washmix.laundry_address }}
+      </td>
+    </tr>
+
+    <tr>
+      <td class="info-row large-padding-bottom">
+        <a href="mailto:info@washmix.com">info@washmix.com</a>
+      </td>
+    </tr>
+
+    <tr class="footer">
+      <td class="info-row footer-row">
+        © 2021 WashMix, Inc. All Rights Reserved.
+      </td>
+    </tr>
+  </table>
 </body>
 </html>
