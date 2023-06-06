@@ -39,6 +39,7 @@ from orders.utils import convert_html_to_pdf
 from django.http import FileResponse
 from weasyprint import HTML, CSS
 import tempfile
+import pdfkit
 
 
 User = get_user_model()
@@ -402,41 +403,55 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
 
     def generate_client_pdf(modeladmin, request, queryset):
         # Render the template with the queryset and associated orders as context
-        template = 'client_report.html'
-        context = {'queryset': queryset}
+        template = "client_report.html"
+        context = {"queryset": queryset}
 
         for client in queryset:
             orders = Order.objects.filter(client=client)
-            context['client_orders'] = orders
+            context["client_orders"] = orders
 
         printable_page = render_to_string(template, context)
+        
+        options = {
+        'page-size': 'A4',
+        'margin-top': '0in',
+        'margin-right': '0in',
+        'margin-bottom': '0in',
+        'margin-left': '0in',
+        'encoding': "UTF-8",
+        'custom-header': [
+            ('Accept-Encoding', 'gzip')
+        ],
+        'cookie': [
+            ('cookie-empty-value', '""'),
+            ('cookie-name1', 'cookie-value1'),
+            ('cookie-name2', 'cookie-value2'),
+        ],
+        'no-outline': None
+        }
 
-        # Set the desired page margin values
-        margin_top = "0"
-        margin_bottom = "0"
-        margin_left = "0"
-        margin_right = "0"
+        # Save the printable page HTML to a temporary file
+        with tempfile.NamedTemporaryFile(suffix=".html", delete=False) as temp_html:
+            temp_html.write(printable_page.encode("utf-8"))
 
-        # Define the CSS style with the margin values
-        css = CSS(string=f"@page {{ margin: {margin_top} {margin_right} {margin_bottom} {margin_left}; }}")
+        # Convert HTML file to PDF using pdfkit and save it to a temporary file
+        with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as temp_pdf:
+            pdfkit.from_file(temp_html.name, temp_pdf.name, options=options)
 
-        # Generate the PDF in a temporary file
-        with tempfile.NamedTemporaryFile(suffix='.pdf', delete=False) as temp_pdf:
-            html = HTML(string=printable_page)
-            html.write_pdf(temp_pdf.name, stylesheets=[css])
+        with open(temp_pdf.name, "rb") as file:
+            pdf_content = file.read()
 
-        # Read the generated PDF file and prepare the response
-        with open(temp_pdf.name, 'rb') as pdf_file:
-            response = HttpResponse(pdf_file.read(), content_type='application/pdf')
-            response['Content-Disposition'] = 'inline; filename=client_report.pdf'
+        response = HttpResponse(content_type="application/pdf")
 
-        # Delete the temporary PDF file
+        response.write(pdf_content)
+
+        os.remove(temp_html.name)
         os.remove(temp_pdf.name)
 
         return response
 
     generate_client_pdf.short_description = "Generate Report"
-    
+
     def save_form(self, request: HttpRequest, form: forms.BaseForm, change):
         """
         Method that helps to add credits for some client.
