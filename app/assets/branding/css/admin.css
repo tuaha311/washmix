@@ -1,0 +1,54 @@
+#searchbar {
+    height: unset !important;
+}
+
+.link {
+    text-decoration: underline;
+}
+
+.vLargeTextField {
+    width: unset;
+    height: unset;
+}
+
+div.related-widget-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+a.related-widget-wrapper-link {
+    margin: 0 !important;
+    padding-left: 5px;
+    cursor: pointer;
+}
+
+td.field-date {
+    display: flex;
+    align-items: center;
+    height: 100% !important;
+}
+
+
+.bell {
+    margin-top: 5px;
+    text-align: center;
+}
+.select2-dropdown--below{
+    min-width: 250px;
+}
+.select2-dropdown--above{
+    min-width: 250px;
+}
+.select2-selection__rendered{
+    overflow: unset !important;
+}
+.select2-selection__clear{
+    left:6px;
+}
+.select2-selection__arrow{
+    right:-5px !important;
+}
+#id_private_note {
+    border: 3px solid red;
+    color: red;
+}

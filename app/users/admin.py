@@ -13,6 +13,7 @@ from django.db.models import Q, QuerySet
 from django.http import HttpResponseRedirect
 from django.http.request import HttpRequest
 from django.urls import reverse
+from django.http import HttpResponseRedirect
 
 from swap_user.admin import BaseUserAdmin
 from swap_user.to_named_email.forms import (
@@ -45,6 +46,9 @@ from django.http import FileResponse
 from weasyprint import HTML, CSS
 import tempfile
 import pdfkit
+from django.utils.safestring import mark_safe
+import shutil
+from django.urls import reverse
 
 
 User = get_user_model()
@@ -365,6 +369,7 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
         "stripe_id",
         "full_address",
         "address_line_2",
+        "pdf_path",
     ]
     form = ClientForm
     inlines = [RequestInlineAdmin, OrderInlineAdmin, InvoiceInlineAdmin]
@@ -405,57 +410,73 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
     get_main_phone_number.short_description = "Main Phone Number"  # Set column header in admin
 
     actions = ["full_delete_action", "generate_client_pdf"]
+    
+    def pdf_path(self, order: Order):
+        """
+        Shows a relative to media root URL of PDF-report.
+        PDF-path only accessible for POS orders.
+
+        IMPORTANT: our backend application wrapped in Docker-container.
+        Because of it, when container restart all temporary data is wiped out - and we
+        are forced to create report every time when user go to Order details view.
+        """
+
+        if order.subscription:
+            return "-"
+
+        pdf_path = self._generate_pdf_report(order)
+
+        media_root = settings.MEDIA_ROOT
+        pdf_rel_path = os.path.relpath(pdf_path, media_root)
+        pdf_url = reverse('serve_media', kwargs={'path': pdf_rel_path})
+
+        return pdf_url
+
+    pdf_path.short_description = "PDF path"  # type: ignore
 
     def generate_client_pdf(modeladmin, request, queryset):
         # Render the template with the queryset and associated orders as context
         template = "client_report.html"
-        context = {"queryset": queryset}
+
+        # Generate the media path for the client directory
+        media_root = settings.MEDIA_ROOT
+        client_directory = os.path.join(media_root, "client")
+        os.makedirs(client_directory, exist_ok=True)
 
         for client in queryset:
+            print("qst", queryset.__dict__)
+            context = {"queryset": queryset}
+
             orders = Order.objects.filter(client=client)
             context["client_orders"] = orders
 
-        printable_page = render_to_string(template, context)
-        
-        options = {
-        'page-size': 'A4',
-        'margin-top': '0in',
-        'margin-right': '0in',
-        'margin-bottom': '0in',
-        'margin-left': '0in',
-        'encoding': "UTF-8",
-        'custom-header': [
-            ('Accept-Encoding', 'gzip')
-        ],
-        'cookie': [
-            ('cookie-empty-value', '""'),
-            ('cookie-name1', 'cookie-value1'),
-            ('cookie-name2', 'cookie-value2'),
-        ],
-        'no-outline': None
-        }
+            printable_page = render_to_string(template, context)
 
-        # Save the printable page HTML to a temporary file
-        with tempfile.NamedTemporaryFile(suffix=".html", delete=False) as temp_html:
-            temp_html.write(printable_page.encode("utf-8"))
+            # Save the printable page HTML to a temporary file
+            with tempfile.NamedTemporaryFile(suffix=".html", delete=False) as temp_html:
+                temp_html.write(printable_page.encode("utf-8"))
 
-        # Convert HTML file to PDF using pdfkit and save it to a temporary file
-        with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as temp_pdf:
-            pdfkit.from_file(temp_html.name, temp_pdf.name, options=options)
+            # Convert HTML file to PDF using pdfkit and save it to a temporary file
+            with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as temp_pdf:
+                pdfkit.from_file(temp_html.name, temp_pdf.name, options=None)
 
-        with open(temp_pdf.name, "rb") as file:
-            pdf_content = file.read()
+            # Generate the filename for the PDF using the client ID
+            client_id = client.id  # Assuming the client ID is stored in the 'id' attribute
+            pdf_filename = f"{client_id}.pdf"
+            pdf_path = os.path.join(client_directory, pdf_filename)
 
-        response = HttpResponse(content_type="application/pdf")
+            # Move the temporary PDF file to the desired client directory
+            shutil.move(temp_pdf.name, pdf_path)
 
-        response.write(pdf_content)
+            # Create a success message for the user
+            success_message = f"PDF generated successfully for client {client_id}."
+            messages.success(request, success_message)
 
-        os.remove(temp_html.name)
-        os.remove(temp_pdf.name)
+            os.remove(temp_html.name)
 
-        return response
+        return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
 
-    generate_client_pdf.short_description = "Generate Report"
+    # generate_client_pdf.short_description = "Generate Report"
 
     def save_form(self, request: HttpRequest, form: forms.BaseForm, change):
         """
