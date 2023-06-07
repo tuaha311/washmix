@@ -33,15 +33,10 @@ from subscriptions.models import Package
 from subscriptions.services.subscription import SubscriptionService
 from users.helpers import remove_user_relation_with_all_info
 from users.models import Client, Customer, Employee, Log
-from django.http import HttpResponse
 from django.template.loader import render_to_string
 import os
-from orders.utils import convert_html_to_pdf
-from django.http import FileResponse
-from weasyprint import HTML, CSS
 import tempfile
 import pdfkit
-from django.utils.safestring import mark_safe
 import shutil
 from django.urls import reverse
 
@@ -430,20 +425,15 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
     pdf_path.short_description = "PDF path"  # type: ignore
 
     def generate_client_pdf(modeladmin, request, queryset):
-        # Render the template with the queryset and associated orders as context
         template = "client_report.html"
-
-        # Generate the media path for the client directory
         media_root = settings.MEDIA_ROOT
         client_directory = os.path.join(media_root, "client")
         os.makedirs(client_directory, exist_ok=True)
 
         for client in queryset:
-            print("qst", queryset.__dict__)
-            context = {"queryset": queryset}
-
-            orders = Order.objects.filter(client=client)
-            context["client_orders"] = orders
+            context = {"client": client}  
+            client_orders = Order.objects.filter(client=client)
+            context["client_orders"] = client_orders
 
             printable_page = render_to_string(template, context)
 
@@ -463,15 +453,14 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
             # Move the temporary PDF file to the desired client directory
             shutil.move(temp_pdf.name, pdf_path)
 
-            # Create a success message for the user
-            success_message = f"PDF generated successfully for client {client_id}."
-            messages.success(request, success_message)
-
             os.remove(temp_html.name)
 
-        return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
+        count = queryset.count()
+        client_plural = "clients" if count != 1 else "client"
+        success_message = f"PDF generated successfully for {count} {client_plural}"
+        messages.success(request, success_message)
 
-    # generate_client_pdf.short_description = "Generate Report"
+        return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
 
     def save_form(self, request: HttpRequest, form: forms.BaseForm, change):
         """
