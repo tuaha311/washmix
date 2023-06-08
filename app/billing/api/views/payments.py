@@ -33,11 +33,14 @@ class CreateIntentView(GenericAPIView):
         intent_service = IntentService(client)
         intent = intent_service.create_intent(order, is_save_card)
 
+        if is_save_card:
+            client.main_card = intent.card
+            client.save()
+
         response_body = {"public_key": settings.STRIPE_PUBLIC_KEY, "secret": intent.client_secret}
         response = self.response_serializer_class(response_body).data
 
         return Response(response)
-
 
 class StripeWebhookView(GenericAPIView):
     """
