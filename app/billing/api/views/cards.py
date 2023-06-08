@@ -52,6 +52,13 @@ class CardViewSet(SetMainAttributeMixin, ModelViewSet):
         card_list_length = len(client.card_list.all())
 
         if card_list_length == 1:
+            try:
+                latest_card = client.card_list.latest("id")  # Fetch the latest added card
+                client.main_card = latest_card
+                client.save()
+            except:
+                pass
+
             message = f"Dear {client.full_name} as part of WashMix, we require all account holders to have a Valid Credit Card on file as their default payment method - In order to delete this card, you can first add a New Card, and then remove this card."
             return Response({"message": message}, status=status.HTTP_412_PRECONDITION_FAILED)
 
@@ -64,10 +71,19 @@ class CardRefreshView(GenericAPIView):
 
     def post(self, request: Request, *args, **kwargs):
         client = self.request.user.client
-
         card_service = CardService(client)
         card_list = card_service.save_card_list()
 
         response = self.response_serializer_class(card_list, many=True).data
+
+        try:
+            latest_card = client.card_list.latest("id")  # Fetch the latest added card
+            if client.main_card != latest_card:
+                client.main_card = latest_card
+                client.save()
+
+        except Exception as e:
+            print("Something went wrong, could not update the main card.")
+            print(f"Exception message: {str(e)}")
 
         return Response(response)
