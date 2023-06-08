@@ -1,146 +1,149 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Client Report</title>
-  <style type="text/css">
-    .break {
-      page-break-inside: avoid;
-    }
-    .orders-tbl {
-      margin: 0;
-      border-collapse: collapse;
-      width: 700px;
-      margin-bottom: 50px;
-    }
-    .order-cell {
-      border: 1px solid #000;
-      padding: 8px;
-    }
-    .bg-white {
-      background-color: white;
-    }
-    .bg-gray {
-      background-color: lightgrey;
-    }
-  </style>
-</head>
-<body style="background-color: white !important;">
-  {% extends "base_email.html" %}
-  {% block body %}
-  <tr>
-    <td>
-      <h4>
-        Dear {{ client.full_name }},
-      </h4>
-      <p style="max-width: 700px">
-        Welcome to <a href="https://{{ washmix.domain }}">Washmix.com</a>
-        {% block extra_header %}{% endblock %}. To log in when visiting our
-        site, just click
-        <a href="https://{{ washmix.domain }}/login">Login</a>
-        and enter your email address and password.
-      </p>
-    </td>
-  </tr>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Client Report</title>
+    <style type="text/css">
+      .break {
+        page-break-inside: avoid;
+      }
+      .orders-tbl {
+        margin: 0;
+        border-collapse: collapse;
+        width: 700px;
+        margin-bottom: 50px;
+      }
+      .order-cell {
+        border: 1px solid #000;
+        padding: 8px;
+      }
+      .bg-white {
+        background-color: white;
+      }
+      .bg-gray {
+        background-color: lightgrey;
+      }
+    </style>
+  </head>
+  <body style="background-color: white !important">
+    {% extends "base_email.html" %} {% block body %}
+    <tr>
+      <td>
+        <h4>Dear {{ client.full_name }},</h4>
+        <p style="max-width: 700px">
+          Welcome to <a href="https://{{ washmix.domain }}">Washmix.com</a>
+          {% block extra_header %}{% endblock %}. To log in when visiting our
+          site, just click
+          <a href="https://{{ washmix.domain }}/login">Login</a>
+          and enter your email address and password.
+        </p>
+      </td>
+    </tr>
 
-  {% block content %}
-  <tr>
-    <td>
-      <h1 class="custom-heading">Client Information</h1>
-      <table style="margin: 0; border-collapse: collapse; width: 100%;">
-        <tr>
-            <th style="text-align: left; padding: 8px;">Full Name</th>
-            <td style="padding: 8px;">{{ client.full_name }}</td>
-        </tr>
-        <tr>
-            <th style="text-align: left; padding: 8px;">Email</th>
-            <td style="padding: 8px;">{{ client.user.email }}</td>
-        </tr>
-        <tr>
-            <th style="text-align: left; padding: 8px;">Balance (in cents)</th>
-            <td style="padding: 8px;">{{ client.balance }}</td>
-        </tr>
-        <tr>
-            <th style="text-align: left; padding: 8px;">Balance (in dollars)</th>
-            <td style="padding: 8px;">{{ client.dollar_balance }}</td>
-        </tr>
-        <tr>
-            <th style="text-align: left; padding: 8px;">Has Card</th>
-            <td style="padding: 8px;">{{ client.has_card }}</td>
-        </tr>
-    </table>
+    {% block content %}
+    <tr>
+      <td>
+        <h1 class="custom-heading">Client Information</h1>
+        <table style="margin: 0; border-collapse: collapse; width: 100%">
+          <tr>
+            <th style="text-align: left; padding: 8px">Full Name</th>
+            <td style="padding: 8px">{{ client.full_name }}</td>
+          </tr>
+          <tr>
+            <th style="text-align: left; padding: 8px">Email</th>
+            <td style="padding: 8px">{{ client.user.email }}</td>
+          </tr>
+          <tr>
+            <th style="text-align: left; padding: 8px">Balance (in cents)</th>
+            <td style="padding: 8px">{{ client.balance }}</td>
+          </tr>
+          <tr>
+            <th style="text-align: left; padding: 8px">Balance (in dollars)</th>
+            <td style="padding: 8px">{{ client.dollar_balance }}</td>
+          </tr>
+          <tr>
+            <th style="text-align: left; padding: 8px">Has Card</th>
+            <td style="padding: 8px">{{ client.has_card }}</td>
+          </tr>
+        </table>
 
-      <h2>Orders:</h2>
-      <table class="orders-tbl" style="">
-        <thead>
-          <tr class="bg-gray">
-            <th class="order-cell">ID</th>
-            <th class="order-cell">Payment</th>
-            <th class="order-cell">Amount</th>
-            <th class="order-cell">Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for order in client_orders %}
-          <tr class="bg-white">
-            <td class="order-cell">{{ order.id }}</td>
-            <td class="order-cell">{{ order.payment }}</td>
-            <td class="order-cell">{{ order.invoice.amount_with_discount }}</td>
-            <td class="order-cell">{{ order.created }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-      
-      <h2 style="page-break-before: always">Balance:</h2>
-      <table class="orders-tbl" style="">
-        <thead>
-          <tr class="bg-gray">
-            <th class="order-cell">ID</th>
-            <th class="order-cell">Before Purchase</th>
-            <th class="order-cell">After Purchase</th>
-            <th class="order-cell">Update</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for order in client_orders %}
-          <tr class="bg-white">
-            <td class="order-cell">{{ order.id }}</td>
-            <td class="order-cell">{{ order.balance_before_purchase }}</td>
-            <td class="order-cell">{{ order.balance_after_purchase }}</td>
-            <td class="order-cell">{{ order.changed }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+        <h2>Orders:</h2>
+        <table class="orders-tbl" style="">
+          <thead>
+            <tr class="bg-gray">
+              <th class="order-cell">ID</th>
+              <th class="order-cell">Payment</th>
+              <th class="order-cell">Amount</th>
+              <th class="order-cell">Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in client_orders %}
+            <tr class="bg-white">
+              <td class="order-cell">{{ order.id }}</td>
+              <td class="order-cell">{{ order.payment }}</td>
+              <td class="order-cell">
+                {{ order.invoice.amount_with_discount }}
+              </td>
+              <td class="order-cell">{{ order.created }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
 
-      <h2>Invoices:</h2>
-      <table class="invoices-tbl" style="margin-bottom: 30px;">
-        <thead>
-          <tr class="bg-gray">
-            <th class="order-cell">ID</th>
-            <th class="order-cell">Purpose</th>
-            <th class="order-cell">Amount with Discount</th>
-            <th class="order-cell">Paid Amount</th>
-            <th class="order-cell">Unpaid Amount</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for invoice in client.invoice_list.all %}
-          <tr class="bg-white">
-            <td class="order-cell">{{ invoice.id }}</td>
-            <td class="order-cell">{{ invoice.get_purpose_display }}</td>
-            <td class="order-cell">{{ invoice.amount_with_discount }}</td>
-            <td class="order-cell">{{ invoice.paid_amount }}</td>
-            <td class="order-cell">{{ invoice.unpaid_amount }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </td>
-  </tr>
-  {% endblock %} {% endblock %}
-</body>
+        <h2 style="page-break-before: always">Balance:</h2>
+        <table class="orders-tbl" style="">
+          <thead>
+            <tr class="bg-gray">
+              <th class="order-cell">ID</th>
+              <th class="order-cell">Before Purchase</th>
+              <th class="order-cell">After Purchase</th>
+              <th class="order-cell">Update</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in client_orders %}
+            <tr class="bg-white">
+              <td class="order-cell">{{ order.id }}</td>
+              <td class="order-cell">{{ order.balance_before_purchase }}</td>
+              <td class="order-cell">{{ order.balance_after_purchase }}</td>
+              <td class="order-cell">{{ order.changed }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <h2>Credits:</h2>
+        <table class="invoices-tbl" style="margin-bottom: 30px">
+          <thead>
+            <tr class="bg-gray">
+              <th class="order-cell">ID</th>
+              <th class="order-cell">Amount with Discount</th>
+              <th class="order-cell">Paid Amount</th>
+              <th class="order-cell">Unpaid Amount</th>
+              <th class="order-cell">Balance</th>
+              {% comment %} <th class="order-cell">Purpose</th> {% endcomment %}
+              <th class="order-cell">Update</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for invoice in invoice_list %}
+            <tr class="bg-white">
+              <td class="order-cell">{{ invoice.id }}</td>
+              <td class="order-cell">{{ invoice.amount_with_discount }}</td>
+              <td class="order-cell">{{ invoice.paid_amount }}</td>
+              <td class="order-cell">{{ invoice.unpaid_amount }}</td>
+              <td class="order-cell">{{ invoice.balance }}</td>
+              {% comment %} <td class="order-cell">{{ invoice.get_purpose_display }}</td> {% endcomment %}
+              <td class="order-cell">{{ invoice.changed }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </td>
+    </tr>
+    {% endblock %} {% endblock %}
+  </body>
 </html>

@@ -22,13 +22,13 @@ from swap_user.to_named_email.forms import (
 )
 from deliveries.models.delivery import Delivery
 
-from billing.choices import InvoiceProvider
+from billing.choices import InvoiceProvider, InvoicePurpose
 from billing.models import Invoice
 from billing.utils import add_money_to_balance, remove_money_from_balance
 from core.admin import AdminWithSearch
 from core.mixins import AdminUpdateFieldsMixin
 from core.tasks import archive_periodic_promotional_emails
-from core.utils import convert_cent_to_dollars
+from core.utils import convert_cent_to_dollars, ensure_folder_exists
 from deliveries.models import Request
 from notifications.tasks import send_email
 from orders.models import Order
@@ -44,10 +44,14 @@ import tempfile
 import pdfkit
 import shutil
 from django.urls import reverse
-
+from pathlib import Path
+import settings.base as Base
+from django.utils.safestring import mark_safe
+from django.db.models import Sum, OuterRef, Subquery
 
 User = get_user_model()
 LIMIT = 10
+MEDIA_ROOT = Path(__file__).parents[1] / "media"
 
 
 class InlineChangeList(object):
@@ -352,7 +356,6 @@ class ClientForm(forms.ModelForm):
 
                 except ValidationError:
                     raise forms.ValidationError("Can't bill client's card")
-
                 if not charge_succesful:
                     raise forms.ValidationError("Can't bill client's card")
 
@@ -405,57 +408,49 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
     get_main_phone_number.short_description = "Main Phone Number"  # Set column header in admin
 
     actions = ["full_delete_action", "generate_client_pdf"]
-    
-    def pdf_path(self, order: Order):
-        """
-        Shows a relative to media root URL of PDF-report.
-        PDF-path only accessible for POS orders.
 
-        IMPORTANT: our backend application wrapped in Docker-container.
-        Because of it, when container restart all temporary data is wiped out - and we
-        are forced to create report every time when user go to Order details view.
-        """
+    def pdf_path(self, client):
+        pdf_filename = f"{client.id}.pdf"
+        pdf_path = os.path.join(settings.MEDIA_URL, "clients", pdf_filename)
+        if pdf_path:
+            context = {"pdf_path": pdf_path}
+            widget = render_to_string("widgets/href.html", context=context)
+            return mark_safe(widget)
 
-        if order.subscription:
-            return "-"
-
-        pdf_path = self._generate_pdf_report(order)
-
-        media_root = settings.MEDIA_ROOT
-        pdf_rel_path = os.path.relpath(pdf_path, media_root)
-        pdf_url = reverse('serve_media', kwargs={'path': pdf_rel_path})
-
-        return pdf_url
-
-    pdf_path.short_description = "PDF path"  # type: ignore
+        return "-"
 
     def generate_client_pdf(modeladmin, request, queryset):
         template = "client_report.html"
-        media_root = settings.MEDIA_ROOT
-        client_directory = os.path.join(media_root, "client")
+        media_root = Base.MEDIA_ROOT
+        client_directory = os.path.join(media_root, "clients")
         os.makedirs(client_directory, exist_ok=True)
 
         for client in queryset:
-            context = {"client": client}  
+            purpose = "credit"  # Purpose set to 'Credit by WashMix'
+            
+            invoice_list = client.invoice_list.filter(purpose=purpose).annotate(
+                balance=Subquery(
+                    client.transaction_list.filter(invoice=OuterRef('pk'))
+                    .values('invoice')
+                    .annotate(total=Sum('amount'))
+                    .values('total')[:1]
+                )
+            )
+            context = {"client": client, "invoice_list": invoice_list}
             client_orders = Order.objects.filter(client=client)
             context["client_orders"] = client_orders
 
             printable_page = render_to_string(template, context)
 
-            # Save the printable page HTML to a temporary file
             with tempfile.NamedTemporaryFile(suffix=".html", delete=False) as temp_html:
                 temp_html.write(printable_page.encode("utf-8"))
 
-            # Convert HTML file to PDF using pdfkit and save it to a temporary file
             with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as temp_pdf:
                 pdfkit.from_file(temp_html.name, temp_pdf.name, options=None)
 
-            # Generate the filename for the PDF using the client ID
-            client_id = client.id  # Assuming the client ID is stored in the 'id' attribute
+            client_id = client.id
             pdf_filename = f"{client_id}.pdf"
             pdf_path = os.path.join(client_directory, pdf_filename)
-
-            # Move the temporary PDF file to the desired client directory
             shutil.move(temp_pdf.name, pdf_path)
 
             os.remove(temp_html.name)
