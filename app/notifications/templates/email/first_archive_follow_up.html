@@ -8,6 +8,23 @@
     <meta name="viewport" content="width=device-width, maximum-scale=1" />
     <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
     <style media="all" type="text/css">
+      .action-button{
+        height: 40px;
+        padding: 6px 40px;
+        border: 3px solid #1dae43;
+        margin-left: 20px;
+        background-color: #2ec35f;
+        border-radius: 20px;
+        color: #fff !important;
+        text-decoration: none !important;
+        font-size: 14px;
+        margin-top: 20px;
+        font-weight: 500;
+        width: 100%;
+        margin-bottom: 40px;
+        text-align: left;
+      }
+
       {% if is_pdf %}
         @page {
           margin: 0;
@@ -174,6 +191,7 @@
       ul li span {
         color: #666666;
       }
+
     </style>
     {% block extra_style %}
     {% endblock %}
@@ -293,6 +311,11 @@
       </ol>
       <br />
 
+      <div style="text-align: center">
+        <a class="action-button" href="https://{{ washmix.domain }}/registration" target="_blank">Request Pickup</a>
+      </div>
+      <br/>
+
       <p class="ft15" style="font-weight: bold">
         We recommend TRYING the ADVANTAGE ACCOUNT - PLATINUM tier:
       </p>
@@ -337,6 +360,10 @@
         until you go through it all
       </p>
       <hr />
+      <br />
+      <div style="text-align: center">
+        <a class="action-button" href="https://{{ washmix.domain }}/registration" target="_blank">Request Pickup</a>
+      </div>
       <p class="ft18">Thank you,</p>
       <p class="ft110" style="font-weight: bold">Michael Beheshtaein</p>
       <p class="ft110" style="font-weight: bold">WASHMIX Inc.</p>
