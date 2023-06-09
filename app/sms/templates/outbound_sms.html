@@ -1,0 +1,49 @@
+{% extends 'admin/base.html' %}
+
+{% load static %}
+
+{% block extrahead %}
+    {{ block.super }}
+    <script src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+    <script src="{% static 'admin/js/jquery.init.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="module">
+    <table>
+        <tr>
+            <td>
+                <label for="customers">Customers:</label>
+                <select multiple="multiple" id="id_toppings" name="toppings" class="select-multiple-field">
+                    {% for customer in customers %}
+                        {% if customer.id|stringformat:"s" in selected %}
+                            <option value="{{ customer.id }}" selected>{{ customer.full_name }}</option>
+                        {% else %}
+                            <option value="{{ customer.id }}">{{ customer.full_name }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </td>
+            <td>
+                <label for="templates">Templates:</label>
+                <select id="templates" name="template">
+                    {% for template in templates %}
+                        <option value="{{ template.id }}">{{ template }}</option>
+                    {% endfor %}
+                </select>
+            </td>
+        </tr>
+    </table>
+    <form action="{% url 'outbound_sms' %}" method="get">
+        <select name="zip_code">
+            <option value="">Select Zip Code</option>
+            <option value="95103">95103</option>
+            <option value="94041">94041</option>
+            <option value="00000">00000</option>
+            <option value="11111">11111</option>
+        </select>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    <input type="submit" value="Send">
+</div>
+{% endblock %}
