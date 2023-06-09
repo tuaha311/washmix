@@ -9,20 +9,23 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
     <style media="all" type="text/css">
       .action-button{
-        height: 40px;
-        padding: 6px 40px;
+        padding: 1rem 2rem;
         border: 3px solid #1dae43;
         margin-left: 20px;
         background-color: #2ec35f;
-        border-radius: 20px;
         color: #fff !important;
         text-decoration: none !important;
-        font-size: 14px;
         margin-top: 20px;
+        margin-bottom: 20px;
+        border-radius: 1.875rem;
+        font-size: 1rem;
         font-weight: 500;
-        width: 100%;
-        margin-bottom: 40px;
-        text-align: left;
+        letter-spacing: .15em;
+        line-height: 1.5;
+        text-align: center;
+        text-transform: uppercase;
+        vertical-align: middle;
+        white-space: nowrap;
       }
 
       {% if is_pdf %}
@@ -333,11 +336,11 @@
         </li>
       </ol>
       <br />
-
+      <br />
       <div style="text-align: center">
         <a class="action-button" href="https://{{ washmix.domain }}/registration" target="_blank">Request Pickup</a>
       </div>
-
+      <br />
       <br />
       <hr />
       <p class="ft15" style="font-weight: bold">
@@ -391,10 +394,11 @@
       </p>
       <hr />
       <br/>
+      <br />
       <div style="text-align: center">
         <a class="action-button" href="https://{{ washmix.domain }}/registration" target="_blank">Request Pickup</a>
       </div>
-
+      <br /><br />
       <p class="ft18">Thank you,</p>
       <p class="ft110" style="font-weight: bold">Michael Beheshtaein</p>
       <p class="ft110" style="font-weight: bold">WASHMIX Inc.</p>
