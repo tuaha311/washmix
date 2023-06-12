@@ -7,9 +7,8 @@ import logging
 from notifications.tasks import send_sms as Send_SMS
 from django.db.models import Q
 from django.conf import settings
-from django.contrib.admin.views.decorators import staff_member_required
-from django.template import RequestContext
-
+from django.contrib import messages
+from django.shortcuts import redirect
 
 logger = logging.getLogger(__name__)
 
@@ -100,6 +99,9 @@ def send_sms(request):
 
             logger.info(f"Sending SMS to client {customer.email}")
 
-        return HttpResponse('SMS send request submitted successfully.')
+        messages.success(request, 'SMS send request submitted successfully.')
+        return redirect('/sms/outbound-sms')
     else:
-        return HttpResponse('Invalid request method.')
+        messages.error(request, 'Invalid request method.')
+        return redirect('/sms/outbound-sms')
+        
