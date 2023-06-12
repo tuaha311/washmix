@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, render_to_response
 from .models import SMSTemplate
 from django.http import HttpResponse
 from users.models import Client as clients
@@ -7,6 +7,9 @@ import logging
 from notifications.tasks import send_sms as Send_SMS
 from django.db.models import Q
 from django.conf import settings
+from django.contrib.admin.views.decorators import staff_member_required
+from django.template import RequestContext
+
 
 logger = logging.getLogger(__name__)
 
@@ -65,12 +68,10 @@ def send_sms(request):
     if request.method == 'POST':
         customer_ids_string = request.POST.getlist('customers')
         template_id = request.POST.get('template')
-        print("template_id", template_id )
 
         customer_ids = json.loads(customer_ids_string[0])
 
         customer_ids = [int(id) for id in customer_ids]
-        print(customer_ids, "customer_ids")
         # return HttpResponse() 
         try:
             template = SMSTemplate.objects.get(pk=template_id)
@@ -78,7 +79,6 @@ def send_sms(request):
             return HttpResponse('Selected template does not exist.')
 
         customers = clients.objects.filter(pk__in=customer_ids)
-        print(customers, "sas")
 
         for customer in customers:
             # Prepare recipient list and context
