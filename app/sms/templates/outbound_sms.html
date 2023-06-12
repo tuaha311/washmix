@@ -14,7 +14,7 @@
         <tr>
             <td>
                 <label for="customers">Customers:</label>
-                <select multiple="multiple" id="id_toppings" name="toppings" class="select-multiple-field">
+                <select multiple="multiple" id="id_toppings" name="customers" class="select-multiple-field">
                     {% for customer in customers %}
                         {% if customer.id|stringformat:"s" in selected %}
                             <option value="{{ customer.id }}" selected>{{ customer.full_name }}</option>
@@ -34,16 +34,72 @@
             </td>
         </tr>
     </table>
-    <form action="{% url 'outbound_sms' %}" method="get">
+    <form id="select-zip-form" action="/sms/outbound-sms/" method="get">
         <select name="zip_code">
             <option value="">Select Zip Code</option>
-            <option value="95103">95103</option>
-            <option value="94041">94041</option>
-            <option value="00000">00000</option>
-            <option value="11111">11111</option>
+            {% for zip in zips %}
+                <option value="{{ zip }}">{{ zip }}</option>
+            {% endfor %}
         </select>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <input type="submit" value="Select">
     </form>
-    <input type="submit" value="Send">
+    
+    <form id="select-city-form" action="/sms/outbound-sms/" method="get">
+        <select name="city">
+            <option value="">Select City</option>
+            {% for city in cities %}
+                <option value="{{ city }}">{{ city }}</option>
+            {% endfor %}
+        </select>
+        <input type="submit" value="Select">
+    </form>
+
+    <form id="select-email-form" action="/sms/outbound-sms/" method="get">
+    <select id="id_toppings" name="address" class="select-multiple-field">
+        {% for customer in customers %}
+        <option value="{{ customer.billing_address.address_line_1 }}">{{ customer.billing_address.address_line_1 }}</option>
+        {% endfor %}
+    </select>
+    <input type="submit" value="Select">
+    </form>
+    
+    <form id="select-phone-form" action="/sms/outbound-sms/" method="get">
+    <select id="id_toppings" name="phone" class="select-multiple-field">
+        {% for customer in customers %}
+        <option value="{{ customer.main_phone.number }}">{{ customer.main_phone.number }}</option>
+        {% endfor %}
+    </select>
+    <input type="submit" value="Select">
+    </form>
+
+    <form id="send-sms-form" action="{% url 'send_sms' %}" method="post">
+      {% csrf_token %}
+      <input type="hidden" id="selected-customers-input" name="customers">
+      <input type="hidden" id="selected-template-input" name="template">
+      <input type="submit" value="Submit">
+  </form>
 </div>
+
+<script>
+  var sendSmsForm = document.getElementById("send-sms-form");
+  var selectedCustomersInput = document.getElementById("selected-customers-input");
+  var selectedTemplateInput = document.getElementById("selected-template-input");
+
+  sendSmsForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      var customers = Array.from(document.getElementById("id_toppings").options)
+          .filter(option => option.selected)
+          .map(option => option.value);
+  
+      var template = document.getElementById("templates").value;
+  
+      selectedCustomersInput.value = JSON.stringify(customers);
+      selectedTemplateInput.value = template;
+  
+      sendSmsForm.submit();
+  });
+</script>
+
+
 {% endblock %}

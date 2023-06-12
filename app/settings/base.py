@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     "deliveries",
     "subscriptions",
     "archived",
+    'sms',
     # inside core app we are unregistering some models
     # it should be lower that branding apps to be last application and apply
     # last changes for admin
@@ -609,6 +610,7 @@ UNABLE_TO_CREATE_MULTIPLE_REQUEST = "unable_to_create_multiple_request"
 PICKUP_DUE_TOMORROW = "pickup_due_tomorrow"
 SMS_CREDIT_BACK = "credit_back"
 NO_SHOW = "no_show"
+PROMOTION = "promotion"
 
 #############################
 # TWILIO WITH SMS TEMPLATES #

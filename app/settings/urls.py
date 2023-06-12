@@ -53,6 +53,7 @@ urlpatterns += [
     path("__debug__/", include(debug_toolbar.urls)),
     path("admin/notifications/", include("notifications.urls")),
     path("admin/", admin.site.urls),
+    path("sms/", include("sms.urls")),
     # Static files serving
     *static_server(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
     *static_server(settings.STATIC_URL, document_root=settings.STATIC_ROOT),
