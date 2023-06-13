@@ -36,13 +36,12 @@ from users.models import Client, Customer, Employee, Log
 from django.template.loader import render_to_string
 import os
 import tempfile
-import pdfkit
 import shutil
-from django.urls import reverse
 from pathlib import Path
 import settings.base as Base
 from django.utils.safestring import mark_safe
 from django.db.models import Sum, OuterRef, Subquery
+from weasyprint import HTML
 
 User = get_user_model()
 LIMIT = 10
@@ -431,7 +430,7 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
                     .values('total')[:1]
                 )
             )
-            context = {"client": client, "invoice_list": invoice_list}
+            context = {"client": client, "invoice_list": invoice_list, "is_pdf": True}
             client_orders = Order.objects.filter(client=client)
             context["client_orders"] = client_orders
 
@@ -441,15 +440,14 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
                 temp_html.write(printable_page.encode("utf-8"))
 
             with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as temp_pdf:
-                pdfkit.from_file(temp_html.name, temp_pdf.name, options=None)
+                HTML(string=printable_page).write_pdf(temp_pdf)
 
             client_id = client.id
             pdf_filename = f"{client_id}.pdf"
             pdf_path = os.path.join(client_directory, pdf_filename)
+
             shutil.move(temp_pdf.name, pdf_path)
-
             os.remove(temp_html.name)
-
         count = queryset.count()
         client_plural = "clients" if count != 1 else "client"
         success_message = f"PDF generated successfully for {count} {client_plural}"
