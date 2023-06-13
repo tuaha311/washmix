@@ -10,10 +10,15 @@ from periodiq import cron
 
 from archived.models import ArchivedCustomer
 from core.utils import get_time_delta_for_promotional_emails
-from notifications.tasks import send_email, send_sms
-from orders.choices import OrderStatusChoices
-from orders.models import Order
-from settings.base import DELETE_USER_AFTER_TIMEDELTA
+from deliveries.choices import DeliveryKind, DeliveryStatus
+from deliveries.models import Delivery, Request
+from notifications.tasks import send_email
+from settings.base import (
+    DELETE_USER_AFTER_TIMEDELTA,
+    UNPAID_ORDER_FIRST_REMINDER_HOURS_TIMEDELTA,
+    UNPAID_ORDER_SECOND_REMINDER_HOURS_TIMEDELTA,
+    UNPAID_ORDER_TOTAL_REMINDER_EMAILS,
+)
 from users.models import Client
 
 logger = logging.getLogger(__name__)
@@ -135,6 +140,95 @@ def archive_periodic_promotional_emails():
             print("**************************")
         else:
             print("Time did not match   ")
+
+
+# every Hour at 0th Minute
+@dramatiq.actor(periodic=cron("0 * * * *"))
+def unpaid_orders_reminder_emails_setter():
+    print("")
+    print("STARTING THE PROCESS OF UNPAID ORDER SETUP")
+    print("")
+    # Get the all the request ids that are picked up
+    pickup_request_ids = Delivery.objects.filter(
+        kind__iexact=DeliveryKind.PICKUP,
+        status__iexact=DeliveryStatus.COMPLETED,
+    ).values_list("request_id", flat=True)
+
+    # Fetch the orders that meet the specified criteria
+    requests_without_order = Request.objects.filter(
+        id__in=pickup_request_ids,
+        order__isnull=True,
+        unpaid_reminder_email_count__lte=0,
+        unpaid_reminder_email_time__isnull=True,
+    )
+
+    print("LOCAL TIME:     ", localtime())
+    reminder_time = localtime() + timedelta(hours=48)
+    print("REMINDER TIME:    ", reminder_time)
+    print("")
+    for request in requests_without_order:
+        request.unpaid_reminder_email_time = reminder_time
+        print("REQUEST SAVED:    ", request.pk)
+        request.save()
+
+
+@dramatiq.actor(periodic=cron("0 * * * *"))
+def send_unpaid_order_reminder_emails():
+    print("")
+    print("STARTING THE PROCESS OF UNPAID ORDER EMAILS")
+    print("")
+
+    # Get the all the request ids that are picked up
+    pickup_request_ids = Delivery.objects.filter(
+        kind__iexact=DeliveryKind.PICKUP,
+        status__iexact=DeliveryStatus.COMPLETED,
+    ).values_list("request_id", flat=True)
+
+    print("REQUEST IDS:    ", pickup_request_ids)
+    # Fetch the orders that meet the specified criteria
+    requests_without_order = Request.objects.filter(
+        id__in=pickup_request_ids,
+        order__isnull=True,
+        unpaid_reminder_email_count__lte=UNPAID_ORDER_TOTAL_REMINDER_EMAILS,
+        unpaid_reminder_email_time__isnull=False,
+    )
+
+    for request in requests_without_order:
+        delivery = request.delivery_list.get(kind=DeliveryKind.PICKUP)
+        email_time = request.unpaid_reminder_email_time
+        current_time = localtime()
+        if email_time <= current_time:
+            print("Matching....    ", request.__dict__)
+            recipient_list = settings.ADMIN_EMAIL_LIST
+
+            full_name = request.client.full_name
+            try:
+                main_phone = request.client.main_phone.number
+            except:
+                main_phone = ""
+            try:
+                billing_address = request.client.billing_address["address_line_1"]
+            except:
+                billing_address = ""
+
+            send_email(
+                event=settings.UNCHARGED_ORDER_REMINDER,
+                recipient_list=recipient_list,
+                extra_context={
+                    "full_name": full_name,
+                    "main_phone": main_phone,
+                    "billing_address": billing_address,
+                    "client": request.client,
+                    "request": request,
+                    "delivery": delivery,
+                },
+            )
+
+            request.unpaid_reminder_email_count += 1
+            reminder_time = localtime() + timedelta(hours=144)
+            request.unpaid_reminder_email_time = reminder_time
+            print("SAVING THE NEXT EMAIL TIME:     ", reminder_time)
+            request.save()
 
 
 @dramatiq.actor(periodic=cron("*/13 * * * *"))

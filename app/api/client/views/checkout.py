@@ -71,15 +71,15 @@ class WelcomeCheckoutView(GenericAPIView):
         )
 
         send_admin_client_information(client.id, "New User Signed Up")
-        send_sms.send_with_options(
-            kwargs={
-                "event": settings.USER_SIGNUP,
-                "recipient_list": [main_phone],
-                "extra_context": {
-                    "client_id": client.id,
-                },
-            },
-            delay=settings.DRAMATIQ_DELAY_FOR_DELIVERY,
-        )
+        # send_sms.send_with_options(
+        #     kwargs={
+        #         "event": settings.USER_SIGNUP,
+        #         "recipient_list": [main_phone],
+        #         "extra_context": {
+        #             "client_id": client.id,
+        #         },
+        #     },
+        #     delay=settings.DRAMATIQ_DELAY_FOR_DELIVERY,
+        # )
 
         Notification.create_notification(client, NotificationTypes.NEW_SIGNUP)

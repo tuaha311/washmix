@@ -20,7 +20,7 @@ class Delivery(Common):
     IMPORTANT: Delivery entity has a signal receiver on `post_save`.
     Signal location - `deliveries.signals`
     """
-
+    # Employe has many deliveries, delivery belongs to a single employee.
     employee = models.ForeignKey(
         "users.Employee",
         verbose_name="employee that handles this delivery",
@@ -29,6 +29,8 @@ class Delivery(Common):
         null=True,
         blank=True,
     )
+
+    # Request has many(2) deliveries, delivery belongs to a single request.
     request = models.ForeignKey(
         "deliveries.Request",
         verbose_name="request",
