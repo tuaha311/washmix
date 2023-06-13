@@ -132,6 +132,22 @@ class DeliveryAdmin(AdminWithSearch):
         date and synthetically sending `post_save` signal.
         """
 
+        update_fields = frozenset(form.changed_data)
+
+        if "admin" in request.path:
+            # The form was submitted from the admin panel
+            if "date" in update_fields or (
+                "status" in update_fields and obj.status == DeliveryStatus.CANCELLED
+            ):
+                print("Sending the Singnal to delivery.")
+                post_save.send(
+                    sender=Delivery,
+                    instance=obj,
+                    update_fields=update_fields,
+                    created=False,
+                    raw=False,
+                )
+
         if obj.status == DeliveryStatus.NO_SHOW:
             print("Marking the Delivery to No Show and Charging client.")
             update_deliveries_to_no_show(obj)
