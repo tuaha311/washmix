@@ -28,6 +28,11 @@ from django.db.models.functions import Cast, ExtractHour, ExtractMinute
 from datetime import time
 
 
+from deliveries.models.delivery import Delivery
+import tempfile
+import os
+import shutil
+from users.models.employee import Employee
 
 class DeliveryViewSet(ModelViewSet):
     serializer_class = DeliverySerializer
@@ -48,11 +53,8 @@ class DeliveryViewSet(ModelViewSet):
         return delivery_list
 
     def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
         instance = self.get_object()
-        try:
-            status = request.data["status"]
-        except:
-            status = None
 
         if request.method == 'PATCH':
             if status == 'in_progress':
@@ -69,12 +71,8 @@ class DeliveryViewSet(ModelViewSet):
 
         serializer = self.get_serializer(instance, data=request.data, partial=False)
         serializer.is_valid(raise_exception=True)
-
-        if instance.kind == DeliveryKind.PICKUP and status == DeliveryStatus.NO_SHOW:
-            print("Marking the Delivery to No Show and Charging client.")
-            update_deliveries_to_no_show(instance)
-
         self.perform_update(serializer)
+
         return Response(serializer.data)
 
     def perform_update(self, serializer):

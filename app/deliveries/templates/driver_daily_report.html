@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% extends "base_email.html" %}
+    <title>Driver Daily Report</title>
+    {% block extra_style %}
+    <style>
+        h1 {
+            text-align: center;
+        }
+        
+        h2 {
+            margin-top: 30px;
+        }
+        
+        table thead th {
+            background-color: #f2f2f2;
+            border-bottom: 1px solid #ddd;
+            padding: 10px;
+        }
+        
+        table tbody td {
+            border-bottom: 1px solid #ddd;
+            padding: 10px;
+        }
+        
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        ul li {
+            margin-bottom: 10px;
+        }
+        
+        .customer-details {
+            padding: 5px;
+            border: 1px solid #ddd;
+        }
+    </style>
+    {% endblock %}
+</head>
+{% block body %}
+<center>
+    <tr>
+<tr>
+    <td>
+        <div style="font-family: Arial, sans-serif;
+        padding: 25px;">
+    <h1>Driver Daily Report</h1>
+    <div style="display: flex; align-items: center;">
+        <div style="flex: 1;">
+            <h3 style="margin: 0; display: inline;">Driver: </h3>
+            <span>{{ driver.full_name }}</span>
+        </div>
+        <div style="flex: 1; text-align: right;">
+            <h3 style="margin: 0; display: inline;">Date: </h3>
+            <span>{{ date }}</span>
+        </div>
+    </div>
+<tr>
+    <td>
+    <div class="body-content">
+    <h2>Detailed information for the Entire Route</h2>
+    {% for delivery in deliveries %}
+    <tr>
+        <td>
+    <div class="customer-details">
+        <h3>Customer Details</h3>
+        <b>Name:</b> {{ delivery.request.client.user.first_name }} {{ delivery.request.client.user.last_name }}<br>
+        <b>Address:</b> {{ delivery.request.client.main_address }}<br>
+        <b>Phone:</b> {{ delivery.request.client.main_phone.number }}
+    </div>
+    <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Stop Type</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ delivery.date }}</td>
+                <td>{{ delivery.start }}</td>
+                <td>{{ delivery.end }}</td>
+                <td>{{ delivery.kind }}</td>
+                <td>{{ delivery.status }}</td>
+            </tr>
+        </tbody>
+    </table>
+    {% endfor %}
+    <h2>First Stop through Last Stop</h2>
+    <ul>
+        {% for delivery in deliveries %}
+        <li>{{ delivery.kind }} - {{ delivery.status }} - {{ delivery.changed }}</li>
+        {% endfor %}
+    </ul>
+</div>
+</td>
+</tr>
+
+
+{% endblock %}
+
