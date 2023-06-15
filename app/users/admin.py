@@ -8,7 +8,9 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.core.paginator import EmptyPage, InvalidPage, Paginator
 from django.db.models import Q, QuerySet
+from django.http import HttpResponseRedirect
 from django.http.request import HttpRequest
+from django.urls import reverse
 
 from swap_user.admin import BaseUserAdmin
 from swap_user.to_named_email.forms import (
@@ -502,6 +504,21 @@ class UserAdmin(
 
 class EmployeeAdmin(AdminWithSearch):
     actions = ["full_delete_action"]
+    change_form_template = 'assets/change_form.html'
+
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        employee = self.get_object(request, object_id)
+
+        if employee and employee.position != 'driver':
+            self.change_form_template = None
+        else:
+            employee_id = object_id
+            extra_context = extra_context or {}
+            extra_context['employee_id'] = employee_id
+            self.change_form_template = 'assets/change_form.html'
+
+        return super().change_view(request, object_id, form_url, extra_context)
+
 
     def full_delete_action(self, request: HttpRequest, employee_queryset: QuerySet):
         """

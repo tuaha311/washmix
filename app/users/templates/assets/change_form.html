@@ -1,0 +1,85 @@
+{% extends 'admin/change_form.html' %}
+
+{% block after_related_objects %}
+    <div style="display:block; overflow: hidden; padding-left: 20px; background-color:white;">
+        <div class="form-row field-birthday" id="send-form" action="/api/delivery/report" method="post">
+            {% csrf_token %}
+            <label for="date">Driver's daily report:</label>
+            <input type="text" name="date" value="" class="vDateField datepicker" size="10" required id="date">
+            <input id="user" type="hidden" name="user" value="{{ employee_id }}">
+            <input type="button" value="Get Report" class="submit-button" onclick="sendSms()">
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script   script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
+
+    
+    <script>
+        $(document).ready(function() {
+            var today = new Date();
+            var day = String(today.getDate()).padStart(2, '0');
+            var month = String(today.getMonth() + 1).padStart(2, '0');
+            var year = today.getFullYear();
+            var formattedDate = month + '/' + day + '/' + year;
+            document.getElementById('date').value = formattedDate; 
+          
+            $('#date').val(formattedDate);
+            $('#date').datepicker({
+                maxDate: today
+            });
+        });
+      </script>
+
+      <script>
+        function sendSms() {
+          var data = {
+            date: document.getElementById("date").value,
+            user: document.getElementById("user").value,
+          };
+      
+          console.log(data);
+      
+          $.ajax({
+            url: "/api/driver/report/",
+            type: "POST",
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function(response) {
+                // Assuming you have a <div> element with id "report-container" where you want to display the report
+                console.log(response.path)
+                window.open(response.path, "_blank");
+
+              },
+            error: function(xhr, status, error) {
+              console.log("Request failed:", error);function sendSms() {
+          var data = {
+            date: document.getElementById("date").value,
+            user: document.getElementById("user").value,
+          };
+      
+          console.log(data);
+      
+          $.ajax({
+            url: "/api/driver/report/",
+            type: "POST",
+            dataType: "html",
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function(response) {
+                console.log(response.message)
+              },
+            error: function(xhr, status, error) {
+              console.log("Request failed:", error);
+            }
+          });
+        }
+            }
+          });
+        }
+      </script>
+{% endblock %}
+
+
+   
