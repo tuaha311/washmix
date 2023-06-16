@@ -1,3 +1,4 @@
+from datetime import date, datetime
 from django import forms
 from django.conf import settings
 from django.contrib import admin, messages
@@ -17,6 +18,7 @@ from swap_user.to_named_email.forms import (
     NamedUserEmailOptionalFieldsForm,
     NamedUserEmailRequiredFieldsForm,
 )
+from deliveries.models.delivery import Delivery
 
 from billing.choices import InvoiceProvider
 from billing.models import Invoice
@@ -512,9 +514,13 @@ class EmployeeAdmin(AdminWithSearch):
         if employee and employee.position != 'driver':
             self.change_form_template = None
         else:
+            deliveries = Delivery.objects.filter(employee_id=object_id)
+            date_list = sorted(list(set([delivery.changed.date() for delivery in deliveries])), reverse=False)
+            formatted_date_list = [datetime.strftime(date, '%m/%d/%Y') for date in date_list]
             employee_id = object_id
             extra_context = extra_context or {}
             extra_context['employee_id'] = employee_id
+            extra_context['date_list'] = formatted_date_list
             self.change_form_template = 'assets/change_form.html'
 
         return super().change_view(request, object_id, form_url, extra_context)
