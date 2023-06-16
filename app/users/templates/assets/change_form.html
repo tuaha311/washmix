@@ -47,10 +47,7 @@
             contentType: "application/json",
             data: JSON.stringify(data),
             success: function(response) {
-                // Assuming you have a <div> element with id "report-container" where you want to display the report
-                console.log(response.path)
-                window.open(response.path, "_blank");
-
+              window.open(response.path, "_blank");
               },
             error: function(xhr, status, error) {
               console.log("Request failed:", error);function sendSms() {
