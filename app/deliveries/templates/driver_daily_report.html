@@ -56,7 +56,7 @@
     <div style="display: flex; align-items: center;">
         <div style="flex: 1;">
             <h3 style="margin: 0; display: inline;">Driver: </h3>
-            <span>{{ driver.full_name }}</span>
+            <span><a href="/admin/users/employee/{{ driver.id }}/change/">{{ driver.full_name }}</a></span>
         </div>
         <div style="flex: 1; text-align: right;">
             <h3 style="margin: 0; display: inline;">Date: </h3>
@@ -79,6 +79,8 @@
     <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
         <thead>
             <tr>
+                <th>Delivery#</th>
+                <th>Client#</th>
                 <th>Date</th>
                 <th>Start Time</th>
                 <th>End Time</th>
@@ -88,6 +90,12 @@
         </thead>
         <tbody>
             <tr>
+                <td>
+                    <a href="{% if delivery.status == 'completed' %}/admin/archived/archiveddelivery/{{ delivery.id }}/change/{% else %}/admin/deliveries/delivery/{{ delivery.id }}/change/{% endif %}">
+                      {{ delivery.id }}
+                    </a>
+                  </td>
+                <td><a href="/admin/users/client/{{ delivery.client.id }}/change/">{{ delivery.client.id }}</a></td>
                 <td>{{ delivery.date }}</td>
                 <td>{{ delivery.start }}</td>
                 <td>{{ delivery.end }}</td>

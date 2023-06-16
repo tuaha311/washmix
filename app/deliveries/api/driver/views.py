@@ -70,7 +70,7 @@ def driver_daily_report(request):
         date_str = data.get('date')
         employee = data.get('user')
         date_obj = datetime.strptime(date_str, "%m/%d/%Y").date()
-        deliveries = Delivery.objects.filter(changed__date=date_obj, employee_id=employee)
+        deliveries = Delivery.objects.filter(changed__date=date_obj, employee_id=employee).order_by('start')
         driver = Employee.objects.get(id=employee)
 
         report_html = generate_report_html(deliveries, date_obj, driver)
@@ -81,7 +81,7 @@ def driver_daily_report(request):
         with open(temp_path, 'wb') as f:
             f.write(pdf_file)
 
-        destination_dir = os.path.join('app','media', 'driver')
+        destination_dir = os.path.join('media', 'driver')
         os.makedirs(destination_dir, exist_ok=True)
         pdf_name = f"{date_obj}.pdf"
         destination_path = os.path.join(destination_dir, pdf_name)
