@@ -83,7 +83,7 @@ def driver_daily_report(request):
 
         destination_dir = os.path.join('media', 'driver')
         os.makedirs(destination_dir, exist_ok=True)
-        pdf_name = f"{date_obj}.pdf"
+        pdf_name = f"{date_obj}_driver_{employee}.pdf"
         destination_path = os.path.join(destination_dir, pdf_name)
         shutil.move(temp_path, destination_path)
         response = HttpResponse("Driver daily report generated and saved successfully.")

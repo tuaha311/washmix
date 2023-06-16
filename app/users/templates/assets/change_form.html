@@ -1,6 +1,4 @@
-{% extends 'admin/change_form.html' %}
-
-{% block extrastyle %}
+{% extends 'admin/change_form.html' %} {% block extrastyle %}
 <style>
   .loading-overlay {
     position: fixed;
@@ -37,56 +35,72 @@
     }
   }
 </style>
-{% endblock %}
+{% endblock %} {% block after_related_objects %}
+<div
+  style="
+    display: block;
+    overflow: hidden;
+    padding-left: 20px;
+    background-color: white;
+  "
+>
+  <form action="/api/delivery/report" method="post">
+    {% csrf_token %}
+    <label for="date">Generate driver report:</label>
+    <select id="date">
+      {% for date in date_list %}
+      <option value="{{ date }}">{{ date }}</option>
+      {% endfor %}
+    </select>
+    <input id="user" type="hidden" name="user" value="{{ employee_id }}" />
+    <input
+      type="button"
+      value="Get Report"
+      class="submit-button"
+      onclick="sendReport()"
+    />
+  </form>
 
-{% block after_related_objects %}
-    <div style="display:block; overflow: hidden; padding-left: 20px; background-color:white;">
-        <div class="form-row field-birthday" id="send-form">
-            <form action="/api/delivery/report" method="post">
-                {% csrf_token %}
-                <label for="date">Driver's daily report:</label>
-                <select id="date">
-                  {% for date in date_list %}
-                    <option value="{{ date }}">{{ date }}</option>
-                  {% endfor %}
-                </select>
-                <input id="user" type="hidden" name="user" value="{{ employee_id }}">
-                <input type="button" value="Get Report" class="submit-button" onclick="sendReport()">
-            </form>
-        </div>
+  <form style="padding-top:20px;">
+    <label for="date">Saved reports:</label><br />
+    <div style="padding:25px">
+      {% for pdf_path in pdf_list %}
+      <a href="{{ pdf_path }}" target="_blank">{{ pdf_path }}</a><br />
+      {% endfor %}
     </div>
+  </form>
+</div>
 
-    <div class="loading-overlay" id="loading-overlay" style="display: none;">
-      <div class="loading-spinner"></div>
-    </div>
+<div class="loading-overlay" id="loading-overlay" style="display: none">
+  <div class="loading-spinner"></div>
+</div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
-    <script>
-        function sendReport() {
-          var data = {
-            date: document.getElementById("date").value,
-            user: document.getElementById("user").value,
-          };
-              document.getElementById("loading-overlay").style.display = "flex";
-      
-          $.ajax({
-            url: "/api/driver/report/",
-            type: "POST",
-            dataType: "json",
-            contentType: "application/json",
-            data: JSON.stringify(data),
-            success: function(response) {
-              // Hide the loading overlay
-              document.getElementById("loading-overlay").style.display = "none";
-              window.open(response.path, "_blank");
-            },
-            error: function(xhr, status, error) {
-              console.log("Request failed:", error);
-              // Hide the loading overlay
-              document.getElementById("loading-overlay").style.display = "none";
-            }
-          });
-        }
-    </script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
+<script>
+  function sendReport() {
+    var data = {
+      date: document.getElementById("date").value,
+      user: document.getElementById("user").value,
+    };
+    document.getElementById("loading-overlay").style.display = "flex";
+
+    $.ajax({
+      url: "/api/driver/report/",
+      type: "POST",
+      dataType: "json",
+      contentType: "application/json",
+      data: JSON.stringify(data),
+      success: function (response) {
+        document.getElementById("loading-overlay").style.display = "none";
+        window.open(response.path, "_blank");
+        window.location.reload();
+      },
+      error: function (xhr, status, error) {
+        console.log("Request failed:", error);
+        document.getElementById("loading-overlay").style.display = "none";
+      },
+    });
+  }
+</script>
 {% endblock %}
