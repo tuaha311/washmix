@@ -1,4 +1,5 @@
 from datetime import date, datetime
+import os
 from django import forms
 from django.conf import settings
 from django.contrib import admin, messages
@@ -521,7 +522,19 @@ class EmployeeAdmin(AdminWithSearch):
             extra_context = extra_context or {}
             extra_context['employee_id'] = employee_id
             extra_context['date_list'] = formatted_date_list
-            self.change_form_template = 'assets/change_form.html'
+            pdf_list = []
+
+            for date in formatted_date_list:
+                converted_date = datetime.strptime(date, "%m/%d/%Y").strftime("%Y-%m-%d")
+                pdf_filename = f"{converted_date}_driver_{employee_id}.pdf"
+                pdf_path = os.path.join(settings.MEDIA_URL, "driver", pdf_filename)
+                full_path = os.path.join(settings.MEDIA_ROOT, "driver", pdf_filename)
+                if os.path.exists(full_path):
+                    pdf_list.append(pdf_path)
+                
+        
+        extra_context['pdf_list'] = pdf_list
+        self.change_form_template = 'assets/change_form.html'
 
         return super().change_view(request, object_id, form_url, extra_context)
 
