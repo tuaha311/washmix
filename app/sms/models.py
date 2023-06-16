@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class SMSTemplate(models.Model):
     content = models.TextField()
 

@@ -60,7 +60,7 @@ INSTALLED_APPS = [
     "deliveries",
     "subscriptions",
     "archived",
-    'sms',
+    "sms",
     # inside core app we are unregistering some models
     # it should be lower that branding apps to be last application and apply
     # last changes for admin
@@ -655,6 +655,7 @@ SMS_EVENT_INFO = {
     NO_SHOW: {
         "template_name": "sms/no_show.html",
     },
+    PROMOTION: {"template_name": "sms/outbound_sms.html"},
 }
 
 
