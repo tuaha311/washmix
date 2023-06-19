@@ -28,6 +28,9 @@ class SubscriptionCheckoutView(GenericAPIView):
                 detail="Can't bill your card",
                 code="cant_bill_your_card",
             )
+            
+        client.subscription_id = order.id
+        client.save()
 
         response = self.response_serializer_class(order_container).data
 
