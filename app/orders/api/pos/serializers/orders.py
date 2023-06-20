@@ -28,6 +28,7 @@ class OrderSerializer(CommonContainerSerializer, serializers.ModelSerializer):
     dollar_credit_back = serializers.ReadOnlyField()
     coupon_discount_type = serializers.ReadOnlyField()
     discount_percent = serializers.ReadOnlyField()
+    purpose = serializers.SerializerMethodField()
 
     class Meta:
         model = Order
@@ -56,7 +57,11 @@ class OrderSerializer(CommonContainerSerializer, serializers.ModelSerializer):
             "discount_percent",
             "balance_after_purchase",
             "balance_before_purchase",
+            "purpose",
         ]
+
+    def get_purpose(self, obj):
+        return obj.invoice.purpose
 
 
 class POSOrderCheckoutSerializer(serializers.Serializer):
