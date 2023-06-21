@@ -148,7 +148,7 @@ class DeliveryAdmin(AdminWithSearch):
                     raw=False,
                 )
 
-        if obj.status == DeliveryStatus.NO_SHOW:
+        if obj.kind == DeliveryKind.PICKUP and obj.status == DeliveryStatus.NO_SHOW:
             print("Marking the Delivery to No Show and Charging client.")
             update_deliveries_to_no_show(obj)
 
