@@ -52,6 +52,33 @@
 {% endblock %}
         <div class="module">
             <table>
+                <h3>Select the customer and template to send the sms to:</h3>
+                <tr>
+                    <td>
+                        <label for="customers">Customers:</label>
+                        <select multiple="multiple" id="id_toppings" name="customers" class="select-multiple-field">
+                            {% for customer in customers %}
+                                {% if customer.id|stringformat:"s" in selected %}
+                                    <option value="{{ customer.id }}" selected>{{ customer.full_name }}</option>
+                                {% else %}
+                                    <option value="{{ customer.id }}">{{ customer.full_name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                        <label for="templates">Templates:</label>
+                        <select id="templates" name="template">
+                            {% for template in templates %}
+                                <option value="{{ template.id }}">{{ template }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+            </table>
+            <hr/>
+            <br/><br/>
+            <table>
                 <h3>Filter the customer using the filters below:</h3>
                 <tr>
                     <td>
@@ -110,33 +137,7 @@
                     </td>
                 </tr>
             </table>
-            <hr/>
-            <br/><br/>
-            <table>
-                <h3>Select the customer and template to send the sms to:</h3>
-                <tr>
-                    <td>
-                        <label for="customers">Customers:</label>
-                        <select multiple="multiple" id="id_toppings" name="customers" class="select-multiple-field">
-                            {% for customer in customers %}
-                                {% if customer.id|stringformat:"s" in selected %}
-                                    <option value="{{ customer.id }}" selected>{{ customer.full_name }}</option>
-                                {% else %}
-                                    <option value="{{ customer.id }}">{{ customer.full_name }}</option>
-                                {% endif %}
-                            {% endfor %}
-                        </select>
-                    </td>
-                    <td>
-                        <label for="templates">Templates:</label>
-                        <select id="templates" name="template">
-                            {% for template in templates %}
-                                <option value="{{ template.id }}">{{ template }}</option>
-                            {% endfor %}
-                        </select>
-                    </td>
-                </tr>
-            </table>
+
             <form id="send-sms-form" action="{% url 'send_sms' %}" method="post">
                 {% csrf_token %}
                 <input type="hidden" id="selected-customers-input" name="customers">
