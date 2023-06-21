@@ -145,6 +145,7 @@ def on_delivery_notify_signal(
 
     if is_dropoff and is_no_show:
         delivery_request = delivery.request
+        print("IN SIGNALS.PY DROPOFF AND NO SHOW....     ", delivery_request)
         if not Order.objects.filter(request=delivery_request).exists():
             amount = 1990
             if is_advantage:
