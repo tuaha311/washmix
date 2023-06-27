@@ -1,6 +1,6 @@
 from django import forms
 from django.conf import settings
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.db.models import Q
 from django.db.models.signals import post_save
 from django.urls import reverse
@@ -192,6 +192,25 @@ class DeliveryAdminMain(AdminWithSearch):
         We are catching the moment when admin changes Delivery's
         date and synthetically sending `post_save` signal.
         """
+
+        if obj.kind == DeliveryKind.DROPOFF and (
+        obj.status == DeliveryStatus.NO_SHOW
+        or obj.status in [DeliveryStatus.IN_PROGRESS, DeliveryStatus.COMPLETED]
+        ):
+            if obj.status == DeliveryStatus.NO_SHOW:
+                message = "Invalid status for a dropoff delivery."
+            else:
+                pickup_delivery = obj.request.delivery_list.filter(kind=DeliveryKind.PICKUP).first()
+                if pickup_delivery and pickup_delivery.status != DeliveryStatus.COMPLETED:
+                    message = "Cannot set dropoff delivery as 'In Progress' or 'Completed' when the corresponding pickup delivery is not completed."
+                else:
+                    pass
+
+            if 'message' in locals():
+                self.message_user(request, '', level=messages.ERROR)
+                messages.set_level(request, messages.ERROR)
+                messages.error(request, message)
+                return
 
         update_fields = frozenset(form.changed_data)
 
