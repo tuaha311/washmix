@@ -107,7 +107,7 @@ class StripeHelper:
             metadata=metadata,
             **extra_kwargs,
         )
-
+        print("PAYMENT INTENT:     ", payment_intent)
         return payment_intent
 
     def create_payment_method(self, number: str, exp_month: int, exp_year: int, cvc: str):

@@ -372,9 +372,11 @@ class PaymentService:
         except:
             pass
 
-        amount_with_discount = invoice.amount_with_discount
+        amount_with_discount = invoice.amount_with_discount #1990
         paid_amount = invoice.paid_amount
+        print("PAID AMOUNT:        ", paid_amount)
         unpaid_amount = amount_with_discount - paid_amount
+        print("UNPAID AMOUNT:      ", unpaid_amount)
         balance = client.balance
 
         prepaid_balance_will_be_charged = 0
@@ -407,6 +409,6 @@ class PaymentService:
 
         print('++++ prepaid_balance_will_be_charged  ++++++    ', prepaid_balance_will_be_charged)
         print('')
-        print('++++ card_will_be_charged  ++++++    ', prepaid_balance_will_be_charged)
+        print('++++ card_will_be_charged  ++++++    ', card_will_be_charged)
         # we are ceiling to a integer number for Stripe
         return prepaid_balance_will_be_charged, card_will_be_charged
