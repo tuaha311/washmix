@@ -1,0 +1,49 @@
+{% extends 'admin/change_list.html' %}
+
+{% block content %}
+  {{ block.super }}
+
+  <div>
+    <h1>Bulk Action</h1>
+    <form id="send-sms-form" action="/deliveries/change-employee/" method="post">
+      {% csrf_token %}
+      <label for="id_employee">Employee:</label>
+      <select id="id_employee" name="new_employee_id">
+        {% for employee in users_employee %}
+          <option value="{{ employee.id }}">{{ employee }}</option>
+        {% endfor %}
+      </select>
+      <input type="submit" value="Change Employee"/>
+    </form>
+  </div>
+  
+  <script>
+    var pk = [];
+  
+    function updatePkList(checkbox) {
+      var value = checkbox.value;
+      if (checkbox.checked) {
+        pk.push(value);
+      } else {
+        var index = pk.indexOf(value);
+        if (index !== -1) {
+          pk.splice(index, 1);
+        }
+      }
+      console.log("Updated pk list:", pk);
+    }
+  
+        document.getElementById("send-sms-form").addEventListener("submit", function() {
+        pk.forEach(function(pkValue) {
+        var input = document.createElement("input");
+        input.type = "hidden";
+        input.name = "selected_deliveries";
+        input.value = pkValue;
+        document.getElementById("send-sms-form").appendChild(input);
+      });
+    });
+  </script>
+  
+  <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}admin/css/base.css">
+
+{% endblock %}

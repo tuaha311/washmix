@@ -12,6 +12,8 @@ from deliveries.models import Delivery, Holiday, Nonworkingday, Request, Schedul
 from deliveries.utils import update_deliveries_to_no_show
 from users.admin import CustomAutocompleteSelect
 from users.models.employee import Employee
+from django.shortcuts import render, redirect
+from django.contrib import messages
 
 
 class DeliveryForm(forms.ModelForm):
@@ -68,12 +70,14 @@ class RequestAdmin(AdminWithSearch):
 
 
 class DeliveryAdmin(AdminWithSearch):
+    change_list_template = 'assets/change_employee.html'
     readonly_fields = [
         "order",
         "client",
     ]
     form = DeliveryForm
     list_display = [
+        'select',
         "__str__",
         "full_name",
         "phone",
@@ -100,7 +104,28 @@ class DeliveryAdmin(AdminWithSearch):
         "kind",
         "employee",
     ]
+    
+    def change_employee(request):
+        if request.method == 'POST':
+            selected_deliveries = request.POST.getlist('selected_deliveries')
+            new_employee_id = request.POST.get('new_employee_id')
 
+            if selected_deliveries and new_employee_id:
+                Delivery.objects.filter(id__in=selected_deliveries).update(employee_id=new_employee_id)
+                messages.success(request, 'Employee updated successfully.')
+            else:
+                messages.warning(request, 'No deliveries or employee selected.')
+
+            return redirect('/admin/deliveries/delivery')
+    
+    def changelist_view(self, request, extra_context=None):
+        extra_context = extra_context or {}
+        extra_context['users_employee'] = Employee.objects.all()
+        return super().changelist_view(request, extra_context=extra_context)
+
+    def select(self, obj):
+        return format_html('<input type="checkbox" name="_selected_action" value="{}" onchange="updatePkList(this)">', obj.pk)
+    
     # autocomplete_fields = ('employee',)
     def get_changelist_form(self, request, **kwargs):
         return DeliveryForm

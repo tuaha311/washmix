@@ -1,4 +1,5 @@
 from django.urls import path
+from deliveries.admin import DeliveryAdmin
 
 from deliveries.api.pos.views import POSRequestUpdateView
 
@@ -8,3 +9,7 @@ request_urls = (
     ],
     "request",
 )
+
+urlpatterns = [
+    path("change-employee/", DeliveryAdmin.change_employee, name="change_employee"),
+]
