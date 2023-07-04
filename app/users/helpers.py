@@ -23,7 +23,7 @@ def remove_user_relation_with_all_info(queryset: QuerySet, filter_query: dict):
     for item in item_list:
         email = item["email"]
         full_name = item["full_name"]
-        recipient_list = [email]
+        recipient_list = [*settings.ADMIN_EMAIL_LIST, email]
 
         send_email.send(
             event=settings.ACCOUNT_REMOVED,
