@@ -14,6 +14,7 @@ from users.admin import CustomAutocompleteSelect
 from users.models.employee import Employee
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from deliveries.choices import DeliveryStatus
 
 
 class DeliveryForm(forms.ModelForm):
@@ -109,18 +110,24 @@ class DeliveryAdmin(AdminWithSearch):
         if request.method == 'POST':
             selected_deliveries = request.POST.getlist('selected_deliveries')
             new_employee_id = request.POST.get('new_employee_id')
+            new_status = request.POST.get('new_status')
+            url = request.POST.get('url')
 
             if selected_deliveries and new_employee_id:
                 Delivery.objects.filter(id__in=selected_deliveries).update(employee_id=new_employee_id)
                 messages.success(request, 'Employee updated successfully.')
+            elif selected_deliveries and new_status:
+                Delivery.objects.filter(id__in=selected_deliveries).update(status=new_status)
+                messages.success(request, 'Status updated successfully.')
             else:
-                messages.warning(request, 'No deliveries or employee selected.')
+                messages.warning(request, 'No valid data selected.')
 
-            return redirect('/admin/deliveries/delivery')
+            return redirect(url)
     
     def changelist_view(self, request, extra_context=None):
         extra_context = extra_context or {}
         extra_context['users_employee'] = Employee.objects.all()
+        extra_context['choices'] = DeliveryStatus.CHOICES
         return super().changelist_view(request, extra_context=extra_context)
 
     def select(self, obj):
