@@ -11,7 +11,7 @@ class ClientSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Client
-        fields = ["id", "main_phone", "first_name", "last_name", "client_numbers", "private_note"]
+        fields = ["id", "main_phone", "first_name", "last_name", "client_numbers", "private_note", "billing_address"]
 
     def get_client_numbers(self, obj):
         phones = ""
