@@ -64,7 +64,11 @@ def archive_not_signedup_users():
                 zip_code = client.main_address.zip_code.value
             if user.first_name:
                 full_name = f"{user.first_name} {user.last_name}"
-
+            
+            next_promo_schedule = get_time_delta_for_promotional_emails(0)
+            print(' QQQQQQQQQQQQQQQQQQ ABOUT TO CREATE ARCHIVED CUSTOMER ')
+            print("CURRENNT TIME ", localtime())
+            print("get_time_delta_for_promotional_emails(0)   ", next_promo_schedule )
             ArchivedCustomer.objects.get_or_create(
                 email=user.email,
                 defaults={
@@ -73,7 +77,7 @@ def archive_not_signedup_users():
                     "address": address,
                     "zip_code": zip_code,
                     "promo_emails_sent_count": 0,
-                    "next_promo_email_schedule": get_time_delta_for_promotional_emails(0),
+                    "next_promo_email_schedule": next_promo_schedule,
                 },
             )
 
@@ -98,7 +102,7 @@ def archive_periodic_promotional_emails():
             email_time = client.next_promo_email_schedule
 
         sent_count = client.promo_emails_sent_count
-        print("CLIENT:     ", client.email)
+        print("CLIENT:     ", client.__dict__)
         print("Email Time:", email_time)
 
         # Sending Email
