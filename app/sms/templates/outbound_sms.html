@@ -142,7 +142,7 @@
                 {% csrf_token %}
                 <input type="hidden" id="selected-customers-input" name="customers">
                 <input type="hidden" id="selected-template-input" name="template">
-                <input type="submit" value="Submit" class="submit-button">
+                <input type="submit" value="Submit" class="submit-button" onclick="return confirm('Are you sure you want to send SMS to selected clients?');">
             </form>
         </div>
 

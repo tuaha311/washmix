@@ -165,6 +165,10 @@ LOGGING = {
         "drf_yasg": {"handlers": ["null"]},
         "inspectors": {"handlers": ["null"]},
         "billing": {"handlers": ["stdout"]},
+        "sms": {
+            "handlers": ["stdout"],
+            "level": "INFO",
+        },
     },
 }
 
