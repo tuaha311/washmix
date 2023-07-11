@@ -1,3 +1,5 @@
+from datetime import date, datetime
+import os
 from django import forms
 from django.conf import settings
 from django.contrib import admin, messages
@@ -8,13 +10,16 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.core.paginator import EmptyPage, InvalidPage, Paginator
 from django.db.models import Q, QuerySet
+from django.http import HttpResponseRedirect
 from django.http.request import HttpRequest
+from django.urls import reverse
 
 from swap_user.admin import BaseUserAdmin
 from swap_user.to_named_email.forms import (
     NamedUserEmailOptionalFieldsForm,
     NamedUserEmailRequiredFieldsForm,
 )
+from deliveries.models.delivery import Delivery
 
 from billing.choices import InvoiceProvider
 from billing.models import Invoice
@@ -502,6 +507,37 @@ class UserAdmin(
 
 class EmployeeAdmin(AdminWithSearch):
     actions = ["full_delete_action"]
+    change_form_template = 'assets/change_form.html'
+
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        employee = self.get_object(request, object_id)
+
+        if employee and employee.position != 'driver':
+            self.change_form_template = None
+        else:
+            deliveries = Delivery.objects.filter(employee_id=object_id)
+            date_list = sorted(list(set([delivery.changed.date() for delivery in deliveries])), reverse=False)
+            formatted_date_list = [datetime.strftime(date, '%m/%d/%Y') for date in date_list]
+            employee_id = object_id
+            extra_context = extra_context or {}
+            extra_context['employee_id'] = employee_id
+            extra_context['date_list'] = formatted_date_list
+            pdf_list = []
+
+            for date in formatted_date_list:
+                converted_date = datetime.strptime(date, "%m/%d/%Y").strftime("%Y-%m-%d")
+                pdf_filename = f"{converted_date}_driver_{employee_id}.pdf"
+                pdf_path = os.path.join(settings.MEDIA_URL, "driver", pdf_filename)
+                full_path = os.path.join(settings.MEDIA_ROOT, "driver", pdf_filename)
+                if os.path.exists(full_path):
+                    pdf_list.append(pdf_path)
+                
+        
+        extra_context['pdf_list'] = pdf_list
+        self.change_form_template = 'assets/change_form.html'
+
+        return super().change_view(request, object_id, form_url, extra_context)
+
 
     def full_delete_action(self, request: HttpRequest, employee_queryset: QuerySet):
         """
