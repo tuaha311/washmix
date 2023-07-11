@@ -23,6 +23,10 @@ import tempfile
 import os
 import shutil
 from users.models.employee import Employee
+from django.db.models import Q, Min, Max, TimeField
+from django.db.models.functions import Cast, ExtractHour, ExtractMinute
+from datetime import time
+
 
 class DeliveryViewSet(ModelViewSet):
     serializer_class = DeliverySerializer
@@ -70,10 +74,24 @@ def driver_daily_report(request):
         date_str = data.get('date')
         employee = data.get('user')
         date_obj = datetime.strptime(date_str, "%m/%d/%Y").date()
-        deliveries = Delivery.objects.filter(changed__date=date_obj, employee_id=employee).order_by('start')
+        deliveries = Delivery.objects.filter(changed__date=date_obj, employee_id=employee).filter(Q(status="no_show") | Q(status="completed")).exclude(kind="dropoff", status="no_show").order_by('start')
         driver = Employee.objects.get(id=employee)
+        # Get the minimum and maximum times from the start and end fields
+        start_time = deliveries.aggregate(start_time=Min('start'))['start_time']
+        end_time = deliveries.aggregate(end_time=Max('end'))['end_time']
 
-        report_html = generate_report_html(deliveries, date_obj, driver)
+        start_time = start_time
+        end_time = end_time
+
+        # Calculate the timedelta between start_time and end_time
+        delta = datetime.combine(datetime.min.date(), end_time) - datetime.combine(datetime.min.date(), start_time)
+
+        # Extract hours and minutes from the timedelta
+        hours = delta.seconds // 3600
+        minutes = (delta.seconds // 60) % 60
+
+        time_delta = {'hours': hours, 'minutes': minutes}
+        report_html = generate_report_html(deliveries, date_obj, driver, time_delta)
         pdf_file = generate_pdf(report_html)
 
 
@@ -93,9 +111,9 @@ def driver_daily_report(request):
 
     return HttpResponse("Only POST requests are allowed.")
 
-def generate_report_html(deliveries, date_str, driver):
+def generate_report_html(deliveries, date_str, driver, time_delta):
     # Generate HTML content for the report using a template
-    context = {'deliveries': deliveries, "driver": driver, "date": date_str, "is_pdf": True}
+    context = {'deliveries': deliveries, "driver": driver, "date": date_str, "is_pdf": True, "time_delta": time_delta}
     report_html = render_to_string('driver_daily_report.html', context)
     return report_html
 
