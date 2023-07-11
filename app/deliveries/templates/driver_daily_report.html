@@ -71,6 +71,7 @@
     <tr>
         <td>
     <div class="customer-details">
+        <h3>Stop {{ forloop.counter }}</h3>
         <h3>Customer Details</h3>
         <b>Name:</b> {{ delivery.request.client.user.first_name }} {{ delivery.request.client.user.last_name }}<br>
         <b>Address:</b> {{ delivery.request.client.main_address }}<br>
@@ -111,6 +112,8 @@
         <li>{{ delivery.kind }} - {{ delivery.status }} - {{ delivery.changed }}</li>
         {% endfor %}
     </ul>
+    <p>Total Number of Stops: {{ deliveries|length }}</p>
+    <p>Total Time: {{ time_delta.hours }} hours {{ time_delta.minutes }} minutes</p>
 </div>
 </td>
 </tr>
