@@ -80,7 +80,12 @@ def archive_not_signedup_users():
                     "next_promo_email_schedule": next_promo_schedule,
                 },
             )
+            recipient_list = [client.email]
 
+            send_email(
+                event=settings.FIRST_ARCHIVE_FOLLOW_UP,
+                recipient_list=recipient_list,
+            )
             user.delete()
 
 
