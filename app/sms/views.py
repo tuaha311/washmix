@@ -110,8 +110,6 @@ def send_sms(request):
                 delay=settings.DRAMATIQ_DELAY_FOR_DELIVERY,
             )
 
-            logger.info(f"Sending SMS to clients {[customer.email for customer in batch_customers]}")
-
         messages.success(request, "SMS send request submitted successfully.")
         return redirect("/sms/outbound-sms")
     else:
