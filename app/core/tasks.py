@@ -64,7 +64,11 @@ def archive_not_signedup_users():
                 zip_code = client.main_address.zip_code.value
             if user.first_name:
                 full_name = f"{user.first_name} {user.last_name}"
-
+            
+            next_promo_schedule = get_time_delta_for_promotional_emails(0)
+            print(' QQQQQQQQQQQQQQQQQQ ABOUT TO CREATE ARCHIVED CUSTOMER ')
+            print("CURRENNT TIME ", localtime())
+            print("get_time_delta_for_promotional_emails(0)   ", next_promo_schedule )
             ArchivedCustomer.objects.get_or_create(
                 email=user.email,
                 defaults={
@@ -73,10 +77,15 @@ def archive_not_signedup_users():
                     "address": address,
                     "zip_code": zip_code,
                     "promo_emails_sent_count": 0,
-                    "next_promo_email_schedule": get_time_delta_for_promotional_emails(0),
+                    "next_promo_email_schedule": next_promo_schedule,
                 },
             )
+            recipient_list = [client.email]
 
+            send_email(
+                event=settings.FIRST_ARCHIVE_FOLLOW_UP,
+                recipient_list=recipient_list,
+            )
             user.delete()
 
 
@@ -98,7 +107,7 @@ def archive_periodic_promotional_emails():
             email_time = client.next_promo_email_schedule
 
         sent_count = client.promo_emails_sent_count
-        print("CLIENT:     ", client.email)
+        print("CLIENT:     ", client.__dict__)
         print("Email Time:", email_time)
 
         # Sending Email
@@ -120,17 +129,25 @@ def archive_periodic_promotional_emails():
             client.increase_promo_emails_sent_count()
 
             if sent_count == 0:
+                time_to_add = timedelta(hours=1)
+                email_schedule = current_time + time_to_add
+            if sent_count == 1:
                 time_to_add = timedelta(hours=24)
-            elif sent_count == 1:
-                time_to_add = timedelta(weeks=1)
             elif sent_count == 2:
+                time_to_add = timedelta(weeks=1)
+            elif sent_count == 3:
                 time_to_add = timedelta(days=30)
             else:
                 time_to_add = timedelta(days=90)
 
-            email_schedule = (
-                current_time.replace(hour=17, minute=0, second=0, microsecond=0) + time_to_add
-            )
+            if sent_count != 0:
+                email_schedule = (
+                    current_time.replace(hour=17, minute=0, second=0, microsecond=0) + time_to_add
+                )
+
+            print("0000000000        ", time_to_add)
+            print('1111111111        ', email_schedule)
+
             client.next_promo_email_schedule = email_schedule
 
             print("**************************")
