@@ -40,6 +40,7 @@ class DeliveryViewSet(ModelViewSet):
         serializer.is_valid(raise_exception=True)
 
         if instance.kind == DeliveryKind.PICKUP and status == DeliveryStatus.NO_SHOW:
+            instance.status = status 
             print("Marking the Delivery to No Show and Charging client.")
             update_deliveries_to_no_show(instance)
 
