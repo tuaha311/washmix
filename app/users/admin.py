@@ -21,6 +21,7 @@ from swap_user.to_named_email.forms import (
     NamedUserEmailRequiredFieldsForm,
 )
 from deliveries.models.delivery import Delivery
+from api.client.views.views import generate_client_pdf_core
 
 from billing.choices import InvoiceProvider, InvoicePurpose
 from billing.models import Invoice
@@ -419,40 +420,9 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
         return "-"
 
     def generate_client_pdf(modeladmin, request, queryset):
-        template = "client_report.html"
-        media_root = Base.MEDIA_ROOT
-        client_directory = os.path.join(media_root, "clients")
-        os.makedirs(client_directory, exist_ok=True)
-
         for client in queryset:
-            purpose = "credit"  # Purpose set to 'Credit by WashMix'
-            
-            invoice_list = client.invoice_list.filter(purpose=purpose).annotate(
-                balance=Subquery(
-                    client.transaction_list.filter(invoice=OuterRef('pk'))
-                    .values('invoice')
-                    .annotate(total=Sum('amount'))
-                    .values('total')[:1]
-                )
-            )
-            context = {"client": client, "invoice_list": invoice_list, "is_pdf": True}
-            client_orders = Order.objects.filter(client=client)
-            context["client_orders"] = client_orders
+            generate_client_pdf_core(request, client.id)
 
-            printable_page = render_to_string(template, context)
-
-            with tempfile.NamedTemporaryFile(suffix=".html", delete=False) as temp_html:
-                temp_html.write(printable_page.encode("utf-8"))
-
-            with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as temp_pdf:
-                HTML(string=printable_page).write_pdf(temp_pdf)
-
-            client_id = client.id
-            pdf_filename = f"{client_id}.pdf"
-            pdf_path = os.path.join(client_directory, pdf_filename)
-
-            shutil.move(temp_pdf.name, pdf_path)
-            os.remove(temp_html.name)
         count = queryset.count()
         client_plural = "clients" if count != 1 else "client"
         success_message = f"PDF generated successfully for {count} {client_plural}"
