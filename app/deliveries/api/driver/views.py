@@ -53,6 +53,13 @@ class DeliveryViewSet(ModelViewSet):
         except:
             status = None
 
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+
+        if instance.kind == DeliveryKind.PICKUP and status == DeliveryStatus.NO_SHOW:
+            print("Marking the Delivery to No Show and Charging client.")
+            update_deliveries_to_no_show(instance)
+
         if request.method == 'PATCH':
             if status == 'in_progress':
                 instance.start = now().time()
@@ -62,12 +69,6 @@ class DeliveryViewSet(ModelViewSet):
                 instance.end = now().time()
                 instance.save()
 
-        if instance.kind == DeliveryKind.PICKUP and status == DeliveryStatus.NO_SHOW:
-            print("Marking the Delivery to No Show and Charging client.")
-            update_deliveries_to_no_show(instance)
-
-        serializer = self.get_serializer(instance, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
 
         return Response(serializer.data)
