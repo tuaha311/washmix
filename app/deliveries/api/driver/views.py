@@ -27,13 +27,6 @@ from django.db.models import Q, Min, Max, TimeField
 from django.db.models.functions import Cast, ExtractHour, ExtractMinute
 from datetime import time
 
-
-from deliveries.models.delivery import Delivery
-import tempfile
-import os
-import shutil
-from users.models.employee import Employee
-
 class DeliveryViewSet(ModelViewSet):
     serializer_class = DeliverySerializer
     permission_classes = default_driver_permissions
@@ -73,7 +66,7 @@ class DeliveryViewSet(ModelViewSet):
             print("Marking the Delivery to No Show and Charging client.")
             update_deliveries_to_no_show(instance)
 
-        serializer = self.get_serializer(instance, data=request.data, partial=False)
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
 
