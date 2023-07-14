@@ -124,21 +124,17 @@ def archive_periodic_promotional_emails():
             client.increase_promo_emails_sent_count()
 
             if sent_count == 0:
-                time_to_add = timedelta(hours=1)
-                email_schedule = current_time + time_to_add
-            if sent_count == 1:
                 time_to_add = timedelta(hours=24)
-            elif sent_count == 2:
+            elif sent_count == 1:
                 time_to_add = timedelta(weeks=1)
-            elif sent_count == 3:
+            elif sent_count == 2:
                 time_to_add = timedelta(days=30)
             else:
                 time_to_add = timedelta(days=90)
 
-            if sent_count != 0:
-                email_schedule = (
-                    current_time.replace(hour=17, minute=0, second=0, microsecond=0) + time_to_add
-                )
+            email_schedule = (
+                current_time.replace(hour=17, minute=0, second=0, microsecond=0) + time_to_add
+            )
 
             client.next_promo_email_schedule = email_schedule
 
