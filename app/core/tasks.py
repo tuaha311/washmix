@@ -66,9 +66,7 @@ def archive_not_signedup_users():
                 full_name = f"{user.first_name} {user.last_name}"
             
             next_promo_schedule = get_time_delta_for_promotional_emails(0)
-            print(' QQQQQQQQQQQQQQQQQQ ABOUT TO CREATE ARCHIVED CUSTOMER ')
-            print("CURRENNT TIME ", localtime())
-            print("get_time_delta_for_promotional_emails(0)   ", next_promo_schedule )
+
             ArchivedCustomer.objects.get_or_create(
                 email=user.email,
                 defaults={
@@ -94,7 +92,6 @@ def archive_periodic_promotional_emails():
     email_customers = ArchivedCustomer.objects.all()
 
     current_time = localtime()
-    print("Current Time in Promo Email:", current_time)
 
     for client in email_customers:
         if client.next_promo_email_schedule is None:
@@ -107,8 +104,6 @@ def archive_periodic_promotional_emails():
             email_time = client.next_promo_email_schedule
 
         sent_count = client.promo_emails_sent_count
-        print("CLIENT:     ", client.__dict__)
-        print("Email Time:", email_time)
 
         # Sending Email
         if email_time.strftime("%Y-%m-%d %H:00:00") == current_time.strftime("%Y-%m-%d %H:00:00"):
@@ -145,18 +140,12 @@ def archive_periodic_promotional_emails():
                     current_time.replace(hour=17, minute=0, second=0, microsecond=0) + time_to_add
                 )
 
-            print("0000000000        ", time_to_add)
-            print('1111111111        ', email_schedule)
-
             client.next_promo_email_schedule = email_schedule
 
-            print("**************************")
-            print("Client Saved  ", client.__dict__)
             client.save()
             print("PROMO EMAIL SENT TO " + client.email)
-            print("**************************")
         else:
-            print("Time did not match   ")
+            print("Time did not match   ", client.email)
 
 
 # every Hour at 0th Minute

@@ -172,13 +172,9 @@ def clone_instance(instance: Model) -> Model:
 def get_time_delta_for_promotional_emails(email_count: int) -> datetime:
     promo_email_periods = settings.PROMO_EMAIL_PERIODS
     email_period = promo_email_periods[email_count]
-    print("EMAIL PERIOD:    ", email_period)
 
     time_unit = email_period["time_unit"]
     time_value = int(email_period["after"])
-
-    print("TIME UNIT:   ", time_unit)
-    print("TIME VALUE:    ", time_value)
 
     time_delta_mapping = {
         "minute": timedelta(minutes=time_value),
@@ -189,10 +185,8 @@ def get_time_delta_for_promotional_emails(email_count: int) -> datetime:
     }
 
     delta = time_delta_mapping.get(time_unit)
-    print("DELTA:    ", delta)
+
     if delta is None:
         raise ValueError(f"Invalid time unit: {time_unit}")
-
     print("IN get_time_delta_for_promotional_emails:         ", localtime() + delta)
-
     return localtime() + delta
