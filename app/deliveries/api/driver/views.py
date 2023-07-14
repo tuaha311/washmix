@@ -53,9 +53,13 @@ class DeliveryViewSet(ModelViewSet):
         return delivery_list
 
     def update(self, request, *args, **kwargs):
-        partial = kwargs.pop('partial', False)
         instance = self.get_object()
-        
+
+        try:
+            status = request.data["status"]
+        except:
+            status = None
+
         if request.method == 'PATCH':
             if status == 'in_progress':
                 instance.start = now().time()
