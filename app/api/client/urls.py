@@ -86,4 +86,5 @@ urlpatterns = [
     path("services/", services.ServiceListView.as_view(), name="service-list"),
     path("customers/", customers.CustomerCreateView.as_view(), name="customer-create"),
     path("generate-pdf/", views.generate_client_pdf, name="generate-pdf"),
+    path("get-pdf/", views.get_client_pdf, name="get-pdf"),
 ]

@@ -1,6 +1,6 @@
 
 from http.client import HTTPException
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, JsonResponse, HttpResponseNotAllowed
 from django.template.loader import render_to_string
 import os
 import tempfile
@@ -65,5 +65,35 @@ def generate_client_pdf(request):
                 return HttpResponse(generate_client_pdf_core(request, client_id))
             else:
                 raise HTTPException("Invalid payload")
-            
-        
+
+
+@csrf_exempt
+def get_client_pdf(request):
+    if request.method == "POST":
+        client_id = request.POST.get("client_id")
+        if client_id:
+            media_root = Base.MEDIA_ROOT
+            client_directory = os.path.join(media_root, "clients")
+            pdf_filename = f"{client_id}.pdf"
+            pdf_path = os.path.join(client_directory, pdf_filename)
+            if os.path.exists(pdf_path) and os.path.isfile(pdf_path) and not os.path.isdir(pdf_path):
+                response_data = {
+                    'pdf_path': pdf_path,
+                    'message': "PDF fetched successfully"
+                }
+                return JsonResponse(response_data)
+            else:
+                response_data = {
+                    'error': "PDF does not exist"
+                }
+                return JsonResponse(response_data, status=400)
+        else:
+            response_data = {
+                'error': "Invalid payload"
+            }
+            return JsonResponse(response_data, status=400)
+    else:
+        response_data = {
+            'error': "Invalid request method"
+        }
+        return JsonResponse(response_data, status=405)
