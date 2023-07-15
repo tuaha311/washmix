@@ -64,6 +64,8 @@ def archive_not_signedup_users():
                 zip_code = client.main_address.zip_code.value
             if user.first_name:
                 full_name = f"{user.first_name} {user.last_name}"
+            
+            next_promo_schedule = get_time_delta_for_promotional_emails(0)
 
             ArchivedCustomer.objects.get_or_create(
                 email=user.email,
@@ -73,10 +75,15 @@ def archive_not_signedup_users():
                     "address": address,
                     "zip_code": zip_code,
                     "promo_emails_sent_count": 0,
-                    "next_promo_email_schedule": get_time_delta_for_promotional_emails(0),
+                    "next_promo_email_schedule": next_promo_schedule,
                 },
             )
+            recipient_list = [client.email]
 
+            send_email(
+                event=settings.FIRST_ARCHIVE_FOLLOW_UP,
+                recipient_list=recipient_list,
+            )
             user.delete()
 
 
@@ -85,7 +92,6 @@ def archive_periodic_promotional_emails():
     email_customers = ArchivedCustomer.objects.all()
 
     current_time = localtime()
-    print("Current Time in Promo Email:", current_time)
 
     for client in email_customers:
         if client.next_promo_email_schedule is None:
@@ -98,8 +104,6 @@ def archive_periodic_promotional_emails():
             email_time = client.next_promo_email_schedule
 
         sent_count = client.promo_emails_sent_count
-        print("CLIENT:     ", client.email)
-        print("Email Time:", email_time)
 
         # Sending Email
         if email_time.strftime("%Y-%m-%d %H:00:00") == current_time.strftime("%Y-%m-%d %H:00:00"):
@@ -131,15 +135,13 @@ def archive_periodic_promotional_emails():
             email_schedule = (
                 current_time.replace(hour=17, minute=0, second=0, microsecond=0) + time_to_add
             )
+
             client.next_promo_email_schedule = email_schedule
 
-            print("**************************")
-            print("Client Saved  ", client.__dict__)
             client.save()
             print("PROMO EMAIL SENT TO " + client.email)
-            print("**************************")
         else:
-            print("Time did not match   ")
+            print("Time did not match   ", client.email)
 
 
 # every Hour at 0th Minute
