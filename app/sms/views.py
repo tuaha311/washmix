@@ -92,9 +92,10 @@ def send_sms(request):
 
         customers = clients.objects.filter(pk__in=customer_ids)
 
-        for customer in customers:
+        for i in range(0, len(customers), 50):
+            batch_customers = customers[i:i+50]
             # Prepare recipient list and context
-            recipient_list = [customer.main_phone.number]
+            recipient_list = [customer.main_phone.number for customer in batch_customers]
             event = settings.PROMOTION
             context = {
                 "template": template.content,
@@ -108,8 +109,6 @@ def send_sms(request):
                 },
                 delay=settings.DRAMATIQ_DELAY_FOR_DELIVERY,
             )
-
-            logger.info(f"Sending SMS to client {customer.email}")
 
         messages.success(request, "SMS send request submitted successfully.")
         return redirect("/sms/outbound-sms")
