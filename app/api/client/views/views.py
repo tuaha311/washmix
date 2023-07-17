@@ -86,7 +86,7 @@ def get_client_pdf(request):
                 response_data = {
                     'error': "PDF does not exist"
                 }
-                return JsonResponse(response_data, status=400)
+                return JsonResponse(response_data, status=404)
         else:
             response_data = {
                 'error': "Invalid payload"
