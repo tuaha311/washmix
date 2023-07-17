@@ -72,13 +72,13 @@ def get_client_pdf(request):
     if request.method == "POST":
         client_id = request.POST.get("client_id")
         if client_id:
-            media_root = Base.MEDIA_ROOT
-            client_directory = os.path.join(media_root, "clients")
-            pdf_filename = f"{client_id}.pdf"
-            pdf_path = os.path.join(client_directory, pdf_filename)
+            pdf_path = get_pdf_path(Base.MEDIA_ROOT, client_id)
+            
             if os.path.exists(pdf_path) and os.path.isfile(pdf_path) and not os.path.isdir(pdf_path):
+                full_pdf_url = request.build_absolute_uri(get_pdf_path(Base.MEDIA_URL, client_id))
+            
                 response_data = {
-                    'pdf_path': pdf_path,
+                    'pdf_path': full_pdf_url,
                     'message': "PDF fetched successfully"
                 }
                 return JsonResponse(response_data)
@@ -97,3 +97,10 @@ def get_client_pdf(request):
             'error': "Invalid request method"
         }
         return JsonResponse(response_data, status=405)
+    
+def get_pdf_path(media_path, client_id):
+    media_root = media_path
+    client_directory = os.path.join(media_root, "clients")
+    pdf_filename = f"{client_id}.pdf"
+    pdf_path = os.path.join(client_directory, pdf_filename)
+    return pdf_path
