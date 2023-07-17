@@ -53,11 +53,11 @@ class DeliveryViewSet(ModelViewSet):
         if request.method == 'PATCH':
             status = request.data.get('status')
             if status == 'in_progress':
-                instance.start = now().time()
+                instance.start = datetime.now().time()
                 instance.save()
                 
             if status == 'completed':
-                instance.end = now().time()
+                instance.end = datetime.now().time()
                 instance.save()
         
 
