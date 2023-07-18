@@ -25,7 +25,7 @@ import shutil
 from users.models.employee import Employee
 from django.db.models import Q, Min, Max, TimeField
 from django.db.models.functions import Cast, ExtractHour, ExtractMinute
-from datetime import time
+from datetime import datetime
 
 class DeliveryViewSet(ModelViewSet):
     serializer_class = DeliverySerializer
@@ -62,11 +62,11 @@ class DeliveryViewSet(ModelViewSet):
 
         if request.method == 'PATCH':
             if status == 'in_progress':
-                instance.start = now().time()
+                instance.start = datetime.now().time()
                 instance.save()
 
             if status == 'completed':
-                instance.end = now().time()
+                instance.end = datetime.now().time()
                 instance.save()
 
         self.perform_update(serializer)
