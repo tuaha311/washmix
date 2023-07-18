@@ -113,6 +113,18 @@ class Delivery(Common):
 
         request = self.request
         return request.client
+    
+    @property
+    def billing_address(self):
+        """
+        Client's billing address
+        """
+
+        address = self.client.billing_address
+        zip_code = address['zip_code']
+        address_line_1 = address['address_line_1']
+        address_line_2 = address['address_line_2']
+        return zip_code + "," + address_line_1 + "," + address_line_2
 
     @property
     def is_rush(self):

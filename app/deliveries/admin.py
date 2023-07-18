@@ -84,6 +84,7 @@ class DeliveryAdmin(AdminWithSearch):
         "employee",
         "status",
         "address",
+        "billing_address",
         "is_rush",
         "note",
         "comment",
