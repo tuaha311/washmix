@@ -1,7 +1,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <input type="submit" onclick="generatePDF(); return false;" value="Generate PDF" />
+    <input type="submit" onclick="generateLastWeekPDF(); return false;" value="Generate PDF" />
   <script>
-    function generatePDF() {
+    function generateLastWeekPDF() {
       var data = {
         client_id: "{{ client_id }}",
         duration: "{{ duration }}"

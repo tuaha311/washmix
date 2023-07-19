@@ -370,6 +370,7 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
         "one_week_pdf",
         "one_month_pdf",
         "one_year_pdf",
+        "timeframe_pdf",
         "pdf_path",
     ]
     form = ClientForm
@@ -416,7 +417,7 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
         pdf_filename = f"week_{client.id}.pdf"
         pdf_path = os.path.join(settings.MEDIA_URL, "clients", pdf_filename)
         widget_html = (
-                render_to_string("widgets/href.html", context={"pdf_path": pdf_path})) + render_to_string("widgets/client_pdf.html", context={"client_id": client.id, "duration": "week"})
+                render_to_string("widgets/href.html", context={"pdf_path": pdf_path})) + render_to_string("widgets/last_week_pdf.html", context={"client_id": client.id, "duration": "week"})
 
         return mark_safe(widget_html.replace('\n', ''))
     
@@ -424,7 +425,7 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
         pdf_filename = f"moth_{client.id}.pdf"
         pdf_path = os.path.join(settings.MEDIA_URL, "clients", pdf_filename)
         widget_html = (
-                render_to_string("widgets/href.html", context={"pdf_path": pdf_path})) + render_to_string("widgets/client_pdf.html", context={"client_id": client.id, "duration": "month"})
+                render_to_string("widgets/href.html", context={"pdf_path": pdf_path})) + render_to_string("widgets/last_month_pdf.html", context={"client_id": client.id, "duration": "month"})
 
         return mark_safe(widget_html.replace('\n', ''))
     
@@ -432,7 +433,15 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
         pdf_filename = f"year_{client.id}.pdf"
         pdf_path = os.path.join(settings.MEDIA_URL, "clients", pdf_filename)
         widget_html = (
-                render_to_string("widgets/href.html", context={"pdf_path": pdf_path})) + render_to_string("widgets/client_pdf.html", context={"client_id": client.id, "duration": "year"})
+                render_to_string("widgets/href.html", context={"pdf_path": pdf_path})) + render_to_string("widgets/last_year_pdf.html", context={"client_id": client.id, "duration": "year"})
+
+        return mark_safe(widget_html.replace('\n', ''))
+    
+    def timeframe_pdf(self, client):
+        pdf_filename = f"year_{client.id}.pdf"
+        pdf_path = os.path.join(settings.MEDIA_URL, "clients", pdf_filename)
+        widget_html = (
+                render_to_string("widgets/href.html", context={"pdf_path": pdf_path})) + render_to_string("widgets/client_pdf_timeframe.html", context={"client_id": client.id, "duration": "year"})
 
         return mark_safe(widget_html.replace('\n', ''))
     

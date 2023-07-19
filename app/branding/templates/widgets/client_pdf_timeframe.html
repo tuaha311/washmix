@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+  <h3 for="start_date">Start Date:</h3>
+  <input type="date" id="start_date">
+
+  <h3 for="end_date">End Date:</h3>
+  <input type="date" id="end_date">
+    </br>
+  <input type="submit" onclick="generateDurationPDF(); return false;" value="Generate PDF" />
+
+  <script>
+    function generateDurationPDF() {
+      var data = {
+        client_id: "{{ client_id }}",
+        start_date: $("#start_date").val(),
+        end_date: $("#end_date").val()
+      };
+      $.post('/api/client/generate-pdf/', data, function(response) {
+        console.log('PDF generated successfully!');
+      }).fail(function() {
+        console.error('PDF generation failed!');
+      });
+    }
+  </script>
+</body>
+</html>
