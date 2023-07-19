@@ -45,7 +45,6 @@ class OrderService:
             - Charging client
             - Firing final hooks
         """
-        print("+++ IN CHECKOUT: +++")
         coupon = order.coupon
         client = self._client
         basket = order.basket
@@ -83,7 +82,7 @@ class OrderService:
                     subscription=subscription,
                     invoice=invoice,
                 )
-            print("+++ BEFORE CHARGE +++")
+
             # 4. charge for invoice
             payment_service = PaymentService(client, invoice)
             payment_service.charge()
@@ -192,9 +191,6 @@ class OrderService:
 
         order.employee = employee
         order.save()
-        print('')
-        print("THE ORDER IS ", order.__dict__)
-        print('')
         # we are waiting while all invoices will be confirmed
         if not invoice.is_paid:
             return None
@@ -273,7 +269,6 @@ class OrderService:
 
         client = self._client
         purpose = InvoicePurpose.SUBSCRIPTION if subscription else InvoicePurpose.ORDER
-        print("PURPOSE OF INVOICE:      ", purpose)
         raw_entity_list = [basket, request, subscription]
         entity_list = [item for item in raw_entity_list if item]
 

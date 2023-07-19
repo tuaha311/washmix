@@ -110,7 +110,6 @@ class PaymentService:
         In most cases, we are creating `PaymentIntent` under the hood and then waiting for
         web hook event from Stripe to confirm and finish payment flow.
         """
-        print("+++IN CHARGE METHOD+++")
         invoice = self._invoice
         client = self._client
         subscription = client.subscription
@@ -170,7 +169,6 @@ class PaymentService:
             # complex case:
             # in all other cases, we are trying to refill prepaid balance and charge it.
             else:
-                print("--- IN ELSE PART OF PAYMENT.PY 173 ---")
                 webhook_kind = WebhookKind.REFILL_WITH_CHARGE
                 continue_with_order = invoice.order.pk
                 self._process_immediate_payment(webhook_kind, unpaid_amount, continue_with_order)
@@ -204,7 +202,6 @@ class PaymentService:
         """
         Method that charges user's prepaid balance.
         """
-        print("+++ IN CHARGE PREPAID BALANCE +++")
         client = self._client
         invoice = self._invoice
         paid_amount, unpaid_amount = self._calculate_prepaid_and_card_charge()
@@ -278,11 +275,9 @@ class PaymentService:
             - For GOLD and PLATINUM when they have `is_auto_billing` = False.
             - Only Subscription purchase.
         """
-        print("+++ IN _process_immediate_payment +++")
         client = self._client
 
         if webhook_kind == WebhookKind.REFILL_WITH_CHARGE:
-            print("---   webhook_kind == WebhookKind.REFILL_WITH_CHARGE -----")
             invoice = Invoice.objects.create(
                 client=client,
                 amount=unpaid_amount,
@@ -293,7 +288,6 @@ class PaymentService:
             invoice = self._invoice
 
         amount = ceil(invoice.amount_with_discount)
-        print("AMOUNT:      ", amount)
         self._charge_card(
             amount=amount,
             webhook_kind=webhook_kind,
@@ -307,17 +301,11 @@ class PaymentService:
         """
         Method that tries to charge money from user's card.
         """
-        print("---- IN CHARGE CARD:     ----")
         payment = None
 
         for card in self._client.card_list.all():
             # we are trying to charge the card list of client
             # and we are stopping at first successful attempt
-
-            try:
-                print("IN CARD LOOP IN CHARGE CARD:     ", card.__dict__)
-            except:
-                pass
 
             if self.is_fully_paid:
                 break
@@ -328,8 +316,6 @@ class PaymentService:
                     webhook_kind=webhook_kind,
                     continue_with_order=continue_with_order,
                 )
-
-                print("^^^ IN prepare_stripe_metadata ^^^     ", metadata)
 
                 payment = self._stripe_helper.create_payment_intent(
                     payment_method_id=card.stripe_id,
@@ -367,16 +353,10 @@ class PaymentService:
 
         invoice = self._invoice
         client = self._client
-        try:
-            print("IN _calculate_prepaid_and_card_charge,     ", invoice.__dict__)
-        except:
-            pass
 
         amount_with_discount = invoice.amount_with_discount #1990
         paid_amount = invoice.paid_amount
-        print("PAID AMOUNT:        ", paid_amount)
         unpaid_amount = amount_with_discount - paid_amount
-        print("UNPAID AMOUNT:      ", unpaid_amount)
         balance = client.balance
 
         prepaid_balance_will_be_charged = 0
@@ -385,7 +365,6 @@ class PaymentService:
         # for subscription we are always charging card by full price
         # without charging prepaid balance
         if invoice.purpose == InvoicePurpose.SUBSCRIPTION:
-            print('++++ AAAAAAAAAA ++++++')
             prepaid_balance_will_be_charged = 0
             card_will_be_charged = ceil(invoice.amount_with_discount)
 
@@ -395,7 +374,6 @@ class PaymentService:
         # if prepaid balance enough to pay full price - we will
         # use this money for invoice payment.
         if balance >= unpaid_amount:
-            print('++++ BBBBBBBBBBBB ++++++')
             prepaid_balance_will_be_charged = unpaid_amount
             card_will_be_charged = 0
 
@@ -403,12 +381,8 @@ class PaymentService:
         # we charge all of prepaid balance and rest of unpaid invoice amount
         # we should charge it from card
         elif 0 < balance < unpaid_amount:
-            print('++++ CCCCCCCCCCC ++++++')
             prepaid_balance_will_be_charged = balance
             card_will_be_charged = ceil(unpaid_amount - balance)
 
-        print('++++ prepaid_balance_will_be_charged  ++++++    ', prepaid_balance_will_be_charged)
-        print('')
-        print('++++ card_will_be_charged  ++++++    ', card_will_be_charged)
         # we are ceiling to a integer number for Stripe
         return prepaid_balance_will_be_charged, card_will_be_charged
