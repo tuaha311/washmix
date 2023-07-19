@@ -120,11 +120,21 @@ class Delivery(Common):
         Client's billing address
         """
 
+        if not hasattr(self.client, 'billing_address'):
+            return "No billing address available."
+
         address = self.client.billing_address
-        zip_code = address['zip_code']
-        address_line_1 = address['address_line_1']
-        address_line_2 = address['address_line_2']
-        return zip_code + "," + address_line_1 + "," + address_line_2
+
+        if not address or not isinstance(address, dict):
+            return "Invalid billing address."
+
+        address_components = []
+        for key, value in address.items():
+            if value:
+                address_components.append(value)
+
+        return ",".join(address_components)
+
 
     @property
     def is_rush(self):
