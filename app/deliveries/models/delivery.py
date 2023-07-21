@@ -68,6 +68,14 @@ class Delivery(Common):
     end = models.TimeField(
         verbose_name="end of delivery interval"
     )
+    route_start = models.DateTimeField(
+        verbose_name="delivery started at",
+        null=True,
+    )
+    route_end = models.DateTimeField(
+        verbose_name="delivery ended at",
+        null=True,
+    )
 
     class Meta:
         verbose_name = "delivery"

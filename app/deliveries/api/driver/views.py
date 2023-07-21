@@ -62,11 +62,11 @@ class DeliveryViewSet(ModelViewSet):
 
         if request.method == 'PATCH':
             if status == 'in_progress':
-                instance.start = datetime.now().time()
+                instance.route_start = datetime.now()
                 instance.save()
 
             if status == 'completed':
-                instance.end = datetime.now().time()
+                instance.route_end = datetime.now()
                 instance.save()
 
         self.perform_update(serializer)
@@ -83,14 +83,14 @@ def driver_daily_report(request):
         date_str = data.get('date')
         employee = data.get('user')
         date_obj = datetime.strptime(date_str, "%m/%d/%Y").date()
-        deliveries = Delivery.objects.filter(date=date_obj, employee_id=employee).filter(Q(status="no_show") | Q(status="completed")).exclude(kind="dropoff", status="no_show").order_by('start')
+        deliveries = Delivery.objects.filter(date=date_obj, employee_id=employee, route_start__isnull=False, route_end__isnull=False).order_by('start')
         driver = Employee.objects.get(id=employee)
         # Get the minimum and maximum times from the start and end fields
-        start_time = deliveries.aggregate(start_time=Min('start'))['start_time']
-        end_time = deliveries.aggregate(end_time=Max('end'))['end_time']
+        start_time = deliveries.aggregate(start_time=Min('route_start'))['start_time']
+        end_time = deliveries.aggregate(end_time=Max('route_end'))['end_time']
 
-        start_time = start_time
-        end_time = end_time
+        start_time = start_time.time() if start_time else None
+        end_time = end_time.time() if end_time else None
 
         # Calculate the timedelta between start_time and end_time
         delta = datetime.combine(datetime.min.date(), end_time) - datetime.combine(datetime.min.date(), start_time)

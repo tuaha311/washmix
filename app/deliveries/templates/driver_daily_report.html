@@ -98,8 +98,8 @@
                   </td>
                 <td><a href="/admin/users/client/{{ delivery.client.id }}/change/">{{ delivery.client.id }}</a></td>
                 <td>{{ delivery.date }}</td>
-                <td>{{ delivery.start }}</td>
-                <td>{{ delivery.end }}</td>
+                <td>{{ delivery.route_start|time:"H:i" }}</td>
+                <td>{{ delivery.route_end|time:"H:i"}}</td>
                 <td>{{ delivery.kind }}</td>
                 <td>{{ delivery.status }}</td>
             </tr>
