@@ -83,7 +83,7 @@ def driver_daily_report(request):
         date_str = data.get('date')
         employee = data.get('user')
         date_obj = datetime.strptime(date_str, "%m/%d/%Y").date()
-        deliveries = Delivery.objects.filter(date=date_obj, employee_id=employee, route_start__isnull=False, route_end__isnull=False).order_by('start')
+        deliveries = Delivery.objects.filter(route_start__date=date_obj, route_end__date=date_obj).order_by('route_start')
         driver = Employee.objects.get(id=employee)
         # Get the minimum and maximum times from the start and end fields
         start_time = deliveries.aggregate(start_time=Min('route_start'))['start_time']

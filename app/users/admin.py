@@ -514,12 +514,16 @@ class EmployeeAdmin(AdminWithSearch):
             self.change_form_template = None
         else:
             deliveries = Delivery.objects.filter(employee_id=object_id)
-            date_list = sorted(list(set([delivery.changed.date() for delivery in deliveries])), reverse=False)
+            date_list = sorted(list(set([delivery.route_start for delivery in deliveries if delivery.route_start])), reverse=False)
             formatted_date_list = [datetime.strftime(date, '%m/%d/%Y') for date in date_list]
             employee_id = object_id
+            all_dates= []
+            for date in formatted_date_list:
+                if date not in all_dates:
+                    all_dates.append(date)
             extra_context = extra_context or {}
             extra_context['employee_id'] = employee_id
-            extra_context['date_list'] = formatted_date_list
+            extra_context['date_list'] = all_dates
             pdf_list = []
 
             for date in formatted_date_list:
@@ -527,7 +531,7 @@ class EmployeeAdmin(AdminWithSearch):
                 pdf_filename = f"{converted_date}_driver_{employee_id}.pdf"
                 pdf_path = os.path.join(settings.MEDIA_URL, "driver", pdf_filename)
                 full_path = os.path.join(settings.MEDIA_ROOT, "driver", pdf_filename)
-                if os.path.exists(full_path):
+                if os.path.exists(full_path) and pdf_path not in pdf_list:
                     pdf_list.append(pdf_path)
                 
         
