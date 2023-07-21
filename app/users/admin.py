@@ -395,8 +395,6 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
 
     get_main_phone_number.short_description = "Main Phone Number"  # Set column header in admin
 
-    actions = ["full_delete_action"]
-
     def save_form(self, request: HttpRequest, form: forms.BaseForm, change):
         """
         Method that helps to add credits for some client.

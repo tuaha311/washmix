@@ -45,7 +45,6 @@ class OrderService:
             - Charging client
             - Firing final hooks
         """
-
         coupon = order.coupon
         client = self._client
         basket = order.basket
@@ -94,6 +93,7 @@ class OrderService:
             # reference - app/billing/services/payments.py:148
             is_fully_paid = payment_service.is_fully_paid
             is_fully_paid_by_credits = payment_service.is_fully_paid_by_credits
+
             if is_fully_paid and is_fully_paid_by_credits:
                 payment_service = PaymentService(client, invoice)
                 payment_service.charge_subscription_with_auto_billing()
@@ -191,7 +191,6 @@ class OrderService:
 
         order.employee = employee
         order.save()
-
         # we are waiting while all invoices will be confirmed
         if not invoice.is_paid:
             return None

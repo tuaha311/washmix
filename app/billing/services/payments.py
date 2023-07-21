@@ -110,7 +110,6 @@ class PaymentService:
         In most cases, we are creating `PaymentIntent` under the hood and then waiting for
         web hook event from Stripe to confirm and finish payment flow.
         """
-
         invoice = self._invoice
         client = self._client
         subscription = client.subscription
@@ -203,7 +202,6 @@ class PaymentService:
         """
         Method that charges user's prepaid balance.
         """
-
         client = self._client
         invoice = self._invoice
         paid_amount, unpaid_amount = self._calculate_prepaid_and_card_charge()
@@ -277,7 +275,6 @@ class PaymentService:
             - For GOLD and PLATINUM when they have `is_auto_billing` = False.
             - Only Subscription purchase.
         """
-
         client = self._client
 
         if webhook_kind == WebhookKind.REFILL_WITH_CHARGE:
@@ -304,7 +301,6 @@ class PaymentService:
         """
         Method that tries to charge money from user's card.
         """
-
         payment = None
 
         for card in self._client.card_list.all():
@@ -320,6 +316,7 @@ class PaymentService:
                     webhook_kind=webhook_kind,
                     continue_with_order=continue_with_order,
                 )
+
                 payment = self._stripe_helper.create_payment_intent(
                     payment_method_id=card.stripe_id,
                     amount=amount,
@@ -330,6 +327,7 @@ class PaymentService:
                 self.is_fully_paid = True
 
             except StripeError as err:
+                print("GOT SOME ERROR HERE ", err)
                 logger.error(err)
                 continue
 
@@ -356,7 +354,7 @@ class PaymentService:
         invoice = self._invoice
         client = self._client
 
-        amount_with_discount = invoice.amount_with_discount
+        amount_with_discount = invoice.amount_with_discount #1990
         paid_amount = invoice.paid_amount
         unpaid_amount = amount_with_discount - paid_amount
         balance = client.balance
