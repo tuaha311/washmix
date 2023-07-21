@@ -61,11 +61,11 @@ class DeliveryViewSet(ModelViewSet):
             update_deliveries_to_no_show(instance)
 
         if request.method == 'PATCH':
-            if status == 'in_progress':
+            if status == DeliveryStatus.IN_PROGRESS:
                 instance.route_start = datetime.now()
                 instance.save()
 
-            if status == 'completed':
+            if status == DeliveryStatus.COMPLETED or status == DeliveryStatus.NO_SHOW:
                 instance.route_end = datetime.now()
                 instance.save()
 
