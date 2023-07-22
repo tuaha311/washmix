@@ -517,15 +517,12 @@ class EmployeeAdmin(AdminWithSearch):
             date_list = sorted(list(set([delivery.route_start for delivery in deliveries if delivery.route_start])), reverse=False)
             formatted_date_list = [datetime.strftime(date, '%m/%d/%Y') for date in date_list]
             employee_id = object_id
-            all_dates= []
-            for date in formatted_date_list:
-                if date not in all_dates:
-                    all_dates.append(date)
+            all_dates = list(set(formatted_date_list))
             extra_context = extra_context or {}
             extra_context['employee_id'] = employee_id
             extra_context['date_list'] = all_dates
+            
             pdf_list = []
-
             for date in formatted_date_list:
                 converted_date = datetime.strptime(date, "%m/%d/%Y").strftime("%Y-%m-%d")
                 pdf_filename = f"{converted_date}_driver_{employee_id}.pdf"
@@ -533,12 +530,11 @@ class EmployeeAdmin(AdminWithSearch):
                 full_path = os.path.join(settings.MEDIA_ROOT, "driver", pdf_filename)
                 if os.path.exists(full_path) and pdf_path not in pdf_list:
                     pdf_list.append(pdf_path)
-                
-        
-        extra_context['pdf_list'] = pdf_list
-        self.change_form_template = 'assets/change_form.html'
 
-        return super().change_view(request, object_id, form_url, extra_context)
+            extra_context['pdf_list'] = pdf_list
+            self.change_form_template = 'assets/change_form.html'
+            
+            return super().change_view(request, object_id, form_url, extra_context)
 
 
     def full_delete_action(self, request: HttpRequest, employee_queryset: QuerySet):

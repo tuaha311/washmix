@@ -97,8 +97,9 @@
         window.location.reload();
       },
       error: function (xhr, status, error) {
-        console.log("Request failed:", error);
+        var errorMessage = xhr.responseJSON ? xhr.responseJSON.error : "An error occurred.";
         document.getElementById("loading-overlay").style.display = "none";
+        alert(errorMessage)
       },
     });
   }

@@ -26,6 +26,7 @@ from users.models.employee import Employee
 from django.db.models import Q, Min, Max, TimeField
 from django.db.models.functions import Cast, ExtractHour, ExtractMinute
 from datetime import datetime
+from django.contrib import messages
 
 class DeliveryViewSet(ModelViewSet):
     serializer_class = DeliverySerializer
@@ -82,7 +83,11 @@ def driver_daily_report(request):
         data = json.loads(request.body.decode('utf-8'))
         date_str = data.get('date')
         employee = data.get('user')
-        date_obj = datetime.strptime(date_str, "%m/%d/%Y").date()
+        try:
+            date_obj = datetime.strptime(date_str, "%m/%d/%Y").date()
+        except ValueError:
+            messages.error(request, "Error occured")
+            return JsonResponse({"error": "Invalid date format. Date should be in 'mm/dd/yyyy' format."}, status=400)
         deliveries = Delivery.objects.filter(employee_id=employee, route_start__date=date_obj, route_end__date=date_obj).order_by('route_start')
         driver = Employee.objects.get(id=employee)
         # Get the minimum and maximum times from the start and end fields
