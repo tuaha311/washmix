@@ -456,6 +456,21 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
 
         self.message_user(request, "Clients was removed.", messages.SUCCESS)
 
+    def delete_model(self, request, obj):
+        # Perform the actual deletion
+        print("DELETING THE USER       ", obj)
+        super().delete_model(request, obj)
+
+        recipient_list = [*settings.ADMIN_EMAIL_LIST, obj.email]
+
+        send_email.send(
+            event=settings.ACCOUNT_REMOVED,
+            recipient_list=recipient_list,
+            extra_context={
+                "full_name": obj.full_name,
+            },
+        )
+
     full_delete_action.short_description = "Remove all client's info and notify them."  # type: ignore
 
     def additional_phones(self, obj):
