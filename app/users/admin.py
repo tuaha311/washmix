@@ -411,7 +411,7 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
 
     def pdf_path(self, client):
         path = f"/api/client/generate-pdf?client_id={client.id}"
-        context = {"pdf_path": path}
+        context = {"pdf_path": path, "not_blank": True}
         widget = render_to_string("widgets/href.html", context=context)
         return mark_safe(widget)
 
