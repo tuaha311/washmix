@@ -41,12 +41,6 @@ def generate_client_pdf_core(request, client_id, duration=None, start_date=None,
 
     with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as temp_pdf:
         HTML(string=printable_page).write_pdf(temp_pdf)
-    print("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\")
-    print(client_id, "client_id")
-    print(duration, "duration")
-    print(start_date, "start_date")
-    print(end_date, "end_date")
-    print(pdf_filename, "pdf_filename")
     media_root = Base.MEDIA_ROOT
     client_directory = os.path.join(media_root, "clients")
     os.makedirs(client_directory, exist_ok=True)
@@ -72,10 +66,12 @@ def calculate_start_date_and_filename(client_id, duration, start_date):
         start_date -= timedelta(days=7)
         pdf_filename = f"week_{client_id}.pdf"
     elif duration == "month":
-        start_date -= timedelta(days=30)
+        datenow = datetime.now()
+        start_date = datetime(datenow.year, datenow.month, 1)
         pdf_filename = f"month_{client_id}.pdf"
     elif duration == "year":
-        start_date -= timedelta(days=365)
+        datenow = datetime.now()
+        start_date = datetime(datenow.year, 1, 1)
         pdf_filename = f"year_{client_id}.pdf"
     else:
         start_date = "2000-01-01"
@@ -88,9 +84,6 @@ def get_filtered_data(client, start_date, end_date=None):
     purpose = "credit"  # Purpose set to 'Credit by WashMix'
 
     if end_date:
-        print("-------------------HERRE------------------")
-        print("-------------------start_date------------------", start_date)
-        print("-------------------end_date------------------", end_date)
         invoice_list = client.invoice_list.filter(
             purpose=purpose,
             created__gte=start_date,
@@ -107,8 +100,6 @@ def get_filtered_data(client, start_date, end_date=None):
             client=client, created__gte=start_date, created__lte=end_date
         )
     else:
-        print("-------------------STILLLL THERRE------------------")
-        
         invoice_list = client.invoice_list.filter(
             purpose=purpose,
             created__gte=start_date,
