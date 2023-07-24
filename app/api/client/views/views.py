@@ -27,11 +27,14 @@ def generate_client_pdf_core(request, client_id, duration=None, start_date=None,
 
     invoice_list, client_orders = get_filtered_data(client, start_date, end_date)
 
+    chunk_size = 25
+    order_chunks = [client_orders[i:i+chunk_size] for i in range(0, len(client_orders), chunk_size)]
+    invoice_chunks = [invoice_list[i:i+chunk_size] for i in range(0, len(invoice_list), chunk_size)]
     context = {
         "client": client,
-        "invoice_list": invoice_list,
+        "invoice_chunks": invoice_chunks,
         "is_pdf": True,
-        "client_orders": client_orders,
+        "order_chunks": order_chunks
     }
 
     printable_page = render_to_string("client_report.html", context)

@@ -74,6 +74,7 @@
   </td>
 </tr>
 
+{% for chunk in order_chunks %}
 <tr>
   <td>
     <h2>Orders:</h2>
@@ -87,7 +88,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for order in client_orders %}
+            {% for order in chunk %}
             <tr class="bg-white">
                 <td class="order-cell">{{ order.id }}</td>
                 <td class="order-cell">{{ order.payment }}</td>
@@ -99,7 +100,9 @@
     </table>
   </td>
 </tr>
+{% endfor %}
 
+{% for chunk in order_chunks %}
 <tr>
   <td>
     <h2 style="page-break-before: always">Balance:</h2>
@@ -113,7 +116,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for order in client_orders %}
+            {% for order in chunk %}
             <tr class="bg-white">
                 <td class="order-cell">{{ order.id }}</td>
                 <td class="order-cell">{{ order.balance_before_purchase }}</td>
@@ -125,6 +128,8 @@
     </table>
   </td>
 </tr>
+{% endfor %}
+{% for chunk in invoice_chunks %}
     <tr>
       <td>
       <h2>Credits:</h2>
@@ -140,7 +145,7 @@
               </tr>
           </thead>
           <tbody>
-              {% for invoice in invoice_list %}
+              {% for invoice in chunk %}
               <tr class="bg-white">
                   <td class="order-cell">{{ invoice.id }}</td>
                   <td class="order-cell">{{ invoice.amount_with_discount }}</td>
@@ -154,5 +159,6 @@
     </table>
   </td>
 </tr>
+{% endfor %}
 
 {% endblock %}
