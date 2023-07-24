@@ -96,18 +96,3 @@ def update_user_stripe_info(
 
         logger.info(f"Updating name info for {client.email}")
 
-@receiver(post_delete, sender=Client)
-def client_post_delete(sender, instance, **kwargs):
-    client = instance
-
-    # Perform actions after the object has been deleted
-    # For example, you can log the deletion or trigger other processes
-    recipient_list = [*settings.ADMIN_EMAIL_LIST, client.email]
-
-    send_email.send(
-        event=settings.ACCOUNT_REMOVED,
-        recipient_list=recipient_list,
-        extra_context={
-            "full_name": client.full_name,
-        },
-    )
