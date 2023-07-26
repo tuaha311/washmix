@@ -85,6 +85,7 @@
                 <th class="order-cell">Payment</th>
                 <th class="order-cell">Amount</th>
                 <th class="order-cell">Date</th>
+                <th class="order-cell">Purpose</th>
             </tr>
         </thead>
         <tbody>
@@ -94,6 +95,7 @@
                 <td class="order-cell">{{ order.payment }}</td>
                 <td class="order-cell">{{ order.invoice.amount_with_discount }}</td>
                 <td class="order-cell">{{ order.created }}</td>
+                <td class="order-cell">{{ order.invoice.purpose }}</td>
             </tr>
             {% endfor %}
         </tbody>
