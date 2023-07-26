@@ -15,6 +15,7 @@ from datetime import datetime, timedelta
 from django.shortcuts import render
 from django.conf import settings
 from django.contrib import messages
+from billing.choices import *
 
 
 def generate_client_pdf_core(request, client_id, duration=None, start_date=None, end_date=None):
@@ -26,7 +27,6 @@ def generate_client_pdf_core(request, client_id, duration=None, start_date=None,
     start_date, pdf_filename = calculate_start_date_and_filename(client_id, duration, start_date)
 
     invoice_list, client_orders = get_filtered_data(client, start_date, end_date)
-    print("client_orders[0]", client_orders[1].invoice.__dict__)
     chunk_size = 25
     order_chunks = [client_orders[i:i+chunk_size] for i in range(0, len(client_orders), chunk_size)]
     invoice_chunks = [invoice_list[i:i+chunk_size] for i in range(0, len(invoice_list), chunk_size)]
@@ -84,8 +84,7 @@ def calculate_start_date_and_filename(client_id, duration, start_date):
 
 
 def get_filtered_data(client, start_date, end_date=None):
-    purpose = "credit"  # Purpose set to 'Credit by WashMix'
-
+    purpose = InvoicePurpose.CREDIT  # Purpose set to 'Credit by WashMix'
     if end_date:
         invoice_list = client.invoice_list.filter(
             purpose=purpose,
@@ -200,5 +199,4 @@ def get_existing_pdf_path(client_id, duration):
     if os.path.exists(full_path):
         return pdf_path
     else:
-        print(pdf_name,"pdf_name")
         return "-"
