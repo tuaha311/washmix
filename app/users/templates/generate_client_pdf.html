@@ -133,6 +133,11 @@ block.super }}
 
       <input type="submit" value="Generate Custom Time Frame PDF" />
     </form>
+    <br/>
+    <div>
+      <label>Custom PDF:</label>
+      <a href="{{custom_pdf_path}}" target="_blank">{{custom_pdf_path}}</a>
+    </div>
 
     <div class="loading-overlay" id="loading-overlay" style="display: none">
         <div class="loading-spinner"></div>
@@ -196,6 +201,10 @@ block.super }}
         });
       }
     </script>
-    {% endif %} {% endblock %}
+    {% else %}
+    <script>
+        window.location.href = "/admin";
+    </script>
+{% endif %} {% endblock %}
   </div>
 </body>
