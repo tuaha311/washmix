@@ -86,14 +86,13 @@ def calculate_start_date_and_filename(client_id, duration, start_date):
 
 
 def get_filtered_data(client, start_date, end_date=None):
-    end_date = datetime.strptime(end_date, "%Y-%m-%d")
-    end_date = end_date + timedelta(days=1)
+    # end_date = datetime.strptime(end_date, "%Y-%m-%d")
+    # end_date = end_date + timedelta(days=1)
     purpose = InvoicePurpose.CREDIT  # Purpose set to 'Credit by WashMix'
     if end_date:
         invoice_list = client.invoice_list.filter(
             purpose=purpose,
-            created__gte=start_date,
-            created__lt=end_date,
+            created__date__range =[start_date, end_date]
         ).annotate(
             balance=Subquery(
                 client.transaction_list.filter(invoice=OuterRef("pk"))
@@ -103,7 +102,7 @@ def get_filtered_data(client, start_date, end_date=None):
             )
         )
         client_orders = Order.objects.filter(
-            client=client, created__gte=start_date, created__lt=end_date
+            client=client, created__date__range =[start_date, end_date]
         )
     else:
         invoice_list = client.invoice_list.filter(
