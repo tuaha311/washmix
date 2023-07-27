@@ -86,8 +86,6 @@ def calculate_start_date_and_filename(client_id, duration, start_date):
 
 
 def get_filtered_data(client, start_date, end_date=None):
-    # end_date = datetime.strptime(end_date, "%Y-%m-%d")
-    # end_date = end_date + timedelta(days=1)
     purpose = InvoicePurpose.CREDIT  # Purpose set to 'Credit by WashMix'
     if end_date:
         invoice_list = client.invoice_list.filter(
@@ -148,7 +146,7 @@ def generate_client_pdf(request):
         month_pdf_path = get_existing_pdf_path(client_id, "month")
         year_pdf_path = get_existing_pdf_path(client_id, "year")
         custom_pdf_path = get_existing_pdf_path(client_id, "custom")
-        all_times_pdf_path = get_existing_pdf_path(client_id, "all_times")
+        all_times_pdf_path = get_existing_pdf_path(client_id)
 
         context = {
             "client_id": client_id,
@@ -195,8 +193,11 @@ def get_pdf_path(media_path, client_id):
     pdf_path = os.path.join(client_directory, pdf_filename)
     return pdf_path
 
-def get_existing_pdf_path(client_id, duration):
-    pdf_name = f"{duration}_{client_id}.pdf"
+def get_existing_pdf_path(client_id, duration=None):
+    if duration:
+        pdf_name = f"{duration}_{client_id}.pdf"
+    else:
+        pdf_name = f"{client_id}.pdf"
     pdf_path = os.path.join(settings.MEDIA_URL, "clients", pdf_name)
     full_path = os.path.join(settings.MEDIA_ROOT, "clients", pdf_name)
     if os.path.exists(full_path):
