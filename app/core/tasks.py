@@ -1,6 +1,6 @@
 import datetime
 import logging
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -135,36 +135,53 @@ def archive_periodic_promotional_emails():
 #Every Hour
 @dramatiq.actor(periodic=cron("*/59 * * * *"))
 def send_reminder_service_text():
+    year =  datetime.now().date().year
+    month =  int(datetime.now().date().month) - 2
+    day =  datetime.now().date().day
+    day =  22
+    current_date = datetime.now().date()
+    start_date = current_date - timedelta(days=60) 
+    test_users = Client.objects.filter(
+    Q(created__month=month, created__day=day) | Q(promo_sms_sent__month=month, promo_sms_sent__day=day))
+    test_users_2 = Client.objects.filter(~Q(order_list__created__range=(start_date, current_date)))
     signed_up_users_with_no_orders_at_all = Client.objects.filter(
         Q(
-            created__lt=localtime() - SERVICE_REMINDER_SMS_DURATION_DAYS_TIMEDELTA,
+            created__month=month, 
+            created__day=day,
             order_list__isnull=True,
             promo_sms_sent__isnull=True
         )
         |
         Q(
-            created__lt=localtime() - SERVICE_REMINDER_SMS_DURATION_DAYS_TIMEDELTA,
+            created__month=month,
+            created__day=day,
             order_list__isnull=True,
-            promo_sms_sent__isnull=False,
-            promo_sms_sent__lt=localtime() - SERVICE_REMINDER_SMS_DURATION_DAYS_TIMEDELTA,
+            promo_sms_sent__isnull=False
+        ) & ~Q(
+            promo_sms_sent__range=(start_date, current_date)
         )
-    ).distinct('user_id')[:20]
+        ).distinct('user_id')[:20]
 
     users_with_no_orders_within_given_limit = Client.objects.filter(
-       Q(
-            order_list__changed__lt=localtime() - SERVICE_REMINDER_SMS_DURATION_DAYS_TIMEDELTA,
-            order_list__status__exact=OrderStatusChoices.COMPLETED,
+        Q(
+            ~Q(order_list__created__range=(start_date,current_date)),
             promo_sms_sent__isnull=True
-       )
-       |
-       Q(
-           order_list__changed__lt=localtime() - SERVICE_REMINDER_SMS_DURATION_DAYS_TIMEDELTA,
-           order_list__status__exact=OrderStatusChoices.COMPLETED,
-           promo_sms_sent__isnull=False,
-           promo_sms_sent__lt=localtime() - SERVICE_REMINDER_SMS_DURATION_DAYS_TIMEDELTA
-       )
-    ).distinct('user_id')[:20]
-
+        )
+        |
+        Q(
+            ~Q(order_list__created__range=(start_date,current_date)),
+            Q(promo_sms_sent__isnull=False),
+            ~Q(promo_sms_sent__range=(start_date,current_date))
+        )
+        ).distinct('user_id')[:20]
+    
+    if users_with_no_orders_within_given_limit:
+        for user in users_with_no_orders_within_given_limit:
+            print(user.__dict__)
+    else:
+        print("No User")
+        
+    return 
     if signed_up_users_with_no_orders_at_all:
         for client in signed_up_users_with_no_orders_at_all:
             send_sms.send_with_options(
