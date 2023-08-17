@@ -5,6 +5,7 @@ from datetime import timedelta, datetime
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.utils.timezone import localtime
+from django.utils import timezone
 
 import dramatiq
 from periodiq import cron
@@ -131,19 +132,29 @@ def archive_periodic_promotional_emails():
             client.set_next_promo_email_send_date(time_to_add)
             client.save()
 
+def derive_required_months(month):
+    all_months = []
+    for i in range(0, 5):
+        month = month - 2
+        if month == 0:
+            month = 12
+        if month == -1:
+            month = 11
+        all_months.append(month)
+        
+    return all_months
+
 # Check Sms Sending Criteraia Daily
 #Every Hour
 @dramatiq.actor(periodic=cron("*/59 * * * *"))
 def send_reminder_service_text():
-    year =  datetime.now().date().year
-    month =  int(datetime.now().date().month) - 2
-    day =  datetime.now().date().day
-    day =  22
-    current_date = datetime.now().date()
+    # current_date = datetime.now().date()
+    current_date = timezone.now()
+    month =  int(current_date.month)
+    day =  current_date.day
     start_date = current_date - timedelta(days=60) 
-    test_users = Client.objects.filter(
-    Q(created__month=month, created__day=day) | Q(promo_sms_sent__month=month, promo_sms_sent__day=day))
-    test_users_2 = Client.objects.filter(~Q(order_list__created__range=(start_date, current_date)))
+    all_months = derive_required_months(month)
+    
     signed_up_users_with_no_orders_at_all = Client.objects.filter(
         Q(
             created__month=month, 
@@ -153,7 +164,7 @@ def send_reminder_service_text():
         )
         |
         Q(
-            created__month=month,
+            created__month=month - 2,
             created__day=day,
             order_list__isnull=True,
             promo_sms_sent__isnull=False
@@ -164,24 +175,21 @@ def send_reminder_service_text():
 
     users_with_no_orders_within_given_limit = Client.objects.filter(
         Q(
-            ~Q(order_list__created__range=(start_date,current_date)),
+            ~Q(order_list__created__range=(start_date, current_date)),
+            created__day=day,
+            created__month__in=all_months,
             promo_sms_sent__isnull=True
         )
         |
         Q(
-            ~Q(order_list__created__range=(start_date,current_date)),
+            ~Q(order_list__created__range=(start_date, current_date)),
             Q(promo_sms_sent__isnull=False),
-            ~Q(promo_sms_sent__range=(start_date,current_date))
+            ~Q(promo_sms_sent__range=(start_date, current_date)),
+            created__day=day,
+            created__month__in=all_months
         )
         ).distinct('user_id')[:20]
     
-    if users_with_no_orders_within_given_limit:
-        for user in users_with_no_orders_within_given_limit:
-            print(user.__dict__)
-    else:
-        print("No User")
-        
-    return 
     if signed_up_users_with_no_orders_at_all:
         for client in signed_up_users_with_no_orders_at_all:
             send_sms.send_with_options(
