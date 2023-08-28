@@ -8,6 +8,8 @@ from django.utils import timezone
 
 import dramatiq
 from periodiq import cron
+from billing.choices import InvoiceProvider
+from billing.models.transaction import Transaction
 
 from archived.models import ArchivedCustomer
 from core.utils import get_time_delta_for_promotional_emails
@@ -310,6 +312,8 @@ def send_reminder_service_text():
         )
         ).distinct('user_id')[:20]
     
+    users_with_scheduled_promotional_sms = Client.objects.filter(scheduled_promo_sms__day = day, scheduled_promo_sms__month = month)
+     
     if signed_up_users_with_no_orders_at_all:
         for client in signed_up_users_with_no_orders_at_all:
             send_sms.send_with_options(
@@ -325,6 +329,28 @@ def send_reminder_service_text():
 
     if users_with_no_orders_within_given_limit:
         for client in users_with_no_orders_within_given_limit:
+            latest_credit_back_transaction = Transaction.objects.filter(
+                client=client,
+                provider=InvoiceProvider.CREDIT_BACK
+                ).order_by('-created').first()
+            # Check if latest_credit_back_transaction is older than 30 days and scheduled_promo_sms is None
+            if (
+                latest_credit_back_transaction
+                and (timezone.now() - latest_credit_back_transaction.created).days < 30
+                and client.scheduled_promo_sms is None
+            ):
+                logger.info(f"Scheduling Promotional SMS for {client.email}")
+                # Set scheduled_promo_sms to 30 days from now
+                client.scheduled_promo_sms = timezone.now() + timezone.timedelta(days=30)
+                client.save()
+                continue
+            
+            if (
+                latest_credit_back_transaction
+                and client.scheduled_promo_sms is not None
+            ):
+                logger.info(f"{client.email} already has a scheduled promotional SMS")
+                continue
             send_sms.send_with_options(
                 kwargs={
                     "event": settings.SERVICE_PROMOTION,
@@ -336,7 +362,20 @@ def send_reminder_service_text():
             client.save()
             logger.info(f"Sendin SMS to client {client.email}")
 
-
+    if users_with_scheduled_promotional_sms:
+        for client in users_with_scheduled_promotional_sms:
+            send_sms.send_with_options(
+                kwargs={
+                    "event": settings.SERVICE_PROMOTION,
+                    "recipient_list": [client.main_phone.number],
+                    },
+                delay=settings.DRAMATIQ_DELAY_FOR_DELIVERY,
+            )
+            client.set_promo_sms_sent_date(localtime())
+            client.scheduled_promo_sms = None
+            client.save()
+            logger.info(f"Sendin SMS to client {client.email}")
+            
 @dramatiq.actor
 def worker_health():
     """
