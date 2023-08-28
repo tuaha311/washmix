@@ -115,6 +115,11 @@ class Client(ProxyUserInfoMixin, Stripeable, Common):
         blank=True,
         null=True,
     )
+    scheduled_promo_sms = models.DateTimeField(
+        verbose_name="Scheduled Promotional SMS",
+        blank=True,
+        null=True,
+    )
 
     objects = ClientManager()
 
