@@ -80,10 +80,12 @@ class RequestViewSet(ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         client = self.request.user.client
+        pickup_date = serializer.initial_data["pickup_date"]
         if Delivery.objects.filter(
             request__client=client,
             status__in=[DeliveryStatus.ACCEPTED, DeliveryStatus.IN_PROGRESS],
             kind=DeliveryKind.PICKUP,
+            date = pickup_date
         ).exists():
             pickup = Delivery.objects.filter(
                 request__client=client,
