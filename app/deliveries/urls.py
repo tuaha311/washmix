@@ -11,5 +11,5 @@ request_urls = (
 )
 
 urlpatterns = [
-    path("change-employee/", DeliveryAdmin.change_employee, name="change_employee"),
+    path("update-deliveries/", DeliveryAdmin.update_deliveries, name="update-deliveries"),
 ]

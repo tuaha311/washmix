@@ -106,28 +106,38 @@ class DeliveryAdmin(AdminWithSearch):
         "employee",
     ]
     
-    def change_employee(request):
+    def update_deliveries(request):
         if request.method == 'POST':
             selected_deliveries = request.POST.getlist('selected_deliveries')
             new_employee_id = request.POST.get('new_employee_id')
             new_status = request.POST.get('new_status')
             url = request.POST.get('url')
 
-            if selected_deliveries and new_employee_id:
-                Delivery.objects.filter(id__in=selected_deliveries).update(employee_id=new_employee_id)
-                messages.success(request, 'Employee updated successfully.')
-            elif selected_deliveries and new_status:
-                Delivery.objects.filter(id__in=selected_deliveries).update(status=new_status)
-                messages.success(request, 'Status updated successfully.')
-            else:
-                messages.warning(request, 'No valid data selected.')
+            if selected_deliveries and (new_employee_id != "" or new_status != ""):
+                update_fields = {}
+                if new_employee_id != "":
+                    Delivery.objects.filter(id__in=selected_deliveries).update(employee_id=new_employee_id)
+                    update_fields['employee'] = new_employee_id
+                if new_status != "":
+                    Delivery.objects.filter(id__in=selected_deliveries).update(status=new_status)
+                    update_fields['status'] = new_status
 
-            return redirect(url)
+                if update_fields:
+                    messages.success(request, 'Deliveries updated successfully.')
+                else:
+                    messages.warning(request, 'No valid data selected.')
+
+                return redirect(url)
     
     def changelist_view(self, request, extra_context=None):
         extra_context = extra_context or {}
-        extra_context['users_employee'] = Employee.objects.all()
-        extra_context['choices'] = DeliveryStatus.CHOICES
+
+        employee_choices = [('', '...')] + [(employee.id, str(employee)) for employee in Employee.objects.all()]
+        status_choices = [('', '...')] + list(DeliveryStatus.CHOICES)
+
+        extra_context['employee_choices'] = employee_choices
+        extra_context['status_choices'] = status_choices
+
         return super().changelist_view(request, extra_context=extra_context)
 
     def select(self, obj):
