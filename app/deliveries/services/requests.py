@@ -3,6 +3,7 @@ from typing import Optional, Tuple
 
 from django.db.transaction import atomic
 from django.utils.timezone import localtime
+from orders.choices import OrderPaymentChoices
 
 from billing.models import Invoice
 from billing.services.invoice import InvoiceService
@@ -244,3 +245,59 @@ class RequestService(PaymentInterfaceService):
             "start": self._pickup_start,
             "end": self._pickup_end,
         }
+
+
+class AdminRequestService(RequestService):
+    """
+    This service is responsible for Admin Requests handling.
+    """
+    
+    def create(self, **extra_kwargs) -> Request:
+        """
+        Create a new Admin Request.
+        """
+
+        self._validator_service.validate()
+
+        dropoff_info = self._dropoff_info
+        pickup_info = self._pickup_info
+
+        address = self._client.main_address
+        extra_kwargs.setdefault("address", address)
+        extra_kwargs.setdefault("is_rush", False)
+
+        with atomic():
+            # Add a check and find the request that was created by Admin and it either does not have the order or it's not been charged.
+            existed_request = Request.objects.filter(client=self._client, order__payment=OrderPaymentChoices.UNPAID, generated_by_admin=True).first()
+
+            if existed_request:
+                request = existed_request
+
+            else:
+                request = Request.objects.create(
+                client=self._client,
+                comment="Admin generated this request",
+                generated_by_admin=True,
+                **extra_kwargs,
+                )
+                Delivery.objects.create(
+                    request=request,
+                    kind=DeliveryKind.PICKUP,
+                    status=DeliveryStatus.COMPLETED,
+                    **pickup_info,
+                )
+                Delivery.objects.create(
+                    request=request,
+                    kind=DeliveryKind.DROPOFF,
+                    status=DeliveryStatus.COMPLETED,
+                    **dropoff_info,
+                )
+
+            send_admin_client_information(
+                self._client.id,
+                "A New Admin Request is Created",
+            )
+            Log.objects.create(customer=self._client.email, action="Created new Admin Request to charge customer.")
+            # Notification.create_notification(self._client, NotificationTypes.NEW_ADMIN_REQUEST)
+
+        return request
