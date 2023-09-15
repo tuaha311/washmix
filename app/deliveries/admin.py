@@ -23,7 +23,26 @@ class DeliveryForm(forms.ModelForm):
                 model._meta.get_field("employee").remote_field, "Select an Employee", admin.site
             )
         }
-
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        instance = kwargs.get('instance')
+        if instance and instance.kind == DeliveryKind.DROPOFF:
+            self.fields['status'].choices = [
+                (DeliveryStatus.ACCEPTED, DeliveryStatus.MAP[DeliveryStatus.ACCEPTED]),
+                (DeliveryStatus.IN_PROGRESS, DeliveryStatus.MAP[DeliveryStatus.IN_PROGRESS]),
+                (DeliveryStatus.COMPLETED, DeliveryStatus.MAP[DeliveryStatus.COMPLETED]),
+            ]
+            
+class ArchivedDeliveryForm(forms.ModelForm):
+    class Meta:
+        model = Delivery
+        fields = "__all__"
+        widgets = {
+            "employee": CustomAutocompleteSelect(
+                model._meta.get_field("employee").remote_field, "Select an Employee", admin.site
+            )
+        }
 
 class DeliveryInlineAdmin(admin.TabularInline):
     model = Delivery
@@ -67,7 +86,7 @@ class RequestAdmin(AdminWithSearch):
         return queryset, use_distinct
 
 
-class DeliveryAdmin(AdminWithSearch):
+class DeliveryAdminMain(AdminWithSearch):
     readonly_fields = [
         "order",
         "client",
@@ -100,10 +119,6 @@ class DeliveryAdmin(AdminWithSearch):
         "kind",
         "employee",
     ]
-
-    # autocomplete_fields = ('employee',)
-    def get_changelist_form(self, request, **kwargs):
-        return DeliveryForm
 
     def get_queryset(self, request):
         return Delivery.objects.filter(
@@ -154,6 +169,19 @@ class DeliveryAdmin(AdminWithSearch):
 
         return super().save_model(request, obj, form, change)
 
+class DeliveryAdmin(DeliveryAdminMain):
+    form = DeliveryForm
+    # autocomplete_fields = ('employee',)
+    def get_changelist_form(self, request, **kwargs):
+        return DeliveryForm
+    
+    
+class ArchivedDeliveryAdmin(DeliveryAdminMain):
+    form = ArchivedDeliveryForm
+    # autocomplete_fields = ('employee',)
+    def get_changelist_form(self, request, **kwargs):
+        return ArchivedDeliveryForm
+    
 
 class ScheduleForm(forms.ModelForm):
     # we are overriding default `days` field widget
