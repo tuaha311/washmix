@@ -1,0 +1,92 @@
+{% extends 'admin/change_list.html' %}
+{% block extrastyle %}
+{{ block.super }}
+<style>
+.change-list .filtered{
+  min-height: auto !important;
+}
+</style>
+{% endblock %}
+
+{% block filters %}
+  {{ block.super }}
+
+  <div style="
+    place-items: center;
+    border: 1px solid;
+    padding: 12px;
+    border-radius: 4px;
+    white-space: nowrap;
+    outline: 0;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    background-color: #fff;
+    color: #003459;
+    border: 1px solid #ededed;
+    appearance: none;
+    transition: background 0.3s, box-shadow 0.3s, border 0.3s;
+  ">
+    <h1>Bulk Action:</h1>
+    <div style="display: flex; flex-direction: row">
+      <form id="update-deliveries-form" action="/deliveries/update-deliveries/" method="post">
+        {% csrf_token %}
+        <label for="id_employee">Employee:</label>
+        <select id="id_employee" name="new_employee_id">
+          {% for employee_id, employee_name in employee_choices %}
+            <option value="{{ employee_id }}">{{ employee_name }}</option>
+          {% endfor %}
+        </select>
+
+        <label for="id_status" style="margin-left: 1rem;">Status:</label>
+        <select id="id_status" name="new_status">
+          {% for status_key, status_value in status_choices %}
+            <option value="{{ status_key }}">{{ status_value }}</option>
+          {% endfor %}
+        </select>
+
+        <input type="hidden" name="url" value="{{ request.path }}">
+        <input type="submit" value="Update Deliveries" style="margin-left: 1rem;"/>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  var pk = [];
+  var url = window.location.pathname;
+
+  function updatePkList(checkbox) {
+    var value = checkbox.value;
+    if (checkbox.checked) {
+      pk.push(value);
+    } else {
+      var index = pk.indexOf(value);
+      if (index !== -1) {
+        pk.splice(index, 1);
+      }
+    }
+  }
+
+  function addHiddenInputs(formId, inputName, values, url) {
+    var form = document.getElementById(formId);
+    if (form) { // Check if the form exists
+      values.forEach(function (value) {
+        var input = document.createElement("input");
+        input.type = "hidden";
+        input.name = inputName;
+        input.value = value;
+        form.appendChild(input);
+      });
+      var location = document.createElement("input");
+      location.type = "hidden";
+      location.name = "url";
+      location.value = url;
+      form.appendChild(location);
+    }
+  }
+
+  document.getElementById("update-deliveries-form").addEventListener("submit", function () {
+    addHiddenInputs("update-deliveries-form", "selected_deliveries", pk, url);
+  });
+</script>
+{% endblock %}
