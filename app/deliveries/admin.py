@@ -138,15 +138,28 @@ class DeliveryAdminMain(AdminWithSearch):
                     Delivery.objects.filter(id__in=selected_deliveries).update(employee_id=new_employee_id)
                     update_fields['employee'] = new_employee_id
                 if new_status != "":
-                    Delivery.objects.filter(id__in=selected_deliveries).update(status=new_status)
-                    update_fields['status'] = new_status
+                    if new_status == DeliveryStatus.NO_SHOW:
+                        # Check if the delivery kind is 'DROPOFF' and new status is 'NO_SHOW'
+                        for delivery_id in selected_deliveries:
+                            delivery = Delivery.objects.get(id=delivery_id)
+                            if delivery.kind == DeliveryKind.DROPOFF:
+                                messages.warning(request, f"Skipping delivery {delivery_id} as it's a dropoff and cannot be set to 'NO_SHOW'.")
+                                continue
+                            
+                            # Update other deliveries to the new status
+                            Delivery.objects.filter(id=delivery_id).update(status=new_status)
+                            update_fields['status'] = new_status
+                    else:
+                        # Update all deliveries to the new status
+                        Delivery.objects.filter(id__in=selected_deliveries).update(status=new_status)
+                        update_fields['status'] = new_status
 
                 if update_fields:
                     messages.success(request, 'Deliveries updated successfully.')
                 else:
                     messages.warning(request, 'No valid data selected.')
 
-                return redirect(url)
+            return redirect(url)
     
     def changelist_view(self, request, extra_context=None):
         extra_context = extra_context or {}
