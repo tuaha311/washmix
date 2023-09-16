@@ -96,6 +96,7 @@ class DeliveryAdminMain(AdminWithSearch):
         "client",
     ]
     form = DeliveryForm
+    list_display_links = ['__str__']
     list_display = [
         'select',
         "__str__",
