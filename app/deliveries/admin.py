@@ -12,6 +12,9 @@ from deliveries.models import Delivery, Holiday, Nonworkingday, Request, Schedul
 from deliveries.utils import update_deliveries_to_no_show
 from users.admin import CustomAutocompleteSelect
 from users.models.employee import Employee
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from deliveries.choices import DeliveryStatus
 
 
 class DeliveryForm(forms.ModelForm):
@@ -23,7 +26,26 @@ class DeliveryForm(forms.ModelForm):
                 model._meta.get_field("employee").remote_field, "Select an Employee", admin.site
             )
         }
-
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        instance = kwargs.get('instance')
+        if instance and instance.kind == DeliveryKind.DROPOFF:
+            self.fields['status'].choices = [
+                (DeliveryStatus.ACCEPTED, DeliveryStatus.MAP[DeliveryStatus.ACCEPTED]),
+                (DeliveryStatus.IN_PROGRESS, DeliveryStatus.MAP[DeliveryStatus.IN_PROGRESS]),
+                (DeliveryStatus.COMPLETED, DeliveryStatus.MAP[DeliveryStatus.COMPLETED]),
+            ]
+            
+class ArchivedDeliveryForm(forms.ModelForm):
+    class Meta:
+        model = Delivery
+        fields = "__all__"
+        widgets = {
+            "employee": CustomAutocompleteSelect(
+                model._meta.get_field("employee").remote_field, "Select an Employee", admin.site
+            )
+        }
 
 class DeliveryInlineAdmin(admin.TabularInline):
     model = Delivery
@@ -67,13 +89,15 @@ class RequestAdmin(AdminWithSearch):
         return queryset, use_distinct
 
 
-class DeliveryAdmin(AdminWithSearch):
+class DeliveryAdminMain(AdminWithSearch):
+    change_list_template = 'assets/change_employee.html'
     readonly_fields = [
         "order",
         "client",
     ]
     form = DeliveryForm
     list_display = [
+        'select',
         "__str__",
         "full_name",
         "phone",
@@ -100,7 +124,44 @@ class DeliveryAdmin(AdminWithSearch):
         "kind",
         "employee",
     ]
+    
+    def update_deliveries(request):
+        if request.method == 'POST':
+            selected_deliveries = request.POST.getlist('selected_deliveries')
+            new_employee_id = request.POST.get('new_employee_id')
+            new_status = request.POST.get('new_status')
+            url = request.POST.get('url')
 
+            if selected_deliveries and (new_employee_id != "" or new_status != ""):
+                update_fields = {}
+                if new_employee_id != "":
+                    Delivery.objects.filter(id__in=selected_deliveries).update(employee_id=new_employee_id)
+                    update_fields['employee'] = new_employee_id
+                if new_status != "":
+                    Delivery.objects.filter(id__in=selected_deliveries).update(status=new_status)
+                    update_fields['status'] = new_status
+
+                if update_fields:
+                    messages.success(request, 'Deliveries updated successfully.')
+                else:
+                    messages.warning(request, 'No valid data selected.')
+
+                return redirect(url)
+    
+    def changelist_view(self, request, extra_context=None):
+        extra_context = extra_context or {}
+
+        employee_choices = [('', '...')] + [(employee.id, str(employee)) for employee in Employee.objects.all()]
+        status_choices = [('', '...')] + list(DeliveryStatus.CHOICES)
+
+        extra_context['employee_choices'] = employee_choices
+        extra_context['status_choices'] = status_choices
+
+        return super().changelist_view(request, extra_context=extra_context)
+
+    def select(self, obj):
+        return format_html('<input type="checkbox" name="_selected_action" value="{}" onchange="updatePkList(this)">', obj.pk)
+    
     # autocomplete_fields = ('employee',)
     def get_changelist_form(self, request, **kwargs):
         return DeliveryForm
@@ -154,6 +215,19 @@ class DeliveryAdmin(AdminWithSearch):
 
         return super().save_model(request, obj, form, change)
 
+class DeliveryAdmin(DeliveryAdminMain):
+    form = DeliveryForm
+    # autocomplete_fields = ('employee',)
+    def get_changelist_form(self, request, **kwargs):
+        return DeliveryForm
+    
+    
+class ArchivedDeliveryAdmin(DeliveryAdminMain):
+    form = ArchivedDeliveryForm
+    # autocomplete_fields = ('employee',)
+    def get_changelist_form(self, request, **kwargs):
+        return ArchivedDeliveryForm
+    
 
 class ScheduleForm(forms.ModelForm):
     # we are overriding default `days` field widget
