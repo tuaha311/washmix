@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from deliveries.choices import DeliveryKind, DeliveryStatus
 
 from deliveries.models import Delivery
 from locations.api.serializers.addresses import AddressSerializer
@@ -26,6 +27,7 @@ class DeliverySerializer(serializers.ModelSerializer):
     client = ClientSerializer(read_only=True)
     order = serializers.PrimaryKeyRelatedField(read_only=True)
     changed = serializers.DateTimeField(read_only=True)
+    pickup_completed = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Delivery
@@ -44,4 +46,11 @@ class DeliverySerializer(serializers.ModelSerializer):
             "sorting",
             "client",
             "changed",
+            "pickup_completed",
         ]
+
+    def get_pickup_completed(self, obj):
+        if obj.kind == DeliveryKind.DROPOFF:
+            pickup_delivery = obj.request.delivery_list.filter(kind=DeliveryKind.PICKUP).first()
+            return pickup_delivery.status == DeliveryStatus.COMPLETED if pickup_delivery else False
+        return None
