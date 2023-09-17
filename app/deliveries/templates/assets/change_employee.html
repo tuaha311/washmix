@@ -49,44 +49,63 @@
       </form>
     </div>
   </div>
-</div>
 
 <script>
-  var pk = [];
-  var url = window.location.pathname;
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelector('.actions').style.display = 'none';
+    // Get all checkboxes with the name '_selected_action'
+    const checkboxes = document.querySelectorAll('input[name="_selected_action"]');
+    const selectAllCheckbox = document.querySelector('.action-checkbox-column input[type="checkbox"]');
+    let selectedDeliveryIds = []; // Array to store selected delivery IDs
 
-  function updatePkList(checkbox) {
-    var value = checkbox.value;
-    if (checkbox.checked) {
-      pk.push(value);
-    } else {
-      var index = pk.indexOf(value);
-      if (index !== -1) {
-        pk.splice(index, 1);
-      }
+    // Function to update selectedDeliveryIds array
+    function updateSelectedDeliveryIds() {
+      selectedDeliveryIds = Array.from(checkboxes)
+        .filter(checkbox => checkbox.checked)
+        .map(checkbox => checkbox.value);
+
+      // Log the list of selected delivery IDs
+      console.log("Selected Delivery IDs:", selectedDeliveryIds);
     }
-  }
 
-  function addHiddenInputs(formId, inputName, values, url) {
-    var form = document.getElementById(formId);
-    if (form) { // Check if the form exists
-      values.forEach(function (value) {
-        var input = document.createElement("input");
-        input.type = "hidden";
-        input.name = inputName;
-        input.value = value;
-        form.appendChild(input);
+    // Attach the change event handler to the "Select All" checkbox
+    if (selectAllCheckbox) {
+      selectAllCheckbox.addEventListener('change', function () {
+        checkboxes.forEach(checkbox => {
+          checkbox.checked = selectAllCheckbox.checked;
+        });
+        updateSelectedDeliveryIds();
       });
-      var location = document.createElement("input");
-      location.type = "hidden";
-      location.name = "url";
-      location.value = url;
-      form.appendChild(location);
     }
-  }
 
-  document.getElementById("update-deliveries-form").addEventListener("submit", function () {
-    addHiddenInputs("update-deliveries-form", "selected_deliveries", pk, url);
+    // Attach the change event handler to individual checkboxes
+    checkboxes.forEach(function (checkbox) {
+      checkbox.addEventListener('change', function () {
+        updateSelectedDeliveryIds();
+      });
+    });
+
+    // Attach the form submission event handler
+    const form = document.getElementById('update-deliveries-form');
+    if (form) {
+      form.addEventListener('submit', function (event) {
+        // Prevent the default form submission
+        event.preventDefault();
+
+        // Add the distinct selected delivery IDs as hidden inputs before form submission
+        const distinctSelectedIds = [...new Set(selectedDeliveryIds)];
+        distinctSelectedIds.forEach(function (deliveryId) {
+          const input = document.createElement('input');
+          input.type = 'hidden';
+          input.name = 'selected_deliveries'; // Use the correct name
+          input.value = deliveryId;
+          form.appendChild(input);
+        });
+
+        // Continue with the form submission
+        form.submit();
+      });
+    }
   });
 </script>
 {% endblock %}
