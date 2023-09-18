@@ -254,40 +254,20 @@ def delete_archived_customers_who_signed_up_already():
         client.delete()
 
 
-def derive_required_months(month):
-    all_months = []
-    for i in range(0, 5):
-        month = month - 2
-        if month == 0:
-            month = 12
-        if month == -1:
-            month = 11
-        all_months.append(month)
-        
-    return all_months
-
 # Check Sms Sending Criteraia Daily
 #Every Hour
 @dramatiq.actor(periodic=cron("*/59 * * * *"))
 def send_reminder_service_text():
     # current_date = datetime.now().date()
     current_date = timezone.now()
-    month =  int(current_date.month)
-    day =  current_date.day
-    start_date = current_date - timedelta(days=60) 
-    all_months = derive_required_months(month)
-    
+    start_date = current_date - timedelta(days=1) 
     signed_up_users_with_no_orders_at_all = Client.objects.filter(
         Q(
-            created__month=month, 
-            created__day=day,
             order_list__isnull=True,
             promo_sms_sent__isnull=True
         )
         |
         Q(
-            created__month=month - 2,
-            created__day=day,
             order_list__isnull=True,
             promo_sms_sent__isnull=False
         ) & ~Q(
@@ -298,8 +278,6 @@ def send_reminder_service_text():
     users_with_no_orders_within_given_limit = Client.objects.filter(
         Q(
             ~Q(order_list__created__range=(start_date, current_date)),
-            created__day=day,
-            created__month__in=all_months,
             promo_sms_sent__isnull=True
         )
         |
@@ -307,12 +285,10 @@ def send_reminder_service_text():
             ~Q(order_list__created__range=(start_date, current_date)),
             Q(promo_sms_sent__isnull=False),
             ~Q(promo_sms_sent__range=(start_date, current_date)),
-            created__day=day,
-            created__month__in=all_months
         )
         ).distinct('user_id')[:20]
     
-    users_with_scheduled_promotional_sms = Client.objects.filter(scheduled_promo_sms__day = day, scheduled_promo_sms__month = month)
+    users_with_scheduled_promotional_sms = Client.objects.filter(scheduled_promo_sms__day = current_date.day, scheduled_promo_sms__month = current_date.month)
      
     if signed_up_users_with_no_orders_at_all:
         for client in signed_up_users_with_no_orders_at_all:
@@ -336,7 +312,7 @@ def send_reminder_service_text():
             # Check if latest_credit_back_transaction is older than 30 days and scheduled_promo_sms is None
             if (
                 latest_credit_back_transaction
-                and (timezone.now() - latest_credit_back_transaction.created).days < 30
+                and (timezone.now() - latest_credit_back_transaction.created).days < 5
                 and client.scheduled_promo_sms is None
             ):
                 logger.info(f"Scheduling Promotional SMS for {client.email}")
