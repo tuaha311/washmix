@@ -256,6 +256,7 @@ def delete_archived_customers_who_signed_up_already():
 
 # Check Sms Sending Criteraia Daily
 #Every Hour
+""" After testing we will need to replate start_date time delta days to 60 and client.scheduled_promo_sms as well"""
 @dramatiq.actor(periodic=cron("*/59 * * * *"))
 def send_reminder_service_text():
     # current_date = datetime.now().date()
@@ -312,12 +313,12 @@ def send_reminder_service_text():
             # Check if latest_credit_back_transaction is older than 30 days and scheduled_promo_sms is None
             if (
                 latest_credit_back_transaction
-                and (timezone.now() - latest_credit_back_transaction.created).days < 5
+                and (timezone.now() - latest_credit_back_transaction.created).days < 30
                 and client.scheduled_promo_sms is None
             ):
                 logger.info(f"Scheduling Promotional SMS for {client.email}")
                 # Set scheduled_promo_sms to 30 days from now
-                client.scheduled_promo_sms = timezone.now() + timezone.timedelta(days=30)
+                client.scheduled_promo_sms = timezone.now() + timezone.timedelta(days=1)
                 client.save()
                 continue
             
