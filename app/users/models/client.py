@@ -10,6 +10,7 @@ from core.utils import get_dollars
 from users.choices import ClientCrease, ClientDetergents, ClientStarch
 from users.managers import ClientManager
 from users.mixins import ProxyUserInfoMixin
+from django.utils.timezone import localtime, timedelta
 
 
 class Client(ProxyUserInfoMixin, Stripeable, Common):
@@ -109,6 +110,14 @@ class Client(ProxyUserInfoMixin, Stripeable, Common):
         max_length=300,
         blank=True,
     )
+    
+    promo_sms_notification = models.DateField(
+        verbose_name="Promotional SMS Date",
+        editable=False,
+        blank=True,
+        null=True,
+        default=(localtime() + timedelta(days=60)).date(),
+    )
 
     objects = ClientManager()
 
@@ -155,3 +164,7 @@ class Client(ProxyUserInfoMixin, Stripeable, Common):
 
     def __str__(self):
         return self.email
+
+    def set_promo_sms_sent_date(self, value):
+        print("SETTING PROMO SMS SENT DATE")
+        self.promo_sms_notification = value
