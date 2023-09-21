@@ -116,7 +116,6 @@ class Client(ProxyUserInfoMixin, Stripeable, Common):
         editable=False,
         blank=True,
         null=True,
-        default=(localtime() + timedelta(days=60)).date(),
     )
 
     objects = ClientManager()
@@ -168,3 +167,8 @@ class Client(ProxyUserInfoMixin, Stripeable, Common):
     def set_promo_sms_sent_date(self, value):
         print("SETTING PROMO SMS SENT DATE")
         self.promo_sms_notification = value
+
+    def save(self, *args, **kwargs):
+        if not self.promo_sms_notification:
+            self.promo_sms_notification = (localtime() + timedelta(days=60)).date()
+        super().save(*args, **kwargs)
