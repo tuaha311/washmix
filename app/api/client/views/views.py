@@ -177,7 +177,10 @@ def get_client_pdf(request):
                 return JsonResponse(response_data)
             else:
                 response_data = {"error": "PDF does not exist"}
-                return JsonResponse(response_data, status=404)
+                generate_pdf = generate_client_pdf_core(request, client_id)
+                full_pdf_url = request.build_absolute_uri(get_pdf_path(Base.MEDIA_URL, client_id))
+                response_data = {"pdf_path": full_pdf_url, "message": "PDF fetched successfully"}
+                return JsonResponse(response_data, status=201)
         else:
             response_data = {"error": "Invalid payload"}
             return JsonResponse(response_data, status=400)
