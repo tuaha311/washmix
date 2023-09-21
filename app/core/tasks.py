@@ -7,6 +7,8 @@ from django.utils.timezone import localtime
 
 import dramatiq
 from periodiq import cron
+from users.models import Client
+from users.utils import users_with_scheduled_promotional_sms
 
 from archived.models import ArchivedCustomer
 from core.utils import get_time_delta_for_promotional_emails
@@ -19,7 +21,9 @@ from settings.base import (
     UNPAID_ORDER_SECOND_REMINDER_HOURS_TIMEDELTA,
     UNPAID_ORDER_TOTAL_REMINDER_EMAILS,
 )
-from users.models import Client
+# from users.models import Client
+from notifications.tasks import send_sms
+from django.utils import timezone
 
 logger = logging.getLogger(__name__)
 
@@ -256,3 +260,49 @@ def worker_health():
     """
 
     logger.info("Worker health - OK")
+    
+
+# Check SMS Sending Criteria Daily at 9:00 AM
+""" After testing we will need to replace start_date time delta days to 60 and client.scheduled_promo_sms_notification as well """
+# @dramatiq.actor(periodic=cron("0 9 * * *"))
+@dramatiq.actor(periodic=cron("*/10 * * * *"))
+def send_sms_to_users_with_no_orders():
+    current_date = localtime()
+    # Set the start_date to one day before the current date
+    start_date = current_date - timedelta(days=60)
+    cash_back_within = current_date - timedelta(days=15)
+
+    # Get users with no orders in the last two months
+    clients_with_no_orders_in_two_months = users_with_scheduled_promotional_sms(start_date, current_date, cash_back_within)
+    print("=================      clients_with_no_orders_in_two_months   ===================")
+    print(len(clients_with_no_orders_in_two_months))
+    if clients_with_no_orders_in_two_months:
+        for client in clients_with_no_orders_in_two_months:
+            print("CLIENT:            ", client.__dict__)
+            # Checking if the premium users got the payback in last 15 days or not
+            # If they git the payback in last 15 daysm then we will send the sms after 30 days.
+            # If they did not get the payback in last 15 days, then we will send the sms right away and schedule the next promo
+            # sms after 60 days.
+            if (
+                len(client.credit_back_transactions) > 0
+               
+            ):
+                logger.info(f"Scheduling Promotional SMS for {client.email}")
+                # Schedule a promotional SMS for the client
+                client.promo_sms_notification = timezone.now() + timezone.timedelta(days=30)
+                client.save()
+                continue
+            
+            else:
+                # Sending SMS
+                send_sms.send_with_options(
+                    kwargs={
+                        "event": settings.SERVICE_PROMOTION,
+                        "recipient_list": [client.main_phone.number],
+                    },
+                    delay=settings.DRAMATIQ_DELAY_FOR_DELIVERY,
+                    )
+                # Setting Future Promotion SMS Date
+                client.promo_sms_notification = timezone.now() + timezone.timedelta(days=60)
+                client.save()
+                logger.info(f"Sending SMS to client {client.email}")
