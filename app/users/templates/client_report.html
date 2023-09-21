@@ -1,0 +1,166 @@
+{% extends "base_email.html" %}
+
+{% block extra_style %}
+<style type="text/css">
+    .break {
+        page-break-inside: avoid;
+    }
+    .table {
+        margin: 0;
+        border-collapse: collapse;
+        width: 700px; /* Set a fixed width for all tables */
+        margin-bottom: 50px;
+    }
+    .order-cell {
+        border: 1px solid #000;
+        padding: 8px;
+    }
+    .bg-white {
+        background-color: white;
+    }
+    .bg-gray {
+        background-color: lightgrey;
+    }
+    .body {
+        background-color: white;
+        padding-left: 25px !important;
+        margin-left: 25px !important;
+    }
+    /* Add custom styles for client details */
+    .client-details {
+        margin-bottom: 20px;
+    }
+    .client-details th,
+    .client-details td {
+        padding: 8px;
+    }
+</style>
+{% endblock %}
+{% block body %}
+  <tr>
+    <td>
+      <h4>Dear {{ client.full_name }}</h4>
+      <p>Welcome to ​<a href="https://{{ washmix.domain }}">Washmix.com​</a>{% block extra_header %}{% endblock %}. To log in when visiting our site just click <a href="https://{{ washmix.domain }}/login">L​ogin</a>​ in our website and enter your email address and password.</p>
+    </td>
+  </tr>
+
+  {% block content %}
+  {% endblock %}
+  <tr>
+    <td>
+    <h1 class="custom-heading">Client Information</h1>
+    <table class="table client-details">
+        <tr>
+            <th style="text-align: left">Full Name</th>
+            <td>{{ client.full_name }}</td>
+        </tr>
+        <tr>
+            <th style="text-align: left">Email</th>
+            <td>{{ client.user.email }}</td>
+        </tr>
+        <tr>
+            <th style="text-align: left">Balance (in cents)</th>
+            <td>{{ client.balance }}</td>
+        </tr>
+        <tr>
+            <th style="text-align: left">Balance (in dollars)</th>
+            <td>{{ client.dollar_balance }}</td>
+        </tr>
+        <tr>
+            <th style="text-align: left">Has Card</th>
+            <td>{{ client.has_card }}</td>
+        </tr>
+    </table>
+  </td>
+</tr>
+
+{% for chunk in order_chunks %}
+<tr>
+  <td>
+    <h2>Orders:</h2>
+    <table class="table">
+        <thead>
+            <tr class="bg-gray">
+                <th class="order-cell">ID</th>
+                <th class="order-cell">Payment</th>
+                <th class="order-cell">Amount</th>
+                <th class="order-cell">Date</th>
+                <th class="order-cell">Purpose</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in chunk %}
+            <tr class="bg-white">
+                <td class="order-cell">{{ order.id }}</td>
+                <td class="order-cell">{{ order.payment }}</td>
+                <td class="order-cell">{{ order.invoice.amount_with_discount }}</td>
+                <td class="order-cell">{{ order.created }}</td>
+                <td class="order-cell">{{ order.invoice.purpose }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+  </td>
+</tr>
+{% endfor %}
+
+{% for chunk in order_chunks %}
+<tr>
+  <td>
+    <h2 style="page-break-before: always">Balance:</h2>
+    <table class="table">
+        <thead>
+            <tr class="bg-gray">
+                <th class="order-cell">ID</th>
+                <th class="order-cell">Before Purchase</th>
+                <th class="order-cell">After Purchase</th>
+                <th class="order-cell">Update</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in chunk %}
+            <tr class="bg-white">
+                <td class="order-cell">{{ order.id }}</td>
+                <td class="order-cell">{{ order.balance_before_purchase }}</td>
+                <td class="order-cell">{{ order.balance_after_purchase }}</td>
+                <td class="order-cell">{{ order.changed }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+  </td>
+</tr>
+{% endfor %}
+{% for chunk in invoice_chunks %}
+    <tr>
+      <td>
+      <h2>Credits:</h2>
+      <table class="table" style="margin-bottom: 30px">
+          <thead>
+              <tr class="bg-gray">
+                  <th class="order-cell">ID</th>
+                  <th class="order-cell">Amount with Discount</th>
+                  <th class="order-cell">Paid Amount</th>
+                  <th class="order-cell">Unpaid Amount</th>
+                  <th class="order-cell">Balance</th>
+                  <th class="order-cell">Update</th>
+              </tr>
+          </thead>
+          <tbody>
+              {% for invoice in chunk %}
+              <tr class="bg-white">
+                  <td class="order-cell">{{ invoice.id }}</td>
+                  <td class="order-cell">{{ invoice.amount_with_discount }}</td>
+                  <td class="order-cell">{{ invoice.paid_amount }}</td>
+                  <td class="order-cell">{{ invoice.unpaid_amount }}</td>
+                  <td class="order-cell">{{ invoice.balance }}</td>
+                  <td class="order-cell">{{ invoice.changed }}</td>
+              </tr>
+              {% endfor %}
+          </tbody>
+    </table>
+  </td>
+</tr>
+{% endfor %}
+
+{% endblock %}
