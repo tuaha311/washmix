@@ -21,13 +21,14 @@ from swap_user.to_named_email.forms import (
 )
 from deliveries.models.delivery import Delivery
 
-from billing.choices import InvoiceProvider
+from api.client.views.views import generate_client_pdf_core
+from billing.choices import InvoiceProvider, InvoicePurpose
 from billing.models import Invoice
 from billing.utils import add_money_to_balance, remove_money_from_balance
 from core.admin import AdminWithSearch
 from core.mixins import AdminUpdateFieldsMixin
 from core.tasks import archive_periodic_promotional_emails
-from core.utils import convert_cent_to_dollars
+from core.utils import convert_cent_to_dollars, ensure_folder_exists
 from deliveries.models import Request
 from notifications.tasks import send_email
 from orders.models import Order
@@ -37,6 +38,16 @@ from subscriptions.models import Package
 from subscriptions.services.subscription import SubscriptionService
 from users.helpers import remove_user_relation_with_all_info
 from users.models import Client, Customer, Employee, Log
+from django.template.loader import render_to_string
+import os
+import tempfile
+import shutil
+from pathlib import Path
+import settings.base as Base
+from django.utils.safestring import mark_safe
+from django.db.models import Sum, OuterRef, Subquery
+from weasyprint import HTML
+from django.http import HttpResponseRedirect
 
 User = get_user_model()
 LIMIT = 10
@@ -54,6 +65,7 @@ class InlineChangeList(object):
         self.result_count = paginator.count
         self.params = dict(request.GET.items())
 
+MEDIA_ROOT = Path(__file__).parents[1] / "media"
 
 class InlineChangeList(object):
     can_show_all = True
@@ -356,6 +368,7 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
         "stripe_id",
         "full_address",
         "address_line_2",
+        "pdf_path",
     ]
     form = ClientForm
     inlines = [RequestInlineAdmin, OrderInlineAdmin, InvoiceInlineAdmin]
@@ -394,6 +407,26 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
         return obj.main_phone
 
     get_main_phone_number.short_description = "Main Phone Number"  # Set column header in admin
+    
+    actions = ["generate_client_pdf"]
+    
+    def pdf_path(self, client):
+        path = f"/api/client/generate-pdf?client_id={client.id}"
+        context = {"pdf_path": path, "not_blank": True}
+        widget = render_to_string("widgets/href.html", context=context)
+        return mark_safe(widget)
+
+    def generate_client_pdf(modeladmin, request, queryset):
+        for client in queryset:
+            generate_client_pdf_core(request, client.id)
+
+        count = queryset.count()
+        client_plural = "clients" if count != 1 else "client"
+        success_message = f"PDF generated successfully for {count} {client_plural}"
+        messages.success(request, success_message)
+
+        return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
+    
 
     def save_form(self, request: HttpRequest, form: forms.BaseForm, change):
         """
