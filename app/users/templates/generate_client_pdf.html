@@ -1,5 +1,5 @@
-{% extends 'admin/base.html' %} {% load static %} {% block extrahead %} {{
-    block.super }}
+{% extends 'admin/base.html' %} {% load static %} {% block extrahead %} 
+{{ block.super }}
     <script src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
     <script src="{% static 'admin/js/jquery.init.js' %}"></script>
     {% endblock %} {% block content %} {% if user.is_authenticated and user.is_staff %} {% block styles %}
@@ -89,7 +89,7 @@
           <a href="{{week_pdf_path}}" target="_blank">{{week_pdf_path}}</a>
           <input
             type="submit"
-            onclick="generateOneWeekPDF();"
+            onclick="generateDurationPDF('week');"
             value="Generate PDF for One Week"
           />
         </div>
@@ -100,7 +100,7 @@
           <a href="{{month_pdf_path}}" target="_blank">{{month_pdf_path}}</a>
           <input
             type="submit"
-            onclick="generateOneMonthPDF();"
+            onclick="generateDurationPDF('month');"
             value="Generate PDF for One Month"
           />
         </div>
@@ -111,7 +111,7 @@
           <a href="{{year_pdf_path}}" target="_blank">{{year_pdf_path}}</a>
           <input
             type="submit"
-            onclick="generateOneYearPDF();"
+            onclick="generateDurationPDF('year');"
             value="Generate PDF for One Year"
           />
         </div>
@@ -147,26 +147,10 @@
     
         <!-- JavaScript functions to trigger PDF generation -->
         <script>
-          function generateOneWeekPDF() {
+          function generateDurationPDF(duration) {
             var data = {
               client_id: "{{ client_id }}",
-              duration: "week",
-            };
-            generatePDF(data);
-          }
-    
-          function generateOneMonthPDF() {
-            var data = {
-              client_id: "{{ client_id }}",
-              duration: "month",
-            };
-            generatePDF(data);
-          }
-    
-          function generateOneYearPDF() {
-            var data = {
-              client_id: "{{ client_id }}",
-              duration: "year",
+              duration: duration,
             };
             generatePDF(data);
           }
