@@ -12,6 +12,7 @@ from django.core.paginator import EmptyPage, InvalidPage, Paginator
 from django.db.models import Q, QuerySet
 from django.http import HttpResponseRedirect
 from django.http.request import HttpRequest
+from django.shortcuts import render
 from django.urls import reverse
 
 from swap_user.admin import BaseUserAdmin
@@ -21,7 +22,7 @@ from swap_user.to_named_email.forms import (
 )
 from deliveries.models.delivery import Delivery
 
-from api.client.views.views import generate_client_pdf_core
+from api.client.views.views import generate_client_pdf_core, get_existing_pdf_path
 from billing.choices import InvoiceProvider, InvoicePurpose
 from billing.models import Invoice
 from billing.utils import add_money_to_balance, remove_money_from_balance
@@ -411,8 +412,8 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
     actions = ["generate_client_pdf"]
     
     def pdf_path(self, client):
-        path = f"/api/client/generate-pdf?client_id={client.id}"
-        context = {"pdf_path": path, "not_blank": True}
+        path = get_existing_pdf_path(client.id)
+        context = {"pdf_path": path}
         widget = render_to_string("widgets/href.html", context=context)
         return mark_safe(widget)
 
@@ -518,6 +519,8 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
         if "autocomplete" in request.path:
             queryset = queryset.filter(user__email__contains=request.GET.get("q", ""))
         return queryset, use_distinct
+    
+    change_form_template = "assets/generate_client_pdf_change_list.html"
 
 
 class CustomerAdmin(AdminWithSearch):
