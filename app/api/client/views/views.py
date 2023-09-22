@@ -142,6 +142,8 @@ def generate_client_pdf(request):
         
     if request.method == "GET":
         client_id = request.GET.get("client_id")
+        client = Client.objects.get(pk=client_id)
+        clients= Client.objects.all().exclude(pk=client_id)
         week_pdf_path = get_existing_pdf_path(client_id, "week")
         month_pdf_path = get_existing_pdf_path(client_id, "month")
         year_pdf_path = get_existing_pdf_path(client_id, "year")
@@ -149,7 +151,8 @@ def generate_client_pdf(request):
         all_times_pdf_path = get_existing_pdf_path(client_id)
 
         context = {
-            "client_id": client_id,
+            "client": client,
+            "clients": clients,
             "week_pdf_path": week_pdf_path,
             "month_pdf_path": month_pdf_path,
             "year_pdf_path": year_pdf_path,
@@ -164,23 +167,10 @@ def get_client_pdf(request):
     if request.method == "POST":
         client_id = request.POST.get("client_id")
         if client_id:
-            pdf_path = get_pdf_path(Base.MEDIA_ROOT, client_id)
-
-            if (
-                os.path.exists(pdf_path)
-                and os.path.isfile(pdf_path)
-                and not os.path.isdir(pdf_path)
-            ):
-                full_pdf_url = request.build_absolute_uri(get_pdf_path(Base.MEDIA_URL, client_id))
-
-                response_data = {"pdf_path": full_pdf_url, "message": "PDF fetched successfully"}
-                return JsonResponse(response_data)
-            else:
-                response_data = {"error": "PDF does not exist"}
-                generate_pdf = generate_client_pdf_core(request, client_id)
-                full_pdf_url = request.build_absolute_uri(get_pdf_path(Base.MEDIA_URL, client_id))
-                response_data = {"pdf_path": full_pdf_url, "message": "PDF fetched successfully"}
-                return JsonResponse(response_data, status=201)
+            generate_pdf = generate_client_pdf_core(request, client_id)
+            full_pdf_url = request.build_absolute_uri(get_pdf_path(Base.MEDIA_URL, client_id))
+            response_data = {"pdf_path": full_pdf_url, "message": "PDF fetched successfully"}
+            return JsonResponse(response_data, status=200)
         else:
             response_data = {"error": "Invalid payload"}
             return JsonResponse(response_data, status=400)
@@ -206,4 +196,4 @@ def get_existing_pdf_path(client_id, duration=None):
     if os.path.exists(full_path):
         return pdf_path
     else:
-        return "-"
+        return ""
