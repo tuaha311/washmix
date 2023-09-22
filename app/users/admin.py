@@ -521,6 +521,11 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
         return queryset, use_distinct
     
     change_form_template = "assets/generate_client_pdf_change_list.html"
+    
+    change_list_template = 'assets/change_list.html'
+
+    def changelist_view(self, request, extra_context=None):
+        return super().changelist_view(request, extra_context=extra_context)
 
 
 class CustomerAdmin(AdminWithSearch):
