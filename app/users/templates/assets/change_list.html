@@ -1,69 +1,13 @@
-{% extends "admin/change_list.html" %}
-{% load static %}
-
+{% extends "admin/change_list.html" %} 
 {% block extrahead %}
-  {{ block.super }}
-  <style>
-    .loading-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1;
-      background-color: rgba(0, 0, 0, 0.5);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      transition: opacity 0.3s;
-    }
-
-    .loading-overlay.hidden {
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    .loading-overlay .loading-spinner {
-      border: 6px solid #f3f3f3;
-      border-top: 6px solid #3498db;
-      border-radius: 50%;
-      width: 120px;
-      height: 120px;
-      animation: spin 2s linear infinite;
-      background-color: #fff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    @keyframes spin {
-      0% {
-        transform: rotate(0deg);
-      }
-      100% {
-        transform: rotate(360deg);
-      }
-    }
-  </style>
-  <script>
-    // Function to hide the loading overlay
-    function hideLoadingOverlay() {
-      const loadingOverlay = document.getElementById("loading-overlay");
-      loadingOverlay.classList.add("none");
-    }
-
-    // Show the loading overlay initially
-    const loadingOverlay = document.getElementById("loading-overlay");
-    loadingOverlay.style.display = "flex";
-
-    // Listen for the DOMContentLoaded event which indicates that the initial HTML document has been parsed and the DOM tree has been constructed
-    document.addEventListener("DOMContentLoaded", hideLoadingOverlay);
-  </script>
-{% endblock %}
-
-{% block content %}
-  {{ block.super }}
-  <div class="loading-overlay" id="loading-overlay">
-    <div class="loading-spinner"></div>
-  </div>
+<script>
+  document.addEventListener("load", (event) => {
+    hideLoadingOverlay()
+  });
+</script>
+{{ block.super }}
+{% endblock %} 
+{% block content %} 
+{{ block.super }} 
+{% include "pre-loader.html" %} 
 {% endblock %}
