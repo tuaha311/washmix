@@ -244,3 +244,62 @@ class RequestService(PaymentInterfaceService):
             "start": self._pickup_start,
             "end": self._pickup_end,
         }
+
+
+class AdminRequestService:
+    """
+    This service is responsible for Admin Requests handling.
+    """
+
+    def __init__(self, client: Client, is_rush=False):
+        self._client = client
+        self._is_rush = is_rush
+
+    def create(self, **extra_kwargs) -> Request:
+        """
+        Create a new Admin Request.
+        """
+
+        address = self._client.main_address
+        extra_kwargs.setdefault("address", address)
+        extra_kwargs.setdefault("is_rush", self._is_rush)
+
+        with atomic():
+            request = Request.objects.create(
+                client=self._client,
+                **extra_kwargs,
+            )
+
+            send_admin_client_information(
+                self._client.id,
+                "A New Admin Request is Created",
+            )
+            Log.objects.create(customer=self._client.email, action="Created New Admin Request")
+            # Notification.create_notification(self._client, NotificationTypes.NEW_ADMIN_REQUEST)
+        return request
+
+    def get_or_create(self, extra_query: dict, extra_defaults: dict) -> Tuple[Request, bool]:
+        """
+        Get or create an Admin Request.
+        """
+
+        address = self._client.main_address
+        extra_defaults.setdefault("address", address)
+        extra_defaults.setdefault("is_rush", False)
+
+        with atomic():
+            request, created = Request.objects.get_or_create(
+                client=self._client,
+                **extra_query,
+                defaults=extra_defaults,
+            )
+
+        return request, created
+
+    def recalculate(self, request: Request) -> Request:
+        """
+        This method is not applicable for Admin requests.
+        """
+
+        return request
+

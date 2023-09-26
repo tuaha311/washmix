@@ -1,6 +1,32 @@
 {% extends 'admin/change_form.html' %} 
 
 {% block extrahead %}
+<script>
+  function submitForm() {
+    const form = document.getElementById('charge-form');
+    const clientId = form.querySelector('input[name="client_id"]').value;
+
+    // Prepare the data as JSON
+    const data = {
+      client_id: clientId,
+    };
+
+    fetch('/api/client/admin-requests/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => {
+        // Handle the response here
+      })
+      .catch((error) => {
+        // Handle errors here
+      });
+  }
+</script>
+
 {{ block.super }}
 <script>
   // JavaScript to show and hide the modal
@@ -128,7 +154,10 @@
     <span class="close" id="closeModalBtn">&times;</span>
     <h2>Confirmation</h2>
     <p>Are you sure you want to charge the client?</p>
-    <button type="button" class="modal-button" onclick="createRequestChargeClient()">Confirm</button>
+    <form id="charge-form">
+      <input type="hidden" value="{{ original.pk }}" name="client_id">
+      <button type="button" class="modal-button" onclick="submitForm()">Confirm</button>
+    </form>
   </div>
 </div>
 
@@ -137,7 +166,7 @@
 
 {% block object-tools-items %}
 <div>
-  <button type="button" id="openModalBtn" onclick="openModal()">Charge client</button>
+  <input type="button" id="openModalBtn" onclick="openModal()" value="Charge client"></input>
 </div>
 {{ block.super }}
 {% endblock %}

@@ -15,12 +15,13 @@ from rest_framework.viewsets import ModelViewSet
 from deliveries.api.client.serializers.requests import ChargeCustomerSerializer, RequestCheckSerializer, RequestSerializer
 from deliveries.choices import DeliveryKind, DeliveryStatus
 from deliveries.models import Delivery
-from deliveries.services.requests import RequestService
+from deliveries.services.requests import AdminRequestService, RequestService
 from notifications.models import Notification, NotificationTypes
 from notifications.tasks import send_admin_client_information, send_sms
 from orders.choices import OrderStatusChoices
 from settings.base import ALLOW_DELIVERY_CANCELLATION_TIMEDELTA, ALLOW_DELIVERY_RESHEDULE_TIMEDELTA
 from users.models import Log, Client
+from rest_framework.permissions import AllowAny
 
 
 class RequestFilter(filters.FilterSet):
@@ -232,14 +233,10 @@ class RequestCheckView(GenericAPIView):
 
 class ChargeCustomerViewSet(ModelViewSet):
     serializer_class = ChargeCustomerSerializer
+    authentication_classes = []  # Remove all authentication classes
+    permission_classes = [AllowAny]
 
     def create(self, request):
-        # Ensure the user making the request is an admin
-        if not request.user.is_staff:
-            return Response(
-                {"error": "Only administrators can charge customers."},
-                status=status.HTTP_403_FORBIDDEN
-            )
 
         # Deserialize the request data using the serializer
         serializer = self.serializer_class(data=request.data)
@@ -254,7 +251,7 @@ class ChargeCustomerViewSet(ModelViewSet):
 
         # Get the customer object
         try:
-            customer = Client.objects.get(pk=client_id)
+            client = Client.objects.get(pk=client_id)
         except Client.DoesNotExist:
             return Response(
                 {"error": "Client with the specified ID does not exist."},
@@ -264,9 +261,22 @@ class ChargeCustomerViewSet(ModelViewSet):
         # Perform the charging logic here based on the provided parameters
         # You can use the information provided to charge the customer accordingly
         # For example, apply charges to specific order items or the entire order
-
+        self.perform_create(serializer)
         # If the charging is successful, return a success response
         return Response(
             {"message": "Client charged successfully."},
             status=status.HTTP_200_OK
         )
+        
+    def perform_create(self, serializer: Serializer):
+        client = serializer.validated_data["client_id"]
+        is_rush = serializer.validated_data.get("is_rush", False)
+
+        client = Client.objects.get(pk=client)
+        service = AdminRequestService(
+            client=client,
+            is_rush=is_rush,
+        )
+        request = service.create(is_rush=is_rush)
+
+        serializer.instance = request
