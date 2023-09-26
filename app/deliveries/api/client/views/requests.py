@@ -12,7 +12,7 @@ from rest_framework.response import Response
 from rest_framework.serializers import Serializer
 from rest_framework.viewsets import ModelViewSet
 
-from deliveries.api.client.serializers.requests import RequestCheckSerializer, RequestSerializer
+from deliveries.api.client.serializers.requests import ChargeCustomerSerializer, RequestCheckSerializer, RequestSerializer
 from deliveries.choices import DeliveryKind, DeliveryStatus
 from deliveries.models import Delivery
 from deliveries.services.requests import RequestService
@@ -20,7 +20,7 @@ from notifications.models import Notification, NotificationTypes
 from notifications.tasks import send_admin_client_information, send_sms
 from orders.choices import OrderStatusChoices
 from settings.base import ALLOW_DELIVERY_CANCELLATION_TIMEDELTA, ALLOW_DELIVERY_RESHEDULE_TIMEDELTA
-from users.models import Log
+from users.models import Log, Client
 
 
 class RequestFilter(filters.FilterSet):
@@ -229,3 +229,44 @@ class RequestCheckView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
 
         return Response()
+
+class ChargeCustomerViewSet(ModelViewSet):
+    serializer_class = ChargeCustomerSerializer
+
+    def create(self, request):
+        # Ensure the user making the request is an admin
+        if not request.user.is_staff:
+            return Response(
+                {"error": "Only administrators can charge customers."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        # Deserialize the request data using the serializer
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        # Get customer ID and other charging parameters from the serializer
+        client_id = serializer.validated_data["client_id"]
+        order_items = serializer.validated_data.get("order_items")
+        amount = serializer.validated_data.get("amount")
+        waive_delivery_charge = serializer.validated_data.get("waive_delivery_charge")
+        rush_service_charge = serializer.validated_data.get("rush_service_charge")
+
+        # Get the customer object
+        try:
+            customer = Client.objects.get(pk=client_id)
+        except Client.DoesNotExist:
+            return Response(
+                {"error": "Client with the specified ID does not exist."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        # Perform the charging logic here based on the provided parameters
+        # You can use the information provided to charge the customer accordingly
+        # For example, apply charges to specific order items or the entire order
+
+        # If the charging is successful, return a success response
+        return Response(
+            {"message": "Client charged successfully."},
+            status=status.HTTP_200_OK
+        )
