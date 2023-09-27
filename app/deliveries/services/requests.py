@@ -303,3 +303,48 @@ class AdminRequestService:
 
         return request
 
+    def refresh_amount_with_discount(
+        self,
+        order: Order,
+        basket: Optional[Basket],
+        request: Optional[Request],
+        subscription: Optional[Subscription],
+        **kwargs,
+    ) -> Optional[float]:
+        """
+        Invoicing method, called when POS checkout occurs.
+        Creates 2 invoice - for Pickup Delivery and for Dropoff Delivery.
+        """
+        if not basket or not request:
+            return None
+
+        client = self._client
+        subscription = client.subscription
+        invoice_service = InvoiceService(client)
+        basket_container = BasketContainer(subscription, basket)  # type: ignore
+        request_container = RequestContainer(subscription, request, basket_container)  # type: ignore
+        amount = request_container.amount + request_container.rush_amount
+        discount = request_container.discount
+
+        request = invoice_service.refresh_amount_discount(
+            entity=request,
+            amount=amount,
+            discount=discount,
+        )
+        return request.amount_with_discount
+    
+    def checkout(self, **kwargs):
+        """
+        Dummy implementation of interface.
+        """
+        pass
+
+    def confirm(
+            self,
+            request: Optional[Request],
+            basket: Optional[Basket],
+            subscription: Optional[Subscription],
+            invoice: Invoice,
+            **kwargs,
+        ):
+            pass
