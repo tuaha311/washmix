@@ -261,7 +261,7 @@ class ChargeCustomerViewSet(ModelViewSet):
         # Perform the charging logic here based on the provided parameters
         # You can use the information provided to charge the customer accordingly
         # For example, apply charges to specific order items or the entire order
-        request_obj = self.perform_create(serializer)
+        request_obj = self.perform_create(serializer, client)
 
         # If the charging is successful, construct the URL with client_id and request_id
         response_data = {
@@ -272,11 +272,8 @@ class ChargeCustomerViewSet(ModelViewSet):
 
         return Response(response_data)
 
-    def perform_create(self, serializer: Serializer):
-        client = serializer.validated_data["client_id"]
+    def perform_create(self, serializer: Serializer, client):
         is_rush = serializer.validated_data.get("is_rush", False)
-
-        client = Client.objects.get(pk=client)
         service = AdminRequestService(
             client=client,
             is_rush=is_rush,

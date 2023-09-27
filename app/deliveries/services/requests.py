@@ -3,6 +3,7 @@ from typing import Optional, Tuple
 
 from django.db.transaction import atomic
 from django.utils.timezone import localtime
+from orders.choices import OrderPaymentChoices
 
 from billing.models import Invoice
 from billing.services.invoice import InvoiceService
@@ -265,18 +266,29 @@ class AdminRequestService:
         extra_kwargs.setdefault("is_rush", self._is_rush)
 
         with atomic():
-            request = Request.objects.create(
-                client=self._client,
-                **extra_kwargs,
-            )
+            # Add a check and find the request that was created by Admin and it either does not have the order or it's not been charged.
+            existed_request = Request.objects.filter(client=self._client, order__payment=OrderPaymentChoices.UNPAID, generated_by_admin=True).first()
+
+            if existed_request:
+                request = existed_request
+
+            else:
+                request = Request.objects.create(
+                    client=self._client,
+                    comment="Admin generated this request",
+                    generated_by_admin=True,  # Add a comma here
+                    **extra_kwargs,
+                )
 
             send_admin_client_information(
                 self._client.id,
                 "A New Admin Request is Created",
             )
-            Log.objects.create(customer=self._client.email, action="Created New Admin Request")
+            Log.objects.create(customer=self._client.email, action="Created new Admin Request to charge customer.")
             # Notification.create_notification(self._client, NotificationTypes.NEW_ADMIN_REQUEST)
+
         return request
+
 
     def get_or_create(self, extra_query: dict, extra_defaults: dict) -> Tuple[Request, bool]:
         """
