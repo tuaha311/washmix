@@ -51,8 +51,9 @@ def outbound_sms(request):
         customers = clients.objects.all()
         billing_address = [customer.billing_address for customer in customers]
 
-        zips = list(set(address["zip_code"] for address in billing_address))
-        addresses = list(set(address["address_line_1"] for address in billing_address))
+        zips = [address["zip_code"] for address in billing_address if "zip_code" in address and address["zip_code"]]
+        addresses = [address["address_line_1"] for address in billing_address if "address_line_1" in address and address["address_line_1"]]
+        addresses = list(set(addresses))
         cities = [
             address.split(",")[-1].strip()
             for address in addresses
