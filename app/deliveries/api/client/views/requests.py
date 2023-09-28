@@ -244,10 +244,6 @@ class ChargeCustomerViewSet(ModelViewSet):
 
         # Get customer ID and other charging parameters from the serializer
         client_id = serializer.validated_data["client_id"]
-        order_items = serializer.validated_data.get("order_items")
-        amount = serializer.validated_data.get("amount")
-        waive_delivery_charge = serializer.validated_data.get("waive_delivery_charge")
-        rush_service_charge = serializer.validated_data.get("rush_service_charge")
 
         # Get the customer object
         try:
