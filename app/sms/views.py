@@ -96,7 +96,7 @@ def send_sms(request):
         for i in range(0, len(customers), 50):
             batch_customers = customers[i:i+50]
             # Prepare recipient list and context
-            recipient_list = [customer.main_phone.number for customer in batch_customers]
+            recipient_list = [customer.main_phone.number for customer in batch_customers if customer.main_phone and customer.main_phone.number]
             event = settings.PROMOTION
             context = {
                 "template": template.content,
