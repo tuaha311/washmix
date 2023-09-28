@@ -247,23 +247,24 @@ class RequestService(PaymentInterfaceService):
         }
 
 
-class AdminRequestService:
+class AdminRequestService(RequestService):
     """
     This service is responsible for Admin Requests handling.
     """
-
-    def __init__(self, client: Client, is_rush=False):
-        self._client = client
-        self._is_rush = is_rush
-
+    
     def create(self, **extra_kwargs) -> Request:
         """
         Create a new Admin Request.
         """
 
+        self._validator_service.validate()
+
+        dropoff_info = self._dropoff_info
+        pickup_info = self._pickup_info
+
         address = self._client.main_address
         extra_kwargs.setdefault("address", address)
-        extra_kwargs.setdefault("is_rush", self._is_rush)
+        extra_kwargs.setdefault("is_rush", False)
 
         with atomic():
             # Add a check and find the request that was created by Admin and it either does not have the order or it's not been charged.
@@ -274,10 +275,22 @@ class AdminRequestService:
 
             else:
                 request = Request.objects.create(
-                    client=self._client,
-                    comment="Admin generated this request",
-                    generated_by_admin=True,  # Add a comma here
-                    **extra_kwargs,
+                client=self._client,
+                comment="Admin generated this request",
+                generated_by_admin=True,
+                **extra_kwargs,
+                )
+                Delivery.objects.create(
+                    request=request,
+                    kind=DeliveryKind.PICKUP,
+                    status=DeliveryStatus.COMPLETED,
+                    **pickup_info,
+                )
+                Delivery.objects.create(
+                    request=request,
+                    kind=DeliveryKind.DROPOFF,
+                    status=DeliveryStatus.COMPLETED,
+                    **dropoff_info,
                 )
 
             send_admin_client_information(
@@ -288,75 +301,3 @@ class AdminRequestService:
             # Notification.create_notification(self._client, NotificationTypes.NEW_ADMIN_REQUEST)
 
         return request
-
-
-    def get_or_create(self, extra_query: dict, extra_defaults: dict) -> Tuple[Request, bool]:
-        """
-        Get or create an Admin Request.
-        """
-
-        address = self._client.main_address
-        extra_defaults.setdefault("address", address)
-        extra_defaults.setdefault("is_rush", False)
-
-        with atomic():
-            request, created = Request.objects.get_or_create(
-                client=self._client,
-                **extra_query,
-                defaults=extra_defaults,
-            )
-
-        return request, created
-
-    def recalculate(self, request: Request) -> Request:
-        """
-        This method is not applicable for Admin requests.
-        """
-
-        return request
-
-    def refresh_amount_with_discount(
-        self,
-        order: Order,
-        basket: Optional[Basket],
-        request: Optional[Request],
-        subscription: Optional[Subscription],
-        **kwargs,
-    ) -> Optional[float]:
-        """
-        Invoicing method, called when POS checkout occurs.
-        Creates 2 invoice - for Pickup Delivery and for Dropoff Delivery.
-        """
-        if not basket or not request:
-            return None
-
-        client = self._client
-        subscription = client.subscription
-        invoice_service = InvoiceService(client)
-        basket_container = BasketContainer(subscription, basket)  # type: ignore
-        request_container = RequestContainer(subscription, request, basket_container)  # type: ignore
-        amount = request_container.amount + request_container.rush_amount
-        discount = request_container.discount
-
-        request = invoice_service.refresh_amount_discount(
-            entity=request,
-            amount=amount,
-            discount=discount,
-        )
-        return request.amount_with_discount
-    
-    def checkout(self, **kwargs):
-        """
-        Dummy implementation of interface.
-        """
-        pass
-
-    def confirm(
-            self,
-            request: Optional[Request],
-            basket: Optional[Basket],
-            subscription: Optional[Subscription],
-            invoice: Invoice,
-            **kwargs,
-        ):
-            pass
