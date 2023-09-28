@@ -276,7 +276,7 @@ class AdminRequestService(RequestService):
             else:
                 request = Request.objects.create(
                 client=self._client,
-                comment="Admin generated this request",
+                comment="This request was initiated by an admin",
                 generated_by_admin=True,
                 **extra_kwargs,
                 )
