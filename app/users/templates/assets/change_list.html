@@ -3,7 +3,6 @@
 {% block extrahead %}
 <script>
   function submitForm() {
-    console.log("clickedddd")
     const form = document.getElementById('charge-form');
     const clientId = form.querySelector('input[name="client_id"]').value;
 
@@ -21,7 +20,6 @@
     })
     .then((response) => {
       response.json().then((responseJson)=>{
-        console.log("responseJson:",responseJson)
         window.location = responseJson.path
       })
       

@@ -98,6 +98,7 @@ class Request(CommonScheduleRequest, CommonAmountDiscountModel):
         editable=False,
         blank=True,
         null=True,
+        default=False
     )
 
     class Meta:
