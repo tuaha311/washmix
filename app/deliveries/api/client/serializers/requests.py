@@ -68,7 +68,3 @@ class RequestCheckSerializer(serializers.Serializer):
     
 class ChargeCustomerSerializer(serializers.Serializer):
     client_id = serializers.IntegerField()
-    order_items = serializers.ListField(child=serializers.IntegerField(), required=False)
-    amount = serializers.DecimalField(max_digits=10, decimal_places=2, required=False)
-    waive_delivery_charge = serializers.BooleanField(required=False)
-    rush_service_charge = serializers.DecimalField(max_digits=10, decimal_places=2, required=False)
