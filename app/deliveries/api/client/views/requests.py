@@ -262,7 +262,7 @@ class ChargeCustomerViewSet(ModelViewSet):
         # If the charging is successful, construct the URL with client_id and request_id
         response_data = {
             "message": "Client charged successfully.",
-            "path": f"/admin/pos/?client_id={client_id}&request_id={request_obj.id}&is_admin=1",
+            "path": f"/admin/pos/?client_id={client_id}&request_id={request_obj.id}",
             "status": status.HTTP_200_OK
         }
 
@@ -274,6 +274,6 @@ class ChargeCustomerViewSet(ModelViewSet):
             client=client,
             is_rush=is_rush,
         )
-        request = service.create(is_rush=is_rush)
+        request = service.create()
 
         return request
