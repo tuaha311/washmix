@@ -61,7 +61,10 @@ class OrderSerializer(CommonContainerSerializer, serializers.ModelSerializer):
         ]
 
     def get_purpose(self, obj):
-        return obj.invoice.purpose
+        if obj.invoice is not None:
+            return obj.invoice.purpose
+        else:
+            return None
 
 
 class POSOrderCheckoutSerializer(serializers.Serializer):
