@@ -410,14 +410,14 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
 
         if add_money_amount and add_money_amount > 0:
             transaction = add_money_to_balance(
-                client, add_money_amount, provider=InvoiceProvider.WASHMIX, note=description
+                client, add_money_amount, provider=InvoiceProvider.WASHMIX, note=(description if description else f"Admin added {add_money_amount} to your account")
             )
             added_or_removed = "added"
             credit_given = convert_cent_to_dollars(int(add_money_amount))
 
         if remove_money_amount and remove_money_amount > 0:
             transaction = remove_money_from_balance(
-                client, remove_money_amount, provider=InvoiceProvider.WASHMIX, note=description
+                client, remove_money_amount, provider=InvoiceProvider.WASHMIX, note=(description if description else f"Admin deducted {remove_money_amount} from your account")
             )
             added_or_removed = "removed"
             credit_given = convert_cent_to_dollars(int(remove_money_amount))
