@@ -118,3 +118,9 @@ def update_deliveries_to_no_show(delivery):
     drop_off_delivery.status = DeliveryStatus.NO_SHOW
     drop_off_delivery.save()
     print("Updated delivery to NO_SHOW: ", drop_off_delivery.pk)
+
+def update_cancelled_deliveries(delivery):
+    request = delivery.request
+    drop_off_delivery = request.delivery_list.get(kind=DeliveryKind.DROPOFF)
+    drop_off_delivery.status = DeliveryStatus.CANCELLED
+    drop_off_delivery.save()
