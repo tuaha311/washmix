@@ -147,7 +147,7 @@ class DeliveryAdminMain(AdminWithSearch):
                             if delivery.kind == DeliveryKind.PICKUP:
                                 update_deliveries_to_no_show(delivery)
 
-                            elif delivery.kind == DeliveryKind.DROPOFF:
+                            if delivery.kind == DeliveryKind.DROPOFF:
                                 delivery_request = delivery.request
                                 pickup = delivery_request.delivery_list.get(kind=DeliveryKind.PICKUP)
                                 if pickup.status is not DeliveryStatus.NO_SHOW:
