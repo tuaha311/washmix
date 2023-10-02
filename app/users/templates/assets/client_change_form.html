@@ -1,6 +1,13 @@
 {% extends 'admin/change_form.html' %} 
 
 {% block extrahead %}
+
+<script>
+  document.addEventListener("DOMContentLoaded", (event) => {
+    console.log("CODEEE HEREEEE")
+    hideLoadingOverlay();
+  });
+</script>
 <script>
   function submitForm() {
     const form = document.getElementById('charge-form');
@@ -31,7 +38,6 @@
 </script>
 
 {{ block.super }}
-
 {% endblock %}
 
 {% block extrastyle %}
@@ -48,22 +54,23 @@
 {% endblock %}
 
 {% block object-tools-items %}
-<div>
+<div style="margin-right:5px;">
   <form id="charge-form">
     <input type="hidden" value="{{ original.pk }}" name="client_id">
     <input type="button" class="modal-button" onclick="submitForm()" value="Charge client"></input>
   </form>
 </div>
+
+<div>
+
+  <form id="send-sms-form" action="{% url 'client:generate-pdf' %}" method="get">
+    <input type="hidden" name="client_id" value="{{ original.pk }}">
+    <input type="submit" value="Generate PDF" class="submit-button" />
+  </form>
+</div>
 {{ block.super }}
-{% extends "admin/change_list.html" %} 
-{% block extrahead %}
-<script>
-  document.addEventListener("load", (event) => {
-    hideLoadingOverlay()
-  });
-</script>
-{{ block.super }}
-{% endblock %} 
+{% endblock %}
+
 {% block content %} 
 {{ block.super }} 
 {% include "pre-loader.html" %} 

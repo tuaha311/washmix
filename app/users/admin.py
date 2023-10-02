@@ -519,15 +519,11 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
         if "autocomplete" in request.path:
             queryset = queryset.filter(user__email__contains=request.GET.get("q", ""))
         return queryset, use_distinct
-    
-    change_form_template = "assets/generate_client_pdf_change_list.html"
-    
-    change_list_template = 'assets/change_list.html'
 
     def changelist_view(self, request, extra_context=None):
         return super().changelist_view(request, extra_context=extra_context)
 
-    change_form_template = "assets/change_list.html"
+    change_form_template = "assets/client_change_form.html"
 
 class CustomerAdmin(AdminWithSearch):
     list_display = [
