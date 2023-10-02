@@ -229,9 +229,7 @@ class DeliveryAdminMain(AdminWithSearch):
 
         if "admin" in request.path:
             # The form was submitted from the admin panel
-            if "date" in update_fields or (
-                "status" in update_fields and obj.status == DeliveryStatus.CANCELLED
-            ):
+            if "date" in update_fields:
                 print("Sending the Singnal to delivery.")
                 post_save.send(
                     sender=Delivery,
