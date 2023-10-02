@@ -55,4 +55,16 @@
   </form>
 </div>
 {{ block.super }}
+{% extends "admin/change_list.html" %} 
+{% block extrahead %}
+<script>
+  document.addEventListener("load", (event) => {
+    hideLoadingOverlay()
+  });
+</script>
+{{ block.super }}
+{% endblock %} 
+{% block content %} 
+{{ block.super }} 
+{% include "pre-loader.html" %} 
 {% endblock %}

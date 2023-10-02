@@ -1,5 +1,7 @@
 {% if pdf_path %}
-  <a class="link" target="_blank" href="{{ pdf_path }}">{{ pdf_path }}</a>
+  <a class="link" target={% if not_blank %}""{% else %}
+  "_blank"
+{% endif %} href="{{ pdf_path }}">{{ pdf_path }}</a>
 {% else %}
   <p>-</p>
 {% endif %}
