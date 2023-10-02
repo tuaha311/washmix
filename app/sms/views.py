@@ -112,7 +112,7 @@ def send_sms(request):
             )
 
         messages.success(request, "SMS send request submitted successfully.")
-        return redirect("/sms/outbound-sms")
+        return redirect("/admin/sms/outbound-sms")
     else:
         messages.error(request, "Invalid request method.")
-        return redirect("/sms/outbound-sms")
+        return redirect("/admin/sms/outbound-sms")
