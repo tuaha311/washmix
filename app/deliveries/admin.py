@@ -96,8 +96,8 @@ class DeliveryAdminMain(AdminWithSearch):
         "client",
     ]
     form = DeliveryForm
+    list_display_links = ['__str__']
     list_display = [
-        'select',
         "__str__",
         "full_name",
         "phone",
@@ -125,6 +125,8 @@ class DeliveryAdminMain(AdminWithSearch):
         "employee",
     ]
     
+    ''' I HAVE SET ACTIONS STYLE TO DISPLAY NONE IN change_employee.html WE WILL NEED TO REMOVE THAT IF WE ADD ANY NEW ACTION '''
+    actions=["update_deliveries"]
     def update_deliveries(request):
         if request.method == 'POST':
             selected_deliveries = request.POST.getlist('selected_deliveries')
@@ -142,13 +144,19 @@ class DeliveryAdminMain(AdminWithSearch):
                         # Check if the delivery kind is 'DROPOFF' and new status is 'NO_SHOW'
                         for delivery_id in selected_deliveries:
                             delivery = Delivery.objects.get(id=delivery_id)
+                            if delivery.kind == DeliveryKind.PICKUP:
+                                update_deliveries_to_no_show(delivery)
+
                             if delivery.kind == DeliveryKind.DROPOFF:
-                                messages.warning(request, f"Skipping delivery {delivery_id} as it's a dropoff and cannot be set to 'NO_SHOW'.")
-                                continue
-                            
-                            # Update other deliveries to the new status
-                            Delivery.objects.filter(id=delivery_id).update(status=new_status)
-                            update_fields['status'] = new_status
+                                delivery_request = delivery.request
+                                pickup = delivery_request.delivery_list.get(kind=DeliveryKind.PICKUP)
+                                if pickup.status is not DeliveryStatus.NO_SHOW:
+                                    messages.warning(request, f"Dropoff delivery for {delivery_id} cannot be marked as No Show.")
+                                    continue
+                            else:
+                                # Update other deliveries to the new status
+                                Delivery.objects.filter(id=delivery_id).update(status=new_status)
+                                update_fields['status'] = new_status
                     else:
                         # Update all deliveries to the new status
                         Delivery.objects.filter(id__in=selected_deliveries).update(status=new_status)
@@ -172,10 +180,6 @@ class DeliveryAdminMain(AdminWithSearch):
 
         return super().changelist_view(request, extra_context=extra_context)
 
-    def select(self, obj):
-        return format_html('<input type="checkbox" name="_selected_action" value="{}" onchange="updatePkList(this)">', obj.pk)
-    
-    # autocomplete_fields = ('employee',)
     def get_changelist_form(self, request, **kwargs):
         return DeliveryForm
 
