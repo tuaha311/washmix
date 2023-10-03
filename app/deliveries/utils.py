@@ -120,7 +120,17 @@ def update_deliveries_to_no_show(delivery):
     print("Updated delivery to NO_SHOW: ", drop_off_delivery.pk)
 
 def update_cancelled_deliveries(delivery):
-    request = delivery.request
-    drop_off_delivery = request.delivery_list.get(kind=DeliveryKind.DROPOFF)
-    drop_off_delivery.status = DeliveryStatus.CANCELLED
-    drop_off_delivery.save()
+    if delivery.kind == DeliveryKind.DROPOFF and delivery.status == DeliveryStatus.CANCELLED:
+        request = delivery.request
+        pick_up_delivery = request.delivery_list.get(kind=DeliveryKind.PICKUP)
+        
+        # Check if the corresponding pickup delivery is not cancelled
+        if pick_up_delivery.status != DeliveryStatus.CANCELLED:
+            # Return an admin notification that pickup cannot be cancelled
+            return "Admin notification: Dropoff cannot be cancelled because the corresponding pickup is not cancelled."
+    
+    else:
+        request = delivery.request
+        drop_off_delivery = request.delivery_list.get(kind=DeliveryKind.DROPOFF)
+        drop_off_delivery.status = DeliveryStatus.CANCELLED
+        drop_off_delivery.save()
