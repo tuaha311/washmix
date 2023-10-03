@@ -9,8 +9,28 @@ from drf_yasg.views import get_schema_view
 
 from api.generators import WashMixSchemaGenerator
 from api.views import EmailRenderView, static_server
+from sms.views import outbound_sms
+from django.contrib.admin import AdminSite
+from django.urls import path
 
 urlpatterns = []
+
+
+# CustomAdminURL is used to extend the admin functionality with additional protected URLs.
+# These URLs are designed for admin-only access.
+class CustomAdminURL(AdminSite):
+    def get_urls(self):
+        urls = super().get_urls()
+
+        # Add the custom URL patterns
+        urls += [
+            path("sms/outbound-sms/", self.admin_view(outbound_sms), name="outbound_sms"),
+        ]
+
+        return urls
+
+# Register your custom admin site
+custom_admin_site = CustomAdminURL(name="custom-admin-url")
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -58,4 +78,10 @@ urlpatterns += [
     # Static files serving
     *static_server(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
     *static_server(settings.STATIC_URL, document_root=settings.STATIC_ROOT),
+]
+
+
+# Include your custom admin URLs
+urlpatterns += [
+    path("admin/", custom_admin_site.urls),  # Change "admin-url" to the desired path
 ]

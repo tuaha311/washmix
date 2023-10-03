@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
+from locations.models import City
 
 from notifications.tasks import send_sms as Send_SMS
 from users.models import Client as clients
@@ -28,7 +29,7 @@ def get_selected_customers(request):
             selected += str(default.id) + ","
 
     elif city_param:
-        defaults = clients.objects.filter(Q(billing_address__address_line_1__contains=city_param))
+        defaults = clients.objects.filter(billing_address__address_line_1__icontains=city_param)
         for default in defaults:
             selected += str(default.id) + ","
     elif address_param:
@@ -54,11 +55,17 @@ def outbound_sms(request):
         zips = [address["zip_code"] for address in billing_address if "zip_code" in address and address["zip_code"]]
         addresses = [address["address_line_1"] for address in billing_address if "address_line_1" in address and address["address_line_1"]]
         addresses = list(set(addresses))
-        cities = [
-            address.split(",")[-1].strip()
-            for address in addresses
-            if address.split(",")[-1].strip()
-        ]
+        all_cities = City.objects.all()
+        
+        cities = []
+        # Iterate through addresses and all_cities to find matching city names
+        for address in addresses:
+            for city in all_cities:
+                if city.name in address:
+                    cities.append(city.name)
+
+        # Remove duplicates from the cities list
+        cities = list(set(cities))
 
         templates = SMSTemplate.objects.all()
         context = {
@@ -112,7 +119,7 @@ def send_sms(request):
             )
 
         messages.success(request, "SMS send request submitted successfully.")
-        return redirect("/sms/outbound-sms")
+        return redirect("/admin/sms/outbound-sms")
     else:
         messages.error(request, "Invalid request method.")
-        return redirect("/sms/outbound-sms")
+        return redirect("/admin/sms/outbound-sms")
