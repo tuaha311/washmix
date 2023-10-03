@@ -127,7 +127,7 @@ def update_cancelled_deliveries(delivery):
         # Check if the corresponding pickup delivery is not cancelled
         if pick_up_delivery.status != DeliveryStatus.CANCELLED:
             # Return an admin notification that pickup cannot be cancelled
-            return "Admin notification: Pickup cannot be cancelled because the corresponding dropoff is not cancelled."
+            return "Admin notification: Dropoff cannot be cancelled because the corresponding pickup is not cancelled."
     
     else:
         request = delivery.request
