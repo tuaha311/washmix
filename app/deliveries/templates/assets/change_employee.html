@@ -63,7 +63,7 @@
   ">
     <h1>Bulk Action:</h1>
     <div style="display: flex; flex-direction: row">
-      <form id="update-deliveries-form" action="/deliveries/update-deliveries/" method="post">
+      <form id="update-deliveries-form" action="/admin/deliveries/update-deliveries/" method="post">
         {% csrf_token %}
         <label for="id_employee">Employee:</label>
         <select id="id_employee" name="new_employee_id">
