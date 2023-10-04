@@ -12,6 +12,7 @@ from api.views import EmailRenderView, static_server
 from sms.views import outbound_sms
 from django.contrib.admin import AdminSite
 from django.urls import path
+from deliveries.admin import DeliveryAdmin
 
 urlpatterns = []
 
@@ -25,6 +26,7 @@ class CustomAdminURL(AdminSite):
         # Add the custom URL patterns
         urls += [
             path("sms/outbound-sms/", self.admin_view(outbound_sms), name="outbound_sms"),
+            path("deliveries/update-deliveries/", DeliveryAdmin.update_deliveries, name="update-deliveries"),
         ]
 
         return urls
