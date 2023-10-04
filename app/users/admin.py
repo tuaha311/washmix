@@ -546,8 +546,8 @@ class EmployeeAdmin(AdminWithSearch):
                     pdf_list.append(pdf_path)
                 
         
-        extra_context['pdf_list'] = pdf_list
-        self.change_form_template = 'assets/change_form.html'
+            extra_context['pdf_list'] = pdf_list
+            self.change_form_template = 'assets/change_form.html'
 
         return super().change_view(request, object_id, form_url, extra_context)
 
