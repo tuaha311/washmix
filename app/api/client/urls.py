@@ -3,7 +3,7 @@ from django.urls import include, path
 from rest_framework.routers import SimpleRouter
 from rest_framework_simplejwt.views import TokenRefreshSlidingView, TokenVerifyView
 
-from api.client.views import auth, checkout, services, twilio
+from api.client.views import auth, checkout, services, twilio, pdf
 from billing.api.views import cards, invoices
 from core.api import views as core_views
 from deliveries.api.client.views import requests, schedules
@@ -86,4 +86,5 @@ urlpatterns = [
     path("locations/", locations.LocationListView.as_view(), name="location-list"),
     path("services/", services.ServiceListView.as_view(), name="service-list"),
     path("customers/", customers.CustomerCreateView.as_view(), name="customer-create"),
+    path("get-pdf/", pdf.get_client_pdf, name="get-pdf"),
 ]
