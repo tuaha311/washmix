@@ -2,6 +2,7 @@ from django.conf import settings
 from django.conf.urls import include
 from django.contrib import admin
 from django.urls import path
+from api.client.views.views import generate_client_pdf
 
 import debug_toolbar
 from drf_yasg import openapi
@@ -28,6 +29,7 @@ class CustomAdminURL(AdminSite):
             path("sms/outbound-sms/", self.admin_view(outbound_sms), name="outbound_sms"),
             path("sms/send-sms/", self.admin_view(send_sms), name="send_sms"),
             path("deliveries/update-deliveries/", DeliveryAdmin.update_deliveries, name="update-deliveries"),
+            path("client/generate-pdf/", self.admin_view(generate_client_pdf), name="generate-pdf"),
         ]
 
         return urls
