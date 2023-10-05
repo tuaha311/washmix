@@ -154,10 +154,10 @@ class DeliveryAdminMain(AdminWithSearch):
                                 if pickup.status is not DeliveryStatus.NO_SHOW:
                                     messages.warning(request, f"Dropoff delivery for {delivery_id} cannot be marked as No Show.")
                                     continue
-                                else:
-                                    # Update other deliveries to the new status
-                                    Delivery.objects.filter(id=delivery_id).update(status=new_status)
-                                    update_fields['status'] = new_status
+                            else:
+                                # Update other deliveries to the new status
+                                Delivery.objects.filter(id=delivery_id).update(status=new_status)
+                                update_fields['status'] = new_status
                                 
                     elif selected_deliveries and new_status == DeliveryStatus.CANCELLED:
                         for delivery_id in selected_deliveries:
