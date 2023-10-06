@@ -12,16 +12,15 @@ from rest_framework.response import Response
 from rest_framework.serializers import Serializer
 from rest_framework.viewsets import ModelViewSet
 
-from deliveries.api.client.serializers.requests import ChargeCustomerSerializer, RequestCheckSerializer, RequestSerializer
+from deliveries.api.client.serializers.requests import RequestCheckSerializer, RequestSerializer
 from deliveries.choices import DeliveryKind, DeliveryStatus
 from deliveries.models import Delivery
-from deliveries.services.requests import AdminRequestService, RequestService
+from deliveries.services.requests import RequestService
 from notifications.models import Notification, NotificationTypes
 from notifications.tasks import send_admin_client_information, send_sms
 from orders.choices import OrderStatusChoices
 from settings.base import ALLOW_DELIVERY_CANCELLATION_TIMEDELTA, ALLOW_DELIVERY_RESHEDULE_TIMEDELTA
-from users.models import Log, Client
-from rest_framework.permissions import AllowAny
+from users.models import Log
 
 
 class RequestFilter(filters.FilterSet):
@@ -230,50 +229,3 @@ class RequestCheckView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
 
         return Response()
-
-class ChargeCustomerViewSet(ModelViewSet):
-    serializer_class = ChargeCustomerSerializer
-    authentication_classes = []  # Remove all authentication classes
-    permission_classes = [AllowAny]
-
-    def create(self, request):
-
-        # Deserialize the request data using the serializer
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        # Get customer ID and other charging parameters from the serializer
-        client_id = serializer.validated_data["client_id"]
-
-        # Get the customer object
-        try:
-            client = Client.objects.get(pk=client_id)
-        except Client.DoesNotExist:
-            return Response(
-                {"error": "Client with the specified ID does not exist."},
-                status=status.HTTP_404_NOT_FOUND
-            )
-
-        # Perform the charging logic here based on the provided parameters
-        # You can use the information provided to charge the customer accordingly
-        # For example, apply charges to specific order items or the entire order
-        request_obj = self.perform_create(serializer, client)
-
-        # If the charging is successful, construct the URL with client_id and request_id
-        response_data = {
-            "message": "Client charged successfully.",
-            "path": f"/admin/pos/?client_id={client_id}&request_id={request_obj.id}",
-            "status": status.HTTP_200_OK
-        }
-
-        return Response(response_data)
-
-    def perform_create(self, serializer: Serializer, client):
-        is_rush = serializer.validated_data.get("is_rush", False)
-        service = AdminRequestService(
-            client=client,
-            is_rush=is_rush,
-        )
-        request = service.create()
-
-        return request

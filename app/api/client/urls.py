@@ -63,7 +63,6 @@ router.register("phones", core_views.PhoneViewSet, basename="phones")
 router.register("cards", cards.CardViewSet, basename="cards")
 router.register("schedules", schedules.ScheduleViewSet, basename="schedules")
 router.register("requests", requests.RequestViewSet, basename="requests")
-router.register("admin-requests", requests.ChargeCustomerViewSet, basename="requests")
 
 urlpatterns = [
     # closed methods that require authorization
