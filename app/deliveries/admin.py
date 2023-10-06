@@ -139,6 +139,7 @@ class DeliveryAdminMain(AdminWithSearch):
                 if new_employee_id != "":
                     Delivery.objects.filter(id__in=selected_deliveries).update(employee_id=new_employee_id)
                     update_fields['employee'] = new_employee_id
+
                 if new_status != "":
                     if new_status == DeliveryStatus.NO_SHOW:
                         # Check if the delivery kind is 'DROPOFF' and new status is 'NO_SHOW'
@@ -157,6 +158,17 @@ class DeliveryAdminMain(AdminWithSearch):
                                 # Update other deliveries to the new status
                                 Delivery.objects.filter(id=delivery_id).update(status=new_status)
                                 update_fields['status'] = new_status
+                                
+                    elif selected_deliveries and new_status == DeliveryStatus.CANCELLED:
+                        for delivery_id in selected_deliveries:
+                            delivery = Delivery.objects.get(id=delivery_id)
+                            updated_delivery = update_cancelled_deliveries(delivery)
+                            if updated_delivery:
+                                Delivery.objects.filter(id=delivery_id).update(status=new_status)
+                                update_fields['status'] = new_status
+                            else:
+                                messages.warning(request, f'Delivery {delivery_id} cannot be marked cancelled because the corresponding pickup is not cancelled.')
+
                     else:
                         # Update all deliveries to the new status
                         Delivery.objects.filter(id__in=selected_deliveries).update(status=new_status)
