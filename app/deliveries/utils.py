@@ -2,7 +2,11 @@ from datetime import date, datetime, time, timedelta
 from typing import Tuple
 
 from django.conf import settings
+<<<<<<< HEAD
 from deliveries.models.categorize_routes import CategorizeRoute
+=======
+from deliveries.models.delivery import Delivery
+>>>>>>> 722ad52 (feat: Introduce Instore Request Feature)
 
 from deliveries.choices import DeliveryKind, DeliveryStatus
 from deliveries.models import Holiday, Nonworkingday
@@ -195,3 +199,15 @@ def find_next_delivery_day(pickup_weekday, days_with_deliveries, pickup_date):
     
     return pickup_date
     
+    
+def update_completed_in_store_deliveries(delivery):
+    request = delivery.request
+
+    try:
+        drop_off_delivery = request.delivery_list.get(kind=DeliveryKind.DROPOFF)
+        drop_off_delivery.status = DeliveryStatus.COMPLETED
+        drop_off_delivery.save()
+        
+        return True
+    except (Delivery.DoesNotExist, Delivery.MultipleObjectsReturned):
+        return False
