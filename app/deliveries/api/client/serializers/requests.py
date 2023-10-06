@@ -65,3 +65,6 @@ class RequestCheckSerializer(serializers.Serializer):
         service.validate()
 
         return attrs
+    
+class ChargeCustomerSerializer(serializers.Serializer):
+    client_id = serializers.IntegerField()
