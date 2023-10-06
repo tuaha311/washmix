@@ -1,6 +1,21 @@
 {% extends 'admin/change_form.html' %} 
 
 {% block extrahead %}
+
+{% if not user.is_superuser %}
+  <script>
+    // This section hides the "Delete Client Account" button when the user does not have superuser privileges.
+    document.addEventListener("DOMContentLoaded", function() {
+      const deleteButtons = document.querySelectorAll('.deletelink');
+      console.warn("Code there  or where???")
+
+      deleteButtons.forEach(button => {
+          button.style.display = 'none';
+      });
+      });
+  </script>
+{% endif %}
+
 <script>
   function submitForm() {
     const form = document.getElementById('charge-form');
