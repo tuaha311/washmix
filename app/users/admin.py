@@ -486,7 +486,6 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
             queryset = queryset.filter(user__email__contains=request.GET.get("q", ""))
         return queryset, use_distinct
 
-    change_form_template = "assets/change_list.html"
 
 class CustomerAdmin(AdminWithSearch):
     list_display = [
