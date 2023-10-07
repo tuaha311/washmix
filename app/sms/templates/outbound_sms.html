@@ -138,7 +138,7 @@
                 </tr>
             </table>
 
-            <form id="send-sms-form" action="{% url 'send_sms' %}" method="post">
+            <form id="send-sms-form" action="/admin/sms/send-sms/" method="post">
                 {% csrf_token %}
                 <input type="hidden" id="selected-customers-input" name="customers">
                 <input type="hidden" id="selected-template-input" name="template">
