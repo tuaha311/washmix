@@ -1,0 +1,207 @@
+{% extends 'admin/base.html' %} {% load static %} {% block extrahead %} 
+{{ block.super }}
+    <script src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+    <script src="{% static 'admin/js/jquery.init.js' %}"></script>
+    {% endblock %} {% block content %} {% if user.is_authenticated and user.is_staff %} {% block styles %}
+    <head>
+      <style>
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+
+          .loading-overlay .loading-spinner {
+            border: 6px solid #f3f3f3;
+            border-top: 6px solid #3498db;
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            animation: spin 2s linear infinite;
+            background-color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+
+          @keyframes spin {
+            0% {
+              transform: rotate(0deg);
+            }
+            100% {
+              transform: rotate(360deg);
+            }
+          }
+
+        .wrapper {
+          display: block;
+          border: 1px solid #666;
+          padding: 20px;
+          margin: 20px;
+        }
+
+        .wrapper.around {
+          justify-content: space-around;
+        }
+
+        .wrapper.between {
+          justify-content: space-between;
+        }
+
+        .module {
+          background-color: white;
+          padding: 30px;
+          border: 1px solid #666;
+          margin: 20px 0;
+        }
+
+        .filter-row {
+          margin-bottom: 15px;
+        }
+
+        .filter-row label {
+          margin-right: 10px;
+        }
+
+        .select-multiple-field {
+          width: 220px; /* Increase width */
+        }
+
+        .submit-button {
+          margin-top: 15px;
+        }
+      </style>
+      <title>Client PDF Generator</title>
+    </head>
+    {% endblock %}
+    <body>
+      <div class="wrapper module">
+        <h1>Client PDF Generator</h1>
+
+        <label for="client_select">Select Client:</label>
+        <select id="client_select" name="client_select">
+          <option value="{{ client.id }}" selected >
+            {{ client.email }}
+            </option>
+          {% for client in clients %}
+            <option value="{{ client.id }}" {% if client.id == client_id %}selected{% endif %}>{{ client.email }}</option>
+          {% endfor %}
+        </select>
+
+        <div style="margin-top: 10px">
+          <label>This week:</label>
+          <a href="{{week_pdf_path}}" target="_blank">{{week_pdf_path}}</a>
+          <input
+            type="submit"
+            onclick="generateDurationPDF('week');"
+            value="Generate PDF for One Week"
+          />
+        </div>
+
+        <br />
+        <div>
+          <label>This Month:</label>
+          <a href="{{month_pdf_path}}" target="_blank">{{month_pdf_path}}</a>
+          <input
+            type="submit"
+            onclick="generateDurationPDF('month');"
+            value="Generate PDF for One Month"
+          />
+        </div>
+
+        <br />
+        <div>
+          <label>This Year:</label>
+          <a href="{{year_pdf_path}}" target="_blank">{{year_pdf_path}}</a>
+          <input
+            type="submit"
+            onclick="generateDurationPDF('year');"
+            value="Generate PDF for One Year"
+          />
+        </div>
+
+        <br />
+        <div>
+          <label>All Times:</label>
+          <a href="{{all_times_pdf_path}}" target="_blank">{{all_times_pdf_path}}</a>
+        </div>
+
+        <!-- Form for custom time frame -->
+        <h2>Custom Time Frame PDF</h2>
+        <form onsubmit="generateCustomTimeFramePDF(event)">
+          <label for="start_date">Start Date:</label>
+          <input type="date" id="start_date" required />
+
+          <label for="end_date">End Date:</label>
+          <input type="date" id="end_date" required />
+
+          <input type="submit" value="Generate Custom Time Frame PDF" />
+        </form>
+        <br/>
+        <div>
+          <label>Custom PDF:</label>
+          <a href="{{custom_pdf_path}}" target="_blank">{{custom_pdf_path}}</a>
+        </div>
+
+        <div class="loading-overlay" id="loading-overlay" style="display: none">
+            <div class="loading-spinner"></div>
+          </div>
+        <!-- Include jQuery for AJAX calls -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+        <!-- JavaScript functions to trigger PDF generation -->
+        <script>
+          function generateDurationPDF(duration) {
+            var selectedClientId = $("#client_select").val(); // Get the selected client ID
+            var data = {
+                client_id: selectedClientId,
+                duration: duration,
+            };
+            generatePDF(data);
+        }
+
+        function generateCustomTimeFramePDF(event) {
+            event.preventDefault();
+            var selectedClientId = $("#client_select").val(); // Get the selected client ID
+            var data = {
+                client_id: selectedClientId,
+                start_date: $("#start_date").val(),
+                end_date: $("#end_date").val(),
+            };
+            generatePDF(data);
+        }
+
+          function generatePDF(data) {
+            document.getElementById("loading-overlay").style.display = "flex";
+            $.post("/admin/client/generate-pdf/", data, function (response) {
+                if (typeof response === 'string') {
+                    try {
+                        response = JSON.parse(response);
+                    } catch (error) {
+                        console.error('Error parsing JSON response:', error);
+                        return;
+                    }
+                }
+                document.getElementById("loading-overlay").style.display = "none";
+                window.open(response.pdf_path, "_blank");
+                window.location.reload();
+            }).fail(function () {
+                document.getElementById("loading-overlay").style.display = "none";
+                alert("PDF generation failed!");
+            });
+          }
+        </script>
+        {% else %}
+        <script>
+            window.location.href = "/admin";
+        </script>
+    {% endif %} {% endblock %}
+      </div>
+    </body>
