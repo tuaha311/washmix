@@ -56,7 +56,7 @@
                 <tr>
                     <td>
                         <label for="customers">Customers:</label>
-                        <select multiple="multiple" id="id_toppings" name="customers" class="select-multiple-field">
+                        <select id="id_toppings" name="customers" class="select-multiple-field">
                             {% for customer in customers %}
                                 {% if customer.id|stringformat:"s" in selected %}
                                     <option value="{{ customer.id }}" selected>{{ customer.full_name }}</option>
@@ -114,7 +114,7 @@
                                 <label for="address">Select Address:</label>
                                 <select id="id_toppings" name="address" class="select-multiple-field" onchange="this.form.submit()">
                                     <option value="">Select Address</option>
-                                    {% for customer in customers %}
+                                    {% for customer in all_customers %}
                                         <option value="{{ customer.billing_address.address_line_1 }}">{{ customer.billing_address.address_line_1 }}</option>
                                     {% endfor %}
                                 </select>
@@ -128,7 +128,7 @@
                                 <label for="phone">Select Phone:</label>
                                 <select id="id_toppings" name="phone" class="select-multiple-field" onchange="this.form.submit()">
                                     <option value="">Select Phone</option>
-                                    {% for customer in customers %}
+                                    {% for customer in all_customers %}
                                         <option value="{{ customer.main_phone.number }}">{{ customer.main_phone.number }}</option>
                                     {% endfor %}
                                 </select>

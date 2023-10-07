@@ -48,11 +48,12 @@ def get_selected_customers(request):
 def outbound_sms(request):
     if request.method == "GET":
         selected = get_selected_customers(request)
+        selected_customers = []
 
         customers = clients.objects.all()
         billing_address = [customer.billing_address for customer in customers]
 
-        zips = [address["zip_code"] for address in billing_address if "zip_code" in address and address["zip_code"]]
+        zips = set([address["zip_code"] for address in billing_address if "zip_code" in address and address["zip_code"]])
         addresses = [address["address_line_1"] for address in billing_address if "address_line_1" in address and address["address_line_1"]]
         addresses = list(set(addresses))
         all_cities = City.objects.all()
@@ -68,8 +69,14 @@ def outbound_sms(request):
         cities = list(set(cities))
 
         templates = SMSTemplate.objects.all()
+        if selected:
+            selected_ids = [int(client_id) for client_id in selected.split(",") if client_id]
+            selected_customers = clients.objects.filter(id__in=selected_ids)
+        else:
+            selected_customers = customers
         context = {
-            "customers": customers,
+            "customers":  selected_customers,
+            "all_customers":  customers,
             "templates": templates,
             "selected": selected,
             "zips": zips,
