@@ -68,8 +68,9 @@
     transition: background 0.3s, box-shadow 0.3s, border 0.3s;
   "
 >
+<h3>Select the customer and template to send the SMS to:</h3>
+<div style="display:flex;">
   <table>
-    <h3>Select the customer and template to send the SMS to:</h3>
     <tr>
       <td>
         <label for="templates">Templates:</label>
@@ -79,8 +80,22 @@
           {% endfor %}
         </select>
       </td>
+      <td>
+        <form id="send-sms-form" action="/admin/sms/send-sms/" method="post">
+          {% csrf_token %}
+          <input type="hidden" id="selected-customers-input" name="customers" />
+          <input type="hidden" id="selected-template-input" name="template" />
+          <input
+            type="button"
+            value="Send SMS"
+            class="submit-button"
+            onclick="sendSMS()"
+          />
+        </form>
+      </td>
     </tr>
   </table>
+</div>
   <hr />
   <br /><br />
   <table>
@@ -91,8 +106,9 @@
           <form
             id="select-zip-form"
             action=""
-            method="get"
+            method="post"
           >
+            {% csrf_token %}
             <label for="zip_code">Select Zip Code:</label>
             <select name="zip_code" onchange="this.form.submit()">
               <option value="">Select Zip Code</option>
@@ -108,8 +124,9 @@
           <form
             id="select-city-form"
             action=""
-            method="get"
+            method="post"
           >
+            {% csrf_token %}
             <label for="city">Select City:</label>
             <select name="city" onchange="this.form.submit()">
               <option value="">Select City</option>
@@ -125,8 +142,9 @@
           <form
             id="select-address-form"
             action=""
-            method="get"
+            method="post"
           >
+            {% csrf_token %}
             <label for="address">Select Address:</label>
             <select
               id="id_toppings"
@@ -149,8 +167,9 @@
           <form
             id="select-phone-form"
             action=""
-            method="get"
+            method="post"
           >
+            {% csrf_token %}
             <label for="phone">Select Phone:</label>
             <select
               id="id_toppings"
@@ -170,17 +189,6 @@
       </td>
     </tr>
   </table>
-  <form id="send-sms-form" action="/admin/sms/send-sms/" method="post">
-    {% csrf_token %}
-    <input type="hidden" id="selected-customers-input" name="customers" />
-    <input type="hidden" id="selected-template-input" name="template" />
-    <input
-      type="button"
-      value="Send SMS"
-      class="submit-button"
-      onclick="sendSMS()"
-    />
-  </form>
 </div>
 {% endblock %}
 
