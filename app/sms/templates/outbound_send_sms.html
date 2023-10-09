@@ -1,0 +1,188 @@
+{% extends 'admin/change_list.html' %} 
+{% load static %} 
+{% block extrastyle %}
+{{ block.super }} 
+<style>
+</style>
+{% endblock %} 
+
+{% block extrahead %}
+<script>
+  function sendSMS() {
+    const checkboxes = document.querySelectorAll('input[name="_selected_action"]');
+    const selectedCustomersInput = document.getElementById("selected-customers-input");
+    const selectedTemplateInput = document.getElementById("selected-template-input");
+  
+    // Get selected customer values
+    const selectedCustomers = Array.from(checkboxes)
+      .filter(checkbox => checkbox.checked)
+      .map(checkbox => checkbox.value);
+  
+    // Get selected template value
+    const selectedTemplate = document.getElementById("templates").value;
+  
+    // Debug: Log values to the console
+    console.log("Selected Customers:", selectedCustomers);
+    console.log("Selected Template:", selectedTemplate);
+  
+    // Update the hidden inputs' values
+    selectedCustomersInput.value = JSON.stringify(selectedCustomers);
+    selectedTemplateInput.value = selectedTemplate;
+  
+    // Ask for confirmation before submitting
+    if (confirm('Are you sure you want to send SMS to selected clients?')) {
+      // Submit the form
+      document.getElementById("send-sms-form").submit();
+    }
+  }
+  
+ </script>
+ 
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelector('.actions').style.display = 'none';
+  })
+</script>
+{{block.super}}
+<script src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+<script src="{% static 'admin/js/jquery.init.js' %}"></script>
+{% endblock %} 
+
+{% block filters %} 
+{{ block.super }} 
+
+<div
+  style="
+    place-items: center;
+    border: 1px solid;
+    padding: 12px;
+    border-radius: 4px;
+    white-space: nowrap;
+    outline: 0;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    background-color: #fff;
+    color: #003459;
+    border: 1px solid #ededed;
+    appearance: none;
+    transition: background 0.3s, box-shadow 0.3s, border 0.3s;
+  "
+>
+  <table>
+    <h3>Select the customer and template to send the SMS to:</h3>
+    <tr>
+      <td>
+        <label for="templates">Templates:</label>
+        <select id="templates" name="template">
+          {% for template in templates %}
+          <option value="{{ template.id }}">{{ template }}</option>
+          {% endfor %}
+        </select>
+      </td>
+    </tr>
+  </table>
+  <hr />
+  <br /><br />
+  <table>
+    <h3>Filter the customer using the filters below:</h3>
+    <tr>
+      <td>
+        <div class="filter-row">
+          <form
+            id="select-zip-form"
+            action=""
+            method="get"
+          >
+            <label for="zip_code">Select Zip Code:</label>
+            <select name="zip_code" onchange="this.form.submit()">
+              <option value="">Select Zip Code</option>
+              {% for zip in zips %}
+              <option value="{{ zip }}">{{ zip }}</option>
+              {% endfor %}
+            </select>
+          </form>
+        </div>
+      </td>
+      <td>
+        <div class="filter-row">
+          <form
+            id="select-city-form"
+            action=""
+            method="get"
+          >
+            <label for="city">Select City:</label>
+            <select name="city" onchange="this.form.submit()">
+              <option value="">Select City</option>
+              {% for city in cities %}
+              <option value="{{ city }}">{{ city }}</option>
+              {% endfor %}
+            </select>
+          </form>
+        </div>
+      </td>
+      <td>
+        <div class="filter-row">
+          <form
+            id="select-address-form"
+            action=""
+            method="get"
+          >
+            <label for="address">Select Address:</label>
+            <select
+              id="id_toppings"
+              name="address"
+              class="select-multiple-field"
+              onchange="this.form.submit()"
+            >
+              <option value="">Select Address</option>
+              {% for customer in all_customers %}
+              <option value="{{ customer.billing_address.address_line_1 }}">
+                {{ customer.billing_address.address_line_1 }}
+              </option>
+              {% endfor %}
+            </select>
+          </form>
+        </div>
+      </td>
+      <td>
+        <div class="filter-row">
+          <form
+            id="select-phone-form"
+            action=""
+            method="get"
+          >
+            <label for="phone">Select Phone:</label>
+            <select
+              id="id_toppings"
+              name="phone"
+              class="select-multiple-field"
+              onchange="this.form.submit()"
+            >
+              <option value="">Select Phone</option>
+              {% for customer in all_customers %}
+              <option value="{{ customer.main_phone.number }}">
+                {{ customer.main_phone.number }}
+              </option>
+              {% endfor %}
+            </select>
+          </form>
+        </div>
+      </td>
+    </tr>
+  </table>
+  <form id="send-sms-form" action="/admin/sms/send-sms/" method="post">
+    {% csrf_token %}
+    <input type="hidden" id="selected-customers-input" name="customers" />
+    <input type="hidden" id="selected-template-input" name="template" />
+    <input
+      type="button"
+      value="Send SMS"
+      class="submit-button"
+      onclick="sendSMS()"
+    />
+  </form>
+</div>
+{% endblock %}
+
+
+

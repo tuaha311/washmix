@@ -1,4 +1,5 @@
 from django.db import models
+from users.models import Client
 
 
 class SMSTemplate(models.Model):
@@ -11,3 +12,8 @@ class SMSTemplate(models.Model):
 
     def __str__(self) -> str:
         return self.name
+
+class SendSMS(Client):
+    class Meta:
+        verbose_name_plural = "Send SMS"
+        proxy = True
