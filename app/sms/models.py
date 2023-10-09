@@ -17,3 +17,6 @@ class SendSMS(Client):
     class Meta:
         verbose_name_plural = "Send SMS"
         proxy = True
+
+    def __unicode__(self):
+            return self.name
