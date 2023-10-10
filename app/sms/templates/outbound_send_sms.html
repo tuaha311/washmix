@@ -88,7 +88,21 @@
   }
 </script>
 
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Get the selected customers from the hidden input
+    const selectedCustomersInput = document.getElementById("selected-customers-hidden");
+    const selectedCustomers = JSON.parse(selectedCustomersInput.value);
 
+    // Loop through the checkboxes and check them if their values are in the selectedCustomers list
+    const checkboxes = document.querySelectorAll('input[name="_selected_action"]');
+    checkboxes.forEach(checkbox => {
+      if (selectedCustomers.includes(checkbox.value)) {
+        checkbox.checked = true;
+      }
+    });
+  });
+</script>
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
