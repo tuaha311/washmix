@@ -3,6 +3,13 @@
 {% block extrastyle %}
 {{ block.super }} 
 <style>
+  .reset_button{
+    background: #F0AD4E !important;
+  }
+  .reset_button:hover{
+    background: #f7dcb7 !important;
+    color: black !important;
+  }
 </style>
 {% endblock %} 
 
@@ -81,21 +88,31 @@
         </select>
       </td>
       <td>
-        <form id="send-sms-form" action="/admin/sms/send-sms/" method="post">
-          {% csrf_token %}
-          <input type="hidden" id="selected-customers-input" name="customers" />
-          <input type="hidden" id="selected-template-input" name="template" />
-          <input
-            type="button"
-            value="Send SMS"
-            class="submit-button"
-            onclick="sendSMS()"
-          />
-        </form>
+        <div style="display:flex;">
+          <form id="reset-filters-form" action="" method="get">
+            <input
+              type="submit"
+              value="Reset Filters"
+              class="reset_button"
+            />
+          </form>
+          <form id="send-sms-form" action="/admin/sms/send-sms/" method="post" style="margin-left: 7px;">
+            {% csrf_token %}
+            <input type="hidden" id="selected-customers-input" name="customers" />
+            <input type="hidden" id="selected-template-input" name="template" />
+            <input
+              type="button"
+              value="Send SMS"
+              class="submit-button"
+              onclick="sendSMS()"
+            />
+          </form>
+        </div>
       </td>
     </tr>
   </table>
 </div>
+
   <hr />
   <br /><br />
   <table>
@@ -113,7 +130,7 @@
             <select name="zip_code" onchange="this.form.submit()">
               <option value="">Select Zip Code</option>
               {% for zip in zips %}
-              <option value="{{ zip }}">{{ zip }}</option>
+                <option value="{{ zip }}" {% if zip == selected_zip_code %}selected{% endif %}>{{ zip }}</option>
               {% endfor %}
             </select>
           </form>
@@ -131,7 +148,7 @@
             <select name="city" onchange="this.form.submit()">
               <option value="">Select City</option>
               {% for city in cities %}
-              <option value="{{ city }}">{{ city }}</option>
+              <option value="{{ city }}" {% if city == selected_city %}selected{% endif %}>{{ city }}</option>
               {% endfor %}
             </select>
           </form>
@@ -154,7 +171,7 @@
             >
               <option value="">Select Address</option>
               {% for customer in all_customers %}
-              <option value="{{ customer.billing_address.address_line_1 }}">
+              <option value="{{ customer.billing_address.address_line_1 }}" {% if customer.billing_address.address_line_1 == selected_address %}selected{% endif %}>
                 {{ customer.billing_address.address_line_1 }}
               </option>
               {% endfor %}
@@ -179,7 +196,7 @@
             >
               <option value="">Select Phone</option>
               {% for customer in all_customers %}
-              <option value="{{ customer.main_phone.number }}">
+              <option value="{{ customer.main_phone.number }}" {% if customer.main_phone.number == selected_phone %}selected{% endif %}>
                 {{ customer.main_phone.number }}
               </option>
               {% endfor %}
