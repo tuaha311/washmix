@@ -90,7 +90,9 @@ def send_sms(request):
     if request.method == "POST":
         customer_ids_string = request.POST.getlist("customers")
         template_id = request.POST.get("template")
-
+        if customer_ids_string == ["[]"]:
+            messages.error(request, "Please choose atleast one client to send SMS.")
+            return redirect("/admin/sms/sendsms")
         if not customer_ids_string or not template_id:
             return HttpResponse("Invalid customer IDs or template ID.")
 
