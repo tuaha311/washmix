@@ -19,6 +19,7 @@
     const checkboxes = document.querySelectorAll('input[name="_selected_action"]');
     const selectedCustomersInput = document.getElementById("selected-customers-input");
     const selectedTemplateInput = document.getElementById("selected-template-input");
+    const selectedCustomersZip = document.getElementById("selected-customers-zip");
   
     // Get selected customer values
     const selectedCustomers = Array.from(checkboxes)
@@ -34,6 +35,7 @@
   
     // Update the hidden inputs' values
     selectedCustomersInput.value = JSON.stringify(selectedCustomers);
+    selectedCustomersZip.value = JSON.stringify(selectedCustomers);  // Update both inputs
     selectedTemplateInput.value = selectedTemplate;
   
     // Ask for confirmation before submitting
@@ -44,10 +46,55 @@
   }
   
  </script>
- 
+
+ <script>
+  function selected_customers(formId, selectedCustomersInputName) {
+    const checkboxes = document.querySelectorAll('input[name="_selected_action"]');
+    const selectedCustomersInput = document.getElementById(selectedCustomersInputName);
+
+    // Get selected customer values
+    const selectedCustomers = Array.from(checkboxes)
+      .filter(checkbox => checkbox.checked)
+      .map(checkbox => checkbox.value);
+
+    // Retrieve the value from the hidden input
+    const hiddenInput = document.getElementById("selected-customers-hidden");
+    const extraContextSelectedCustomers = hiddenInput.value;
+
+    // Check if extraContextSelectedCustomers is a non-empty string
+    if (extraContextSelectedCustomers.trim() !== "") {
+      try {
+        // Attempt to parse the JSON
+        const parsedExtraContext = JSON.parse(extraContextSelectedCustomers);
+        if (Array.isArray(parsedExtraContext)) {
+          // If it's an array, concatenate it with selectedCustomers
+          selectedCustomers.push(...parsedExtraContext);
+        }
+      } catch (error) {
+        // Handle JSON parsing error here
+        console.error("JSON parsing error:", error);
+      }
+    }
+
+    // Debug: Log values to the console
+    console.log("Selected Customers:", selectedCustomers);
+
+    // Update the hidden input's value
+    selectedCustomersInput.value = JSON.stringify(selectedCustomers);
+
+    // Submit the form by referencing it by its ID
+    const form = document.getElementById(formId);
+    form.submit();
+  }
+</script>
+
+
+
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     document.querySelector('.actions').style.display = 'none';
+    const hiddenInput = document.getElementById("selected-customers-hidden");
+    const extraContextSelectedCustomers = JSON.parse(hiddenInput.value);
   })
 </script>
 {{block.super}}
@@ -75,6 +122,7 @@
     transition: background 0.3s, box-shadow 0.3s, border 0.3s;
   "
 >
+<input type="hidden" id="selected-customers-hidden" value="{{ selected_customers }}">
 <h3>Select the customer and template to send the SMS to:</h3>
 <div style="display:flex;">
   <table>
@@ -126,8 +174,9 @@
             method="post"
           >
             {% csrf_token %}
+            <input type="hidden" id="selected-customers-zip" name="selected-customers" />
             <label for="zip_code">Select Zip Code:</label>
-            <select name="zip_code" onchange="this.form.submit()">
+            <select name="zip_code" onchange="selected_customers('select-zip-form', 'selected-customers-zip')">
               <option value="">Select Zip Code</option>
               {% for zip in zips %}
                 <option value="{{ zip }}" {% if zip == selected_zip_code %}selected{% endif %}>{{ zip }}</option>
@@ -145,7 +194,8 @@
           >
             {% csrf_token %}
             <label for="city">Select City:</label>
-            <select name="city" onchange="this.form.submit()">
+            <input type="hidden" id="selected-customers-city" name="selected-customers" />
+            <select name="city" onchange="selected_customers('select-city-form', 'selected-customers-city')">
               <option value="">Select City</option>
               {% for city in cities %}
               <option value="{{ city }}" {% if city == selected_city %}selected{% endif %}>{{ city }}</option>
@@ -163,11 +213,12 @@
           >
             {% csrf_token %}
             <label for="address">Select Address:</label>
+            <input type="hidden" id="selected-customers-address" name="selected-customers" />
             <select
               id="id_toppings"
               name="address"
               class="select-multiple-field"
-              onchange="this.form.submit()"
+              onchange="selected_customers('select-address-form', 'selected-customers-address')"
             >
               <option value="">Select Address</option>
               {% for customer in all_customers %}
@@ -188,11 +239,12 @@
           >
             {% csrf_token %}
             <label for="phone">Select Phone:</label>
+            <input type="hidden" id="selected-customers-phone" name="selected-customers" />
             <select
               id="id_toppings"
               name="phone"
               class="select-multiple-field"
-              onchange="this.form.submit()"
+              onchange="selected_customers('select-phone-form', 'selected-customers-phone')"
             >
               <option value="">Select Phone</option>
               {% for customer in all_customers %}
