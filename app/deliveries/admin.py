@@ -15,6 +15,7 @@ from users.models.employee import Employee
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from deliveries.choices import DeliveryStatus
+from django.http import JsonResponse
 
 
 class DeliveryForm(forms.ModelForm):
@@ -136,45 +137,48 @@ class DeliveryAdminMain(AdminWithSearch):
 
             if selected_deliveries and (new_employee_id != "" or new_status != ""):
                 update_fields = {}
-                if new_employee_id != "":
-                    Delivery.objects.filter(id__in=selected_deliveries).update(employee_id=new_employee_id)
-                    update_fields['employee'] = new_employee_id
+                updated_deliveries = []
 
-                if new_status != "":
-                    if new_status == DeliveryStatus.NO_SHOW:
-                        # Check if the delivery kind is 'DROPOFF' and new status is 'NO_SHOW'
-                        for delivery_id in selected_deliveries:
-                            delivery = Delivery.objects.get(id=delivery_id)
-                            if delivery.kind == DeliveryKind.PICKUP:
-                                update_deliveries_to_no_show(delivery)
+                for delivery_id in selected_deliveries:
+                    try:
+                        delivery = Delivery.objects.get(id=delivery_id)
+                        
+                        if new_employee_id != "":
+                            delivery.employee_id = new_employee_id
+                            update_fields['employee'] = new_employee_id
 
-                            if delivery.kind == DeliveryKind.DROPOFF:
-                                delivery_request = delivery.request
-                                pickup = delivery_request.delivery_list.get(kind=DeliveryKind.PICKUP)
-                                if pickup.status is not DeliveryStatus.NO_SHOW:
-                                    messages.warning(request, f"Dropoff delivery for {delivery_id} cannot be marked as No Show.")
-                                    continue
+                        if new_status != "":
+                            if new_status == DeliveryStatus.NO_SHOW:
+                                if delivery.kind == DeliveryKind.PICKUP:
+                                    update_deliveries_to_no_show(delivery)
+                                    delivery.status = new_status
+                                    update_fields['status'] = new_status
+                                    
+                                if delivery.kind == DeliveryKind.DROPOFF:
+                                    delivery_request = delivery.request
+                                    pickup = delivery_request.delivery_list.get(kind=DeliveryKind.PICKUP)
+                                    if pickup.status != DeliveryStatus.NO_SHOW:
+                                        messages.warning(request, f"Dropoff delivery for {delivery_id} cannot be marked as No Show.")
+                                        continue
+                            elif new_status == DeliveryStatus.CANCELLED:
+                                updated_delivery = update_cancelled_deliveries(delivery)
+                                if updated_delivery:
+                                    delivery.status = new_status
+                                    update_fields['status'] = new_status
+                                else:
+                                    messages.warning(request, f'Delivery {delivery_id} cannot be marked cancelled because the corresponding pickup is not cancelled.')
                             else:
-                                # Update other deliveries to the new status
-                                Delivery.objects.filter(id=delivery_id).update(status=new_status)
+                                delivery.status = new_status
                                 update_fields['status'] = new_status
-                                
-                    elif selected_deliveries and new_status == DeliveryStatus.CANCELLED:
-                        for delivery_id in selected_deliveries:
-                            delivery = Delivery.objects.get(id=delivery_id)
-                            updated_delivery = update_cancelled_deliveries(delivery)
-                            if updated_delivery:
-                                Delivery.objects.filter(id=delivery_id).update(status=new_status)
-                                update_fields['status'] = new_status
-                            else:
-                                messages.warning(request, f'Delivery {delivery_id} cannot be marked cancelled because the corresponding pickup is not cancelled.')
 
-                    else:
-                        # Update all deliveries to the new status
-                        Delivery.objects.filter(id__in=selected_deliveries).update(status=new_status)
-                        update_fields['status'] = new_status
+                        # Save the updated delivery to trigger the post_save signal
+                        delivery.save()
 
-                if update_fields:
+                        updated_deliveries.append(delivery_id)
+                    except Delivery.DoesNotExist:
+                        messages.warning(request, f'Delivery {delivery_id} does not exist.')
+
+                if updated_deliveries:
                     messages.success(request, 'Deliveries updated successfully.')
                 else:
                     messages.warning(request, 'No valid data selected.')
