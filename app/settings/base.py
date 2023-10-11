@@ -666,6 +666,7 @@ SMS_EVENT_INFO = {
 # EMAIL NOTIFICATION EVENTS #
 #############################
 
+SUPER_ADMIN_OTP = "super_admin_otp"
 SIGNUP = "signup"
 FORGOT_PASSWORD = "forgot_password"
 PURCHASE_SUBSCRIPTION = "purchase_subscription"
@@ -696,6 +697,12 @@ SENDGRID_API_KEY = env.str("SENDGRID_API_KEY", "")
 ADMIN_EMAIL_LIST = env.list("ADMIN_EMAIL_LIST", ["michael@washmix.com"])
 
 EMAIL_EVENT_INFO = {
+    SUPER_ADMIN_OTP: {
+        "template_name": "email/super_admin_login_OTP.html",
+        "subject": "Washmix Super Admin Login OTP",
+        "from_email": "info@washmix.com",
+        "reply_to": "info@washmix.com",
+    },
     SIGNUP: {
         "template_name": "email/signup.html",
         "subject": "Welcome to Washmix!",
