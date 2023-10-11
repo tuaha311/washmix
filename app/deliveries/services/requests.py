@@ -211,7 +211,7 @@ class RequestService(PaymentInterfaceService):
     @property
     def _pickup_day_auto_complete(self) -> date:
         now = localtime()
-        return get_pickup_day(now)
+        return get_pickup_day(now, self._client)
 
     @property
     def _dropoff_info(self) -> dict:
