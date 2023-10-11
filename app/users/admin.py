@@ -545,6 +545,7 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
         return obj.verified_email
     
     get_verified_email.short_description = "Verified Email"
+<<<<<<< HEAD
 
     def get_notification_message(self, request):
         message = request.GET.get("message")
@@ -561,6 +562,8 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
 
     get_subscription_name.short_description = 'subscription of service'  
     get_subscription_name.admin_order_field = 'subscription__name'
+=======
+>>>>>>> c4a9d8f (This commit introduces a new feature for Super Admin verification. It includes the following changes:)
 
 class CustomerAdmin(AdminWithSearch):
     list_display = [

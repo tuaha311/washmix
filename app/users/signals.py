@@ -14,6 +14,7 @@ from users.models import Client, Code
 from django.contrib.auth.signals import user_logged_in
 from django.urls import reverse
 from notifications.tasks import send_email
+from django.contrib import messages
 
 logger = logging.getLogger(__name__)
 
@@ -103,7 +104,7 @@ def update_user_stripe_info(
         logger.info(f"Updating name info for {client.email}")
 
 
-def send_otp_via_email_to_super_admin(email, code, phone=None):
+def send_otp_via_email_to_super_admin(request, email, code, phone=None):
     try:
         if phone:
             send_sms.send_with_options(
@@ -116,6 +117,7 @@ def send_otp_via_email_to_super_admin(email, code, phone=None):
             },
             delay=settings.DRAMATIQ_DELAY_FOR_DELIVERY,
             )
+            messages.success(request, f'A verification code has been sent to your phone number "{phone}"')
         else:
             print("Email message requested")
             send_email.send(
@@ -126,13 +128,14 @@ def send_otp_via_email_to_super_admin(email, code, phone=None):
                     "code": code,
                 },
             )
+            messages.success(request, f'A verification code has been sent to your email "{email}"')
     except Exception as e:
         logger.error(f"Error sending email: {str(e)}")
 
 @receiver(user_logged_in)
 def generate_code_for_superadmin(sender, request, user, **kwargs):
     groups = user.groups.all()
-    user_is_admin = any(group.name == "Admins" for group in groups)
+    user_is_admin = any("admin" in group.name.lower() for group in groups)
     employee_user = Employee.objects.get(user=user)
     phone = employee_user.phone if employee_user.phone else None
     if user_is_admin or user.is_superuser:
@@ -142,11 +145,11 @@ def generate_code_for_superadmin(sender, request, user, **kwargs):
             existing_code.number = code
             existing_code.authenticated = False
             existing_code.save()
-            send_otp_via_email_to_super_admin(email=user.email, code=code, phone=phone)
+            send_otp_via_email_to_super_admin(request, email=user.email, code=code, phone=phone)
 
         except Code.DoesNotExist:
             # Generate a Code instance for the super admin
             code = Code(user=user)
             code.save()
-            send_otp_via_email_to_super_admin(email=user.email, code=code.number, phone=phone)
+            send_otp_via_email_to_super_admin(request, email=user.email, code=code.number, phone=phone)
 
