@@ -4,12 +4,14 @@ class InvoicePurpose:
     ORDER = "order"
     ONE_TIME_PAYMENT = "one_time_payment"
     REFUND = "refund"
+    ADMIN_CHARGED_CLIENT = "admin_charged_client"
     MAP = {
         CREDIT: "Credit by WashMix",
         SUBSCRIPTION: "Subscription purchase",
         ORDER: "POS order",
         ONE_TIME_PAYMENT: "One time payment",
         REFUND: "Refund",
+        ADMIN_CHARGED_CLIENT: "Admin charged client",
     }
     CHOICES = list(MAP.items())
 
