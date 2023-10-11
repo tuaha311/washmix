@@ -16,12 +16,14 @@ class RequestValidator:
         pickup_date: date,
         pickup_start: time,
         pickup_end: time,
-        zip_code: object
+        zip_code: object,
+        client: object,
     ):
         self._pickup_date = pickup_date
         self._pickup_start = pickup_start
         self._pickup_end = pickup_end
         self._zip_code = zip_code
+        self._client = client
 
         HOLIDAYS = [
             "%02d-%02d-%02d" % (i.date.year, i.date.month, i.date.day)
@@ -128,6 +130,15 @@ class RequestValidator:
             )
 
     def _validate_categorize_route(self):
+        # If new user then dont do validation.
+        if self._client.order_list is None:
+            return
+        
+        # If Zip code is not assigned any categorized route then skip validation
+        categorized_zip = CategorizeRoute.objects.filter(zip_codes=self._zip_code).first()
+        if categorized_zip is None:
+            return
+        
         day_number = self._pickup_date.isoweekday()
         categorize_route = CategorizeRoute.objects.filter(day=day_number, zip_codes=self._zip_code).first()
         

@@ -50,7 +50,7 @@ class RequestService(PaymentInterfaceService):
         self._pickup_start = pickup_start
         self._pickup_end = pickup_end
         self._is_rush = is_rush
-        self._validator_service = RequestValidator(pickup_date, pickup_start, pickup_end, zip_code = client.main_address.zip_code)
+        self._validator_service = RequestValidator(pickup_date, pickup_start, pickup_end, zip_code = client.main_address.zip_code, client=client)
 
     def refresh_amount_with_discount(
         self,
