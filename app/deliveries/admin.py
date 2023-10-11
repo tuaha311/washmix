@@ -9,6 +9,7 @@ from django.utils.html import format_html
 from core.admin import AdminWithSearch
 from deliveries.choices import DeliveryKind, DeliveryStatus
 from deliveries.models import Delivery, Holiday, Nonworkingday, Request, Schedule
+from deliveries.models.categorize_routes import CategorizeRoute
 from deliveries.utils import update_deliveries_to_no_show, update_cancelled_deliveries
 from users.admin import CustomAutocompleteSelect
 from users.models.employee import Employee
@@ -341,6 +342,29 @@ class HolidayAdmin(AdminWithSearch):
         "date",
     ]
 
+class CategorizeRouteForm(forms.ModelForm):
+    class Meta:
+        model = CategorizeRoute
+        fields = '__all__'
+
+    def clean(self):
+        cleaned_data = super().clean()
+        day = cleaned_data.get('day')
+
+        if Nonworkingday.objects.filter(day=day).exists():
+            raise forms.ValidationError('This day is a non-working day.')
+
+        return cleaned_data
+    
+class CategorizeRouteAdmin(admin.ModelAdmin):
+    list_display = ('day', 'all_zip_codes')
+    form = CategorizeRouteForm
+    
+    def all_zip_codes(self, obj):
+        if obj.id:
+            return ", ".join([str(zip_code) for zip_code in obj.zip_codes.all()])
+        return ""
+
 
 models = [
     [Schedule, ScheduleAdmin],
@@ -348,6 +372,7 @@ models = [
     [Request, RequestAdmin],
     [Nonworkingday, NonworkingdayAdmin],
     [Holiday, HolidayAdmin],
+    [CategorizeRoute, CategorizeRouteAdmin],
 ]
 
 for item in models:
