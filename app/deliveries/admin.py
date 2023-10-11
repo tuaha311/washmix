@@ -16,7 +16,6 @@ from users.models.employee import Employee
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from deliveries.choices import DeliveryStatus
-from django.http import HttpResponseRedirect
 
 
 class DeliveryForm(forms.ModelForm):
