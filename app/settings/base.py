@@ -685,6 +685,7 @@ FIRST_ARCHIVE_FOLLOW_UP = "first_archive_follow_up"
 SECOND_ARCHIVE_FOLLOW_UP = "second_archive_follow_up"
 THIRD_ARCHIVE_FOLLOW_UP = "third_archive_follow_up"
 UNCHARGED_ORDER_REMINDER = "uncharged_order_reminder"
+VERIFY_EMAIL = "verify_email"
 
 #################################
 # SENDGRID WITH EMAIL TEMPLATES #
@@ -805,6 +806,11 @@ EMAIL_EVENT_INFO = {
         "subject": "WashMix UNCHARGED Order Reminder",
         "from_email": "NOCHARGE@washmix.com",
         "reply_to": "info@washmix.com",
+    },
+    VERIFY_EMAIL: {
+        "template_name": "email/verify_email.html",
+        "subject": "Please Verify Your Email!",
+        "from_email": "hello@washmix.com",
     },
 }
 
