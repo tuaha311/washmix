@@ -4,6 +4,8 @@ from django.conf import settings
 from django.utils.timezone import localtime
 
 from rest_framework import serializers
+from deliveries.choices import WeekDays
+from deliveries.models.categorize_routes import CategorizeRoute
 
 from deliveries.models import Holiday, Nonworkingday
 
@@ -14,10 +16,12 @@ class RequestValidator:
         pickup_date: date,
         pickup_start: time,
         pickup_end: time,
+        zip_code: object
     ):
         self._pickup_date = pickup_date
         self._pickup_start = pickup_start
         self._pickup_end = pickup_end
+        self._zip_code = zip_code
 
         HOLIDAYS = [
             "%02d-%02d-%02d" % (i.date.year, i.date.month, i.date.day)
@@ -47,6 +51,7 @@ class RequestValidator:
         self._validate_time()
         self._validate_last_call()
         self._validate_common()
+        self._validate_categorize_route()
 
     def _validate_date(self):
         # we doesn't work at weekends - because we are chilling
@@ -120,4 +125,22 @@ class RequestValidator:
             raise serializers.ValidationError(
                 detail="Start time can't be earlier than end.",
                 code="start_earlier_than_end",
+            )
+
+    def _validate_categorize_route(self):
+        day_number = self._pickup_date.isoweekday()
+        categorize_route = CategorizeRoute.objects.filter(day=day_number, zip_codes=self._zip_code).first()
+        
+        days_with_deliveries = []
+
+        # Iterate through all CategorizeRoute objects
+        for route in CategorizeRoute.objects.filter(zip_codes=self._zip_code):
+            day_number = route.day
+            days_with_deliveries.append(day_number)
+
+        if not categorize_route:
+            available_delivery_days = ", ".join(map(lambda x: WeekDays.WEEK_DAYS_MAP.get(x), days_with_deliveries))
+            raise serializers.ValidationError(
+                detail=f"We do not deliver to your area this day. Available delivery days are: {available_delivery_days}.",
+                code="no_deliveries_for_zip_code",
             )

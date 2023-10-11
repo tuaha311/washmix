@@ -50,7 +50,7 @@ class RequestService(PaymentInterfaceService):
         self._pickup_start = pickup_start
         self._pickup_end = pickup_end
         self._is_rush = is_rush
-        self._validator_service = RequestValidator(pickup_date, pickup_start, pickup_end)
+        self._validator_service = RequestValidator(pickup_date, pickup_start, pickup_end, zip_code = client.main_address.zip_code)
 
     def refresh_amount_with_discount(
         self,
@@ -211,7 +211,7 @@ class RequestService(PaymentInterfaceService):
     @property
     def _pickup_day_auto_complete(self) -> date:
         now = localtime()
-        return get_pickup_day(now)
+        return get_pickup_day(now, self._client)
 
     @property
     def _dropoff_info(self) -> dict:
