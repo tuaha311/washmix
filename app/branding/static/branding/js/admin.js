@@ -45,7 +45,10 @@ function hideSendSMSLink() {
 }
 
 if (window.location.pathname.indexOf('/admin') !== -1) {
-  setTimeout(hideSendSMSLink, 1000);
+  document.addEventListener("DOMContentLoaded", function () {
+    hideSendSMSLink();
+  });
+  setTimeout(hideSendSMSLink, 2000);
 }
 
 // creates link that point on order
