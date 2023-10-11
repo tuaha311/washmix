@@ -1,0 +1,26 @@
+{% extends "admin/login.html" %}
+<html>
+<head>
+    <title>Verification Page</title>
+    {% block extrahead %}
+    <script>
+        function logoutFunction(){
+            window.location.href = "/admin/logout/";
+        }
+    </script>
+    {% endblock %}
+</head>
+<body>
+    {% block content %}
+    <h1>Verification</h1>
+    <p>Please enter the verification code you received:</p>
+
+    <form method="post" action="/verification/">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <center><input type="button" value="Logout" onclick="logoutFunction()" style="margin-right: 10px; background-color: #ff0000; color: #fff; cursor: pointer;"><input type="submit" value="Verify">
+    </form>
+    {% endblock %}
+</body>
+</html>

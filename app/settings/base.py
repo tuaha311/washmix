@@ -89,6 +89,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "users.middlewares.superadmin_middleware.SuperAdminVerificationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
@@ -604,6 +605,7 @@ dramatiq.set_broker(DRAMATIQ_BROKER)
 # SMS NOTIFICATION EVENTS #
 ###########################
 USER_SIGNUP = "user_signup"
+ADMIN_LOGIN_OTP = "admin_login_otp"
 NEW_DELIVERY = "new_delivery"
 UPDATED_DELIVERY = "updated_delivery"
 DELIVERY_DROPOFF_COMPLETE = "delivery_dropoff_complete"
@@ -630,6 +632,9 @@ TWILIO_PICKUP_CODE = "pickup_scheduled"
 SMS_EVENT_INFO = {
     USER_SIGNUP: {
         "template_name": "sms/user_signup.html",
+    },
+    ADMIN_LOGIN_OTP: {
+        "template_name": "sms/admin_login_OTP.html",
     },
     NEW_DELIVERY: {
         "template_name": "sms/new_delivery.html",
@@ -666,6 +671,7 @@ SMS_EVENT_INFO = {
 # EMAIL NOTIFICATION EVENTS #
 #############################
 
+SUPER_ADMIN_OTP = "super_admin_otp"
 SIGNUP = "signup"
 FORGOT_PASSWORD = "forgot_password"
 PURCHASE_SUBSCRIPTION = "purchase_subscription"
@@ -685,6 +691,7 @@ FIRST_ARCHIVE_FOLLOW_UP = "first_archive_follow_up"
 SECOND_ARCHIVE_FOLLOW_UP = "second_archive_follow_up"
 THIRD_ARCHIVE_FOLLOW_UP = "third_archive_follow_up"
 UNCHARGED_ORDER_REMINDER = "uncharged_order_reminder"
+VERIFY_EMAIL = "verify_email"
 
 #################################
 # SENDGRID WITH EMAIL TEMPLATES #
@@ -696,6 +703,12 @@ SENDGRID_API_KEY = env.str("SENDGRID_API_KEY", "")
 ADMIN_EMAIL_LIST = env.list("ADMIN_EMAIL_LIST", ["michael@washmix.com"])
 
 EMAIL_EVENT_INFO = {
+    SUPER_ADMIN_OTP: {
+        "template_name": "email/super_admin_login_OTP.html",
+        "subject": "Washmix Admin Login OTP",
+        "from_email": "info@washmix.com",
+        "reply_to": "info@washmix.com",
+    },
     SIGNUP: {
         "template_name": "email/signup.html",
         "subject": "Welcome to Washmix!",
@@ -805,6 +818,11 @@ EMAIL_EVENT_INFO = {
         "subject": "WashMix UNCHARGED Order Reminder",
         "from_email": "NOCHARGE@washmix.com",
         "reply_to": "info@washmix.com",
+    },
+    VERIFY_EMAIL: {
+        "template_name": "email/verify_email.html",
+        "subject": "Please Verify Your Email!",
+        "from_email": "hello@washmix.com",
     },
 }
 
