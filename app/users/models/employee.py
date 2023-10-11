@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import models
 from django.utils.timezone import localdate, now
+from core.validators import validate_phone
 
 from core.common_models import Common
 from users.choices import EmployeePosition
@@ -50,6 +51,13 @@ class Employee(ProxyUserInfoMixin, Common):
         verbose_name="came out to work from",
         default=now,
         null=True,
+    )
+    phone = models.CharField(
+        verbose_name="phone",
+        max_length=20,
+        null=True,
+        blank=True,
+        validators=[validate_phone],
     )
 
     class Meta:
