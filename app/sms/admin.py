@@ -28,7 +28,31 @@ class SendSMSAdmin(ClientAdmin):
         selected_customers = list(set(selected_customers))
         data = {}
         selected_customers_ids = [int(id) for id in selected_customers if id.isdigit()]
-        
+
+        # Create a dictionary of filtering parameters
+        filters = {
+            'billing_address__zip_code': zip_code_param,
+            'billing_address__address_line_1__icontains': city_param,
+            'billing_address__address_line_1': address_param,
+            'main_phone__number': phone_param,
+        }
+
+        # Build the queryset based on non-None parameters
+        queryset = Client.objects.all()
+
+        for key, value in filters.items():
+            if value is not None:
+                print(value, key)
+                queryset = Client.objects.filter(**{key: value})
+
+        data = {
+            "queryset": queryset,
+            "selected_zip_code": zip_code_param,
+            "selected_city": city_param,
+            "selected_address": address_param,
+            "selected_phone": phone_param,
+        }
+        """
         # If a zip code parameter is provided, filter the data
         if zip_code_param:
             data = {
@@ -60,6 +84,7 @@ class SendSMSAdmin(ClientAdmin):
             }
         else:
             data = {"queryset": Client.objects.all()}
+            """
         
         if selected_customers:
             data.update({"selected_customers": json.dumps(selected_customers)})

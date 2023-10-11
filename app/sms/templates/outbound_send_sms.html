@@ -48,12 +48,35 @@
  </script>
 
  <script>
-  function selected_customers(formId, selectedCustomersInputName) {
-    const checkboxes = document.querySelectorAll('input[name="_selected_action"]');
+  function filtered_customers(selectedCustomersInputName) {
+    //const checkboxes = document.querySelectorAll('input[name="_selected_action"]');
     const selectedCustomersInput = document.getElementById(selectedCustomersInputName);
 
+    const selectedTemplateInput = document.getElementById("selected-template-input");
+    const selectedCustomersZip = document.getElementById("selected-customers-zip");
+    const selectZipCode = document.getElementById("selectted_zip_code");
+    const selectedCity = document.getElementById("selected_city");
+    const selectedAddress = document.getElementById("selected_address");
+    const selectedPhone = document.getElementById("selected_phone");
+  
+    // Filter items
+    const filterCustomersInput = document.getElementById("filter_customers");
+    const filterTemplateInput = document.getElementById("filter-template");
+    const filterCustomersZip = document.getElementById("filter_zip_code");
+    const filterCity = document.getElementById("filter_city");
+    const filterAddress = document.getElementById("filter_address");
+    const filterPhone = document.getElementById("filter_phone");
+  
+    // Get the filter values from the select elements
+    
+    filterTemplateInput.value = selectedTemplateInput.value;
+    filterCustomersZip.value = selectZipCode.value;
+    filterCity.value = selectedCity.value;
+    filterAddress.value = selectedAddress.value;
+    filterPhone.value = selectedPhone.value;
+
     // Get selected customer values
-    const selectedCustomers = Array.from(checkboxes)
+    /*const selectedCustomers = Array.from(checkboxes)
       .filter(checkbox => checkbox.checked)
       .map(checkbox => checkbox.value);
 
@@ -82,8 +105,9 @@
     // Update the hidden input's value
     selectedCustomersInput.value = JSON.stringify(selectedCustomers);
 
+    */
     // Submit the form by referencing it by its ID
-    const form = document.getElementById(formId);
+    const form = document.getElementById("filters-form");
     form.submit();
   }
 </script>
@@ -190,7 +214,7 @@
             {% csrf_token %}
             <input type="hidden" id="selected-customers-zip" name="selected-customers" />
             <label for="zip_code">Select Zip Code:</label>
-            <select name="zip_code" onchange="selected_customers('select-zip-form', 'selected-customers-zip')">
+            <select id="selectted_zip_code">
               <option value="">Select Zip Code</option>
               {% for zip in zips %}
                 <option value="{{ zip }}" {% if zip == selected_zip_code %}selected{% endif %}>{{ zip }}</option>
@@ -209,7 +233,7 @@
             {% csrf_token %}
             <label for="city">Select City:</label>
             <input type="hidden" id="selected-customers-city" name="selected-customers" />
-            <select name="city" onchange="selected_customers('select-city-form', 'selected-customers-city')">
+            <select name="city" id="selected_city">
               <option value="">Select City</option>
               {% for city in cities %}
               <option value="{{ city }}" {% if city == selected_city %}selected{% endif %}>{{ city }}</option>
@@ -229,10 +253,9 @@
             <label for="address">Select Address:</label>
             <input type="hidden" id="selected-customers-address" name="selected-customers" />
             <select
-              id="id_toppings"
+              id="selected_address"
               name="address"
               class="select-multiple-field"
-              onchange="selected_customers('select-address-form', 'selected-customers-address')"
             >
               <option value="">Select Address</option>
               {% for customer in all_customers %}
@@ -255,10 +278,9 @@
             <label for="phone">Select Phone:</label>
             <input type="hidden" id="selected-customers-phone" name="selected-customers" />
             <select
-              id="id_toppings"
+              id="selected_phone"
               name="phone"
               class="select-multiple-field"
-              onchange="selected_customers('select-phone-form', 'selected-customers-phone')"
             >
               <option value="">Select Phone</option>
               {% for customer in all_customers %}
@@ -268,6 +290,19 @@
               {% endfor %}
             </select>
           </form>
+        </div>
+      </td>
+      <td>
+        <div class="filter-row">
+          <form id="filters-form" action="" method="post">
+            {% csrf_token %}
+            <input type="hidden" id="filter_customers" name="selected_customers" />
+            <input type="hidden" id="filter-template" name="template" />
+            <input type="hidden" id="filter_zip_code" name="zip_code" />
+            <input type="hidden" id="filter_city" name="city" />
+            <input type="hidden" id="filter_address" name="address" />
+            <input type="hidden" id="filter_phone" name="phone" />
+            <input type="button" value="Filter Customers" class="submit-button" onclick="filtered_customers(selected_customers)">
         </div>
       </td>
     </tr>
