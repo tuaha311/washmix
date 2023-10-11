@@ -82,14 +82,20 @@ def outbound_sms(request):
             "zips": zips,
             "cities": cities,
         }
-        return render(request, "outbound_sms.html", context)
+        # return render(request, "outbound_sms.html", context)
+        return context
 
 
 def send_sms(request):
     if request.method == "POST":
         customer_ids_string = request.POST.getlist("customers")
         template_id = request.POST.get("template")
-
+        if customer_ids_string == ["[]"]:
+            messages.error(request, "Please choose atleast one client to send SMS.")
+            return redirect("/admin/sms/sendsms")
+        if not template_id:
+            messages.error(request, "Please choose a SMS template.")
+            return redirect("/admin/sms/sendsms")
         if not customer_ids_string or not template_id:
             return HttpResponse("Invalid customer IDs or template ID.")
 
@@ -126,7 +132,39 @@ def send_sms(request):
             )
 
         messages.success(request, "SMS send request submitted successfully.")
-        return redirect("/admin/sms/outbound-sms")
+        return redirect("/admin/sms/sendsms")
     else:
         messages.error(request, "Invalid request method.")
-        return redirect("/admin/sms/outbound-sms")
+        return redirect("/admin/sms/sendsms")
+
+
+def get_context():
+
+    customers = clients.objects.all()
+    billing_address = [customer.billing_address for customer in customers]
+
+    zips = set([address["zip_code"] for address in billing_address if "zip_code" in address and address["zip_code"]])
+    addresses = [address["address_line_1"] for address in billing_address if "address_line_1" in address and address["address_line_1"]]
+    addresses = list(set(addresses))
+    all_cities = City.objects.all()
+    
+    cities = []
+    # Iterate through addresses and all_cities to find matching city names
+    for address in addresses:
+        for city in all_cities:
+            if city.name in address:
+                cities.append(city.name)
+
+    # Remove duplicates from the cities list
+    cities = list(set(cities))
+
+    templates = SMSTemplate.objects.all()
+
+    context = {
+        "customers":  customers,
+        "all_customers":  customers,
+        "templates": templates,
+        "zips": zips,
+        "cities": cities,
+    }
+    return context
