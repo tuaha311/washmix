@@ -16,6 +16,7 @@ from users.models.employee import Employee
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from deliveries.choices import DeliveryStatus
+from django.http import HttpResponseRedirect
 
 
 class DeliveryForm(forms.ModelForm):
@@ -342,21 +343,29 @@ class HolidayAdmin(AdminWithSearch):
         "date",
     ]
 
-class CategorizeRouteAdmin(admin.ModelAdmin):
-    list_display = ('day', 'get_zip_codes')
+class CategorizeRouteForm(forms.ModelForm):
+    class Meta:
+        model = CategorizeRoute
+        fields = '__all__'
+
+    def clean(self):
+        cleaned_data = super().clean()
+        day = cleaned_data.get('day')
+
+        if Nonworkingday.objects.filter(day=day).exists():
+            raise forms.ValidationError('This day is a non-working day.')
+
+        return cleaned_data
     
-    def get_zip_codes(self, obj):
+class CategorizeRouteAdmin(admin.ModelAdmin):
+    list_display = ('day', 'all_zip_codes')
+    form = CategorizeRouteForm
+    
+    def all_zip_codes(self, obj):
         if obj.id:
             return ", ".join([str(zip_code) for zip_code in obj.zip_codes.all()])
         return ""
 
-    def save_model(self, request, obj, form, change):
-        # Check if the selected day is in Nonworkingday
-        if Nonworkingday.objects.filter(day=obj.day).exists():
-            messages.warning(request, 'This day is a non-working day.')
-            return
-        else:
-            super().save_model(request, obj, form, change)
 
 models = [
     [Schedule, ScheduleAdmin],

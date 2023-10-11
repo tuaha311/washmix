@@ -17,4 +17,6 @@ class CategorizeRoute(Common):
         verbose_name="Zip Codes",
     )
 
+    class Meta:
+        verbose_name_plural = "Categorized Routes"
     
