@@ -118,6 +118,13 @@ class Client(ProxyUserInfoMixin, Stripeable, Common):
         null=True,
     )
 
+    verified_email = models.BooleanField(
+        verbose_name="verified email",
+        default=False,
+        null=True,
+        blank=True,
+    )
+
     objects = ClientManager()
 
     class Meta:
