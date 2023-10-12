@@ -4,10 +4,12 @@ from django.conf import settings
 from django.utils.timezone import localtime
 
 from rest_framework import serializers
+from orders.choices import OrderPaymentChoices
 from deliveries.choices import WeekDays
 from deliveries.models.categorize_routes import CategorizeRoute
 
 from deliveries.models import Holiday, Nonworkingday
+from orders.models import Order
 
 
 class RequestValidator:
@@ -131,8 +133,8 @@ class RequestValidator:
 
     def _validate_categorize_route(self):
         # If new user then dont do validation.
-        order_list = self._client.order_list.all()
-        if not order_list:
+        paid_order = Order.objects.filter(client=self._client, payment=OrderPaymentChoices.PAID).first()
+        if not paid_order:
             return
         
         # If Zip code is not assigned any categorized route then skip validation
