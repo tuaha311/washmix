@@ -116,7 +116,7 @@ def on_delivery_notify_signal(
 
         logger.info(f"Sending SMS to client {client.email}")
 
-    if is_pickup and is_completed:
+    if is_pickup and is_completed and not is_admin:
         send_sms.send_with_options(
             kwargs={
                 "event": settings.ORDER_PICKUP_COMPLETE,
