@@ -10,6 +10,7 @@ from drf_yasg.views import get_schema_view
 
 from api.generators import WashMixSchemaGenerator
 from api.views import EmailRenderView, static_server
+from deliveries.api.client.views.requests import InstoreViewSet
 from sms.views import outbound_sms, send_sms
 from django.contrib.admin import AdminSite
 from django.urls import path
@@ -30,6 +31,7 @@ class CustomAdminURL(AdminSite):
             path("sms/send-sms/", self.admin_view(send_sms), name="send_sms"),
             path("deliveries/update-deliveries/", DeliveryAdmin.update_deliveries, name="update-deliveries"),
             path("client/generate-pdf/", self.admin_view(generate_client_pdf), name="generate-pdf"),
+            path("deliveries/instore-request/", InstoreViewSet.as_view({'post': 'create'}), name="instore-requests") 
         ]
 
         return urls

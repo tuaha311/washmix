@@ -35,6 +35,8 @@ class DeliveryForm(forms.ModelForm):
                 (DeliveryStatus.ACCEPTED, DeliveryStatus.MAP[DeliveryStatus.ACCEPTED]),
                 (DeliveryStatus.IN_PROGRESS, DeliveryStatus.MAP[DeliveryStatus.IN_PROGRESS]),
                 (DeliveryStatus.COMPLETED, DeliveryStatus.MAP[DeliveryStatus.COMPLETED]),
+                (DeliveryStatus.IN_STORE_ACCEPTED, DeliveryStatus.MAP[DeliveryStatus.IN_STORE_ACCEPTED]),
+                (DeliveryStatus.IN_STORE_COMPLETED, DeliveryStatus.MAP[DeliveryStatus.IN_STORE_COMPLETED]),
             ]
             
 class ArchivedDeliveryForm(forms.ModelForm):
@@ -197,7 +199,7 @@ class DeliveryAdminMain(AdminWithSearch):
 
     def get_queryset(self, request):
         return Delivery.objects.filter(
-            status__in=[DeliveryStatus.ACCEPTED, DeliveryStatus.IN_PROGRESS]
+            status__in=[DeliveryStatus.ACCEPTED, DeliveryStatus.IN_PROGRESS, DeliveryStatus.IN_STORE_ACCEPTED, DeliveryStatus.IN_STORE_COMPLETED]
         )
 
     def full_name(self, obj):

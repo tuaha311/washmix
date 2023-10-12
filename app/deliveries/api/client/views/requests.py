@@ -15,13 +15,14 @@ from rest_framework.viewsets import ModelViewSet
 from deliveries.api.client.serializers.requests import ChargeCustomerSerializer, RequestCheckSerializer, RequestSerializer
 from deliveries.choices import DeliveryKind, DeliveryStatus
 from deliveries.models import Delivery
-from deliveries.services.requests import AdminRequestService, RequestService
+from deliveries.services.requests import AdminRequestService, InstoreRequestService, RequestService
 from notifications.models import Notification, NotificationTypes
 from notifications.tasks import send_admin_client_information, send_sms
 from orders.choices import OrderStatusChoices
 from settings.base import ALLOW_DELIVERY_CANCELLATION_TIMEDELTA, ALLOW_DELIVERY_RESHEDULE_TIMEDELTA
 from users.models import Log, Client
 from rest_framework.permissions import AllowAny
+from django.contrib import messages
 
 
 class RequestFilter(filters.FilterSet):
@@ -277,3 +278,42 @@ class ChargeCustomerViewSet(ModelViewSet):
         request = service.create()
 
         return request
+
+
+class InstoreViewSet(ModelViewSet):
+    serializer_class = ChargeCustomerSerializer
+    authentication_classes = []
+    permission_classes = [AllowAny]
+
+    def create(self, request, *args, **kwargs):
+        # Deserialize the request data using the serializer
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        # Get customer ID and other charging parameters from the serializer
+        client_id = serializer.validated_data["client_id"]
+        # is_rush = serializer.validated_data.get("is_rush", False)
+
+        # Get the customer object
+        try:
+            client = Client.objects.get(pk=client_id)
+        except Client.DoesNotExist:
+            return Response(
+                {"error": "Client with the specified ID does not exist."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        service = InstoreRequestService(
+            client=client,
+            # is_rush=is_rush,
+        )
+        request = service.create()
+        
+        print("service", service.__dict__)
+        response_data = {
+            "message": "In store request created successfully.",
+            "path": f"/admin/users/client/{client_id}/change/",
+            "status": status.HTTP_200_OK
+        }
+
+        return Response(response_data)
