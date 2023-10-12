@@ -131,8 +131,8 @@ class RequestValidator:
 
     def _validate_categorize_route(self):
         # If new user then dont do validation.
-        request_list = self._client.request_list.all()
-        if not request_list:
+        order_list = self._client.order_list.all()
+        if not order_list:
             return
         
         # If Zip code is not assigned any categorized route then skip validation
