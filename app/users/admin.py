@@ -539,7 +539,12 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
         return queryset, use_distinct
 
     change_form_template = "assets/change_list.html"
+    
+    def get_notification_message(self, request):
+        message = request.GET.get("message")
+        return messages.success(request, message)
 
+<<<<<<< HEAD
     def get_subscription_name(self, obj):
         if obj.subscription:
             return obj.subscription
@@ -548,6 +553,13 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
     get_subscription_name.admin_order_field = 'subscription__name'
 
 
+=======
+    def change_view(self, request, object_id, form_url="", extra_context=None):
+        extra_context = extra_context or {}
+        extra_context["notification_message"] = self.get_notification_message(request)
+        return super().change_view(request, object_id, form_url, extra_context=extra_context)
+    
+>>>>>>> 20a338b (Added in_store field in Delivery model. added validation that if a client has incomplete instore request then do not create new)
 class CustomerAdmin(AdminWithSearch):
     list_display = [
         "__str__",

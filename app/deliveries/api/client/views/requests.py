@@ -292,7 +292,7 @@ class InstoreViewSet(ModelViewSet):
 
         # Get customer ID and other charging parameters from the serializer
         client_id = serializer.validated_data["client_id"]
-        # is_rush = serializer.validated_data.get("is_rush", False)
+        is_rush = serializer.validated_data.get("is_rush", False)
 
         # Get the customer object
         try:
@@ -305,15 +305,21 @@ class InstoreViewSet(ModelViewSet):
 
         service = InstoreRequestService(
             client=client,
-            # is_rush=is_rush,
+            is_rush=is_rush,
         )
         request = service.create()
         
-        print("service", service.__dict__)
-        response_data = {
-            "message": "In store request created successfully.",
+        if not request:
+            response_data = {
+            "message": "Incomplete in store request for this client already exists.",
             "path": f"/admin/users/client/{client_id}/change/",
             "status": status.HTTP_200_OK
         }
+        else:
+            response_data = {
+            "message": "In store request created successfully.",
+            "path": f"/admin/users/client/{client_id}/change/",
+            "status": status.HTTP_200_OK
+            }
 
         return Response(response_data)
