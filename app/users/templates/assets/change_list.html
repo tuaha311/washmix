@@ -67,7 +67,7 @@
     .then((response) => {
       console.log(response),
       response.json().then((responseJson)=>{
-        window.location = responseJson.path
+        window.location = responseJson.path + '?message=' + responseJson.message;
       })
       
     })

@@ -307,15 +307,11 @@ class InstoreRequestService(RequestService):
     """
     This service is responsible for Instore Requests handling.
     """
-    
-    print("InstoreRequestService InstoreRequestService InstoreRequestService InstoreRequestService InstoreRequestService")
-    
-    
+     
     def create(self, **extra_kwargs) -> Request:
         """
         Create a new Admin Request.
         """
-        print("InstoreRequestService InstoreRequestService InstoreRequestService InstoreRequestService InstoreRequestService")
         self._validator_service.validate()
 
         dropoff_info = self._dropoff_info
@@ -326,37 +322,41 @@ class InstoreRequestService(RequestService):
         extra_kwargs.setdefault("is_rush", False)
 
         with atomic():
-            # Add a check and find the request that was created by Admin and it either does not have the order or it's not been charged.
-            # existed_request = Request.objects.filter(client=self._client, order__payment=OrderPaymentChoices.UNPAID, generated_by_admin=True).first()
-
-            # if existed_request:
-            #     request = existed_request
-
-            # else:
-            request = Request.objects.create(
-            client=self._client,
-            comment="This request was initiated by an admin",
-            generated_by_admin=True,
-            **extra_kwargs,
-            )
-            Delivery.objects.create(
-                request=request,
-                kind=DeliveryKind.DROPOFF,
-                status=DeliveryStatus.IN_STORE_DROPOFF,
-                **pickup_info,
-            )
-            Delivery.objects.create(
-                request=request,
+            # Check for an existing incomplete request for the same client
+            existing_request = Delivery.objects.filter(
+                request__client=self._client,
+                in_store=True,
                 kind=DeliveryKind.PICKUP,
-                status=DeliveryStatus.ACCEPTED,
-                **dropoff_info,
-            )
+            ).exclude(status=DeliveryStatus.COMPLETED).first()
 
-            send_admin_client_information(
-                self._client.id,
-                "A New Admin Request is Created",
-            )
-            Log.objects.create(customer=self._client.email, action="Created new In store Request.")
-            # Notification.create_notification(self._client, NotificationTypes.NEW_ADMIN_REQUEST)
+            if existing_request:
+                return False
+            else:
+                request = Request.objects.create(
+                    client=self._client,
+                    comment="In store request",
+                    generated_by_admin=True,
+                    **extra_kwargs,
+                )
+                Delivery.objects.create(
+                    request=request,
+                    kind=DeliveryKind.DROPOFF,
+                    status=DeliveryStatus.IN_STORE_DROPOFF,
+                    in_store=True,
+                    **pickup_info,
+                )
+                Delivery.objects.create(
+                    request=request,
+                    kind=DeliveryKind.PICKUP,
+                    status=DeliveryStatus.ACCEPTED,
+                    in_store=True,
+                    **dropoff_info,
+                )
 
-        return request
+                send_admin_client_information(
+                    self._client.id,
+                    "A New Admin Request is Created",
+                )
+                Log.objects.create(customer=self._client.email, action="Created new In store Request.")
+
+            return request
