@@ -4,8 +4,8 @@ class DeliveryStatus:
     IN_PROGRESS = "in_progress"
     COMPLETED = "completed"
     NO_SHOW = "no_show"
-    IN_STORE_ACCEPTED = "in_store_accepted"
-    IN_STORE_COMPLETED = "in_store_completed"
+    IN_STORE_DROPOFF = "in_store_dropoff"
+    IN_STORE_PICKUP = "in_store_pickup"
 
     MAP = {
         CANCELLED: "Cancelled",
@@ -13,8 +13,8 @@ class DeliveryStatus:
         IN_PROGRESS: "In progress",
         COMPLETED: "Completed",
         NO_SHOW: "No Show",
-        IN_STORE_ACCEPTED: "In store accepted",
-        IN_STORE_COMPLETED: "In store completed",
+        IN_STORE_DROPOFF: "In Store: dropoff",
+        IN_STORE_PICKUP: "In Store: pickup",
     }
     CHOICES = list(MAP.items())
 

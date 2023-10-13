@@ -341,14 +341,14 @@ class InstoreRequestService(RequestService):
             )
             Delivery.objects.create(
                 request=request,
-                kind=DeliveryKind.PICKUP,
-                status=DeliveryStatus.COMPLETED,
+                kind=DeliveryKind.DROPOFF,
+                status=DeliveryStatus.IN_STORE_DROPOFF,
                 **pickup_info,
             )
             Delivery.objects.create(
                 request=request,
-                kind=DeliveryKind.DROPOFF,
-                status=DeliveryStatus.IN_STORE_ACCEPTED,
+                kind=DeliveryKind.PICKUP,
+                status=DeliveryStatus.ACCEPTED,
                 **dropoff_info,
             )
 
