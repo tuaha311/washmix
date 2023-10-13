@@ -539,7 +539,16 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
         return queryset, use_distinct
 
     change_form_template = "assets/change_list.html"
+    
+    def get_notification_message(self, request):
+        message = request.GET.get("message")
+        return messages.success(request, message)
 
+    def change_view(self, request, object_id, form_url="", extra_context=None):
+        extra_context = extra_context or {}
+        extra_context["notification_message"] = self.get_notification_message(request)
+        return super().change_view(request, object_id, form_url, extra_context=extra_context)
+    
 class CustomerAdmin(AdminWithSearch):
     list_display = [
         "__str__",
