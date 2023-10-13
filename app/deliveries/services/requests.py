@@ -225,7 +225,7 @@ class RequestService(PaymentInterfaceService):
         pickup_end = self._pickup_end
         is_rush = self._is_rush
 
-        dropoff_date = get_dropoff_day(pickup_date, is_rush)
+        dropoff_date = get_dropoff_day(pickup_date, is_rush, client=self._client)
 
         return {
             "date": dropoff_date,
