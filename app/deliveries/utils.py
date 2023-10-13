@@ -2,11 +2,8 @@ from datetime import date, datetime, time, timedelta
 from typing import Tuple
 
 from django.conf import settings
-<<<<<<< HEAD
 from deliveries.models.categorize_routes import CategorizeRoute
-=======
 from deliveries.models.delivery import Delivery
->>>>>>> 722ad52 (feat: Introduce Instore Request Feature)
 
 from deliveries.choices import DeliveryKind, DeliveryStatus
 from deliveries.models import Holiday, Nonworkingday
