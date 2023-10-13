@@ -9,7 +9,7 @@ from django.utils.html import format_html
 from core.admin import AdminWithSearch
 from deliveries.choices import DeliveryKind, DeliveryStatus
 from deliveries.models import Delivery, Holiday, Nonworkingday, Request, Schedule
-from deliveries.utils import update_deliveries_to_no_show, update_cancelled_deliveries
+from deliveries.utils import update_completed_in_store_deliveries, update_deliveries_to_no_show, update_cancelled_deliveries
 from users.admin import CustomAutocompleteSelect
 from users.models.employee import Employee
 from django.shortcuts import render, redirect
@@ -35,6 +35,7 @@ class DeliveryForm(forms.ModelForm):
                 (DeliveryStatus.ACCEPTED, DeliveryStatus.MAP[DeliveryStatus.ACCEPTED]),
                 (DeliveryStatus.IN_PROGRESS, DeliveryStatus.MAP[DeliveryStatus.IN_PROGRESS]),
                 (DeliveryStatus.COMPLETED, DeliveryStatus.MAP[DeliveryStatus.COMPLETED]),
+                (DeliveryStatus.IN_STORE_DROPOFF, DeliveryStatus.MAP[DeliveryStatus.IN_STORE_DROPOFF]),
                 (DeliveryStatus.IN_STORE_PICKUP, DeliveryStatus.MAP[DeliveryStatus.IN_STORE_PICKUP]),
             ]
             
@@ -263,6 +264,9 @@ class DeliveryAdminMain(AdminWithSearch):
         if obj.kind == DeliveryKind.PICKUP and obj.status == DeliveryStatus.CANCELLED:
             print("Marking the Delivery to Cancelled.")
             update_cancelled_deliveries(obj)
+            
+        if obj.kind == DeliveryKind.PICKUP and obj.status == DeliveryStatus.COMPLETED and obj.request.generated_by_admin == True:
+            update_completed_in_store_deliveries(obj)
 
         return super().save_model(request, obj, form, change)
 

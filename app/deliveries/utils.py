@@ -2,6 +2,7 @@ from datetime import date, datetime, time, timedelta
 from typing import Tuple
 
 from django.conf import settings
+from deliveries.models.delivery import Delivery
 
 from deliveries.choices import DeliveryKind, DeliveryStatus
 from deliveries.models import Holiday, Nonworkingday
@@ -135,3 +136,15 @@ def update_cancelled_deliveries(delivery):
         drop_off_delivery.status = DeliveryStatus.CANCELLED
         drop_off_delivery.save()
         return True
+    
+def update_completed_in_store_deliveries(delivery):
+    request = delivery.request
+
+    try:
+        drop_off_delivery = request.delivery_list.get(kind=DeliveryKind.DROPOFF)
+        drop_off_delivery.status = DeliveryStatus.COMPLETED
+        drop_off_delivery.save()
+        
+        return True
+    except (Delivery.DoesNotExist, Delivery.MultipleObjectsReturned):
+        return False
