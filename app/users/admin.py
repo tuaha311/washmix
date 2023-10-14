@@ -34,7 +34,7 @@ from deliveries.models import Request
 from notifications.tasks import send_email
 from orders.models import Order
 from orders.services.order import OrderService
-from settings.base import SEND_ADMIN_STORE_CREDIT
+from settings.base import PACKAGE_NAME_CHOICES, SEND_ADMIN_STORE_CREDIT
 from subscriptions.models import Package
 from subscriptions.services.subscription import SubscriptionService
 from users.helpers import remove_user_relation_with_all_info
@@ -49,6 +49,7 @@ from django.utils.safestring import mark_safe
 from django.db.models import Sum, OuterRef, Subquery
 from weasyprint import HTML
 from django.http import HttpResponseRedirect
+from django.utils.translation import gettext as _
 
 User = get_user_model()
 LIMIT = 10
@@ -363,6 +364,21 @@ class ClientForm(forms.ModelForm):
                     raise forms.ValidationError("Can't bill client's card")
 
 
+class SubscriptionFilter(admin.SimpleListFilter):
+    title = _('Filtering clients on subscription')
+    parameter_name = 'subscription'
+
+    def lookups(self, request, model_admin):
+        # Use the PACKAGE_NAME_CHOICES to define the filter options
+        return PACKAGE_NAME_CHOICES
+
+    def queryset(self, request, queryset):
+        # Filter the queryset based on the selected subscription
+        subscription_value = self.value()
+        if subscription_value:
+            print(subscription_value, "subscription_value")
+            return queryset.filter(subscription__name=subscription_value)
+        
 class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
     readonly_fields = [
         "additional_phones",
@@ -389,6 +405,8 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
         "full_address",
         "has_card",
     ]
+    
+    list_filter = [SubscriptionFilter]
 
     def full_address(self, obj):
         address_line_2 = obj.billing_address.get("address_line_2")
