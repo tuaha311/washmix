@@ -28,41 +28,40 @@ class SendSMSAdmin(ClientAdmin):
         selected_customers = list(set(selected_customers))
         data = {}
         selected_customers_ids = [int(id) for id in selected_customers if id.isdigit()]
+
+        # Define the base queryset
+        queryset = Client.objects.all()
         
-        # If a zip code parameter is provided, filter the data
+        filters = []
         if zip_code_param:
-            data = {
-                "queryset": Client.objects.filter(
-                    Q(billing_address__zip_code=zip_code_param) | Q(id__in=selected_customers_ids)
-                ) if selected_customers else Client.objects.filter(billing_address__zip_code=zip_code_param),
-                "selected_zip_code": zip_code_param,
-            }
-        elif city_param:
-            data = {
-                "queryset": Client.objects.filter(
-                    Q(billing_address__address_line_1__icontains=city_param) | Q(id__in=selected_customers_ids)
-                ) if selected_customers else Client.objects.filter(billing_address__address_line_1__icontains=city_param),
-                "selected_city": city_param,
-            }
-        elif address_param:
-            data = {
-                "queryset": Client.objects.filter(
-                    Q(billing_address__address_line_1=address_param) | Q(id__in=selected_customers_ids)
-                ) if selected_customers else Client.objects.filter(billing_address__address_line_1=address_param),
-                "selected_address": address_param,
-            }
-        elif phone_param:
-            data = {
-                "queryset": Client.objects.filter(
-                    Q(main_phone__number=phone_param) | Q(id__in=selected_customers_ids)
-                ) if selected_customers else Client.objects.filter(main_phone__number=phone_param),
-                "selected_phone": phone_param,
-            }
-        else:
-            data = {"queryset": Client.objects.all()}
-        
+            filters.append(Q(billing_address__zip_code=zip_code_param))
+        if city_param:
+            filters.append(Q(billing_address__address_line_1__icontains=city_param))
+        if address_param:
+            filters.append(Q(billing_address__address_line_1=address_param))
+        if phone_param:
+            filters.append(Q(main_phone__number=phone_param))
+        if selected_customers:
+            filters.append(Q(id__in=selected_customers_ids))
+
+        # Combine Q objects using OR operator (|) to create a dynamic query
+        if filters:
+            query = filters.pop()
+            for q in filters:
+                query |= q
+            queryset = queryset.filter(query)
+
+        data = {
+            "queryset": queryset,
+            "selected_zip_code": zip_code_param,
+            "selected_city": city_param,
+            "selected_address": address_param,
+            "selected_phone": phone_param,
+        }
+
         if selected_customers:
             data.update({"selected_customers": json.dumps(selected_customers)})
+
         return data
 
     def get_context(self, request):
