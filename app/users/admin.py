@@ -401,7 +401,7 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
         "full_name",
         "get_main_phone_number",  # Use custom method instead of main_phone
         "__str__",
-        "subscription",
+        "get_subscription_name",
         "full_address",
         "has_card",
     ]
@@ -539,6 +539,14 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
         return queryset, use_distinct
 
     change_form_template = "assets/change_list.html"
+
+    def get_subscription_name(self, obj):
+        if obj.subscription:
+            return obj.subscription.name
+
+    get_subscription_name.short_description = 'subscription of service'  
+    get_subscription_name.admin_order_field = 'subscription__name'
+
 
 class CustomerAdmin(AdminWithSearch):
     list_display = [
