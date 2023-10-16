@@ -23,7 +23,7 @@ class SendSMSAdmin(ClientAdmin):
         city_param = request.POST.get("city")
         address_param = request.POST.get("address")
         phone_param = request.POST.get("phone")
-        selected_customers_json = request.POST.get("selected-customers")  # Get the JSON string
+        selected_customers_json = request.POST.get("selected_customers")  # Get the JSON string
         selected_customers = json.loads(selected_customers_json) if selected_customers_json else []
         selected_customers = list(set(selected_customers))
         data = {}
