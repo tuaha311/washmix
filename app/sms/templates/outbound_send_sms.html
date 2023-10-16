@@ -19,7 +19,6 @@
     const checkboxes = document.querySelectorAll('input[name="_selected_action"]');
     const selectedCustomersInput = document.getElementById("selected-customers-input");
     const selectedTemplateInput = document.getElementById("selected-template-input");
-    const selectedCustomersZip = document.getElementById("selected-customers-zip");
   
     // Get selected customer values
     const selectedCustomers = Array.from(checkboxes)
@@ -27,15 +26,13 @@
       .map(checkbox => checkbox.value);
   
     // Get selected template value
-    const selectedTemplate = document.getElementById("templates").value;
-  
+    const selectedTemplate = document.getElementById("template_selected").value;
+
     // Debug: Log values to the console
-    console.log("Selected Customers:", selectedCustomers);
     console.log("Selected Template:", selectedTemplate);
   
     // Update the hidden inputs' values
     selectedCustomersInput.value = JSON.stringify(selectedCustomers);
-    selectedCustomersZip.value = JSON.stringify(selectedCustomers);  // Update both inputs
     selectedTemplateInput.value = selectedTemplate;
   
     // Ask for confirmation before submitting
