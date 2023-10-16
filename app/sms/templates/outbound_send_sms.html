@@ -54,20 +54,21 @@
 
     // change form inputs
     //const filter_template = document.getElementById('filter_template');
+    const selectedTemplate = document.getElementById('template_selected');
     const selectedZipCode = document.getElementById('zip_code_selected');
     const selectedCity = document.getElementById('city_selected');
     const selectedAddress = document.getElementById('addres_selected');
     const slectedPhone = document.getElementById('phone_selected');
 
     // Filters inputs
-    //const filterCustomers = document.getElementById('filter_customers');
-    //const filterTemplate = document.getElementById('filter_template');
+    const filterTemplate = document.getElementById('filter_template');
     const filterZipCode = document.getElementById('filter_zip_code');
     const filterCity = document.getElementById('filter_city');
     const filterAddress = document.getElementById('filter_address');
     const filterPhone = document.getElementById('filter_phone');
 
     //assignment
+    filterTemplate.value = selectedTemplate.value
     filterZipCode.value = selectedZipCode.value
     filterCity.value = selectedCity.value
     filterAddress.value = selectedAddress.value
@@ -163,9 +164,10 @@
     <tr>
       <td>
         <label for="templates">Templates:</label>
-        <select id="templates" name="template">
+        <select id="template_selected" name="template">
+          <option value="">Select SMS Template</option>
           {% for template in templates %}
-          <option value="{{ template.id }}">{{ template }}</option>
+          <option value="{{ template.id }}" {% if template == selected_template %}selected{% endif %}>{{ template }}</option>
           {% endfor %}
         </select>
       </td>
