@@ -48,9 +48,30 @@
  </script>
 
  <script>
-  function selected_customers(formId, selectedCustomersInputName) {
+  function filtered_customers(formId, selectedCustomersInputName) {
     const checkboxes = document.querySelectorAll('input[name="_selected_action"]');
     const selectedCustomersInput = document.getElementById(selectedCustomersInputName);
+
+    // change form inputs
+    //const filter_template = document.getElementById('filter_template');
+    const selectedZipCode = document.getElementById('zip_code_selected');
+    const selectedCity = document.getElementById('city_selected');
+    const selectedAddress = document.getElementById('addres_selected');
+    const slectedPhone = document.getElementById('phone_selected');
+
+    // Filters inputs
+    //const filterCustomers = document.getElementById('filter_customers');
+    //const filterTemplate = document.getElementById('filter_template');
+    const filterZipCode = document.getElementById('filter_zip_code');
+    const filterCity = document.getElementById('filter_city');
+    const filterAddress = document.getElementById('filter_address');
+    const filterPhone = document.getElementById('filter_phone');
+
+    //assignment
+    filterZipCode.value = selectedZipCode.value
+    filterCity.value = selectedCity.value
+    filterAddress.value = selectedAddress.value
+    filterPhone.value = slectedPhone.value
 
     // Get selected customer values
     const selectedCustomers = Array.from(checkboxes)
@@ -136,7 +157,6 @@
     transition: background 0.3s, box-shadow 0.3s, border 0.3s;
   "
 >
-<input type="hidden" id="selected-customers-hidden" value="{{ selected_customers }}">
 <h3>Select the customer and template to send the SMS to:</h3>
 <div style="display:flex;">
   <table>
@@ -190,7 +210,7 @@
             {% csrf_token %}
             <input type="hidden" id="selected-customers-zip" name="selected-customers" />
             <label for="zip_code">Select Zip Code:</label>
-            <select name="zip_code" onchange="selected_customers('select-zip-form', 'selected-customers-zip')">
+            <select name="zip_code" id="zip_code_selected">
               <option value="">Select Zip Code</option>
               {% for zip in zips %}
                 <option value="{{ zip }}" {% if zip == selected_zip_code %}selected{% endif %}>{{ zip }}</option>
@@ -209,7 +229,7 @@
             {% csrf_token %}
             <label for="city">Select City:</label>
             <input type="hidden" id="selected-customers-city" name="selected-customers" />
-            <select name="city" onchange="selected_customers('select-city-form', 'selected-customers-city')">
+            <select name="city" id="city_selected">
               <option value="">Select City</option>
               {% for city in cities %}
               <option value="{{ city }}" {% if city == selected_city %}selected{% endif %}>{{ city }}</option>
@@ -229,10 +249,9 @@
             <label for="address">Select Address:</label>
             <input type="hidden" id="selected-customers-address" name="selected-customers" />
             <select
-              id="id_toppings"
+              id="addres_selected"
               name="address"
               class="select-multiple-field"
-              onchange="selected_customers('select-address-form', 'selected-customers-address')"
             >
               <option value="">Select Address</option>
               {% for customer in all_customers %}
@@ -255,10 +274,9 @@
             <label for="phone">Select Phone:</label>
             <input type="hidden" id="selected-customers-phone" name="selected-customers" />
             <select
-              id="id_toppings"
+              id="phone_selected"
               name="phone"
               class="select-multiple-field"
-              onchange="selected_customers('select-phone-form', 'selected-customers-phone')"
             >
               <option value="">Select Phone</option>
               {% for customer in all_customers %}
@@ -268,6 +286,21 @@
               {% endfor %}
             </select>
           </form>
+        </div>
+      </td>
+      <td>
+        <div class="filter-row">
+          <form id="filters-form" action="" method="post">
+            {% csrf_token %}
+            <input type="hidden" id="selected-customers-hidden" value="{{ selected_customers }}">
+            <input type="hidden" id="filter_customers" name="selected_customers" />
+            <input type="hidden" id="filter_template" name="template" />
+            <input type="hidden" id="filter_zip_code" name="zip_code" />
+            <input type="hidden" id="filter_city" name="city" />
+            <input type="hidden" id="filter_address" name="address" />
+            <input type="hidden" id="filter_phone" name="phone" />
+            <input type="button" value="Filter Customers" class="submit-button" onclick="filtered_customers('filters-form', 'filter_customers')">
+        </form>
         </div>
       </td>
     </tr>
