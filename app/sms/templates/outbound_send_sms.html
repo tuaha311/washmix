@@ -10,6 +10,92 @@
     background: #f7dcb7 !important;
     color: black !important;
   }
+  .bulk-sms-form {
+    display: flex;
+    flex-direction: row;
+    align-items: left;
+  }
+
+  .bulk-sms-form > * {
+    margin-right: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .bulk-sms-form h1 {
+    margin-right: 1rem;
+  }
+
+  .blocker {
+    display: flex;
+  }
+  .bulk-sms-form label,
+  .bulk-sms-form select,
+  .bulk-sms-form input[type="submit"] {
+    place-self: center;
+    margin-right: 0.6rem;
+  }
+
+  /* Medium-sized screens (col-6) */
+  @media (max-width: 1000px) {
+    .bulk-sms-form {
+      flex-direction: column;
+      align-items: left;
+    }
+
+    .bulk-sms-form h1 {
+      margin: 0;
+      margin-bottom: 1rem;
+    }
+
+    .bulk-sms-form > form {
+      flex: 2;
+      margin: 1rem;
+    }
+    
+    .bulk-sms-form > label {
+      place-self: start;
+    }
+    .blocker {
+      display: flex !important;
+      flex-direction: column;
+    }
+  }
+
+  /* Small screens (col-12) */
+  @media (max-width: 576px) {
+    .bulk-sms-form label,
+    .bulk-sms-form select,
+    .bulk-sms-form input[type="submit"] {
+      margin-right: 0;
+      margin-bottom: 1rem;
+      place-self: start;
+    }
+
+    .blocker {
+      display: flex !important;
+      flex-direction: column;
+    }
+  }
+
+  @media (min-width: 1000px) and (max-width: 1600px) {
+    .bulk-sms-form label,
+    .bulk-sms-form select,
+    .bulk-sms-form input[type="submit"] {
+      flex: 4;
+      margin-right: 1rem;
+      min-width: calc(50% - 0.5rem);
+    }
+
+    .blocker {
+      display: block;
+    }
+    .blocker-filter {
+      padding: 1.5rem !important;
+    }
+    #reset-filters-form {
+      margin-left: 1rem !important;
+    }
+  }
 </style>
 {% endblock %} 
 
@@ -156,10 +242,8 @@
   "
 >
 <h3>Select the customer and template to send the SMS to:</h3>
-<div style="display:flex;">
-  <table>
-    <tr>
-      <td>
+<div class="bulk-sms-form">
+        <form class="bulk-sms-form">
         <label for="templates">Templates:</label>
         <select id="template_selected" name="template">
           <option value="">Select SMS Template</option>
@@ -167,17 +251,17 @@
           <option value="{{ template.id }}" {% if template == selected_template %}selected{% endif %}>{{ template }}</option>
           {% endfor %}
         </select>
-      </td>
-      <td>
-        <div style="display:flex;">
-          <form id="reset-filters-form" action="" method="get">
+      </form>
+        <div class="bulk-sms-form" style="display:flex;">
+          <form id="reset-filters-form" action="" method="get" class="bulk-sms-form">
             <input
-              type="submit"
+              type="button"
               value="Reset Filters"
               class="reset_button"
+              onclick="this.form.submit()"
             />
           </form>
-          <form id="send-sms-form" action="/admin/sms/send-sms/" method="post" style="margin-left: 7px;">
+          <form id="send-sms-form" action="/admin/sms/send-sms/" method="post" class="bulk-sms-form">
             {% csrf_token %}
             <input type="hidden" id="selected-customers-input" name="customers" />
             <input type="hidden" id="selected-template-input" name="template" />
@@ -189,22 +273,19 @@
             />
           </form>
         </div>
-      </td>
-    </tr>
-  </table>
 </div>
 
   <hr />
   <br /><br />
-  <table>
-    <h3>Filter the customer using the filters below:</h3>
-    <tr>
-      <td>
-        <div class="filter-row">
+  <div>
+    <h3 style="margin-bottom:1rem;">Filter the customer using the filters below:</h3>
+    <div class="bulk-sms-form">
+      <div class="blocker bulk-sms-form">
           <form
             id="select-zip-form"
             action=""
             method="post"
+            class="bulk-sms-form"
           >
             {% csrf_token %}
             <input type="hidden" id="selected-customers-zip" name="selected-customers" />
@@ -216,14 +297,12 @@
               {% endfor %}
             </select>
           </form>
-        </div>
-      </td>
-      <td>
-        <div class="filter-row">
+
           <form
             id="select-city-form"
             action=""
             method="post"
+            class="bulk-sms-form"
           >
             {% csrf_token %}
             <label for="city">Select City:</label>
@@ -236,13 +315,13 @@
             </select>
           </form>
         </div>
-      </td>
-      <td>
-        <div class="filter-row">
+
+      <div class="blocker bulk-sms-form">
           <form
             id="select-address-form"
             action=""
             method="post"
+            class="bulk-sms-form"
           >
             {% csrf_token %}
             <label for="address">Select Address:</label>
@@ -260,14 +339,12 @@
               {% endfor %}
             </select>
           </form>
-        </div>
-      </td>
-      <td>
-        <div class="filter-row">
+     
           <form
             id="select-phone-form"
             action=""
             method="post"
+            class="bulk-sms-form"
           >
             {% csrf_token %}
             <label for="phone">Select Phone:</label>
@@ -286,10 +363,9 @@
             </select>
           </form>
         </div>
-      </td>
-      <td>
-        <div class="filter-row">
-          <form id="filters-form" action="" method="post">
+      
+        <div class="blocker-filter bulk-sms-form">
+          <form id="filters-form" action="" method="post" class="bulk-sms-form">
             {% csrf_token %}
             <input type="hidden" id="selected-customers-hidden" value="{{ selected_customers }}">
             <input type="hidden" id="filter_customers" name="selected_customers" />
@@ -300,10 +376,8 @@
             <input type="hidden" id="filter_phone" name="phone" />
             <input type="button" value="Filter Customers" class="submit-button" onclick="filtered_customers('filters-form', 'filter_customers')">
         </form>
-        </div>
-      </td>
-    </tr>
-  </table>
+    </div>
+  </div>
 </div>
 {% endblock %}
 
