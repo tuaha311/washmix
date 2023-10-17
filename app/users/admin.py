@@ -542,7 +542,7 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
 
     def get_subscription_name(self, obj):
         if obj.subscription:
-            return obj.subscription.name
+            return obj.subscription
 
     get_subscription_name.short_description = 'subscription of service'  
     get_subscription_name.admin_order_field = 'subscription__name'
