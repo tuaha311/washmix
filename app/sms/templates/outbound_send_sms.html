@@ -32,7 +32,8 @@
   .bulk-sms-form select,
   .bulk-sms-form input[type="submit"] {
     place-self: center;
-    margin-right: 0.6rem;
+    margin-right: 0rem;
+    white-space: normal;
   }
 
   /* Medium-sized screens (col-6) */
@@ -75,6 +76,10 @@
       display: flex !important;
       flex-direction: column;
     }
+
+    h3 {
+      white-space: normal;
+    }
   }
 
   @media (min-width: 1000px) and (max-width: 1600px) {
@@ -88,12 +93,19 @@
 
     .blocker {
       display: block;
+      min-width: 30vw !important;
     }
     .blocker-filter {
       padding: 1.5rem !important;
     }
     #reset-filters-form {
-      margin-left: 1rem !important;
+      display: flex;
+      flex: 1;
+      flex-direction: column
+    }
+
+    .select2-selection__rendered {
+      width: 250px !important;
     }
   }
 </style>
@@ -242,6 +254,7 @@
   "
 >
 <h3>Select the customer and template to send the SMS to:</h3>
+<br />
 <div class="bulk-sms-form">
         <form class="bulk-sms-form">
         <label for="templates">Templates:</label>
@@ -276,7 +289,7 @@
 </div>
 
   <hr />
-  <br /><br />
+  <br />
   <div>
     <h3 style="margin-bottom:1rem;">Filter the customer using the filters below:</h3>
     <div class="bulk-sms-form">
