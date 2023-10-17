@@ -40,6 +40,56 @@
         transform: rotate(360deg);
       }
     }
+
+    .bulk-action-form {
+      display: flex;
+      flex-direction: row;
+      align-items: left;
+    }
+  
+    .bulk-action-form > * {
+      margin-right: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .bulk-action-form h1 {
+      margin-right: 1rem;
+    }
+  
+    .bulk-action-form label,
+    .bulk-action-form select,
+    .bulk-action-form input[type="submit"] {
+      margin-right: 1rem;
+    }
+  
+    /* Medium-sized screens (col-6) */
+    @media (max-width: 992px) {
+      .bulk-action-form {
+        flex-direction: column;
+        align-items: left;
+      }
+  
+      .bulk-action-form h1 {
+        margin: 0;
+        margin-bottom: 1rem;
+      }
+    }
+  
+    /* Small screens (col-12) */
+    @media (max-width: 576px) {
+      .bulk-action-form > box {
+        flex: 1;
+        margin: 1rem;
+      }
+
+      .bulk-action-form label,
+      .bulk-action-form select,
+      .bulk-action-form input[type="submit"] {
+        margin-right: 0;
+        margin-bottom: 1rem;
+      }
+    }
+
 </style>
 {% endblock %}
 
@@ -62,27 +112,24 @@
     transition: background 0.3s, box-shadow 0.3s, border 0.3s;
   ">
     <h1>Bulk Action:</h1>
-    <div style="display: flex; flex-direction: row">
-      <form id="update-deliveries-form" action="/admin/deliveries/update-deliveries/" method="post">
-        {% csrf_token %}
-        <label for="id_employee">Employee:</label>
-        <select id="id_employee" name="new_employee_id">
-          {% for employee_id, employee_name in employee_choices %}
-            <option value="{{ employee_id }}">{{ employee_name }}</option>
-          {% endfor %}
-        </select>
-
-        <label for="id_status" style="margin-left: 1rem;">Status:</label>
-        <select id="id_status" name="new_status">
-          {% for status_key, status_value in status_choices %}
-            <option value="{{ status_key }}">{{ status_value }}</option>
-          {% endfor %}
-        </select>
-
-        <input type="hidden" name="url" value="{{ request.path }}">
-        <input type="submit" value="Update Deliveries" style="margin-left: 1rem;"/>
-      </form>
-    </div>
+    <form id="update-deliveries-form" action="/admin/deliveries/update-deliveries/" method="post" class="bulk-action-form">
+      {% csrf_token %}
+      <label for="id_employee">Employee:</label>
+      <select id="id_employee" name="new_employee_id">
+        {% for employee_id, employee_name in employee_choices %}
+          <option value="{{ employee_id }}">{{ employee_name }}</option>
+        {% endfor %}
+      </select>
+      <label for="id_status">Status:</label>
+      <select id="id_status" name="new_status">
+        {% for status_key, status_value in status_choices %}
+          <option value="{{ status_key }}">{{ status_value }}</option>
+        {% endfor %}
+      </select>
+  
+      <input type="hidden" name="url" value="{{ request.path }}">
+      <input type="submit" value="Update Deliveries" />
+    </form>
   </div>
   <div class="loading-overlay" id="loading-overlay" style="display: none">
     <div class="loading-spinner"></div>
