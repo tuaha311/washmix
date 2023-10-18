@@ -10,7 +10,6 @@ from core.admin import AdminWithSearch
 from deliveries.choices import DeliveryKind, DeliveryStatus
 from deliveries.models import Delivery, Holiday, Nonworkingday, Request, Schedule
 from deliveries.models.categorize_routes import CategorizeRoute
-from deliveries.utils import update_deliveries_to_no_show, update_cancelled_deliveries
 from deliveries.utils import update_completed_in_store_deliveries, update_deliveries_to_no_show, update_cancelled_deliveries
 from users.admin import CustomAutocompleteSelect
 from users.models.employee import Employee
