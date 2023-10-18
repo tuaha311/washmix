@@ -50,7 +50,12 @@ class RequestSerializer(serializers.ModelSerializer):
             service.validate()
 
         return attrs
-
+    
+    def get_generated_by_admin(self, obj):
+        if obj is not None:
+            return obj.generated_by_admin
+        else:
+            return None
 
 class RequestCheckSerializer(serializers.Serializer):
     pickup_date = serializers.DateField()
