@@ -272,7 +272,7 @@ class OrderService:
         raw_entity_list = [basket, request, subscription]
         entity_list = [item for item in raw_entity_list if item]
 
-        if request.generated_by_admin:
+        if request and request.generated_by_admin:
             purpose = InvoicePurpose.ADMIN_CHARGED_CLIENT
 
         # 1. we are refreshing and flushing to DB total amount and discount for
