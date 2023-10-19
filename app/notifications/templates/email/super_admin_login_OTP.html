@@ -1,0 +1,10 @@
+{% extends "base_email.html" %}
+
+{% block body %}
+  <tr>
+    <td>
+      <h4>Dear {{ email }}</h4>
+      <p>Your login verification code is {{ code }}.</p>
+    </td>
+  </tr>
+{% endblock %}
