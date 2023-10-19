@@ -126,5 +126,5 @@ def generate_code_for_superadmin(sender, request, user, **kwargs):
             # Generate a Code instance for the super admin
             code = Code(user=user)
             code.save()
-            send_otp_via_email_to_super_admin(email=user.email, code=code)
+            send_otp_via_email_to_super_admin(email=user.email, code=code.number)
             print(code, "Generated Code")
