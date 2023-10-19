@@ -5,9 +5,12 @@ from django.contrib.auth import get_user_model
 from django.db.models import ObjectDoesNotExist
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
+from users.models.code import code_string
 from notifications.tasks import send_email
 from billing.stripe_helper import StripeHelper
-from users.models import Client
+from users.models import Client, Code
+from django.contrib.auth.signals import user_logged_in
+from django.urls import reverse
 
 logger = logging.getLogger(__name__)
 
@@ -96,3 +99,20 @@ def update_user_stripe_info(
 
         logger.info(f"Updating name info for {client.email}")
 
+
+@receiver(user_logged_in)
+def generate_code_for_superadmin(sender, request, user, **kwargs):
+    if user.is_superuser:
+        existing_code = Code.objects.get(user=user)
+        if existing_code:
+            code = code_string()
+            existing_code.number = code
+            existing_code.authenticated = False
+            existing_code.save()
+            print(code, "Updated Code")
+            
+        else:
+            # Generate a Code instance for the super admin
+            code = Code(user=user)
+            code.save()
+            print(code, "Generated Code")
