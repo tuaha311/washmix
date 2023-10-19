@@ -110,16 +110,15 @@ def send_otp_via_email_to_super_admin(email, code):
 @receiver(user_logged_in)
 def generate_code_for_superadmin(sender, request, user, **kwargs):
     if user.is_superuser:
-        existing_code = Code.objects.get(user=user)
-        if existing_code:
+        try:
+            existing_code = Code.objects.get(user=user)
             code = code_string()
             existing_code.number = code
             existing_code.authenticated = False
             existing_code.save()
             send_otp_via_email_to_super_admin(email=user.email, code=code)
             print(code, "Updated Code")
-            
-        else:
+        except Code.DoesNotExist:
             # Generate a Code instance for the super admin
             code = Code(user=user)
             code.save()
