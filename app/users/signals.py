@@ -102,7 +102,8 @@ def update_user_stripe_info(
 
 
 def send_otp_via_email_to_super_admin(email, code):
-    send_email.send(
+    try:
+        send_email.send(
             event=settings.SUPER_ADMIN_OTP,
             recipient_list=[email],
             extra_context={
@@ -110,6 +111,8 @@ def send_otp_via_email_to_super_admin(email, code):
                 "code": code,
             },
         )
+    except Exception as e:
+        logger.error(f"Error sending email: {str(e)}")
 
 @receiver(user_logged_in)
 def generate_code_for_superadmin(sender, request, user, **kwargs):

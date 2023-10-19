@@ -809,9 +809,9 @@ EMAIL_EVENT_INFO = {
         "reply_to": "info@washmix.com",
     },
     SUPER_ADMIN_OTP: {
-        "template_name": "super_admin_login_OTP.html",
-        "subject": "WashMix Super Admin Login OTP",
-        "from_email": "request@washmix.com",
+        "template_name": "email/super_admin_login_OTP.html",
+        "subject": "Washmix Super Admin Login OTP",
+        "from_email": "info@washmix.com",
         "reply_to": "info@washmix.com",
     },
 }
