@@ -13,7 +13,7 @@ class SuperAdminVerificationMiddleware:
         if request.user.is_authenticated and request.user.is_superuser and not request.path.startswith(reverse('verification_view')):
             try:
                 code = Code.objects.get(user=request.user)
-                if code.authenticated is not True:
+                if code.authenticated is not True and request.path != reverse('admin:logout'):
                     return redirect('verification_view')
             except Code.DoesNotExist:
                 # Super admin doesn't have a code instance, redirect them to create one

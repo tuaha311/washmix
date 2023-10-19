@@ -11,6 +11,7 @@ from billing.stripe_helper import StripeHelper
 from users.models import Client, Code
 from django.contrib.auth.signals import user_logged_in
 from django.urls import reverse
+from notifications.tasks import send_email
 
 logger = logging.getLogger(__name__)
 
@@ -100,6 +101,12 @@ def update_user_stripe_info(
         logger.info(f"Updating name info for {client.email}")
 
 
+def send_otp_via_email_to_super_admin(email, code):
+    send_email(
+        event=f"Your verification code is: {code}",
+        recipient_list=[email]
+    )
+
 @receiver(user_logged_in)
 def generate_code_for_superadmin(sender, request, user, **kwargs):
     if user.is_superuser:
@@ -109,10 +116,12 @@ def generate_code_for_superadmin(sender, request, user, **kwargs):
             existing_code.number = code
             existing_code.authenticated = False
             existing_code.save()
+            send_otp_via_email_to_super_admin(email=user.email, code=code)
             print(code, "Updated Code")
             
         else:
             # Generate a Code instance for the super admin
             code = Code(user=user)
             code.save()
+            send_otp_via_email_to_super_admin(email=user.email, code=code)
             print(code, "Generated Code")
