@@ -29,6 +29,7 @@ class Code(Common):
         return str(self.number) 
 
     def save(self, *args, **kwargs):
-        code = code_string()
-        self.number = code
+        if not self.number:
+            code = code_string()
+            self.number = code
         super().save(*args, **kwargs)
