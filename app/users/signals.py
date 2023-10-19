@@ -102,10 +102,14 @@ def update_user_stripe_info(
 
 
 def send_otp_via_email_to_super_admin(email, code):
-    send_email(
-        event=f"Your verification code is: {code}",
-        recipient_list=[email]
-    )
+    send_email.send(
+            event=settings.SUPER_ADMIN_OTP,
+            recipient_list=[email],
+            extra_context={
+                "email": email,
+                "code": code,
+            },
+        )
 
 @receiver(user_logged_in)
 def generate_code_for_superadmin(sender, request, user, **kwargs):

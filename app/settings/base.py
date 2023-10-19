@@ -686,6 +686,7 @@ FIRST_ARCHIVE_FOLLOW_UP = "first_archive_follow_up"
 SECOND_ARCHIVE_FOLLOW_UP = "second_archive_follow_up"
 THIRD_ARCHIVE_FOLLOW_UP = "third_archive_follow_up"
 UNCHARGED_ORDER_REMINDER = "uncharged_order_reminder"
+SUPER_ADMIN_OTP = "super_admin_otp"
 
 #################################
 # SENDGRID WITH EMAIL TEMPLATES #
@@ -805,6 +806,12 @@ EMAIL_EVENT_INFO = {
         "template_name": "email/uncharged_order_reminder.html",
         "subject": "WashMix UNCHARGED Order Reminder",
         "from_email": "NOCHARGE@washmix.com",
+        "reply_to": "info@washmix.com",
+    },
+    SUPER_ADMIN_OTP: {
+        "template_name": "super_admin_login_OTP.html",
+        "subject": "WashMix Super Admin Login OTP",
+        "from_email": "request@washmix.com",
         "reply_to": "info@washmix.com",
     },
 }
