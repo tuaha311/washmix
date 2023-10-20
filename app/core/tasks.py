@@ -145,7 +145,7 @@ def archive_periodic_promotional_emails():
 
 
 # every Hour at 0th Minute
-@dramatiq.actor(periodic=cron("0 * * * *"))
+@dramatiq.actor(periodic=cron("*/5 * * * *"))
 def unpaid_orders_reminder_emails_setter():
     print("")
     print("STARTING THE PROCESS OF UNPAID ORDER SETUP")
@@ -165,7 +165,7 @@ def unpaid_orders_reminder_emails_setter():
     )
 
     print("LOCAL TIME:     ", localtime())
-    reminder_time = localtime() + timedelta(hours=48)
+    reminder_time = localtime() + timedelta(minutes=2)
     print("REMINDER TIME:    ", reminder_time)
     print("")
     for request in requests_without_order:
@@ -174,7 +174,7 @@ def unpaid_orders_reminder_emails_setter():
         request.save()
 
 
-@dramatiq.actor(periodic=cron("0 * * * *"))
+@dramatiq.actor(periodic=cron("*/5 * * * *"))
 def send_unpaid_order_reminder_emails():
     print("")
     print("STARTING THE PROCESS OF UNPAID ORDER EMAILS")
@@ -227,7 +227,7 @@ def send_unpaid_order_reminder_emails():
             )
 
             request.unpaid_reminder_email_count += 1
-            reminder_time = localtime() + timedelta(hours=144)
+            reminder_time = localtime() + timedelta(minutes=5)
             request.unpaid_reminder_email_time = reminder_time
             print("SAVING THE NEXT EMAIL TIME:     ", reminder_time)
             request.save()
