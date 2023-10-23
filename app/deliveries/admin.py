@@ -10,7 +10,7 @@ from core.admin import AdminWithSearch
 from deliveries.choices import DeliveryKind, DeliveryStatus
 from deliveries.models import Delivery, Holiday, Nonworkingday, Request, Schedule
 from deliveries.models.categorize_routes import CategorizeRoute
-from deliveries.utils import update_deliveries_to_no_show, update_cancelled_deliveries
+from deliveries.utils import update_deliveries_to_no_show, update_cancelled_deliveries, update_completed_in_store_deliveries
 from users.admin import CustomAutocompleteSelect
 from users.models.employee import Employee
 from django.shortcuts import render, redirect
@@ -37,6 +37,8 @@ class DeliveryForm(forms.ModelForm):
                 (DeliveryStatus.ACCEPTED, DeliveryStatus.MAP[DeliveryStatus.ACCEPTED]),
                 (DeliveryStatus.IN_PROGRESS, DeliveryStatus.MAP[DeliveryStatus.IN_PROGRESS]),
                 (DeliveryStatus.COMPLETED, DeliveryStatus.MAP[DeliveryStatus.COMPLETED]),
+                (DeliveryStatus.IN_STORE_DROPOFF, DeliveryStatus.MAP[DeliveryStatus.IN_STORE_DROPOFF]),
+                (DeliveryStatus.IN_STORE_PICKUP, DeliveryStatus.MAP[DeliveryStatus.IN_STORE_PICKUP]),
             ]
             
 class ArchivedDeliveryForm(forms.ModelForm):
@@ -74,7 +76,7 @@ class RequestAdmin(AdminWithSearch):
     def get_queryset(self, request):
         return Request.objects.filter(
             delivery_list__kind=DeliveryKind.DROPOFF,
-            delivery_list__status__in=[DeliveryStatus.ACCEPTED, DeliveryStatus.IN_PROGRESS],
+            delivery_list__status__in=[DeliveryStatus.ACCEPTED, DeliveryStatus.IN_PROGRESS, DeliveryStatus.IN_STORE_DROPOFF],
         )
 
     def request_client(self, obj):
@@ -202,7 +204,7 @@ class DeliveryAdminMain(AdminWithSearch):
 
     def get_queryset(self, request):
         return Delivery.objects.filter(
-            status__in=[DeliveryStatus.ACCEPTED, DeliveryStatus.IN_PROGRESS]
+            status__in=[DeliveryStatus.ACCEPTED, DeliveryStatus.IN_PROGRESS, DeliveryStatus.IN_STORE_DROPOFF, DeliveryStatus.IN_STORE_PICKUP]
         )
 
     def full_name(self, obj):
@@ -267,6 +269,9 @@ class DeliveryAdminMain(AdminWithSearch):
         if obj.kind == DeliveryKind.PICKUP and obj.status == DeliveryStatus.CANCELLED:
             print("Marking the Delivery to Cancelled.")
             update_cancelled_deliveries(obj)
+
+        if obj.kind == DeliveryKind.PICKUP and obj.status == DeliveryStatus.COMPLETED and obj.request.generated_by_admin == True:
+                    update_completed_in_store_deliveries(obj)
 
         return super().save_model(request, obj, form, change)
 

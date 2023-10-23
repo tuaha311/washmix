@@ -614,6 +614,8 @@ PICKUP_DUE_TOMORROW = "pickup_due_tomorrow"
 SMS_CREDIT_BACK = "credit_back"
 NO_SHOW = "no_show"
 PROMOTION = "promotion"
+IN_STORE_DROPOFF = "in_store_dropoff"
+IN_STORE_PICKUP = "in_store_pickup"
 
 #############################
 # TWILIO WITH SMS TEMPLATES #
@@ -659,6 +661,12 @@ SMS_EVENT_INFO = {
         "template_name": "sms/no_show.html",
     },
     PROMOTION: {"template_name": "sms/outbound_sms.html"},
+    IN_STORE_DROPOFF: {
+        "template_name": "sms/in_store_dropoff.html",
+    },
+    IN_STORE_PICKUP: {
+        "template_name": "sms/in_store_pickup.html",
+    },
 }
 
 
