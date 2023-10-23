@@ -1,0 +1,395 @@
+{% extends 'admin/change_list.html' %} 
+{% load static %} 
+{% block extrastyle %}
+{{ block.super }} 
+<style>
+  .reset_button{
+    background: #F0AD4E !important;
+  }
+  .reset_button:hover{
+    background: #f7dcb7 !important;
+    color: black !important;
+  }
+  .bulk-sms-form {
+    display: flex;
+    flex-direction: row;
+    align-items: left;
+  }
+
+  .bulk-sms-form > * {
+    margin-right: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .bulk-sms-form h1 {
+    margin-right: 1rem;
+  }
+
+  .blocker {
+    display: flex;
+  }
+  .bulk-sms-form label,
+  .bulk-sms-form select,
+  .bulk-sms-form input[type="submit"] {
+    place-self: center;
+    margin-right: 0rem;
+    white-space: normal;
+  }
+
+  /* Medium-sized screens (col-6) */
+  @media (max-width: 1000px) {
+    .bulk-sms-form {
+      flex-direction: column;
+      align-items: left;
+    }
+
+    .bulk-sms-form h1 {
+      margin: 0;
+      margin-bottom: 1rem;
+    }
+
+    .bulk-sms-form > form {
+      flex: 2;
+      margin: 1rem;
+    }
+    
+    .bulk-sms-form > label {
+      place-self: start;
+    }
+    .blocker {
+      display: flex !important;
+      flex-direction: column;
+    }
+  }
+
+  /* Small screens (col-12) */
+  @media (max-width: 576px) {
+    .bulk-sms-form label,
+    .bulk-sms-form select,
+    .bulk-sms-form input[type="submit"] {
+      margin-right: 0;
+      margin-bottom: 1rem;
+      place-self: start;
+    }
+
+    .blocker {
+      display: flex !important;
+      flex-direction: column;
+    }
+
+    h3 {
+      white-space: normal;
+    }
+  }
+
+  @media (min-width: 1000px) and (max-width: 1600px) {
+    .bulk-sms-form label,
+    .bulk-sms-form select,
+    .bulk-sms-form input[type="submit"] {
+      flex: 4;
+      margin-right: 1rem;
+      min-width: calc(50% - 0.5rem);
+    }
+
+    .blocker {
+      display: block;
+      min-width: 30vw !important;
+    }
+    .blocker-filter {
+      padding: 1.5rem !important;
+    }
+    #reset-filters-form {
+      display: flex;
+      flex: 1;
+      flex-direction: column
+    }
+
+    .select2-selection__rendered {
+      width: 250px !important;
+    }
+  }
+</style>
+{% endblock %} 
+
+{% block extrahead %}
+<script>
+  function sendSMS() {
+    const checkboxes = document.querySelectorAll('input[name="_selected_action"]');
+    const selectedCustomersInput = document.getElementById("selected-customers-input");
+    const selectedTemplateInput = document.getElementById("selected-template-input");
+  
+    // Get selected customer values
+    const selectedCustomers = Array.from(checkboxes)
+      .filter(checkbox => checkbox.checked)
+      .map(checkbox => checkbox.value);
+  
+    // Get selected template value
+    const selectedTemplate = document.getElementById("template_selected").value;
+
+    // Debug: Log values to the console
+    console.log("Selected Template:", selectedTemplate);
+  
+    // Update the hidden inputs' values
+    selectedCustomersInput.value = JSON.stringify(selectedCustomers);
+    selectedTemplateInput.value = selectedTemplate;
+  
+    // Ask for confirmation before submitting
+    if (confirm('Are you sure you want to send SMS to selected clients?')) {
+      // Submit the form
+      document.getElementById("send-sms-form").submit();
+    }
+  }
+  
+ </script>
+
+ <script>
+  function filtered_customers(formId, selectedCustomersInputName) {
+    const checkboxes = document.querySelectorAll('input[name="_selected_action"]');
+    const selectedCustomersInput = document.getElementById(selectedCustomersInputName);
+
+    // change form inputs
+    //const filter_template = document.getElementById('filter_template');
+    const selectedTemplate = document.getElementById('template_selected');
+    const selectedZipCode = document.getElementById('zip_code_selected');
+    const selectedCity = document.getElementById('city_selected');
+    const selectedAddress = document.getElementById('addres_selected');
+    const slectedPhone = document.getElementById('phone_selected');
+
+    // Filters inputs
+    const filterTemplate = document.getElementById('filter_template');
+    const filterZipCode = document.getElementById('filter_zip_code');
+    const filterCity = document.getElementById('filter_city');
+    const filterAddress = document.getElementById('filter_address');
+    const filterPhone = document.getElementById('filter_phone');
+
+    //assignment
+    filterTemplate.value = selectedTemplate.value
+    filterZipCode.value = selectedZipCode.value
+    filterCity.value = selectedCity.value
+    filterAddress.value = selectedAddress.value
+    filterPhone.value = slectedPhone.value
+
+    // Get selected customer values
+    const selectedCustomers = Array.from(checkboxes)
+      .filter(checkbox => checkbox.checked)
+      .map(checkbox => checkbox.value);
+
+    // Retrieve the value from the hidden input
+    const hiddenInput = document.getElementById("selected-customers-hidden");
+    const extraContextSelectedCustomers = hiddenInput.value;
+
+    // Check if extraContextSelectedCustomers is a non-empty string
+    if (extraContextSelectedCustomers.trim() !== "") {
+      try {
+        // Attempt to parse the JSON
+        const parsedExtraContext = JSON.parse(extraContextSelectedCustomers);
+        if (Array.isArray(parsedExtraContext)) {
+          // If it's an array, concatenate it with selectedCustomers
+          selectedCustomers.push(...parsedExtraContext);
+        }
+      } catch (error) {
+        // Handle JSON parsing error here
+        console.error("JSON parsing error:", error);
+      }
+    }
+
+    // Debug: Log values to the console
+    console.log("Selected Customers:", selectedCustomers);
+
+    // Update the hidden input's value
+    selectedCustomersInput.value = JSON.stringify(selectedCustomers);
+
+    // Submit the form by referencing it by its ID
+    const form = document.getElementById(formId);
+    form.submit();
+  }
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Get the selected customers from the hidden input
+    const selectedCustomersInput = document.getElementById("selected-customers-hidden");
+    const selectedCustomers = JSON.parse(selectedCustomersInput.value);
+
+    // Loop through the checkboxes and check them if their values are in the selectedCustomers list
+    const checkboxes = document.querySelectorAll('input[name="_selected_action"]');
+    checkboxes.forEach(checkbox => {
+      if (selectedCustomers.includes(checkbox.value)) {
+        checkbox.checked = true;
+      }
+    });
+  });
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelector('.actions').style.display = 'none';
+    const hiddenInput = document.getElementById("selected-customers-hidden");
+    const extraContextSelectedCustomers = JSON.parse(hiddenInput.value);
+  })
+</script>
+{{block.super}}
+<script src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+<script src="{% static 'admin/js/jquery.init.js' %}"></script>
+{% endblock %} 
+
+{% block filters %} 
+{{ block.super }} 
+
+<div
+  style="
+    place-items: center;
+    border: 1px solid;
+    padding: 12px;
+    border-radius: 4px;
+    white-space: nowrap;
+    outline: 0;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    background-color: #fff;
+    color: #003459;
+    border: 1px solid #ededed;
+    appearance: none;
+    transition: background 0.3s, box-shadow 0.3s, border 0.3s;
+  "
+>
+<h3>Select the customer and template to send the SMS to:</h3>
+<br />
+<div class="bulk-sms-form">
+        <form class="bulk-sms-form">
+        <label for="templates">Templates:</label>
+        <select id="template_selected" name="template">
+          <option value="">Select SMS Template</option>
+          {% for template in templates %}
+          <option value="{{ template.id }}" {% if template == selected_template %}selected{% endif %}>{{ template }}</option>
+          {% endfor %}
+        </select>
+      </form>
+        <div class="bulk-sms-form" style="display:flex;">
+          <form id="reset-filters-form" action="" method="get" class="bulk-sms-form">
+            <input
+              type="button"
+              value="Reset Filters"
+              class="reset_button"
+              onclick="this.form.submit()"
+            />
+          </form>
+          <form id="send-sms-form" action="/admin/sms/send-sms/" method="post" class="bulk-sms-form">
+            {% csrf_token %}
+            <input type="hidden" id="selected-customers-input" name="customers" />
+            <input type="hidden" id="selected-template-input" name="template" />
+            <input
+              type="button"
+              value="Send SMS"
+              class="submit-button"
+              onclick="sendSMS()"
+            />
+          </form>
+        </div>
+</div>
+
+  <hr />
+  <br />
+  <div>
+    <h3 style="margin-bottom:1rem;">Filter the customer using the filters below:</h3>
+    <div class="bulk-sms-form">
+      <div class="blocker bulk-sms-form">
+          <form
+            id="select-zip-form"
+            action=""
+            method="post"
+            class="bulk-sms-form"
+          >
+            {% csrf_token %}
+            <input type="hidden" id="selected-customers-zip" name="selected-customers" />
+            <label for="zip_code">Select Zip Code:</label>
+            <select name="zip_code" id="zip_code_selected">
+              <option value="">Select Zip Code</option>
+              {% for zip in zips %}
+                <option value="{{ zip }}" {% if zip == selected_zip_code %}selected{% endif %}>{{ zip }}</option>
+              {% endfor %}
+            </select>
+          </form>
+
+          <form
+            id="select-city-form"
+            action=""
+            method="post"
+            class="bulk-sms-form"
+          >
+            {% csrf_token %}
+            <label for="city">Select City:</label>
+            <input type="hidden" id="selected-customers-city" name="selected-customers" />
+            <select name="city" id="city_selected">
+              <option value="">Select City</option>
+              {% for city in cities %}
+              <option value="{{ city }}" {% if city == selected_city %}selected{% endif %}>{{ city }}</option>
+              {% endfor %}
+            </select>
+          </form>
+        </div>
+
+      <div class="blocker bulk-sms-form">
+          <form
+            id="select-address-form"
+            action=""
+            method="post"
+            class="bulk-sms-form"
+          >
+            {% csrf_token %}
+            <label for="address">Select Address:</label>
+            <input type="hidden" id="selected-customers-address" name="selected-customers" />
+            <select
+              id="addres_selected"
+              name="address"
+              class="select-multiple-field"
+            >
+              <option value="">Select Address</option>
+              {% for customer in all_customers %}
+              <option value="{{ customer.billing_address.address_line_1 }}" {% if customer.billing_address.address_line_1 == selected_address %}selected{% endif %}>
+                {{ customer.billing_address.address_line_1 }}
+              </option>
+              {% endfor %}
+            </select>
+          </form>
+     
+          <form
+            id="select-phone-form"
+            action=""
+            method="post"
+            class="bulk-sms-form"
+          >
+            {% csrf_token %}
+            <label for="phone">Select Phone:</label>
+            <input type="hidden" id="selected-customers-phone" name="selected-customers" />
+            <select
+              id="phone_selected"
+              name="phone"
+              class="select-multiple-field"
+            >
+              <option value="">Select Phone</option>
+              {% for customer in all_customers %}
+              <option value="{{ customer.main_phone.number }}" {% if customer.main_phone.number == selected_phone %}selected{% endif %}>
+                {{ customer.main_phone.number }}
+              </option>
+              {% endfor %}
+            </select>
+          </form>
+        </div>
+      
+        <div class="blocker-filter bulk-sms-form">
+          <form id="filters-form" action="" method="post" class="bulk-sms-form">
+            {% csrf_token %}
+            <input type="hidden" id="selected-customers-hidden" value="{{ selected_customers }}">
+            <input type="hidden" id="filter_customers" name="selected_customers" />
+            <input type="hidden" id="filter_template" name="template" />
+            <input type="hidden" id="filter_zip_code" name="zip_code" />
+            <input type="hidden" id="filter_city" name="city" />
+            <input type="hidden" id="filter_address" name="address" />
+            <input type="hidden" id="filter_phone" name="phone" />
+            <input type="button" value="Filter Customers" class="submit-button" onclick="filtered_customers('filters-form', 'filter_customers')">
+        </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
