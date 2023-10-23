@@ -29,6 +29,8 @@ class OrderSerializer(CommonContainerSerializer, serializers.ModelSerializer):
     coupon_discount_type = serializers.ReadOnlyField()
     discount_percent = serializers.ReadOnlyField()
     purpose = serializers.SerializerMethodField()
+    unpaid_amount = serializers.SerializerMethodField()
+    payment_status = serializers.SerializerMethodField()
 
     class Meta:
         model = Order
@@ -58,6 +60,8 @@ class OrderSerializer(CommonContainerSerializer, serializers.ModelSerializer):
             "balance_after_purchase",
             "balance_before_purchase",
             "purpose",
+            "unpaid_amount",
+            "payment_status",
         ]
 
     def get_purpose(self, obj):
@@ -66,6 +70,11 @@ class OrderSerializer(CommonContainerSerializer, serializers.ModelSerializer):
         else:
             return None
 
+    def get_unpaid_amount(self, obj):
+        return obj.invoice.unpaid_amount if obj.invoice and obj.invoice.unpaid_amount is not None else 0
+    
+    def get_payment_status(self, obj):
+        return obj.payment if obj.payment and obj.payment is not None else ''
 
 class POSOrderCheckoutSerializer(serializers.Serializer):
     order = POSOrderField()
