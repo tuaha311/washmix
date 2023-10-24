@@ -404,7 +404,6 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
         "subscription",
         "full_address",
         "has_card",
-        "get_verified_email",
     ]
     
     list_filter = [SubscriptionFilter]
@@ -540,11 +539,6 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
         return queryset, use_distinct
 
     change_form_template = "assets/change_list.html"
-    
-    def get_verified_email(self, obj):
-        return obj.verified_email
-    
-    get_verified_email.short_description = "Verified Email"
 
     def get_notification_message(self, request):
         message = request.GET.get("message")

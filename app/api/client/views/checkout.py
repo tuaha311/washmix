@@ -1,7 +1,6 @@
 import logging
 
 from django.conf import settings
-from django.urls import reverse
 
 from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
@@ -48,7 +47,6 @@ class WelcomeCheckoutView(GenericAPIView):
 
         # Send the Welcome email to the user
         self.send_welcome_email(client)
-        self.send_verification_email(client)
 
         response_body = {
             "user": user,
@@ -85,21 +83,3 @@ class WelcomeCheckoutView(GenericAPIView):
         # )
 
         Notification.create_notification(client, NotificationTypes.NEW_SIGNUP)
-
-    def send_verification_email(self, client, request):
-        user = client.user
-        recipient_list = [client.email]
-        base_url = request.get_host()
-        api_url = reverse('client:client-verify-email-api', kwargs={'pk': client.id})
-
-        # Combine the base URL and the API URL to get the complete URL
-        complete_url = f"https://{base_url}{api_url}"
-
-        send_email.send(
-            event=settings.VERIFY_EMAIL,
-            recipient_list=recipient_list,
-            extra_context={
-                "full_name": f"{user.first_name} {user.last_name}",
-                "verify_email_url": complete_url,
-            },
-        )
