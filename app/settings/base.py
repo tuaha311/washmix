@@ -701,7 +701,7 @@ UNCHARGED_ORDER_REMINDER = "uncharged_order_reminder"
 SENDGRID_NO_REPLY = "no-reply@washmix.com"
 SENDGRID_FROM_EMAIL = Email("info@washmix.com")
 SENDGRID_API_KEY = env.str("SENDGRID_API_KEY", "")
-ADMIN_EMAIL_LIST = ["tuaha.aamir@bitandbytes.net"]
+ADMIN_EMAIL_LIST = env.list("ADMIN_EMAIL_LIST", ["michael@washmix.com"])
 
 EMAIL_EVENT_INFO = {
     SIGNUP: {
