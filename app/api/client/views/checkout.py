@@ -48,7 +48,7 @@ class WelcomeCheckoutView(GenericAPIView):
 
         # Send the Welcome email to the user
         self.send_welcome_email(client)
-        self.send_verification_email(client, request=request)
+        self.send_verification_email(client)
 
         response_body = {
             "user": user,
