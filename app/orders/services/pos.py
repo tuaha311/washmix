@@ -48,6 +48,7 @@ class POSService:
             order_service.fail(order)
 
         if not is_fully_paid:
+            order_service.fail(order)
             raise serializers.ValidationError(
                 detail="Can't bill your card",
                 code="cant_bill_your_card",
