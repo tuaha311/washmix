@@ -1,5 +1,6 @@
 import logging
 from datetime import timedelta
+from django.db.models import Q
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -7,6 +8,7 @@ from django.utils.timezone import localtime
 
 import dramatiq
 from periodiq import cron
+from orders.choices import OrderPaymentChoices
 
 from archived.models import ArchivedCustomer
 from core.utils import get_time_delta_for_promotional_emails
@@ -157,25 +159,25 @@ def unpaid_orders_reminder_emails_setter():
     ).values_list("request_id", flat=True)
 
     # Fetch the orders that meet the specified criteria
-    requests_without_order = Request.objects.filter(
-        id__in=pickup_request_ids,
-        order__isnull=True,
-        unpaid_reminder_email_count__lte=0,
-        unpaid_reminder_email_time__isnull=True,
+    requests_without_order_or_unpaid = Request.objects.filter(
+    Q(order__isnull=True) | Q(order__payment=OrderPaymentChoices.FAIL),
+    id__in=pickup_request_ids,
+    unpaid_reminder_email_count__lte=0,
+    unpaid_reminder_email_time__isnull=True,
     )
 
     print("LOCAL TIME:     ", localtime())
     reminder_time = localtime() + timedelta(hours=48)
     print("REMINDER TIME:    ", reminder_time)
     print("")
-    for request in requests_without_order:
+    for request in requests_without_order_or_unpaid:
         request.unpaid_reminder_email_time = reminder_time
         print("REQUEST SAVED:    ", request.pk)
         request.save()
 
 
 @dramatiq.actor(periodic=cron("0 * * * *"))
-def send_unpaid_order_reminder_emails():
+def send_uncharged_order_reminder_emails():
     print("")
     print("STARTING THE PROCESS OF UNPAID ORDER EMAILS")
     print("")
@@ -256,3 +258,56 @@ def worker_health():
     """
 
     logger.info("Worker health - OK")
+
+@dramatiq.actor(periodic=cron("0 * * * *"))
+def send_unpaid_order_reminder_emails():
+    print("")
+    print("STARTING THE PROCESS OF UNPAID ORDER EMAILS")
+    print("")
+
+    # Get the all the request ids that are picked up
+    pickup_request_ids = Delivery.objects.filter(
+        kind__iexact=DeliveryKind.PICKUP,
+        status__iexact=DeliveryStatus.COMPLETED,
+    ).values_list("request_id", flat=True)
+
+    print("REQUEST IDS:    ", pickup_request_ids)
+    # Fetch the orders that meet the specified criteria
+    requests_with_failed_order = Request.objects.filter(
+        id__in=pickup_request_ids,
+        order__payment=OrderPaymentChoices.FAIL,
+        unpaid_reminder_email_count__lte=UNPAID_ORDER_TOTAL_REMINDER_EMAILS,
+        unpaid_reminder_email_time__isnull=False,
+    )
+
+    for request in requests_with_failed_order:
+        email_time = request.unpaid_reminder_email_time
+        current_time = localtime()
+        if email_time <= current_time:
+            print("Matching....    ", request.__dict__)
+            recipient_list = settings.ADMIN_EMAIL_LIST
+
+            is_unpaid = True
+
+            send_email.send(
+                event=settings.PAYMENT_FAIL_ADMIN,
+                recipient_list=recipient_list,
+                extra_context={
+                    "client_id": request.client.id,
+                    "order_id": request.order.id,
+                    "is_unpaid": is_unpaid,
+                },
+            )
+            send_email.send(
+                event=settings.PAYMENT_FAIL_CLIENT,
+                recipient_list=recipient_list,
+                extra_context={
+                    "client_id": request.client.id,
+                },
+            )
+
+            request.unpaid_reminder_email_count += 1
+            reminder_time = localtime() + timedelta(hours=144)
+            request.unpaid_reminder_email_time = reminder_time
+            print("SAVING THE NEXT EMAIL TIME:     ", reminder_time)
+            request.save()
