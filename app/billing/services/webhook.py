@@ -17,11 +17,14 @@ logger = logging.getLogger(__name__)
 
 
 class StripeWebhookService:
+    print("HERRRRRRRRRREEEEEEEE::::::: WEB HOOOK SERVICE")
     enable_ip_check = False
     success_events = ["charge.succeeded"]
     fail_events = ["charge.failed"]
 
     def __init__(self, request: Request, event: stripe.Event):
+        print("HERRRRRRRRRREEEEEEEE::::::: INNNNN ITTTTTTTTTT")
+        
         self._request = request
         self._event = event
 
@@ -29,6 +32,8 @@ class StripeWebhookService:
         """
         Stripe event validity checker.
         """
+        print("HERRRRRRRRRREEEEEEEE::::::: ISSSSSSS VALIDDDDDDD")
+        
 
         request = self._request
         event = self._event
@@ -44,6 +49,8 @@ class StripeWebhookService:
         Main handler that confirms payment and run final hooks
         for order.
         """
+        print("HERRRRRRRRRREEEEEEEE::::::: ACCCCCEEEEEEEPPPPTTTT PAYMENT")
+        
 
         payment_container = self._parse()
 
@@ -57,6 +64,8 @@ class StripeWebhookService:
         """
         Parse Stripe event and retrieve backend entities.
         """
+        print("HERRRRRRRRRREEEEEEEE::::::: ____PAAAAAARRRSSSSSSEEEEEEE")
+        
 
         event = self._event
 
@@ -68,6 +77,8 @@ class StripeWebhookService:
         """
         Handler for success events.
         """
+        print("HERRRRRRRRRREEEEEEEE::::::: _handle_success_events")
+        
 
         payment = payment_container.payment
         client = payment_container.client
@@ -122,6 +133,8 @@ class StripeWebhookService:
         """
         Handler for fail events.
         """
+        print("HERRRRRRRRRREEEEEEEE:::::::  _handle_fail_events")
+        
 
         client = payment_container.client
         webhook_kind = payment_container.webhook_kind

@@ -45,9 +45,11 @@ class POSService:
         # via Stripe and consequently Stripe will not notify us about failed charge with
         # webhook. such cases we should handle manually.
         if not client_has_card and not is_fully_paid:
+            print("THEREEEEEEEEEEEEEEEEEEE")
             order_service.fail(order)
 
         if not is_fully_paid:
+            print("NNNNNNNNNNNOOOOOOOOOOOOOOOOOOTTTTTTTTTTTT")
             order_service.fail(order)
             raise serializers.ValidationError(
                 detail="Can't bill your card",

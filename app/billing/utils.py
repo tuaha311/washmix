@@ -80,7 +80,7 @@ def add_money_to_balance(
             amount=amount,
             provider=provider,
         )
-
+    print("transaction transaction", transaction)
     return transaction
 
 

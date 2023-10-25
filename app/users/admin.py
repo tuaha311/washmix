@@ -474,23 +474,23 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
             added_or_removed = "removed"
             credit_given = convert_cent_to_dollars(int(remove_money_amount))
 
-        if transaction:
-            send_email(
-                event=settings.SEND_ADMIN_STORE_CREDIT,
-                recipient_list=[*settings.ADMIN_EMAIL_LIST],
-                extra_context={
-                    "client": client,
-                    "added_or_removed": added_or_removed,
-                    "credit_given": credit_given,
-                    "note": description,
-                    "old_balance": convert_cent_to_dollars(
-                        int(transaction.invoice.order.balance_before_purchase)
-                    ),
-                    "new_balance": convert_cent_to_dollars(
-                        int(transaction.invoice.order.balance_after_purchase)
-                    ),
-                },
-            )
+        # if transaction:
+        #     send_email(
+        #         event=settings.SEND_ADMIN_STORE_CREDIT,
+        #         recipient_list=[*settings.ADMIN_EMAIL_LIST],
+        #         extra_context={
+        #             "client": client,
+        #             "added_or_removed": added_or_removed,
+        #             "credit_given": credit_given,
+        #             "note": description,
+        #             "old_balance": convert_cent_to_dollars(
+        #                 int(transaction.invoice.order.balance_before_purchase)
+        #             ),
+        #             "new_balance": convert_cent_to_dollars(
+        #                 int(transaction.invoice.order.balance_after_purchase)
+        #             ),
+        #         },
+        #     )
 
         return super().save_form(request, form, change)
 
