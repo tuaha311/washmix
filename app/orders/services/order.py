@@ -272,6 +272,9 @@ class OrderService:
         raw_entity_list = [basket, request, subscription]
         entity_list = [item for item in raw_entity_list if item]
 
+        if request and request.generated_by_admin:
+            purpose = InvoicePurpose.ADMIN_CHARGED_CLIENT
+
         # 1. we are refreshing and flushing to DB total amount and discount for
         # every paid entity and corresponding service
         for item in service_list:
