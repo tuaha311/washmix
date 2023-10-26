@@ -45,6 +45,38 @@
   }
 </script>
 
+<script>
+  function createRequestFormSubmit() {
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    const form = document.getElementById('instore-request');
+    const clientId = form.querySelector('input[name="client_id"]').value;
+
+    // Prepare the data as JSON
+    const data = {
+      client_id: clientId,
+    };
+
+    fetch('/admin/deliveries/instore-request/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrftoken,
+      },
+      body: JSON.stringify(data),
+    })
+    .then((response) => {
+      console.log(response),
+      response.json().then((responseJson)=>{
+        window.location = responseJson.path + '?message=' + responseJson.message;
+      })
+
+    })
+      .catch((error) => {
+        console.log(error)
+      });
+  }
+</script>
+
 {{ block.super }}
 
 {% endblock %}
@@ -63,12 +95,22 @@
 {% endblock %}
 
 {% block object-tools-items %}
+
+{% if user.is_superuser %}
+<div style="margin-right:7px;">
+  <form id="instore-request">
+    <input type="hidden" value="{{ original.pk }}" name="client_id">
+    <input type="submit" onclick="createRequestFormSubmit()" value="Instore Request"></input>
+  </form>
+</div>
 <div>
   <form id="charge-form">
     <input type="hidden" value="{{ original.pk }}" name="client_id">
     <input type="button" class="modal-button" onclick="submitForm()" value="Charge client"></input>
   </form>
 </div>
+{% endif %}
+
 <div style="margin-left:7px;">
   <form id="send-sms-form" action="/admin/client/generate-pdf" method="get">
     <input type="hidden" name="client_id" value="{{ original.pk }}">
