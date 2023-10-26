@@ -1,3 +1,4 @@
+from django.contrib.auth.models import Group
 import logging
 
 from django.conf import settings
@@ -116,7 +117,10 @@ def send_otp_via_email_to_super_admin(email, code):
 
 @receiver(user_logged_in)
 def generate_code_for_superadmin(sender, request, user, **kwargs):
-    if user.is_superuser:
+    groups = user.groups.all()
+    user_is_admin = any(group.name == "Admins" for group in groups)
+
+    if user_is_admin or user.is_superuser:
         try:
             existing_code = Code.objects.get(user=user)
             code = code_string()

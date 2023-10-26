@@ -701,7 +701,7 @@ ADMIN_EMAIL_LIST = env.list("ADMIN_EMAIL_LIST", ["michael@washmix.com"])
 EMAIL_EVENT_INFO = {
     SUPER_ADMIN_OTP: {
         "template_name": "email/super_admin_login_OTP.html",
-        "subject": "Washmix Super Admin Login OTP",
+        "subject": "Washmix Admin Login OTP",
         "from_email": "info@washmix.com",
         "reply_to": "info@washmix.com",
     },
