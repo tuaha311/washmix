@@ -10,7 +10,9 @@ class SuperAdminVerificationMiddleware:
 
     def __call__(self, request):
         # Check if the user is a super admin and not on the verification page
-        if request.user.is_authenticated and request.user.is_superuser and not request.path.startswith(reverse('verification_view')):
+        groups = request.user.groups.all()
+        user_is_admin = any(group.name == "Admins" for group in groups)
+        if request.user.is_authenticated and (request.user.is_superuser or user_is_admin)and not request.path.startswith(reverse('verification_view')):
             try:
                 code = Code.objects.get(user=request.user)
                 if code.authenticated is not True and request.path != reverse('admin:logout'):
