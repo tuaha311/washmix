@@ -215,8 +215,7 @@ EMAIL_HOST_USER = "api_evrone"
 EMAIL_HOST_PASSWORD = env.str("SENDGRID_API_KEY", "")
 EMAIL_PORT = 587
 
-
-# AUTH_USER_MODEL = "to_named_email.NamedEmailUser"
+AUTH_USER_MODEL = "to_named_email.NamedEmailUser"
 
 SHOW_OPENAPI_SCHEMA = True
 
