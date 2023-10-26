@@ -401,7 +401,7 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
         "full_name",
         "get_main_phone_number",  # Use custom method instead of main_phone
         "__str__",
-        "subscription",
+        "get_subscription_name",
         "full_address",
         "has_card",
         "get_verified_email",
@@ -554,6 +554,13 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
         extra_context = extra_context or {}
         extra_context["notification_message"] = self.get_notification_message(request)
         return super().change_view(request, object_id, form_url, extra_context=extra_context)
+
+    def get_subscription_name(self, obj):
+        if obj.subscription:
+            return obj.subscription
+
+    get_subscription_name.short_description = 'subscription of service'  
+    get_subscription_name.admin_order_field = 'subscription__name'
 
 class CustomerAdmin(AdminWithSearch):
     list_display = [
