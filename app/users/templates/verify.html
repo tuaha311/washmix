@@ -2,6 +2,13 @@
 <html>
 <head>
     <title>Verification Page</title>
+    {% block extrahead %}
+    <script>
+        function logoutFunction(){
+            window.location.href = "/admin/logout/";
+        }
+    </script>
+    {% endblock %}
 </head>
 <body>
     {% block content %}
@@ -12,7 +19,7 @@
         {% csrf_token %}
         {{ form.as_p }}
 
-        <center><input type="submit" value="Verify"></center>
+        <center><input type="button" value="Logout" onclick="logoutFunction()" style="margin-right: 10px; background-color: #ff0000; color: #fff; cursor: pointer;"><input type="submit" value="Verify">
     </form>
     {% endblock %}
 </body>
