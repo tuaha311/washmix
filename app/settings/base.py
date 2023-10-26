@@ -51,8 +51,10 @@ INSTALLED_APPS = [
     "social_django",
     
     # TODO: below two are deprecated -Amir
-    # "swap_user",
-    # "swap_user.to_named_email",
+    # "swaping_user",
+    # "swaping_user.to_email",
+    "swap_user",
+    "swap_user.to_email",
     
     "drf_yasg",
     
@@ -219,7 +221,8 @@ EMAIL_HOST_USER = "api_evrone"
 EMAIL_HOST_PASSWORD = env.str("SENDGRID_API_KEY", "")
 EMAIL_PORT = 587
 
-AUTH_USER_MODEL = "user.UserAdmin"
+# AUTH_USER_MODEL = "user.UserAdmin"
+AUTH_USER_MODEL = "swap_to_email.EmailUser"
 
 SHOW_OPENAPI_SCHEMA = True
 

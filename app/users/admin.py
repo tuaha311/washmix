@@ -16,8 +16,8 @@ from django.urls import reverse
 from django.shortcuts import render
 
 # FIXME: django-swap-user isn't suppoerted on django v4 -Amir
-# from swap_user.admin import BaseUserAdmin
-# from swap_user.to_named_email.forms import (
+# from swaping_user.admin import BaseUserAdmin
+# from swaping_user.to_named_email.forms import (
 #     NamedUserEmailOptionalFieldsForm,
 #     NamedUserEmailRequiredFieldsForm,
 # )
