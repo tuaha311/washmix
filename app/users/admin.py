@@ -650,6 +650,11 @@ class EmployeeAdmin(AdminWithSearch):
                 | Q(position__icontains=request.GET.get("q", ""))
             )
         return queryset, use_distinct
+    
+    def add_view(self, request, form_url='', extra_context=None):
+        # When adding a new employee, set change_form_template to None
+        self.change_form_template = None
+        return super().add_view(request, form_url, extra_context)
 
 
 models = [
