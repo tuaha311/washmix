@@ -1,4 +1,4 @@
-from django.contrib.postgres.fields import JSONField
+# from django.contrib.postgres.fields import JSONField
 from django.db import models
 
 from billing.choices import InvoiceKind, InvoiceProvider
@@ -38,7 +38,7 @@ class Transaction(Amountable, Stripeable, Common):
         max_length=20,
         choices=InvoiceProvider.CHOICES,
     )
-    source = JSONField(
+    source = models.JSONField(
         verbose_name="source of transaction (Stripe raw data)",
         default=dict,
     )

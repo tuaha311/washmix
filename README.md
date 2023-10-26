@@ -47,11 +47,11 @@ brew install python3 cairo pango gdk-pixbuf libffi
   ```
 * Run migrations:
   ```
-  python manage.py migrate --settings settings.dev
+  python app/manage.py migrate --settings settings.dev
   ```
 * Run the development server:
   ```bash
-  python manage.py runserver --settings settings.dev
+  python app/manage.py runserver --settings settings.dev
   ```
 * Enjoy!
 
@@ -256,4 +256,59 @@ Run this via heroku cli
 ```bash
 heroku pg:backups:schedules --app washmix-back
 heroku pg:backups --app washmix-back
+```
+
+
+## CHANGES MADE BY AMIR
+Install pyenv
+- on Mac: `brew install pyenv`
+- pyenv version -> 2 (run `pyenv update` if needed)
+- Install Python 3.9.12 (this is Apple Chip compatible)
+- `pyenv install 3.9.12`
+- `pyenv local 3.9.12`
+- `brew install pango` (this is required by WeasyPrint)
+
+1. Upgrade all packages to latest (DjangoV4, Python 3.9, etc.)
+2. Rename `branding/apps.py` to `branding/admin_apps.py` [see this for more info](https://github.com/PacktPublishing/Web-Development-with-Django/issues/5#issuecomment-914195589)
+
+
+### Copy of requirements.txt
+```
+Django==2.*
+Pillow>7.2.0
+WeasyPrint==52.*
+djoser==2.0.3
+django-cors-headers==3.9.*
+django-debug-toolbar==3.2.*
+django-filter==2
+django-jet==1.0.*
+django-robots==3.1.0
+django-swap-user==0.3.4
+django-templated-mail==1.1.1
+djangoql==0.14.*
+djangorestframework==3.12
+djangorestframework-simplejwt==4.6
+drf-writable-nested>=0.6.0
+drf-yasg==1.20
+dramatiq[redis,watch]==1.9
+environs==8.0.0
+fabric3==1.14.post1
+gunicorn==20.0.4
+isort==5.4.2
+mypy==0.790
+netaddr==0.8.0
+phonenumbers==8.12.7
+psycopg2-binary==2.8.5
+pytest==5.4.3
+pytest-django==3.10.0
+pyyaml==5.3.*
+redis==3.5.*
+requests==2.*
+requests-oauthlib==1.0.0
+sendgrid==6.4.*
+sentry-sdk==0.16.*
+social-auth-app-django==3.1.0
+stripe==2.*
+twilio==6.*
+uritemplate~=3.0.1
 ```

@@ -77,11 +77,13 @@ if settings.SHOW_OPENAPI_SCHEMA:
 urlpatterns += [
     # REST API
     path("api/", include("api.urls")),
-    path("jet/", include("jet.urls", "jet")),
+    # TODO: replace with baton -Amir
+    # path("jet/", include("jet.urls", "jet")),
     path("deliveries/", include("deliveries.urls")),
     path("__debug__/", include(debug_toolbar.urls)),
     path("admin/notifications/", include("notifications.urls")),
     path("admin/", admin.site.urls),
+    path('baton/', include('baton.urls')),
     path("sms/", include("sms.urls")),
     # Static files serving
     *static_server(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),

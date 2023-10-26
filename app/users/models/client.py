@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.contrib.postgres.fields import JSONField
+# from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.db.models import Sum
 
@@ -64,7 +64,7 @@ class Client(ProxyUserInfoMixin, Stripeable, Common):
         null=True,
         blank=True,
     )
-    billing_address = JSONField(
+    billing_address = models.JSONField(
         verbose_name="billing address",
         default=dict,
         blank=True,

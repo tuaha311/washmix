@@ -15,20 +15,22 @@ from django.http.request import HttpRequest
 from django.urls import reverse
 from django.shortcuts import render
 
-from swap_user.admin import BaseUserAdmin
-from swap_user.to_named_email.forms import (
-    NamedUserEmailOptionalFieldsForm,
-    NamedUserEmailRequiredFieldsForm,
-)
+# FIXME: django-swap-user isn't suppoerted on django v4 -Amir
+# from swap_user.admin import BaseUserAdmin
+# from swap_user.to_named_email.forms import (
+#     NamedUserEmailOptionalFieldsForm,
+#     NamedUserEmailRequiredFieldsForm,
+# )
+# from baton.autodiscover import admin
 from deliveries.models.delivery import Delivery
 
 from api.client.views.pdf import generate_client_pdf_core, get_existing_pdf_path
-from billing.choices import InvoiceProvider, InvoicePurpose
+from billing.choices import InvoiceProvider#, InvoicePurpose
 from billing.models import Invoice
 from billing.utils import add_money_to_balance, remove_money_from_balance
 from core.admin import AdminWithSearch
 from core.mixins import AdminUpdateFieldsMixin
-from core.tasks import archive_periodic_promotional_emails
+# from core.tasks import archive_periodic_promotional_emails
 from core.utils import convert_cent_to_dollars, ensure_folder_exists
 from deliveries.models import Request
 from notifications.tasks import send_email
@@ -41,8 +43,8 @@ from users.helpers import remove_user_relation_with_all_info
 from users.models import Client, Customer, Employee, Log
 from django.template.loader import render_to_string
 import os
-import tempfile
-import shutil
+# import tempfile
+# import shutil
 from pathlib import Path
 import settings.base as Base
 from django.utils.safestring import mark_safe
@@ -579,10 +581,11 @@ class LogAdmin(AdminWithSearch):
 class UserAdmin(
     AdminUpdateFieldsMixin,
     AdminWithSearch,
-    BaseUserAdmin,
+    # BaseUserAdmin,
 ):
-    add_form_class = NamedUserEmailRequiredFieldsForm
-    change_form_class = NamedUserEmailOptionalFieldsForm
+    # FIXME: -Amir
+    # add_form_class = NamedUserEmailRequiredFieldsForm
+    # change_form_class = NamedUserEmailOptionalFieldsForm
     search_fields = ["email"]
 
 

@@ -30,12 +30,15 @@ INSTALLED_APPS = [
     # `branding` app extends `base_site.html` from `django-jet` to
     # inject React root and should be at higher place than `django-jet`
     "branding",
+    # https://github.com/otto-torino/django-baton
+    "baton", # TODO: this replaces django-jet -Amir
     # `django-jet` has custom admin theme and should
     # be at higher place than django.contrib.admin
-    "jet",
+    # "jet", TODO: this is not compatible with Django v4. -Amir
     # here we have a custom AdminSite with extra routes
-    "branding.apps.BrandingConfig",
+    # "branding.admin_apps.BrandingConfig",
     # django
+    "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -46,9 +49,9 @@ INSTALLED_APPS = [
     "rest_framework",
     "djoser",
     "social_django",
-    "swap_user",
-    "swap_user.to_named_email",
-    "drf_yasg",
+    # "swap_user",
+    # "swap_user.to_named_email",
+    # "drf_yasg",
     "djangoql",
     "django_filters",
     # local
@@ -65,6 +68,7 @@ INSTALLED_APPS = [
     # it should be lower that branding apps to be last application and apply
     # last changes for admin
     "core",
+    'baton.autodiscover',
 ]
 
 
@@ -212,7 +216,7 @@ EMAIL_HOST_PASSWORD = env.str("SENDGRID_API_KEY", "")
 EMAIL_PORT = 587
 
 
-AUTH_USER_MODEL = "to_named_email.NamedEmailUser"
+# AUTH_USER_MODEL = "to_named_email.NamedEmailUser"
 
 SHOW_OPENAPI_SCHEMA = True
 

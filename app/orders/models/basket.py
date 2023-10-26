@@ -1,4 +1,4 @@
-from django.contrib.postgres.fields import JSONField
+# from django.contrib.postgres.fields import JSONField
 from django.db import models
 
 from core.common_models import CommonAmountDiscountModel
@@ -31,7 +31,7 @@ class Basket(CommonAmountDiscountModel):
         through="orders.Quantity",
     )
 
-    extra_items = JSONField(
+    extra_items = models.JSONField(
         verbose_name="extra items",
         default=dict,
         blank=True,
