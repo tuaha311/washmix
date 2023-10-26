@@ -21,7 +21,7 @@ from django.shortcuts import render
 #     NamedUserEmailOptionalFieldsForm,
 #     NamedUserEmailRequiredFieldsForm,
 # )
-# from baton.autodiscover import admin
+
 from deliveries.models.delivery import Delivery
 
 from api.client.views.pdf import generate_client_pdf_core, get_existing_pdf_path

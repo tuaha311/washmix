@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     # here we have a custom AdminSite with extra routes
     # "branding.admin_apps.BrandingConfig",
     # django
-    "django.contrib.admin",
+    # "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -49,9 +49,13 @@ INSTALLED_APPS = [
     "rest_framework",
     "djoser",
     "social_django",
+    
+    # TODO: below two are deprecated -Amir
     # "swap_user",
     # "swap_user.to_named_email",
-    # "drf_yasg",
+    
+    "drf_yasg",
+    
     "djangoql",
     "django_filters",
     # local
@@ -215,7 +219,7 @@ EMAIL_HOST_USER = "api_evrone"
 EMAIL_HOST_PASSWORD = env.str("SENDGRID_API_KEY", "")
 EMAIL_PORT = 587
 
-AUTH_USER_MODEL = "to_named_email.NamedEmailUser"
+AUTH_USER_MODEL = "user.UserAdmin"
 
 SHOW_OPENAPI_SCHEMA = True
 

@@ -685,25 +685,6 @@ files = [
 Django = ">=3.2"
 
 [[package]]
-name = "django-phonenumber-field"
-version = "5.2.0"
-description = "An international phone number field for django models."
-optional = false
-python-versions = ">=3.6"
-files = [
-    {file = "django-phonenumber-field-5.2.0.tar.gz", hash = "sha256:52b2e5970133ec5ab701218b802f7ab237229854dc95fd239b7e9e77dc43731d"},
-    {file = "django_phonenumber_field-5.2.0-py3-none-any.whl", hash = "sha256:5547fb2b2cc690a306ba77a5038419afc8fa8298a486fb7895008e9067cc7e75"},
-]
-
-[package.dependencies]
-Django = ">=2.2"
-phonenumbers = {version = ">=7.0.2", optional = true, markers = "extra == \"phonenumbers\""}
-
-[package.extras]
-phonenumbers = ["phonenumbers (>=7.0.2)"]
-phonenumberslite = ["phonenumberslite (>=7.0.2)"]
-
-[[package]]
 name = "django-robots"
 version = "6.1"
 description = "Robots exclusion application for Django, complementing Sitemaps."
@@ -713,21 +694,6 @@ files = [
     {file = "django-robots-6.1.tar.gz", hash = "sha256:f86bcc3d16d7d7c2a4e37af6063cb4785f50ae16943f82248b48c9e7ac034f1d"},
     {file = "django_robots-6.1-py3-none-any.whl", hash = "sha256:07e11a1bf3ddc08290123ec3c55abb45dbbffb9b38aea0a002e9b4a87bd9abcc"},
 ]
-
-[[package]]
-name = "django-swap-user"
-version = "0.9.8"
-description = "(Beta) Simple and flexible way to swap default Django User"
-optional = false
-python-versions = ">=3.6,<4.0"
-files = [
-    {file = "django-swap-user-0.9.8.tar.gz", hash = "sha256:998ca28b2c68fac2756bbfe2bd72b30ef311f8057593446c8e7d3d4bdd5c1919"},
-    {file = "django_swap_user-0.9.8-py3-none-any.whl", hash = "sha256:07f2545a0786e8ff6e434bb41e9d86dff6597a086c40cc3ac933491ed6048077"},
-]
-
-[package.dependencies]
-django = ">=2.2"
-django-phonenumber-field = {version = ">=5.2.0,<6.0.0", extras = ["phonenumbers"]}
 
 [[package]]
 name = "django-templated-mail"
@@ -2385,4 +2351,4 @@ test = ["pytest"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "a5b9234abcf2fe793f85341fb411d4de2801ba67c80d93e1fc99845a7a651d37"
+content-hash = "313064ea50717774fb6fdbb78f5de04750d7db970c4014e299708b7ea5b4639f"
