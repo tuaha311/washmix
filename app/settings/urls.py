@@ -19,6 +19,8 @@ from deliveries.api.client.views.requests import InstoreViewSet
 
 from users import views as UsersViews
 
+from users import views as UsersViews
+
 urlpatterns = []
 
 

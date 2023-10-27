@@ -6,8 +6,9 @@ from django.contrib.auth import get_user_model
 from django.db.models import ObjectDoesNotExist
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
+from users.models.employee import Employee
 from users.models.code import code_string
-from notifications.tasks import send_email
+from notifications.tasks import send_email, send_sms
 from billing.stripe_helper import StripeHelper
 from users.models import Client, Code
 from django.contrib.auth.signals import user_logged_in
@@ -102,16 +103,29 @@ def update_user_stripe_info(
         logger.info(f"Updating name info for {client.email}")
 
 
-def send_otp_via_email_to_super_admin(email, code):
+def send_otp_via_email_to_super_admin(email, code, phone=None):
     try:
-        send_email.send(
-            event=settings.SUPER_ADMIN_OTP,
-            recipient_list=[email],
-            extra_context={
-                "email": email,
-                "code": code,
+        if phone:
+            send_sms.send_with_options(
+            kwargs={
+                "event": settings.ADMIN_LOGIN_OTP,
+                "recipient_list": [phone],
+                "extra_context": {
+                    "code": code,
+                },
             },
-        )
+            delay=settings.DRAMATIQ_DELAY_FOR_DELIVERY,
+            )
+        else:
+            print("Email message requested")
+            send_email.send(
+                event=settings.SUPER_ADMIN_OTP,
+                recipient_list=[email],
+                extra_context={
+                    "email": email,
+                    "code": code,
+                },
+            )
     except Exception as e:
         logger.error(f"Error sending email: {str(e)}")
 
@@ -119,7 +133,8 @@ def send_otp_via_email_to_super_admin(email, code):
 def generate_code_for_superadmin(sender, request, user, **kwargs):
     groups = user.groups.all()
     user_is_admin = any(group.name == "Admins" for group in groups)
-
+    employee_user = Employee.objects.get(user=user)
+    phone = employee_user.phone if employee_user.phone else None
     if user_is_admin or user.is_superuser:
         try:
             existing_code = Code.objects.get(user=user)
@@ -127,11 +142,11 @@ def generate_code_for_superadmin(sender, request, user, **kwargs):
             existing_code.number = code
             existing_code.authenticated = False
             existing_code.save()
-            send_otp_via_email_to_super_admin(email=user.email, code=code)
-            print(code, "Updated Code")
+            send_otp_via_email_to_super_admin(email=user.email, code=code, phone=phone)
+
         except Code.DoesNotExist:
             # Generate a Code instance for the super admin
             code = Code(user=user)
             code.save()
-            send_otp_via_email_to_super_admin(email=user.email, code=code.number)
-            print(code, "Generated Code")
+            send_otp_via_email_to_super_admin(email=user.email, code=code.number, phone=phone)
+
