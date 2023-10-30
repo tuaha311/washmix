@@ -109,6 +109,13 @@ class Client(ProxyUserInfoMixin, Stripeable, Common):
         max_length=300,
         blank=True,
     )
+    
+    verified_email = models.BooleanField(
+        verbose_name="verified email",
+        default=False,
+        null=True,
+        blank=True,
+    )
 
     objects = ClientManager()
 
