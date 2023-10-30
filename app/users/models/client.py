@@ -110,7 +110,8 @@ class Client(ProxyUserInfoMixin, Stripeable, Common):
         max_length=300,
         blank=True,
     )
-    
+
+
     promo_sms_notification = models.DateField(
         verbose_name="Promotional SMS Date",
         editable=False,
