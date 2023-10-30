@@ -109,13 +109,13 @@
     <input type="button" class="modal-button" onclick="submitForm()" value="Charge client"></input>
   </form>
 </div>
-{% endif %}
-
 <div style="margin-left:7px;">
   <form id="send-sms-form" action="/admin/client/generate-pdf" method="get">
     <input type="hidden" name="client_id" value="{{ original.pk }}">
     <input type="submit" value="Generate PDF" class="submit-button" />
   </form>
 </div>
+{% endif %}
+
 {{ block.super }}
 {% endblock %}

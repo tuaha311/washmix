@@ -442,6 +442,15 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
     get_main_phone_number.short_description = "Main Phone Number"  # Set column header in admin
 
     actions = ["generate_client_pdf"]
+    
+    # Added this function to hide selective actions for non super admin users. we can hide more fields in future as well
+    def get_actions(self, request):
+        actions = super().get_actions(request)
+        
+        if not request.user.is_superuser:
+            del actions['generate_client_pdf']
+
+        return actions
 
     def pdf_path(self, client):
         path = get_existing_pdf_path(client.id)
