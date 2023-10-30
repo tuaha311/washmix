@@ -14,6 +14,8 @@ from sms.views import outbound_sms, send_sms
 from django.contrib.admin import AdminSite
 from django.urls import path
 from deliveries.admin import DeliveryAdmin
+from deliveries.api.client.views.requests import InstoreViewSet
+
 
 from users import views as UsersViews
 
@@ -32,6 +34,7 @@ class CustomAdminURL(AdminSite):
             path("sms/send-sms/", self.admin_view(send_sms), name="send_sms"),
             path("deliveries/update-deliveries/", DeliveryAdmin.update_deliveries, name="update-deliveries"),
             path("client/generate-pdf/", self.admin_view(generate_client_pdf), name="generate-pdf"),
+            path("deliveries/instore-request/", InstoreViewSet.as_view({'post': 'create'}), name="instore-requests"),
         ]
 
         return urls

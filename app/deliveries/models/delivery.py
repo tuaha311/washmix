@@ -69,6 +69,14 @@ class Delivery(Common):
         verbose_name="end of delivery interval"
     )
 
+    in_store = models.BooleanField(
+            verbose_name="Instore delivery",
+            editable=False,
+            blank=True,
+            null=True,
+            default=False
+        )
+
     class Meta:
         verbose_name = "delivery"
         verbose_name_plural = "deliveries"
