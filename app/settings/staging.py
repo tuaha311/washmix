@@ -16,7 +16,6 @@ ALLOWED_HOSTS = [
     "www.washmix-back.herokuapp.com",
     "washmix-back-staging.herokuapp.com",
     "www.washmix-back-staging.herokuapp.com",
-    "localhost"
 ]
 
 ALLOWED_COUNTRY_CODES = [
