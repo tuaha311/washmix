@@ -1,3 +1,4 @@
+from collections import OrderedDict
 from datetime import date, datetime
 import os
 from django import forms
@@ -288,16 +289,6 @@ class RequestInlineAdmin(admin.TabularInline):
 # Client Admin
 #
 class ClientForm(forms.ModelForm):
-    add_money_amount = forms.IntegerField(
-        required=False,
-        label="Add credits, in cents (¢)",
-        min_value=settings.DEFAULT_ZERO_AMOUNT,
-    )
-    remove_money_amount = forms.IntegerField(
-        required=False,
-        label="Remove credits, in cents (¢)",
-        min_value=settings.DEFAULT_ZERO_AMOUNT,
-    )
 
     description = forms.CharField(
         widget=forms.Textarea,
@@ -364,6 +355,19 @@ class ClientForm(forms.ModelForm):
                     raise forms.ValidationError("Can't bill client's card")
 
 
+class SuperAdminClientForm(ClientForm):
+    add_money_amount = forms.IntegerField(
+        required=False,
+        label="Add credits, in cents (¢)",
+        min_value=settings.DEFAULT_ZERO_AMOUNT,
+    )
+    remove_money_amount = forms.IntegerField(
+        required=False,
+        label="Remove credits, in cents (¢)",
+        min_value=settings.DEFAULT_ZERO_AMOUNT,
+    )
+
+
 class SubscriptionFilter(admin.SimpleListFilter):
     title = _('Filtering clients on subscription')
     parameter_name = 'subscription'
@@ -388,7 +392,15 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
         "address_line_2",
         "pdf_path",
     ]
-    form = ClientForm
+    
+    def get_form(self, request, obj=None, **kwargs):
+        if request.user.is_superuser:
+            form = SuperAdminClientForm
+            return form 
+        else:
+            form = ClientForm
+            return form
+
     inlines = [RequestInlineAdmin, OrderInlineAdmin, InvoiceInlineAdmin]
     autocomplete_fields = (
         "user",
