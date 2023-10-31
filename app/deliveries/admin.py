@@ -17,7 +17,8 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from deliveries.choices import DeliveryStatus
 from django.http import JsonResponse
-
+from .decorators import has_permission
+from django.contrib import admin
 
 class DeliveryForm(forms.ModelForm):
     class Meta:
@@ -274,6 +275,22 @@ class DeliveryAdminMain(AdminWithSearch):
                     update_completed_in_store_deliveries(obj)
 
         return super().save_model(request, obj, form, change)
+    
+    @has_permission('create_delivery')
+    def add_view(self, request, form_url='', extra_context=None):
+        return super().add_view(request, form_url, extra_context)
+    
+    @has_permission('retrieve_delivery')
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        return super().change_view(request, object_id, form_url, extra_context)
+    
+    @has_permission('update_delivery')
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        return super().change_view(request, object_id, form_url, extra_context)
+    
+    @has_permission('delete_delivery')
+    def delete_view(self, request, object_id, extra_context=None):
+        return super().delete_view(request, object_id, extra_context)
 
 class DeliveryAdmin(DeliveryAdminMain):
     form = DeliveryForm
