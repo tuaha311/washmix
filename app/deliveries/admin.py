@@ -230,8 +230,8 @@ class DeliveryAdminMain(AdminWithSearch):
         """
 
         if obj.kind == DeliveryKind.DROPOFF and (
-        obj.status == DeliveryStatus.NO_SHOW
-        or obj.status in [DeliveryStatus.IN_PROGRESS, DeliveryStatus.COMPLETED]
+        obj.in_store != True
+        and obj.status in [DeliveryStatus.NO_SHOW, DeliveryStatus.IN_PROGRESS, DeliveryStatus.COMPLETED]
         ):
             if obj.status == DeliveryStatus.NO_SHOW:
                 message = "Invalid status for a dropoff delivery."
