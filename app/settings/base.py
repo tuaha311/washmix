@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     "subscriptions",
     "archived",
     "sms",
+    'permissions_manager',
     # inside core app we are unregistering some models
     # it should be lower that branding apps to be last application and apply
     # last changes for admin

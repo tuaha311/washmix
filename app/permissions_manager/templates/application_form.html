@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Add Application</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Create Application</button>
+  </form>
+  <a href="{% url 'application-list' %}">Back to Application List</a>
+{% endblock %}

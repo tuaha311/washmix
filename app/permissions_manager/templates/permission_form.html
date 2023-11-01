@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Add Permission</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Create Permission</button>
+  </form>
+  <a href="{% url 'permission-list' %}">Back to Permission List</a>
+{% endblock %}

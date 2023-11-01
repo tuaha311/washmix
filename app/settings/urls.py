@@ -83,6 +83,7 @@ urlpatterns += [
     path("admin/notifications/", include("notifications.urls")),
     path("admin/", admin.site.urls),
     path("sms/", include("sms.urls")),
+    # path('permissions/', include('permissions_manager.urls', namespace='permissions_manager')),
     # Static files serving
     *static_server(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
     *static_server(settings.STATIC_URL, document_root=settings.STATIC_ROOT),
