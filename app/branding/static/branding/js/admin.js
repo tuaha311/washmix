@@ -9,6 +9,7 @@ var UNPAID_ORDER_COLOR = "red"
 var RUSH_DELIVERY_COLOR = "yellow"
 var CLIENT_WITHOUT_CARD_COLOR = "red"
 var DELIVERIES_DUE_TODAY = "orange"
+var INSTORE_DELIVERIES = "#39b6ed"
 
 
 /*
@@ -199,4 +200,74 @@ if (window.location.pathname === ORDER_URL) {
 if (window.location.pathname === DELIVERY_URL) {
   // We are waiting 1s while HTML is loading
   setTimeout(fillRushDeliveryWithColor, 1000)
+}
+
+
+function fillInstoreDeliveryWithColor() {
+  var ALL_ORDER_SELECTOR = '#result_list > tbody > tr'
+  var allRows = document.querySelectorAll(ALL_ORDER_SELECTOR)
+
+  function callback(row, index) {
+    var commentField = row.querySelector('td.field-comment')
+    var currentStatus = row.querySelector('td.field-status')
+    var kindOfDelivery = row.querySelector('td.field-kind')
+    var inStoreDelivery = commentField.innerText === "In store request"
+    var pickupDelivery = kindOfDelivery.innerText === "Pickup"
+    var dropoffDelivery = kindOfDelivery.innerText === "Dropoff"
+
+    if (inStoreDelivery) {
+      row.style.backgroundColor = INSTORE_DELIVERIES
+      if (pickupDelivery) {
+        // Hide the "No Show" option
+        var selectElement = currentStatus.querySelector('select');
+        if (selectElement) {
+          var options = selectElement.querySelectorAll('option');
+          options.forEach(function(option) {
+            if (option.value === 'no_show') {
+              selectElement.removeChild(option);
+            }
+            if (option.value === 'in_store_dropoff') {
+              selectElement.removeChild(option);
+            }
+            if (option.value === 'cancelled') {
+              selectElement.removeChild(option);
+            }
+          });
+        }
+      }
+      if (dropoffDelivery) {
+        // Hide the "No Show" option
+        var selectElement = currentStatus.querySelector('select');
+        if (selectElement) {
+          var options = selectElement.querySelectorAll('option');
+          options.forEach(function(option) {
+            if (option.value === 'in_store_pickup') {
+              selectElement.removeChild(option);
+            }
+          });
+        }
+      }
+    }else{
+      var selectElement = currentStatus.querySelector('select');
+        if (selectElement) {
+          var options = selectElement.querySelectorAll('option');
+          options.forEach(function(option) {
+            if (option.value === 'in_store_pickup') {
+              selectElement.removeChild(option);
+            }
+            if (option.value === 'in_store_dropoff') {
+              selectElement.removeChild(option);
+            }
+          });
+        }
+    }
+  }
+
+  allRows.forEach(callback)
+}
+
+if (window.location.pathname === DELIVERY_URL) {
+  // We are waiting 1s while HTML is loading
+  setTimeout(fillRushDeliveryWithColor, 1000)
+  setTimeout(fillInstoreDeliveryWithColor, 1000)
 }
