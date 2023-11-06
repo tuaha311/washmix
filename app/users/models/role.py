@@ -2,6 +2,9 @@ from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import Permission
 from django.db.models import Q
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 class RoleChoices:
     SUPERADMIN = "super_admin"
@@ -18,7 +21,7 @@ class RoleChoices:
     
 class Role(models.Model):
     user = models.OneToOneField(
-        settings.AUTH_USER_MODEL,
+        User,
         on_delete=models.CASCADE,
         related_name="role",
     )
@@ -30,6 +33,14 @@ class Role(models.Model):
         default=RoleChoices.USER,
     )
     
+    def __str__(self):
+        return f"{self.user} {self.position}"
+    
+    class Meta:
+        verbose_name = "Role"
+        verbose_name_plural = "Roles"
+
+
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         # Update user permissions based on the role's position

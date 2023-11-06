@@ -575,7 +575,10 @@ class LogAdmin(AdminWithSearch):
         "action",
     ]
 
-
+class RoleInline(admin.StackedInline):
+    model = Role
+    can_delete = False
+    
 class UserAdmin(
     AdminUpdateFieldsMixin,
     AdminWithSearch,
@@ -584,7 +587,12 @@ class UserAdmin(
     add_form_class = NamedUserEmailRequiredFieldsForm
     change_form_class = NamedUserEmailOptionalFieldsForm
     search_fields = ["email"]
+    inlines = [RoleInline] 
 
+
+    def position(self, obj):
+        return obj.role.position if hasattr(obj, 'role') else "N/A"
+    
 
 class EmployeeAdmin(AdminWithSearch):
     actions = ["full_delete_action"]

@@ -8,6 +8,9 @@ from django.dispatch import receiver
 from notifications.tasks import send_email
 from billing.stripe_helper import StripeHelper
 from users.models import Client
+from django.dispatch import Signal
+from users.models import Role
+from users.models.role import RoleChoices
 
 logger = logging.getLogger(__name__)
 
@@ -96,3 +99,14 @@ def update_user_stripe_info(
 
         logger.info(f"Updating name info for {client.email}")
 
+
+user_registered = Signal(providing_args=["user", "request"])
+User = get_user_model()
+
+@receiver(user_registered)
+def assign_default_role(sender, user, request, **kwargs):
+    print("IT CALLLEEEDD")
+    # Check if the user already has a role
+    if not hasattr(user, 'role'):
+        # If the user doesn't have a role, create one with the default position
+        Role.objects.create(user=user, position=RoleChoices.USER)
