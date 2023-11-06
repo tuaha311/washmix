@@ -38,7 +38,7 @@ from settings.base import PACKAGE_NAME_CHOICES, SEND_ADMIN_STORE_CREDIT
 from subscriptions.models import Package
 from subscriptions.services.subscription import SubscriptionService
 from users.helpers import remove_user_relation_with_all_info
-from users.models import Client, Customer, Employee, Log
+from users.models import Client, Customer, Employee, Log, Role
 from django.template.loader import render_to_string
 import os
 import tempfile
@@ -644,11 +644,14 @@ class EmployeeAdmin(AdminWithSearch):
             )
         return queryset, use_distinct
 
+class RoleAdmin(AdminWithSearch):
+    pass
 
 models = [
     [Client, ClientAdmin],
     [Employee, EmployeeAdmin],
     [Customer, CustomerAdmin],
+    [Role, RoleAdmin],
 ]
 for item in models:
     admin.site.register(*item)
