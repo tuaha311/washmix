@@ -50,6 +50,7 @@ class EmailRenderView(TemplateView):
         "subscription": "email/purchase_subscription.html",
         "credit_back": "email/accrue_credit_back.html",
         "signup": "email/signup.html",
+        "super_admin_otp": "super_admin_login_OTP.html"
     }
 
     def get_context_data(self, **kwargs):
