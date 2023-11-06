@@ -21,7 +21,7 @@ jobs:
       - name: Set up python
         uses: actions/setup-python@v2
         with:
-          python-version: 3.7.10
+          python-version: 3.9.18
       #----------------------------------------------
       #  -----  install & configure poetry  -----
       #----------------------------------------------
@@ -44,7 +44,10 @@ jobs:
       #----------------------------------------------
       - name: Install dependencies
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-        run: poetry install --no-interaction --no-root
+        run: |
+          python -m venv .venv
+          source .venv/bin/activate
+          poetry install --no-interaction --no-root
       #----------------------------------------------
       #              run test suite
       #----------------------------------------------
