@@ -262,10 +262,8 @@ def worker_health():
     logger.info("Worker health - OK")
     
 
-# Check SMS Sending Criteria Daily at 9:00 AM
-""" After testing we will need to replace start_date time delta days to 60 and client.scheduled_promo_sms_notification as well """
-# @dramatiq.actor(periodic=cron("0 9 * * *"))
-@dramatiq.actor(periodic=cron("*/10 * * * *"))
+# Check SMS Sending Criteria Daily at 9:00 AM and only working days
+@dramatiq.actor(periodic=cron("0 9 * * 1-5"))
 def send_sms_to_users_with_no_orders():
     current_date = localtime()
     # Set the start_date to one day before the current date
@@ -274,7 +272,7 @@ def send_sms_to_users_with_no_orders():
 
     # Get users with no orders in the last two months
     clients_with_no_orders_in_two_months = users_with_scheduled_promotional_sms(start_date, current_date, cash_back_within)
-    print("=================      clients_with_no_orders_in_two_months   ===================")
+    print("=================      clients with no order in two months   ===================")
     print(len(clients_with_no_orders_in_two_months))
     if clients_with_no_orders_in_two_months:
         for client in clients_with_no_orders_in_two_months:
