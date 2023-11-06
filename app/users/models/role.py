@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import Permission
+from django.db.models import Q
 
 class RoleChoices:
     SUPERADMIN = "super_admin"
@@ -38,15 +39,17 @@ class Role(models.Model):
             permissions = Permission.objects.all()
             user.user_permissions.set(permissions)
         elif self.position == RoleChoices.ADMIN:
-            # Add admin permissions (add, change, delete, view) for all content types
-            permissions = Permission.objects.filter(codename__in=[
-                "add_contenttype",
-                "change_contenttype",
-                "delete_contenttype",
-                "view_contenttype",
-                # Add more permissions as needed
-            ])
-            user.user_permissions.set(permissions)
+            # Add admin permissions (add, change, view) for all content types
+            permissions = Permission.objects.filter(
+                Q(codename__icontains='add') |
+                Q(codename__icontains='change') |
+                Q(codename__icontains='view')
+            )
+            user.user_permissions.set(*permissions)
+        elif self.position == RoleChoices.EMPLOYEE:
+            # Add admin permissions view) for all content types
+            permissions = Permission.objects.filter(codename__icontains='view')
+            user.user_permissions.add(*permissions)
         else:
             # Remove all permissions for other roles
             user.user_permissions.clear()
