@@ -7,7 +7,7 @@ from billing.choices import InvoicePurpose
 from billing.models import Coupon, Invoice
 from billing.services.coupon import CouponService
 from billing.services.payments import PaymentService
-from deliveries.choices import DeliveryStatus
+from deliveries.choices import DeliveryKind, DeliveryStatus
 from deliveries.models import Request
 from deliveries.services.requests import RequestService
 from notifications.tasks import send_email
@@ -273,7 +273,11 @@ class OrderService:
         entity_list = [item for item in raw_entity_list if item]
 
         if request and request.generated_by_admin:
-            purpose = InvoicePurpose.ADMIN_CHARGED_CLIENT
+            delivery = request.delivery_list.get(kind=DeliveryKind.PICKUP)
+            if delivery.in_store:
+                purpose = InvoicePurpose.ORDER
+            else:
+                purpose = InvoicePurpose.ADMIN_CHARGED_CLIENT
 
         # 1. we are refreshing and flushing to DB total amount and discount for
         # every paid entity and corresponding service
