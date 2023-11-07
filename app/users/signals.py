@@ -11,6 +11,8 @@ from users.models import Client
 from django.dispatch import Signal
 from users.models import Role
 from users.models.role import RoleChoices
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 logger = logging.getLogger(__name__)
 
@@ -100,13 +102,12 @@ def update_user_stripe_info(
         logger.info(f"Updating name info for {client.email}")
 
 
-user_registered = Signal(providing_args=["user", "request"])
-User = get_user_model()
-
-@receiver(user_registered)
-def assign_default_role(sender, user, request, **kwargs):
-    print("IT CALLLEEEDD")
-    # Check if the user already has a role
-    if not hasattr(user, 'role'):
-        # If the user doesn't have a role, create one with the default position
-        Role.objects.create(user=user, position=RoleChoices.USER)
+@receiver(post_save, sender=User)
+def user_created(sender, instance, created, **kwargs):
+    if created:
+        try:
+            # Attempt to get the existing role
+            existed_role = Role.objects.get(user=instance)
+        except Role.DoesNotExist:
+            # Handle the case where the role doesn't exist (exception raised)
+            Role.objects.create(user=instance, position=RoleChoices.USER)
