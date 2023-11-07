@@ -14,6 +14,7 @@ from django.http import HttpResponseRedirect
 from django.http.request import HttpRequest
 from django.urls import reverse
 from django.shortcuts import render
+from django.contrib.auth.models import Group
 
 from swap_user.admin import BaseUserAdmin
 from swap_user.to_named_email.forms import (
@@ -652,8 +653,49 @@ class EmployeeAdmin(AdminWithSearch):
             )
         return queryset, use_distinct
 
-class RoleAdmin(AdminWithSearch):
-    pass
+class RoleForm(forms.ModelForm):
+    groups = forms.ModelMultipleChoiceField(
+        label="Groups",
+        required=False,
+        widget=forms.SelectMultiple,
+        queryset=None
+    )
+
+    def __init__(self, *args, **kwargs):
+        user_instance = kwargs.get('instance', None)
+        super(RoleForm, self).__init__(*args, **kwargs)
+
+        # Set the queryset for the groups field to include all available groups
+        all_groups = Group.objects.all()
+        self.fields['groups'].queryset = all_groups
+
+        # Pre-select all of the user's groups, if available
+        if user_instance and user_instance.user:
+            user_groups = user_instance.user.groups.all()
+            self.fields['groups'].initial = [group.id for group in user_groups]
+
+    class Meta:
+        model = Role
+        fields = '__all__'
+
+class RoleAdmin(admin.ModelAdmin):
+    list_display = ['user', 'position', 'get_groups']
+    form = RoleForm
+
+    def get_groups(self, obj):
+        return ", ".join([group.name for group in obj.user.groups.all()])
+
+    get_groups.short_description = "Groups"
+
+    # Override the save_model method to update the user's groups
+    def save_model(self, request, obj, form, change):
+        user = obj.user
+        selected_groups = form.cleaned_data.get('groups')
+        user.groups.set(selected_groups)  # Update the user's groups
+        user.save()
+        super(RoleAdmin, self).save_model(request, obj, form, change)
+
+# admin.site.register(Role, RoleAdmin)
 
 models = [
     [Client, ClientAdmin],
