@@ -689,6 +689,7 @@ class RoleForm(forms.ModelForm):
 class RoleAdmin(admin.ModelAdmin):
     list_display = ['user', 'position', 'get_groups']
     form = RoleForm
+    search_fields = ['user__email']
 
     def get_groups(self, obj):
         return ", ".join([group.name for group in obj.user.groups.all()])
