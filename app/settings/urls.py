@@ -17,6 +17,8 @@ from deliveries.admin import DeliveryAdmin
 from deliveries.api.client.views.requests import InstoreViewSet
 
 
+from users import views as UsersViews
+
 urlpatterns = []
 
 
@@ -86,6 +88,7 @@ urlpatterns += [
     # Static files serving
     *static_server(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
     *static_server(settings.STATIC_URL, document_root=settings.STATIC_ROOT),
+    path('verification/', UsersViews.verify_view, name='verification_view'),
 ]
 
 
