@@ -230,8 +230,8 @@ class DeliveryAdminMain(AdminWithSearch):
         """
 
         if obj.kind == DeliveryKind.DROPOFF and (
-        obj.status == DeliveryStatus.NO_SHOW
-        or obj.status in [DeliveryStatus.IN_PROGRESS, DeliveryStatus.COMPLETED]
+        obj.in_store != True
+        and obj.status in [DeliveryStatus.NO_SHOW, DeliveryStatus.IN_PROGRESS, DeliveryStatus.COMPLETED]
         ):
             if obj.status == DeliveryStatus.NO_SHOW:
                 message = "Invalid status for a dropoff delivery."
@@ -271,7 +271,18 @@ class DeliveryAdminMain(AdminWithSearch):
             update_cancelled_deliveries(obj)
 
         if obj.kind == DeliveryKind.PICKUP and obj.status == DeliveryStatus.COMPLETED and obj.request.generated_by_admin == True:
-                    update_completed_in_store_deliveries(obj)
+            delivery_request = obj.request
+            drop_off_delivery = delivery_request.delivery_list.get(kind=DeliveryKind.DROPOFF)
+            if drop_off_delivery.status != DeliveryStatus.COMPLETED:
+                message = "Cannot set pickup delivery as 'Completed' when the corresponding dropoff delivery is not completed."
+                if 'message' in locals():
+                    self.message_user(request, '', level=messages.ERROR)
+                    messages.set_level(request, messages.ERROR)
+                    messages.error(request, message)
+                    return
+                return message
+            else:
+                update_completed_in_store_deliveries(obj)
 
         return super().save_model(request, obj, form, change)
 
