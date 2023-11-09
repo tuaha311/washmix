@@ -37,7 +37,7 @@ authors = ["Evrone <api@evrone.com>"]
 
 
 [tool.poetry.dependencies]
-python = "3.7.10"
+python = "3.9.1"
 
 # core + api
 Django = "~2.2"
