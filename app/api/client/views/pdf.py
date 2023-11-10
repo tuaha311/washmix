@@ -106,11 +106,11 @@ def get_filtered_data(client, start_date, end_date=None):
             client=client, created__date__range =[start_date, end_date]
         ).annotate(
             in_store=Case(
-                When(request__delivery_list__kind=DeliveryKind.PICKUP, request__delivery_list__in_store=True, then=Value(True)),
+                When(request__delivery_list__in_store=True, then=Value(True)),
                 default=Value(False),
                 output_field=BooleanField()
             )
-        )
+        ).distinct()
     else:
         invoice_list = client.invoice_list.filter(
             purpose=purpose,
@@ -125,11 +125,11 @@ def get_filtered_data(client, start_date, end_date=None):
         )
         client_orders = Order.objects.filter(client=client, created__gte=start_date).annotate(
             in_store=Case(
-                When(request__delivery_list__kind=DeliveryKind.PICKUP, request__delivery_list__in_store=True, then=Value(True)),
+                When(request__delivery_list__in_store=True, then=Value(True)),
                 default=Value(False),
                 output_field=BooleanField()
             )
-        )
+        ).distinct()
 
     return invoice_list, client_orders
 
