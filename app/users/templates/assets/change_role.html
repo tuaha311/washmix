@@ -1,0 +1,29 @@
+{% extends 'admin/change_list.html' %}
+
+{% block extrastyle %}
+<style>
+  .object-tools {
+    display: flex !important;
+    justify-content: flex-end;
+  }
+
+  {{ block.super }}
+</style>
+
+{{ block.super }}
+{% endblock %}
+
+
+{% block object-tools-items %}
+{% if user.is_superuser %}
+<div>
+    {% if request.GET.user %}
+        <a class="modal-button" href="/admin/users/role">Show employee users</a>
+    {% else %}
+        <a class="modal-button" href="?user=true">Show all users</a>
+    {% endif %}
+</div>
+
+{{ block.super }}
+{% endif %}
+{% endblock %}

@@ -21,6 +21,7 @@ from swap_user.to_named_email.forms import (
     NamedUserEmailOptionalFieldsForm,
     NamedUserEmailRequiredFieldsForm,
 )
+from users.models.role import RoleChoices
 from deliveries.models.delivery import Delivery
 
 from api.client.views.pdf import generate_client_pdf_core, get_existing_pdf_path
@@ -653,6 +654,24 @@ class EmployeeAdmin(AdminWithSearch):
             )
         return queryset, use_distinct
 
+class RoleFilter(admin.SimpleListFilter):
+    title = 'User'
+    parameter_name = 'user'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('true', 'User'),
+            ('false', 'Non-User'),
+        )
+
+    def queryset(self, request, queryset):
+        value = self.value()
+
+        if value == 'true':
+            return queryset.all()
+        else:
+            return queryset.exclude(position=RoleChoices.USER)
+
 class RoleForm(forms.ModelForm):
     groups = forms.ModelMultipleChoiceField(
         label="Groups",
@@ -690,6 +709,8 @@ class RoleAdmin(admin.ModelAdmin):
     list_display = ['user', 'position', 'get_groups']
     form = RoleForm
     search_fields = ['user__email']
+    list_filter = (RoleFilter,)
+    change_list_template = 'assets/change_role.html'
 
     def get_groups(self, obj):
         return ", ".join([group.name for group in obj.user.groups.all()])
@@ -707,7 +728,19 @@ class RoleAdmin(admin.ModelAdmin):
         user.save()
         super(RoleAdmin, self).save_model(request, obj, form, change)
 
-# admin.site.register(Role, RoleAdmin)
+    def get_queryset(self, request):
+        # Check if the "user" parameter is present in the URL
+        is_user_param_present = request.GET.get('user') == 'true'
+
+        # Get the base queryset
+        queryset = super().get_queryset(request)
+
+        # Dynamically update the queryset based on the "user" parameter
+        if is_user_param_present:
+            return queryset.all()
+        else:
+            return queryset.exclude(position=RoleChoices.USER)
+
 
 models = [
     [Client, ClientAdmin],
