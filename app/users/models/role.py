@@ -6,6 +6,15 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+def filter_permissions(permissions):
+    # Define the codenames to exclude
+    exclude_codenames = ['view_role', 'change_role', 'add_role', 'delete_role', 'view_group', 'change_group', 'add_group', 'delete_group', 'view_permission', 'change_permission', 'add_permission', 'delete_permission']
+
+    # Exclude permissions based on codenames
+    permissions_to_add = [permission for permission in permissions if not any(exclude_codename in permission.codename for exclude_codename in exclude_codenames)]
+
+    return permissions_to_add
+
 class RoleChoices:
     SUPERADMIN = "super_admin"
     ADMIN = "admin"
@@ -56,11 +65,23 @@ class Role(models.Model):
                 Q(codename__icontains='change') |
                 Q(codename__icontains='view')
             )
-            user.user_permissions.set(*permissions)
+
+            # Exclude permissions based on codenames
+            permissions_to_add = filter_permissions(permissions)
+
+            # Add the filtered permissions to the user
+            user.user_permissions.clear()
+            user.user_permissions.add(*permissions_to_add)
+
         elif self.position == RoleChoices.EMPLOYEE:
             # Add admin permissions view) for all content types
             permissions = Permission.objects.filter(codename__icontains='view')
-            user.user_permissions.add(*permissions)
+
+            # Exclude permissions based on codenames
+            permissions_to_add = filter_permissions(permissions)
+
+            user.user_permissions.clear()
+            user.user_permissions.add(*permissions_to_add)
         else:
             # Remove all permissions for other roles
             user.user_permissions.clear()
