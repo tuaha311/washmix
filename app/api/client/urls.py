@@ -87,5 +87,5 @@ urlpatterns = [
     path("services/", services.ServiceListView.as_view(), name="service-list"),
     path("customers/", customers.CustomerCreateView.as_view(), name="customer-create"),
     path("get-pdf/", pdf.get_client_pdf, name="get-pdf"),
-    path("<int:pk>/verify-email/", email.ClientVerificationView.as_view(), name="client-verify-email-api"),
+    path("<int:pk>/verify-email/<str:hash>/", email.ClientVerificationView.as_view(), name="client-verify-email-api"),
 ]

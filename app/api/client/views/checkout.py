@@ -90,7 +90,7 @@ class WelcomeCheckoutView(GenericAPIView):
         user = client.user
         recipient_list = [client.email]
         base_url = request.get_host()
-        api_url = reverse('client:client-verify-email-api', kwargs={'pk': client.id})
+        api_url = reverse('client:client-verify-email-api', kwargs={'pk': client.id, 'hash': client.verified_email_hash})
 
         # Combine the base URL and the API URL to get the complete URL
         complete_url = f"https://{base_url}{api_url}"

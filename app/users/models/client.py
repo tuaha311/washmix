@@ -1,3 +1,4 @@
+import uuid
 from django.conf import settings
 from django.contrib.postgres.fields import JSONField
 from django.db import models
@@ -125,6 +126,13 @@ class Client(ProxyUserInfoMixin, Stripeable, Common):
         blank=True,
     )
 
+    verified_email_hash = models.CharField(
+        max_length=8,
+        null=True,
+        blank=True,
+        editable=False
+    )
+
     objects = ClientManager()
 
     class Meta:
@@ -178,4 +186,6 @@ class Client(ProxyUserInfoMixin, Stripeable, Common):
     def save(self, *args, **kwargs):
         if not self.promo_sms_notification:
             self.promo_sms_notification = (localtime() + timedelta(days=60)).date()
+        if not self.verified_email_hash:
+            self.verified_email_hash = str(uuid.uuid4())[:8]
         super().save(*args, **kwargs)
