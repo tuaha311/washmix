@@ -163,7 +163,7 @@ def on_delivery_notify_signal(
                 if full_paid:
                     order_service.finalize(order, None, True)
                     
-    if is_admin and is_in_store_droppoff:
+    if is_admin and is_completed and is_dropoff:
         send_sms.send_with_options(
             kwargs={
                 "event": settings.IN_STORE_DROPOFF,

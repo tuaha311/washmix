@@ -4,6 +4,8 @@ from django.template.loader import render_to_string
 import os
 import tempfile
 import shutil
+from deliveries.choices import DeliveryKind
+from deliveries.models.delivery import Delivery
 import settings.base as Base
 from django.db.models import Sum, OuterRef, Subquery
 from weasyprint import HTML
@@ -17,6 +19,7 @@ from django.conf import settings
 from django.contrib import messages
 from billing.choices import *
 from django.db.models import Q
+from django.db.models import Case, When, Value, BooleanField
 
 
 
@@ -101,7 +104,13 @@ def get_filtered_data(client, start_date, end_date=None):
         )
         client_orders = Order.objects.filter(
             client=client, created__date__range =[start_date, end_date]
-        )
+        ).annotate(
+            in_store=Case(
+                When(request__delivery_list__in_store=True, then=Value(True)),
+                default=Value(False),
+                output_field=BooleanField()
+            )
+        ).distinct()
     else:
         invoice_list = client.invoice_list.filter(
             purpose=purpose,
@@ -114,7 +123,13 @@ def get_filtered_data(client, start_date, end_date=None):
                 .values("total")[:1]
             )
         )
-        client_orders = Order.objects.filter(client=client, created__gte=start_date)
+        client_orders = Order.objects.filter(client=client, created__gte=start_date).annotate(
+            in_store=Case(
+                When(request__delivery_list__in_store=True, then=Value(True)),
+                default=Value(False),
+                output_field=BooleanField()
+            )
+        ).distinct()
 
     return invoice_list, client_orders
 
