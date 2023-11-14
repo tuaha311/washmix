@@ -3,38 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <title>Verification Page</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f7f7f7;
             margin: 0;
             padding: 0;
         }
         main {
-            max-width: 600px;
+            max-width: 400px;
             margin: 20px auto;
-            background-color: #fff;
+            margin-top: 11vh;
+            
             padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 5px;
+            
         }
         form {
             text-align: center;
             margin-top: 20px;
         }
-        input[type="button"], input[type="submit"] {
-            padding: 10px 20px;
-            background-color: #007bff;
+        
+        /* Styling for Submit Button */
+        .submit-button {
+            font-size: 12px;
+            font-weight: lighter;
+            background-color: #003459;
             color: #fff;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-            margin-right: 10px;
+            text-transform: uppercase;
+            margin: 0 5px 5px 0;
+            padding: 0 20px;
+            border: 0;
+            border-radius: 4px;
+            height: 32px;
+            line-height: 32px;
+            outline: 0;
+            text-align: center;
+            display: inline-block;
+            cursor: pointer; /* Add pointer cursor for better usability */
+            transition: background .3s;
         }
-        input[type="button"]:hover, input[type="submit"]:hover {
-            background-color: #0056b3;
+
+        .submit-button:hover {
+            background-color: #5da5da;;
         }
+
+        /* Styling for Logout Button */
+        .logout-button {
+            /* Add specific styling for the logout button */
+            font-size: 12px;
+            font-weight: lighter;
+            background-color: #f9a61c; /* Different color for logout button */
+            color: #fff;
+            text-transform: uppercase;
+            margin: 0 5px 5px 0;
+            padding: 0 20px;
+            border: 0;
+            border-radius: 4px;
+            height: 32px;
+            line-height: 32px;
+            outline: 0;
+            text-align: center;
+            display: inline-block;
+            cursor: pointer; /* Add pointer cursor for better usability */
+            transition: background .3s;
+        }
+
+        .logout-button:hover {
+            background-color: darkred; /* Change hover color for logout button */
+        }
+        .helptext {
+            font-size: 12px; 
+            margin-left: 8px; 
+          }
         /* Custom styles for messages */
         .messages {
             list-style: none;
@@ -90,9 +132,9 @@
         <form method="post" action="/verification/">
             {% csrf_token %}
             {{ form.as_p }}
-            <input type="button" value="Logout" onclick="logoutFunction()">
-            <input type="submit" value="Verify">
-        </form>
+            <button class="logout-button" type="button" onclick="logoutFunction()">Logout</button>
+            <input type="submit" class="submit-button" value="Verify">
+        </form>        
         {% endblock %}
     </main>
 </body>
