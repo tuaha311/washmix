@@ -32,6 +32,24 @@ function createButton(clientId, requestId) {
   return newTdRow
 }
 
+// Hiding send sms Button from Admin panel (Drawer)
+function hideSendSMSLink() {
+  var sendSMSLink = document.querySelector('a[href="/admin/sms/sendsms/"]');
+  var smsTemplateLink = document.querySelector('a[href="/admin/sms/smstemplate/"]');
+  if (sendSMSLink) {
+    sendSMSLink.parentElement.style.display = "none";
+  }
+  if (smsTemplateLink) {
+    smsTemplateLink.innerHTML = "Outbound SMS";
+  }
+}
+
+if (window.location.pathname.indexOf('/admin') !== -1) {
+  document.addEventListener("DOMContentLoaded", function () {
+    hideSendSMSLink();
+  });
+  setTimeout(hideSendSMSLink, 2000);
+}
 
 // creates link that point on order
 function createLink(orderId) {
