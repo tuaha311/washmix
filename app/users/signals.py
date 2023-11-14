@@ -1,3 +1,4 @@
+from django.contrib.auth.models import Group
 import logging
 
 from django.conf import settings
@@ -5,9 +6,15 @@ from django.contrib.auth import get_user_model
 from django.db.models import ObjectDoesNotExist
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
-from notifications.tasks import send_email
+from users.models.employee import Employee
+from users.models.code import code_string
+from notifications.tasks import send_email, send_sms
 from billing.stripe_helper import StripeHelper
-from users.models import Client
+from users.models import Client, Code
+from django.contrib.auth.signals import user_logged_in
+from django.urls import reverse
+from notifications.tasks import send_email
+from django.contrib import messages
 
 logger = logging.getLogger(__name__)
 
@@ -95,4 +102,54 @@ def update_user_stripe_info(
         stripe_helper.update_customer_info(stripe_id, name=full_name)
 
         logger.info(f"Updating name info for {client.email}")
+
+
+def send_otp_via_email_to_super_admin(request, email, code, phone=None):
+    try:
+        if phone:
+            send_sms.send_with_options(
+            kwargs={
+                "event": settings.ADMIN_LOGIN_OTP,
+                "recipient_list": [phone],
+                "extra_context": {
+                    "code": code,
+                },
+            },
+            delay=settings.DRAMATIQ_DELAY_FOR_DELIVERY,
+            )
+            messages.success(request, f'A verification code has been sent to your phone number "{phone}"')
+        else:
+            print("Email message requested")
+            send_email.send(
+                event=settings.SUPER_ADMIN_OTP,
+                recipient_list=[email],
+                extra_context={
+                    "email": email,
+                    "code": code,
+                },
+            )
+            messages.success(request, f'A verification code has been sent to your email "{email}"')
+    except Exception as e:
+        logger.error(f"Error sending email: {str(e)}")
+
+@receiver(user_logged_in)
+def generate_code_for_superadmin(sender, request, user, **kwargs):
+    groups = user.groups.all()
+    user_is_admin = any("admin" in group.name.lower() for group in groups)
+    employee_user = Employee.objects.get(user=user)
+    phone = employee_user.phone if employee_user.phone else None
+    if user_is_admin or user.is_superuser:
+        try:
+            existing_code = Code.objects.get(user=user)
+            code = code_string()
+            existing_code.number = code
+            existing_code.authenticated = False
+            existing_code.save()
+            send_otp_via_email_to_super_admin(request, email=user.email, code=code, phone=phone)
+
+        except Code.DoesNotExist:
+            # Generate a Code instance for the super admin
+            code = Code(user=user)
+            code.save()
+            send_otp_via_email_to_super_admin(request, email=user.email, code=code.number, phone=phone)
 

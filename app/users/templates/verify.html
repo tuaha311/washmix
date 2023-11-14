@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verification Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        main {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+        form {
+            text-align: center;
+            margin-top: 20px;
+        }
+        input[type="button"], input[type="submit"] {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        input[type="button"]:hover, input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        /* Custom styles for messages */
+        .messages {
+            list-style: none;
+            padding: 0;
+        }
+        .messages li {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .messages .success {
+            background-color: #4CAF50;
+            color: #fff;
+        }
+        .messages .info {
+            background-color: #2196F3;
+            color: #fff;
+        }
+        .messages .warning {
+            background-color: #ff9800;
+            color: #fff;
+        }
+        .messages .error {
+            background-color: #f44336;
+            color: #fff;
+        }
+        #djDebug {
+            display: none;
+        }
+    </style>
+    {% block extrahead %}
+    <script>
+        function logoutFunction(){
+            window.location.href = "/admin/logout/";
+        }
+    </script>
+    {% endblock %}
+</head>
+<body>
+    <main>
+        {% block content %}
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+                {{ message }}
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        <p>Please enter the verification code you received:</p>
+        <form method="post" action="/verification/">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="button" value="Logout" onclick="logoutFunction()">
+            <input type="submit" value="Verify">
+        </form>
+        {% endblock %}
+    </main>
+</body>
+</html>
