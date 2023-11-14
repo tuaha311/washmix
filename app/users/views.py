@@ -27,7 +27,7 @@ def verify_view(request):
                     messages.success(request, "You have been successfully logged in.")
                     return redirect("/admin")
                 else:
-                    messages.error(request, "Sorry! verification cade did not match please try again.")
+                    messages.error(request, "Sorry! verification code did not match please try again.")
                     return redirect("/verification")
     
     return render(request, 'verify.html', {'form': form})
