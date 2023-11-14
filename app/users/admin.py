@@ -682,7 +682,12 @@ class RoleForm(forms.ModelForm):
     
     superuser = forms.BooleanField(
         label="Superuser",
-        required=False  # You can set this to True if you want it to be required
+        required=False
+    )
+
+    staffuser = forms.BooleanField(
+        label="Staffuser",
+        required=False 
     )
 
     def __init__(self, *args, **kwargs):
@@ -699,7 +704,8 @@ class RoleForm(forms.ModelForm):
             self.fields['groups'].initial = [group.id for group in user_groups]
 
         # Set the initial value for the superuser field
-        self.fields['superuser'].initial = user_instance.user.is_superuser if user_instance and user_instance.user else False
+        self.fields['superuser'].initial = user_instance.user.is_superuser if user_instance and user_instance.user.is_superuser else False
+        self.fields['staffuser'].initial = user_instance.user.is_staff if user_instance and user_instance.user.is_staff else False
 
     class Meta:
         model = Role
@@ -725,6 +731,8 @@ class RoleAdmin(admin.ModelAdmin):
         # Update the user's superuser rights based on the 'superuser' field
         is_superuser = form.cleaned_data.get('superuser')
         user.is_superuser = is_superuser
+        is_staff = form.cleaned_data.get('staffuser')
+        user.is_staff = is_staff
         user.save()
         super(RoleAdmin, self).save_model(request, obj, form, change)
 
