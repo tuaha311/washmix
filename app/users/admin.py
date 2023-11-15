@@ -655,13 +655,13 @@ class EmployeeAdmin(AdminWithSearch):
         return queryset, use_distinct
 
 class RoleFilter(admin.SimpleListFilter):
-    title = 'User'
+    title = 'Employees'
     parameter_name = 'user'
 
     def lookups(self, request, model_admin):
         return (
-            ('true', 'User'),
-            ('false', 'Non-User'),
+            ('false', 'Employees'),
+            ('true', 'All users'),
         )
 
     def queryset(self, request, queryset):
@@ -735,19 +735,6 @@ class RoleAdmin(admin.ModelAdmin):
         user.is_staff = is_staff
         user.save()
         super(RoleAdmin, self).save_model(request, obj, form, change)
-
-    def get_queryset(self, request):
-        # Check if the "user" parameter is present in the URL
-        is_user_param_present = request.GET.get('user') == 'true'
-
-        # Get the base queryset
-        queryset = super().get_queryset(request)
-
-        # Dynamically update the queryset based on the "user" parameter
-        if is_user_param_present:
-            return queryset.all()
-        else:
-            return queryset.exclude(position=RoleChoices.USER)
 
 
 models = [
