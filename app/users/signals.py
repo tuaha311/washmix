@@ -15,6 +15,7 @@ from django.contrib.auth.signals import user_logged_in
 from django.urls import reverse
 from notifications.tasks import send_email
 from django.contrib import messages
+from django.core.exceptions import ObjectDoesNotExist
 
 logger = logging.getLogger(__name__)
 
@@ -136,8 +137,14 @@ def send_otp_via_email_to_super_admin(request, email, code, phone=None):
 def generate_code_for_superadmin(sender, request, user, **kwargs):
     groups = user.groups.all()
     user_is_admin = any("admin" in group.name.lower() for group in groups)
-    employee_user = Employee.objects.get(user=user)
-    phone = employee_user.phone if employee_user.phone else None
+
+    try:
+        employee_user = Employee.objects.get(user=user)
+        phone = employee_user.phone if employee_user.phone else None
+    except ObjectDoesNotExist:
+        # Handle the case when no Employee object is found for the user
+        phone = None  # or provide a default value or log a message
+
     if user_is_admin or user.is_superuser:
         try:
             existing_code = Code.objects.get(user=user)
