@@ -302,7 +302,7 @@ class DeliveryAdminMain(AdminWithSearch):
                     return
                 return message
             else:
-                update_completed_in_store_deliveries(obj)
+                obj.status = DeliveryStatus.COMPLETED
 
         return super().save_model(request, obj, form, change)
 
