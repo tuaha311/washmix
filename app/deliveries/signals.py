@@ -162,7 +162,7 @@ def on_delivery_notify_signal(
                 order, full_paid = order_service.checkout(order)
                 if full_paid:
                     order_service.finalize(order, None, True)
-                    
+    '''
     if is_admin and is_completed and is_dropoff:
         send_sms.send_with_options(
             kwargs={
@@ -177,7 +177,7 @@ def on_delivery_notify_signal(
         )
 
         logger.info(f"Sending SMS to client {client.email}")
-
+    '''
 
     if is_admin and is_in_store_pickup:
         send_sms.send_with_options(
@@ -194,7 +194,7 @@ def on_delivery_notify_signal(
 
         logger.info(f"Sending SMS to client {client.email}")
 
-
+    '''
     if is_pickup and is_completed and is_admin:
         # we are adding some delay to wait for database
         # transaction commit
@@ -211,3 +211,4 @@ def on_delivery_notify_signal(
         )
 
         logger.info(f"Sending SMS to client {client.email}")
+    '''
