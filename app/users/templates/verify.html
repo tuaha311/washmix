@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <title>Verification Page</title>
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+        }
+        main {
+            max-width: 400px;
+            margin: 20px auto;
+            margin-top: 11vh;
+            
+            padding: 20px;
+            
+        }
+        form {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        /* Styling for Submit Button */
+        .submit-button {
+            font-size: 12px;
+            font-weight: lighter;
+            background-color: #003459;
+            color: #fff;
+            text-transform: uppercase;
+            margin: 0 5px 5px 0;
+            padding: 0 20px;
+            border: 0;
+            border-radius: 4px;
+            height: 32px;
+            line-height: 32px;
+            outline: 0;
+            text-align: center;
+            display: inline-block;
+            cursor: pointer; /* Add pointer cursor for better usability */
+            transition: background .3s;
+        }
+
+        .submit-button:hover {
+            background-color: #5da5da;;
+        }
+
+        /* Styling for Logout Button */
+        .logout-button {
+            /* Add specific styling for the logout button */
+            font-size: 12px;
+            font-weight: lighter;
+            background-color: #f9a61c; /* Different color for logout button */
+            color: #fff;
+            text-transform: uppercase;
+            margin: 0 5px 5px 0;
+            padding: 0 20px;
+            border: 0;
+            border-radius: 4px;
+            height: 32px;
+            line-height: 32px;
+            outline: 0;
+            text-align: center;
+            display: inline-block;
+            cursor: pointer; /* Add pointer cursor for better usability */
+            transition: background .3s;
+        }
+
+        .logout-button:hover {
+            background-color: darkred; /* Change hover color for logout button */
+        }
+        .helptext {
+            font-size: 12px; 
+            margin-left: 8px; 
+          }
+        /* Custom styles for messages */
+        .messages {
+            list-style: none;
+            padding: 0;
+        }
+        .messages li {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .messages .success {
+            background-color: #4CAF50;
+            color: #fff;
+        }
+        .messages .info {
+            background-color: #2196F3;
+            color: #fff;
+        }
+        .messages .warning {
+            background-color: #ff9800;
+            color: #fff;
+        }
+        .messages .error {
+            background-color: #f44336;
+            color: #fff;
+        }
+        #djDebug {
+            display: none;
+        }
+    </style>
+    {% block extrahead %}
+    <script>
+        function logoutFunction(){
+            window.location.href = "/admin/logout/";
+        }
+    </script>
+    {% endblock %}
+</head>
+<body>
+    <main>
+        {% block content %}
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+                {{ message }}
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        <p>Please enter the verification code you received:</p>
+        <form method="post" action="/verification/">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="logout-button" type="button" onclick="logoutFunction()">Logout</button>
+            <input type="submit" class="submit-button" value="Verify">
+        </form>        
+        {% endblock %}
+    </main>
+</body>
+</html>
