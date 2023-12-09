@@ -95,7 +95,7 @@
                 <td class="order-cell">{{ order.payment }}</td>
                 <td class="order-cell">{{ order.invoice.amount_with_discount }}</td>
                 <td class="order-cell">{{ order.created }}</td>
-                <td class="order-cell">{{ order.invoice.purpose }}</td>
+                <td class="order-cell">{% if order.in_store %}instore order{% else %}{{ order.invoice.purpose }}{% endif %}</td>
             </tr>
             {% endfor %}
         </tbody>

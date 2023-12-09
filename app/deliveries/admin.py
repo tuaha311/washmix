@@ -145,13 +145,33 @@ class DeliveryAdminMain(AdminWithSearch):
                 for delivery_id in selected_deliveries:
                     try:
                         delivery = Delivery.objects.get(id=delivery_id)
+                        in_store = delivery.in_store
                         
                         if new_employee_id != "":
                             delivery.employee_id = new_employee_id
                             update_fields['employee'] = new_employee_id
 
                         if new_status != "":
+                            if new_status == DeliveryStatus.COMPLETED:
+                                if not in_store:
+                                    if delivery.kind == DeliveryKind.DROPOFF:
+                                        delivery_request = delivery.request
+                                        pickup = delivery_request.delivery_list.get(kind=DeliveryKind.PICKUP)
+                                        if pickup.status != DeliveryStatus.COMPLETED:
+                                            messages.warning(request,  f'Delivery {delivery_id} cannot be marked completed because the corresponding pickup is not completed.')
+                                            continue
+                                if in_store:
+                                    if delivery.kind == DeliveryKind.PICKUP:
+                                        delivery_request = delivery.request
+                                        instore_dropoff = delivery_request.delivery_list.get(kind=DeliveryKind.DROPOFF)
+                                        if instore_dropoff.status != DeliveryStatus.COMPLETED:
+                                            messages.warning(request,  f'In_store delivery {delivery_id} cannot be marked completed because the corresponding dropoff is not completed.')
+                                            continue
+
                             if new_status == DeliveryStatus.NO_SHOW:
+                                if in_store:
+                                    messages.warning(request, f"In_Store delivery {delivery_id} cannot be marked as No Show.")
+                                    continue
                                 if delivery.kind == DeliveryKind.PICKUP:
                                     update_deliveries_to_no_show(delivery)
                                     delivery.status = new_status
@@ -230,8 +250,8 @@ class DeliveryAdminMain(AdminWithSearch):
         """
 
         if obj.kind == DeliveryKind.DROPOFF and (
-        obj.status == DeliveryStatus.NO_SHOW
-        or obj.status in [DeliveryStatus.IN_PROGRESS, DeliveryStatus.COMPLETED]
+        obj.in_store != True
+        and obj.status in [DeliveryStatus.NO_SHOW, DeliveryStatus.IN_PROGRESS, DeliveryStatus.COMPLETED]
         ):
             if obj.status == DeliveryStatus.NO_SHOW:
                 message = "Invalid status for a dropoff delivery."
@@ -271,7 +291,18 @@ class DeliveryAdminMain(AdminWithSearch):
             update_cancelled_deliveries(obj)
 
         if obj.kind == DeliveryKind.PICKUP and obj.status == DeliveryStatus.COMPLETED and obj.request.generated_by_admin == True:
-                    update_completed_in_store_deliveries(obj)
+            delivery_request = obj.request
+            drop_off_delivery = delivery_request.delivery_list.get(kind=DeliveryKind.DROPOFF)
+            if drop_off_delivery.status != DeliveryStatus.COMPLETED:
+                message = "Cannot set pickup delivery as 'Completed' when the corresponding dropoff delivery is not completed."
+                if 'message' in locals():
+                    self.message_user(request, '', level=messages.ERROR)
+                    messages.set_level(request, messages.ERROR)
+                    messages.error(request, message)
+                    return
+                return message
+            else:
+                obj.status = DeliveryStatus.COMPLETED
 
         return super().save_model(request, obj, form, change)
 
