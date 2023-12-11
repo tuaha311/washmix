@@ -35,6 +35,7 @@ class CustomAdminURL(AdminSite):
             path("deliveries/update-deliveries/", DeliveryAdmin.update_deliveries, name="update-deliveries"),
             path("client/generate-pdf/", self.admin_view(generate_client_pdf), name="generate-pdf"),
             path("deliveries/instore-request/", InstoreViewSet.as_view({'post': 'create'}), name="instore-requests"),
+            path('verification/', UsersViews.verify_view, name='verification_view'),
         ]
 
         return urls
@@ -88,7 +89,6 @@ urlpatterns += [
     # Static files serving
     *static_server(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
     *static_server(settings.STATIC_URL, document_root=settings.STATIC_ROOT),
-    path('verification/', UsersViews.verify_view, name='verification_view'),
 ]
 
 
