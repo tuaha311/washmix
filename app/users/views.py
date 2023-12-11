@@ -28,6 +28,6 @@ def verify_view(request):
                     return redirect("/admin")
                 else:
                     messages.error(request, "Sorry! verification code did not match please try again.")
-                    return redirect("/verification")
+                    return redirect("/admin/verification")
     
     return render(request, 'verify.html', {'form': form})

@@ -129,7 +129,7 @@
         </ul>
         {% endif %}
         <p>Please enter the verification code you received:</p>
-        <form method="post" action="/verification/">
+        <form method="post" action="/admin/verification/">
             {% csrf_token %}
             {{ form.as_p }}
             <button class="logout-button" type="button" onclick="logoutFunction()">Logout</button>
