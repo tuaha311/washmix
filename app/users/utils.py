@@ -25,10 +25,16 @@ def schedule_promo_sms_notification():
 
 
 def users_with_scheduled_promotional_sms(start_date, current_date, cash_back_within):
+
+    # Update promo_sms_notification for users
+    Client.objects.filter(
+        Q(promo_sms_notification__lte=current_date, order_list__created__gte=start_date)
+    ).update(promo_sms_notification=current_date + timedelta(days=30))
+
     # Query for users with scheduled promotional SMS for the current date
     return (
         Client.objects.filter(
-            Q(promo_sms_notification=current_date)
+            Q(promo_sms_notification__lte=current_date)
         ).exclude(
             Q(order_list__created__gte=start_date) #Excluding Clients who have placed order in given range
         )
