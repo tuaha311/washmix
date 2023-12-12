@@ -25,7 +25,7 @@ def schedule_promo_sms_notification():
 
 
 def users_with_scheduled_promotional_sms(start_date, current_date, cash_back_within):
-    
+
     # Update promo_sms_notification for users
     Client.objects.filter(
         Q(promo_sms_notification__lte=current_date, order_list__created__gte=start_date)
