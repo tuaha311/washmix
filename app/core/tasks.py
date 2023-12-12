@@ -263,7 +263,7 @@ def worker_health():
     
 
 # Check SMS Sending Criteria Daily at 9:00 AM and only working days
-@dramatiq.actor(periodic=cron("*/5 * * * 1-5"))
+@dramatiq.actor(periodic=cron("0 9 * * 1-5"))
 def send_sms_to_users_with_no_orders():
     current_date = localtime()
     # Set the start_date to one day before the current date
