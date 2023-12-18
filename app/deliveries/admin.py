@@ -399,6 +399,7 @@ class CategorizeRouteForm(forms.ModelForm):
 class CategorizeRouteAdmin(admin.ModelAdmin):
     list_display = ('day', 'all_zip_codes')
     form = CategorizeRouteForm
+    change_form_template = "assets/select_zip.html"
     
     def all_zip_codes(self, obj):
         if obj.id:
