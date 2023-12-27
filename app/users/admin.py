@@ -410,14 +410,28 @@ class ClientAdmin(AdminUpdateFieldsMixin, AdminWithSearch):
     list_filter = [SubscriptionFilter]
 
     def full_address(self, obj):
-        address_line_2 = obj.billing_address.get("address_line_2")
-        if address_line_2 is not None:
+        address_line_2 = obj.main_address.address_line_2
+        main_address_line_1 = obj.main_address.address_line_1
+        billing_address_line_1 = obj.billing_address.get("address_line_1")
+        if address_line_2 == "" and main_address_line_1 == billing_address_line_1:
+            address_line_2 = obj.billing_address.get("address_line_2")
+
+        if address_line_2 is not None and address_line_2 is not "":
             return str(obj.main_address) + ", (Apt: " + address_line_2 + " )"
         else:
             return obj.main_address
 
     def address_line_2(self, obj):
-        return obj.billing_address.get("address_line_2")
+        address_line_2 = obj.main_address.address_line_2
+        main_address_line_1 = obj.main_address.address_line_1
+        billing_address_line_1 = obj.billing_address.get("address_line_1")
+        if address_line_2 == "" and main_address_line_1 == billing_address_line_1:
+            address_line_2 = obj.billing_address.get("address_line_2")
+
+        if address_line_2 and address_line_2 is not "":
+            return address_line_2
+        else:
+            return None
 
     def get_main_phone_number(self, obj):
         """
